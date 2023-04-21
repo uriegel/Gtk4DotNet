@@ -15,13 +15,7 @@ public class WebView : WebWindowNetCore.Base.WebView
             Window.SetTitle(window, settings?.Title);
             Widget.SetSizeRequest(window, 200, 200);
             Window.SetDefaultSize(window, settings!.Width, settings!.Height);
-
-            var display = Widget.GetDisplay(window);
-            var theme = Display.IconThemeForDisplay(display);
-            IconTheme.AddSearchPath(theme, "/home/uwe"); // /home/uwe/hicolor/48x48/apps/kirk.png
-            var hasIt = IconTheme.HasIcon(theme, "kirk");
-            Window.SetIconName(window, "kirk");
-
+            Window.SetIconFromDotNetResource(window, settings?.ResourceIcon);
             Widget.Show(window);
         };
 

@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace GtkDotNet;
@@ -58,6 +60,34 @@ public class Window
 
     [DllImport(Globals.LibGtk, EntryPoint = "gtk_window_set_icon_name", CallingConvention = CallingConvention.Cdecl)]
     public extern static void SetIconName(IntPtr window, string name);  
+
+    /// <summary>
+    /// Sets the window icon. It uses an icon contained as DotNet resource
+    /// </summary>
+    /// <param name="window"></param>
+    /// <param name="resourceIconPath">DotNet resource path of the icon</param>
+    public static void SetIconFromDotNetResource(IntPtr window, string resourceIconPath)
+    {
+        var themeDir = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    "Gtk4DotNet", 
+                    Assembly
+                        .GetCallingAssembly()
+                        .GetName()
+                        .Name);
+        var iconDir = Path.Combine(themeDir, "hicolor", "48x48", "apps");
+        Directory.CreateDirectory(iconDir);
+
+        var resIcon = System.Reflection.Assembly
+            .GetEntryAssembly()
+            ?.GetManifestResourceStream(resourceIconPath);
+        using var iconFile = File.OpenWrite(Path.Combine(iconDir, "icon.png"));
+        resIcon.CopyTo(iconFile);
+
+        var theme = Display.IconThemeForDisplay(Widget.GetDisplay(window));
+        IconTheme.AddSearchPath(theme, themeDir); 
+        Window.SetIconName(window, "icon");
+    }
 }
 
 

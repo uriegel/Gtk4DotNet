@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetExtensions" Version="2.1.0" />
+    <PackageReference Include="CsTools" Version="4.2.0" />
     <PackageReference Include="WebWindowNetCore" Version="5.1.0" />
   </ItemGroup>
 
@@ -16,5 +17,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="./icon.png">
+      <LogicalName>icon</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
 
 </Project>
