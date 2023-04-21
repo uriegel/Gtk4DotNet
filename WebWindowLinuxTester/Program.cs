@@ -9,7 +9,7 @@ WebView
     .InitialBounds(600, 800)
     .ResourceIcon("icon")
     .Title("Commander")
-    .QueryString("?theme=windows")
+    .QueryString("?theme=adwaita")
     .SaveBounds()
     .DebugUrl("http://localhost:3000")
     //.Url($"file://{Directory.GetCurrentDirectory()}/webroot/index.html")
@@ -25,7 +25,7 @@ WebView
     .DebuggingEnabled()
 #endif            
     .Build()
-    .Run("de.uriegel.Commander");    
+    .Run("de.uriegel.WebWindowLinuxTester");    
 
 void StartEvents(Action<Event> onChanged)   
 {
@@ -44,3 +44,5 @@ void StartEvents(Action<Event> onChanged)
 }
 
 record Event(string Content);
+
+// TODO Test Drag N Drop
