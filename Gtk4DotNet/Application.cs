@@ -5,13 +5,22 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace GtkDotNet;
 
-public class Application
+public static class Application
 {
+    public static int Run(string id, Action<IntPtr> onActivate) 
+    {
+        var app = New(id);
+        var status = Application.Run(app, () => onActivate(app));
+        GObject.Unref(app);
+        return status;
+    } 
+
     public static IntPtr New(string id) => _New(id, 0);
-    
+   
     public static int Run(IntPtr app, Action onActivate) 
     {
         Gtk.SignalConnect(app, "activate", onActivate);
@@ -93,6 +102,47 @@ public class Application
 
     public static void EnableSynchronizationContext()
         => SynchronizationContext.SetSynchronizationContext(new GtkSynchronizationContext());
+
+    public static Task Dispatch(Action action, bool highPriority = false)
+        => Dispatch(action, highPriority ? 100 : 200);
+
+    public static Task Dispatch(Action action, int priority)
+    {
+        var tcs = new TaskCompletionSource();
+        BeginInvoke(priority, () =>
+        {
+            try
+            {
+                action();
+                tcs.TrySetResult();
+            }
+            catch (Exception e)
+            {
+                tcs.TrySetException(e);
+            }
+        });
+        return tcs.Task;
+    }
+
+    public static Task<T> Dispatch<T>(Func<T> action, bool highPriority = false)
+        => Dispatch(action, highPriority ? 100 : 200);
+
+    public static Task<T> Dispatch<T>(Func<T> action, int priority)
+    {
+        var tcs = new TaskCompletionSource<T>();
+        BeginInvoke(priority, () => 
+        {
+            try
+            {
+                tcs.TrySetResult(action());
+            }
+            catch (Exception e)
+            {
+                tcs.TrySetException(e);
+            }
+        });
+        return tcs.Task;
+    }
 
     /// <summary>
     /// Run the specified Action in the main GTK thread

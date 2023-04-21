@@ -7,22 +7,21 @@ public class WebView : WebWindowNetCore.Base.WebView
         => new WebViewBuilder();
 
     public override int Run(string gtkId = "de.uriegel.WebViewNetCore")
-    {
-        var app = Application.New(gtkId);
-        Action onActivate = () =>
+        => Application.Run(gtkId, app =>
         {
-            var window = Application.NewWindow(app);
+            saveBounds = settings?.SaveBounds == true;
+            Application.EnableSynchronizationContext();
+            GtkDotNet.Timer? timer = null;
+
+            var window = Application.NewWindow(GtkApplication);
             Window.SetTitle(window, settings?.Title);
             Widget.SetSizeRequest(window, 200, 200);
             Window.SetDefaultSize(window, settings!.Width, settings!.Height);
             Window.SetIconFromDotNetResource(window, settings?.ResourceIcon);
-            Widget.Show(window);
-        };
-
-        var status = Application.Run(app, onActivate);
-        GObject.Unref(app);
-        return status;
-    }
+            //if (!saveBounds)            
+                Widget.Show(window);
+            settings = null;
+        });
 
     internal WebView(WebViewBuilder builder)
         => settings = builder.Data;
