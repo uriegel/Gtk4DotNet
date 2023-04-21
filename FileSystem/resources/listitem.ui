@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+	<object id="listitem" class="GtkLabel">
+		<property name="halign">GTK_ALIGN_START</property>
+	</object>
+</interface>

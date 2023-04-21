@@ -1,0 +1,9 @@
+button.styled {
+    color: magenta;
+    background-color: yellow;
+}
+
+button.styled:hover {
+    color: Blue;
+    background-color: yellow;
+  }

@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Created with Cambalache 0.8.2 -->
+<interface>
+  <!-- interface-name builder.ui -->
+  <requires lib="gtk" version="4.0"/>
+  <object class="GtkWindow" id="window">
+    <property name="title">Grid</property>
+    <child type="titlebar">
+      <object class="GtkHeaderBar" id="header">
+        <child type="title">
+          <object class="GtkStackSwitcher" id="tabs">
+            <property name="stack">stack</property>
+          </object>
+        </child>
+        <child type="end">
+          <object class="GtkMenuButton" id="gears">
+            <property name="direction">none</property>
+          </object>
+        </child>
+        <child type="end">
+          <object class="GtkToggleButton" id="search">
+            <property name="sensitive">0</property>
+            <property name="icon-name">edit-find-symbolic</property>
+          </object>
+        </child>
+      </object>
+    </child>    
+    <child>
+      <object class="GtkGrid" id="grid">
+        <property name="column-spacing">5</property>
+        <property name="row-spacing">5</property>
+        <child>
+          <object class="GtkButton" id="button1">
+            <property name="label">Button 1</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="button2">
+            <property name="label">Button 2</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="quit">
+            <property name="label">Quit</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="column-span">2</property>
+              <property name="row">1</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

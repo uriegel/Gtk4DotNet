@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object id="window" class="GtkApplicationWindow">
+    <property name="title" translatable="yes">Threading 👍</property>
+    <property name="default-width">600</property>
+    <property name="default-height">400</property>
+    <child>
+      <object class="GtkBox" id="content_box">
+        <property name="orientation">vertical</property>
+        <property name="halign">GTK_ALIGN_CENTER</property>
+        <property name="valign">GTK_ALIGN_CENTER</property>
+        <property name="spacing">10</property>
+        <child>
+          <object class="GtkButton" id="buttonBlocking">
+            <property name="label">Blocking</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="buttonBeginInvoke">
+            <property name="label">BeginInvoke</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="buttonEnableAsync">
+            <property name="label">Enable async</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="buttonAsync">
+            <property name="label">Async</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label">
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

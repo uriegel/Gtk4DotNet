@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/gtk/example">
+    <file>window.ui</file>
+    <file>menu.ui</file>
+    <file>dialog.ui</file>
+  </gresource>
+</gresources>

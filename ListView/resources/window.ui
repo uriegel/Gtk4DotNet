@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object id="window" class="GtkApplicationWindow">
+    <property name="title" translatable="yes">ListView 👍</property>
+    <property name="default-width">600</property>
+    <property name="default-height">800</property>
+    <child>
+      <object class="GtkScrolledWindow" id="scrolled">
+        <property name="vscrollbar-policy">GTK_POLICY_AUTOMATIC</property>
+        <property name="hscrollbar-policy">GTK_POLICY_NEVER</property>
+        <child>
+          <object class="GtkListView" id="list-view"/>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

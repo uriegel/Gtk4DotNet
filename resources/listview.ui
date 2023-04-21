@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <object class="GtkPopoverMenu" id="settings">
+    <property name="child">
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <child>
+          <!-- <object class="GtkModelButton">
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <property name="action-name">app.showhidden</property>
+            <property name="text" translatable="1">_Versteckte Dateien</property>
+          </object> -->
+        </child>
+      </object>
+      <!-- <packing>
+        <property name="submenu">main</property>
+      </packing> -->
+    </property>
+  </object>
+  <object class="GtkImage" id="showViewerImg">
+    <property name="icon-name">document-print-preview-symbolic</property>
+  </object>
+  <object class="GtkApplicationWindow" id="window">
+    <property name="default-width">600</property>
+    <property name="default-height">800</property>
+    <child>
+      <object class="GtkPaned">
+        <property name="focusable">1</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkPaned">
+            <property name="focusable">1</property>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkEntry" id="left-entry">
+                    <property name="focusable">1</property>
+                    <property name="valign">center</property>
+                    <property name="has-frame">0</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow">
+                    <property name="vexpand">1</property>
+                    <property name="focusable">1</property>
+                    <!-- <property name="shadow-type">in</property> -->
+                    <property name="child">
+                      <object class="GtkTreeView" id="left-folder">
+                        <property name="focusable">1</property>
+                        <!-- <property name="resize-mode">immediate</property> -->
+                        <property name="reorderable">1</property>
+                        <child internal-child="selection">
+                          <object class="GtkTreeSelection"/>
+                        </child>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkEntry" id="right-entry">
+                    <property name="focusable">1</property>
+                    <property name="valign">center</property>
+                    <property name="has-frame">0</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow">
+                    <property name="vexpand">1</property>
+                    <property name="focusable">1</property>
+                    <!-- <property name="shadow-type">in</property> -->
+                    <property name="child">
+                      <object class="GtkTreeView" id="right-folder">
+                        <property name="focusable">1</property>
+                        <property name="reorderable">1</property>
+                        <child internal-child="selection">
+                          <object class="GtkTreeSelection"/>
+                        </child>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="viewer">
+            <property name="label" translatable="1">button</property>
+            <property name="focusable">1</property>
+            <property name="receives-default">1</property>
+            <property name="margin-start">10</property>
+            <property name="margin-end">10</property>
+            <property name="margin-top">10</property>
+            <property name="margin-bottom">10</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child type="titlebar">
+      <object class="GtkHeaderBar">
+        <!-- <property name="title" translatable="1">Commander</property> -->
+        <!-- <property name="subtitle" translatable="1">Subtitle</property> -->
+        <child>
+          <object class="GtkToggleButton">
+            <property name="receives-default">1</property>
+            <property name="action-name">app.viewer</property>
+            <!-- <property name="image">showViewerImg</property> -->
+          </object>
+        </child>
+        <child type="end">
+          <object class="GtkMenuButton">
+            <property name="focus-on-click">0</property>
+            <property name="receives-default">1</property>
+            <property name="popover">settings</property>
+            <child>
+              <object class="GtkImage">
+                <property name="icon-name">open-menu-symbolic</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <style>
+      <class name="test"/>
+    </style>
+  </object>
+</interface>

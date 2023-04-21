@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <object id="window" class="GtkApplicationWindow">
+    <property name="title" translatable="yes">ColumnView 👍</property>
+    <property name="default-width">600</property>
+    <property name="default-height">800</property>
+    <child>
+      <object class="GtkScrolledWindow" id="scrolled">
+        <property name="vscrollbar-policy">GTK_POLICY_AUTOMATIC</property>
+        <property name="hscrollbar-policy">GTK_POLICY_AUTOMATIC</property>
+        <property name="min-content-width">360</property>
+        <child>
+          <object class="GtkColumnView" id="column-view"/>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
