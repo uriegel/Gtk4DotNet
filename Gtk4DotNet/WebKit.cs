@@ -26,8 +26,7 @@ namespace GtkDotNet
         [DllImport(Globals.LibWebKit, EntryPoint="webkit_web_inspector_show", CallingConvention = CallingConvention.Cdecl)]
         public extern static void InspectorShow(IntPtr inspector);
 
-
-        [DllImport(Globals.LibWebKit, EntryPoint="webkit_web_view_run_javascript", CallingConvention = CallingConvention.Cdecl)]
-        extern static IntPtr RunJavascript(IntPtr webView, string script, IntPtr nil1, IntPtr nil2, IntPtr nil3);
+        [DllImport(Globals.LibWebKit, EntryPoint="webkit_web_view_call_async_javascript_function", CallingConvention = CallingConvention.Cdecl)]
+        public extern static IntPtr RunJavascript(IntPtr webView, string script, IntPtr _, IntPtr __, IntPtr ___);
     }
 }

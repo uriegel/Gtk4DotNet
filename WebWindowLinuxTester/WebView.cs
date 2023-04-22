@@ -35,9 +35,9 @@ public class WebView : WebWindowNetCore.Base.WebView
             WebKit.LoadUri(webView, url + settings?.Query ?? "");
             Window.SetChild(window, webView);
 
-            if (!saveBounds)
+//            if (!saveBounds)
                 Widget.Show(window);
-            else
+//            else
             {
                 var w = settings?.Width;
                 var h = settings?.Height;
@@ -68,7 +68,7 @@ public class WebView : WebWindowNetCore.Base.WebView
                 {
                     if (saveBounds)
                         WebKit.RunJavascript(webView,
-                        """ 
+                            """ 
                                 const bounds = JSON.parse(localStorage.getItem('window-bounds') || '{}')
                                 const isMaximized = localStorage.getItem('isMaximized')
                                 if (bounds.width && bounds.height)
@@ -76,18 +76,17 @@ public class WebView : WebWindowNetCore.Base.WebView
                                 else
                                     alert(JSON.stringify({action: 2}))
                             """);
-                    if (showDevTools == true)
-                        WebKit.RunJavascript(webView,
-                        """ 
-                                function webViewShowDevTools() {
-                                    alert(JSON.stringify({action: 1}))
-                                }
-                            """);
+                    // if (showDevTools == true)
+                    //     WebKit.RunJavascript(webView,
+                    //         """ 
+                    //             function webViewShowDevTools() {
+                    //                 alert(JSON.stringify({action: 1}))
+                    //             }
+                    //         """);
                     if (withFetch)
                         WebKit.RunJavascript(webView,
-                        """ 
+                            """ 
                                 async function webViewRequest(method, input) {
-
                                     const msg = {
                                         method: 'POST',
                                         headers: { 'Content-Type': 'application/json' },
@@ -125,13 +124,6 @@ public class WebView : WebWindowNetCore.Base.WebView
             });
 
             settings = null;
-
-            timer = new GtkDotNet.Timer(() =>
-            {
-                var affe = WebKit.GetInspector(webView);
-                timer?.Dispose();
-                WebKit.InspectorShow(affe);
-            }, TimeSpan.FromSeconds(4), TimeSpan.FromHours(4));
         });
 
     internal WebView(WebViewBuilder builder)
