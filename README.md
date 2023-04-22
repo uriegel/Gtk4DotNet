@@ -7,7 +7,7 @@
 * sudo apt install libgtk-4-dev
 
 for use with WebView only:
-* sudo apt install libwebkit2gtk-5.0-dev
+* sudo apt install libwebkitgtk-6.0-dev
 
 ## Installation of GTK Schema
 ```
