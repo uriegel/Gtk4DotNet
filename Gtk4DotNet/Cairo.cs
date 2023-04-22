@@ -47,6 +47,7 @@ public class Cairo
     [DllImport(Globals.LibGtk, EntryPoint = "cairo_arc", CallingConvention = CallingConvention.Cdecl)]
     public extern static void Arc(IntPtr context, double x, double y, double radius, double angle1, double angle2);
 
+    // TODO Deprecated
     [DllImport(Globals.LibGtk, EntryPoint = "gdk_surface_create_similar_surface", CallingConvention = CallingConvention.Cdecl)]
     public extern static IntPtr SurfaceCreateSimilar(IntPtr surface, CairoContent cairoContent, int width, int height);
 

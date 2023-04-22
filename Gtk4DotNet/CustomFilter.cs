@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace GtkDotNet;
 
+// TODO GTK 4
 public static class CustomFilter
 {
     public static IntPtr New(FilterFunc filter) => New(filter, IntPtr.Zero, IntPtr.Zero);

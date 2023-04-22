@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace GtkDotNet;
 
+// TODO GTK3 Marker
 public static class GObject
 {
     [DllImport(Globals.LibGtk, EntryPoint="g_object_ref", CallingConvention = CallingConvention.Cdecl)]
