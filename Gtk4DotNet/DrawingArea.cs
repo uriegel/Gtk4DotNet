@@ -13,7 +13,6 @@ public class DrawingArea
     public delegate void DrawFunction(IntPtr drawingArea, IntPtr cairo, int width, int height, IntPtr data);
     delegate void OnDestroyFunction(IntPtr nil);
 
-    // TODO Gtk4
     [DllImport(Globals.LibGtk, EntryPoint = "gtk_drawing_area_set_draw_func", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetDrawFunction(IntPtr drawingArea, DrawFunction drawFunction, IntPtr zero, OnDestroyFunction onDestroy);
 }

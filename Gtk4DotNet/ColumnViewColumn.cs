@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 
 namespace GtkDotNet;
 
-// TODO GTK 4
 public class ColumnViewColumn
 {
     [DllImport(Globals.LibGtk, EntryPoint="gtk_column_view_column_new", CallingConvention = CallingConvention.Cdecl)]

@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 
 namespace GtkDotNet;
 
-// TODO GTK4
 public static class FilterListModel
 {
     public static IntPtr New<T>(ListStore<T> model, IntPtr filter)

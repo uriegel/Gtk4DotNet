@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 
 namespace GtkDotNet;
 
-// TODO GTK 4
 public class CustomSorter
 {
     public static IntPtr New(CompareDelegate compare) => New(compare, IntPtr.Zero, IntPtr.Zero);

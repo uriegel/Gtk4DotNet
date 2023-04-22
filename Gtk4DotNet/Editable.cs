@@ -3,7 +3,6 @@ using System.Runtime.InteropServices;
 
 namespace GtkDotNet;
 
-// TODO GTK4
 public class Editable
 {
     public static string GetText(IntPtr editable)
