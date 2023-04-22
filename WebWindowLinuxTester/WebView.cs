@@ -1,5 +1,9 @@
 using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Text.Json;
 using GtkDotNet;
+using LinqTools;
+using WebWindowNetCore;
 using WebWindowNetCore.Data;
 
 public class WebView : WebWindowNetCore.Base.WebView
@@ -28,12 +32,106 @@ public class WebView : WebWindowNetCore.Base.WebView
                 : settings?.Url != null
                 ? settings.Url
                 : $"http://localhost:{settings?.HttpSettings?.Port ?? 80}{settings?.HttpSettings?.WebrootUrl}/{settings?.HttpSettings?.DefaultHtml}";
-            WebKit.LoadUri( webView, url + settings?.Query ?? "");
-            Window.SetChild(window, webView);    
+            WebKit.LoadUri(webView, url + settings?.Query ?? "");
+            Window.SetChild(window, webView);
 
-            //if (!saveBounds)            
+            if (!saveBounds)
                 Widget.Show(window);
+            else
+            {
+                var w = settings?.Width;
+                var h = settings?.Height;
+                Gtk.SignalConnect<TwoIntPtr>(window, "configure_event", (_, e) =>
+                {
+                    timer?.Dispose();
+                    var evt = Marshal.PtrToStructure<ConfigureEvent>(e);
+                    timer = new(() =>
+                    {
+                        if (!Window.IsMaximized(window))
+                            WebKit.RunJavascript(webView,
+                                $$"""
+                                    localStorage.setItem('window-bounds', JSON.stringify({width: {{evt.Width}}, height: {{evt.Height}}}))
+                                    localStorage.setItem('isMaximized', false)
+                                    """);
+                        else
+                            WebKit.RunJavascript(webView, $"localStorage.setItem('isMaximized', true)");
+                    }, TimeSpan.FromMilliseconds(400), Timeout.InfiniteTimeSpan);
+                });
+            }
+
+            var showDevTools = settings?.DevTools == true;
+            var withFetch = (settings?.HttpSettings?.RequestDelegates?.Length ?? 0) > 0;
+
+            Gtk.SignalConnect<TwoIntPtr>(webView, "load-changed", (_, e) =>
+            {
+                if ((WebKitLoadEvent)e == WebKitLoadEvent.WEBKIT_LOAD_COMMITTED)
+                {
+                    if (saveBounds)
+                        WebKit.RunJavascript(webView,
+                        """ 
+                                const bounds = JSON.parse(localStorage.getItem('window-bounds') || '{}')
+                                const isMaximized = localStorage.getItem('isMaximized')
+                                if (bounds.width && bounds.height)
+                                    alert(JSON.stringify({action: 2, width: bounds.width, height: bounds.height, isMaximized: isMaximized == 'true'}))
+                                else
+                                    alert(JSON.stringify({action: 2}))
+                            """);
+                    if (showDevTools == true)
+                        WebKit.RunJavascript(webView,
+                        """ 
+                                function webViewShowDevTools() {
+                                    alert(JSON.stringify({action: 1}))
+                                }
+                            """);
+                    if (withFetch)
+                        WebKit.RunJavascript(webView,
+                        """ 
+                                async function webViewRequest(method, input) {
+
+                                    const msg = {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify(input)
+                                    }
+
+                                    const response = await fetch(`/request/${method}`, msg) 
+                                    return await response.json() 
+                                }
+                            """);
+                }
+            });
+
+            Gtk.SignalConnect<TwoIntPtr>(webView, "script-dialog", (_, d) =>
+            {
+                var msg = WebKit.ScriptDialogGetMessage(d);
+                var text = Marshal.PtrToStringUTF8(msg);
+
+                Console.WriteLine(text);
+
+                var action = JsonSerializer.Deserialize<ScriptAction>(text ?? "", JsonDefault.Value);
+                switch (action?.Action)
+                {
+                    case Action.DevTools:
+                        WebKit.InspectorShow(webView);
+                        break;
+                    case Action.Show:
+                        if (action.Width.HasValue && action.Height.HasValue)
+                            Window.SetDefaultSize(window, action.Width.Value, action.Height.Value);
+                        if (action.IsMaximized.GetOrDefault(false))
+                            Window.Maximize(window);
+                        Widget.Show(window);   
+                        break;
+                }
+            });
+
             settings = null;
+
+            timer = new GtkDotNet.Timer(() =>
+            {
+                var affe = WebKit.GetInspector(webView);
+                timer?.Dispose();
+                WebKit.InspectorShow(affe);
+            }, TimeSpan.FromSeconds(4), TimeSpan.FromHours(4));
         });
 
     internal WebView(WebViewBuilder builder)
@@ -43,3 +141,11 @@ public class WebView : WebWindowNetCore.Base.WebView
 
     bool saveBounds;
 }
+
+enum Action
+{
+    DevTools = 1,
+    Show,
+}
+
+record ScriptAction(Action Action, int? Width, int? Height, bool? IsMaximized);

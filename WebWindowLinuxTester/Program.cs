@@ -44,5 +44,3 @@ void StartEvents(Action<Event> onChanged)
 }
 
 record Event(string Content);
-
-// TODO Test Drag N Drop

@@ -1,0 +1,9 @@
+namespace GtkDotNet;
+
+public enum WebKitLoadEvent
+{
+    WEBKIT_LOAD_STARTED,
+    WEBKIT_LOAD_REDIRECTED,
+    WEBKIT_LOAD_COMMITTED,
+    WEBKIT_LOAD_FINISHED
+}

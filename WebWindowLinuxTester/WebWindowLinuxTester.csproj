@@ -1,20 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <ItemGroup>
-    <ProjectReference Include="..\Gtk4DotNet\Gtk4DotNet.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="AspNetExtensions" Version="2.1.0" />
-    <PackageReference Include="CsTools" Version="4.2.0" />
-    <PackageReference Include="WebWindowNetCore" Version="5.1.0" />
-  </ItemGroup>
-
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>Preview</LangVersion>    
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
@@ -22,6 +13,15 @@
     <EmbeddedResource Include="./icon.png">
       <LogicalName>icon</LogicalName>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Gtk4DotNet\Gtk4DotNet.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AspNetExtensions" Version="2.1.0" />
+    <PackageReference Include="WebWindowNetCore" Version="5.1.0" />
   </ItemGroup>
 
 </Project>

@@ -184,5 +184,3 @@ GObject.Unref(app);
 
 return status;
 
-delegate void TwoIntPtr(IntPtr z1, IntPtr z2);
-delegate void ThreeIntPtr(IntPtr z1, IntPtr z2, IntPtr z3);

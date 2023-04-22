@@ -23,10 +23,8 @@ public class Timer : IDisposable
         if (!disposedValue)
         {
             if (disposing)
-            {
                 // Verwalteten Zustand (verwaltete Objekte) bereinigen
                 timer.Dispose();
-            }
 
             // Nicht verwaltete Ressourcen (nicht verwaltete Objekte) freigeben und Finalizer überschreiben
             // Große Felder auf NULL setzen
