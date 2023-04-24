@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace GtkDotNet;
 
-public class GFileInfo
+public static class GFileInfo
 {
     public static string GetDisplayName(IntPtr info)
         => Marshal.PtrToStringUTF8(_GetDisplayName(info));

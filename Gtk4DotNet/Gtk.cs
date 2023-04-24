@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace GtkDotNet;
 
-public class Gtk
+public static class Gtk
 {
     public static void Init() 
     {
@@ -18,28 +18,28 @@ public class Gtk
     [DllImport(Globals.LibGtk, EntryPoint="gtk_main_quit", CallingConvention = CallingConvention.Cdecl)]
     public extern static void MainQuit();
 
-    public static void SignalConnect<TDelegate>(IntPtr widget, string name, TDelegate callback) where TDelegate : Delegate
+    public static void SignalConnect<TDelegate>(this IntPtr widget, string name, TDelegate callback) where TDelegate : Delegate
     {
         var delegat = callback as Delegate;
         var id = SignalConnect(widget, name, Marshal.GetFunctionPointerForDelegate(callback), IntPtr.Zero, IntPtr.Zero, 0);
         Delegates.Add(id, delegat);
     }
 
-    public static void SignalConnectAfter<TDelegate>(IntPtr widget, string name, TDelegate callback) where TDelegate : Delegate
+    public static void SignalConnectAfter<TDelegate>(this IntPtr widget, string name, TDelegate callback) where TDelegate : Delegate
     {
         var delegat = callback as Delegate;
         var id = SignalConnect(widget, name, Marshal.GetFunctionPointerForDelegate(callback), IntPtr.Zero, IntPtr.Zero, 1);
         Delegates.Add(id, delegat);
     }
 
-    public static void SignalConnectObject<TDelegate>(IntPtr widget, string name, TDelegate callback, IntPtr obj) where TDelegate : Delegate
+    public static void SignalConnectObject<TDelegate>(this IntPtr widget, string name, TDelegate callback, IntPtr obj) where TDelegate : Delegate
     {
         var delegat = callback as Delegate;
         var id = SignalConnect(widget, name, Marshal.GetFunctionPointerForDelegate(callback), obj, 0);
         Delegates.Add(id, delegat);
     }
 
-    public static void SignalDisconnect<TDelegate>(IntPtr widget, string name, TDelegate callback) where TDelegate : Delegate
+    public static void SignalDisconnect<TDelegate>(this IntPtr widget, string name, TDelegate callback) where TDelegate : Delegate
     {
         var delegat = callback as Delegate;
         var id = Delegates.Remove(delegat);
@@ -64,16 +64,16 @@ public class Gtk
     extern static void init (ref int argc, ref IntPtr argv);
 
     [DllImport(Globals.LibGtk, EntryPoint="g_signal_connect_data", CallingConvention = CallingConvention.Cdecl)]
-    extern static long SignalConnect(IntPtr widget, string name, IntPtr callback, IntPtr n, IntPtr n2, int n3);
+    extern static long SignalConnect(this IntPtr widget, string name, IntPtr callback, IntPtr n, IntPtr n2, int n3);
 
     [DllImport(Globals.LibGtk, EntryPoint="g_signal_connect_object", CallingConvention = CallingConvention.Cdecl)]
-    extern static long SignalConnect(IntPtr widget, string name, IntPtr callback, IntPtr obj, int n3);
+    extern static long SignalConnect(this IntPtr widget, string name, IntPtr callback, IntPtr obj, int n3);
     
     [DllImport(Globals.LibGtk, EntryPoint="g_signal_connect_data", CallingConvention = CallingConvention.Cdecl)]
-    extern static long SignalConnectAfter(IntPtr widget, string name, IntPtr callback, IntPtr n, IntPtr n2, int n3);
+    extern static long SignalConnectAfter(this IntPtr widget, string name, IntPtr callback, IntPtr n, IntPtr n2, int n3);
 
     [DllImport(Globals.LibGtk, EntryPoint="g_signal_handler_disconnect", CallingConvention = CallingConvention.Cdecl)]
-    extern static void SignalDisconnect(IntPtr widget, long id);
+    extern static void SignalDisconnect(this IntPtr widget, long id);
 }
 
 

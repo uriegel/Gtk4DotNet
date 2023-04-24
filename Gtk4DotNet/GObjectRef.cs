@@ -1,49 +1,52 @@
 using System;
-using System.Runtime.InteropServices;
 
 namespace GtkDotNet;
 
 public class GObjectRef : IDisposable
 {
     public IntPtr Value { get => obj; }
+
+    public static implicit operator IntPtr(GObjectRef obj) => obj.Value;
     
     public GObjectRef(IntPtr obj) => this.obj = obj;
 
+    public static GObjectRef WithRef(IntPtr obj) => new(obj);
+
     IntPtr obj;
 
-        #region IDisposable
+#region IDisposable
 
-        protected virtual void Dispose(bool disposing)
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
         {
-            if (!disposedValue)
+            if (disposing)
             {
-                if (disposing)
-                {
-                    // dispose managed state (managed objects)
-                }
-
-                // free unmanaged resources (unmanaged objects) and override finalizer
-                // set large fields to null
-                GObject.Unref(obj);
-                disposedValue = true;
+                // dispose managed state (managed objects)
             }
+
+            // free unmanaged resources (unmanaged objects) and override finalizer
+            // set large fields to null
+            GObject.Unref(obj);
+            disposedValue = true;
         }
+    }
 
-        // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        ~GObjectRef() 
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            => Dispose(disposing: false);
+    // override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+    ~GObjectRef() 
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        => Dispose(disposing: false);
 
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
 
-        bool disposedValue;
+    bool disposedValue;
 
-        #endregion
+#endregion
 }
 
 

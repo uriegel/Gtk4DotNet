@@ -1,24 +1,23 @@
-﻿using System;
-using GtkDotNet;
+﻿using GtkDotNet;
 
-var app = Application.New("org.gtk.example");
-Action onActivate = () => 
-{
-    var window = Application.NewWindow(app);
-    Window.SetTitle(window, "Hello Web View👍");
-    Window.SetDefaultSize(window, 200, 200);
+using LinqTools;
 
-    var webView = WebKit.New();
-    var settings = WebKit.GetSettings(webView);
-    GObject.SetBool(settings, "enable-developer-extras", true);
-    Window.SetChild(window, webView);    
-    Widget.Show(window);
-};
+return Application.Run("org.gtk.example", app =>
+    Application
+        .NewWindow(app)
+        .SideEffect(w => w.SetTitle("Hello Web View👍"))
+        .SideEffect(w => w.SetDefaultSize(800, 600))
+        .SideEffect(w => w.SetChild(
+            WebKit
+                .New()
+                .SideEffect(wk => 
+                    wk
+                        .GetSettings()
+                        .SideEffect(s => s.SetBool("enable-developer-extras", true))
+                    )
+                .SideEffect(wk => wk.LoadUri("https://www.google.de"))
+        ))
+        .Show());
 
-var status = Application.Run(app, onActivate);
-
-GObject.Unref(app);
-
-return status;
 
 

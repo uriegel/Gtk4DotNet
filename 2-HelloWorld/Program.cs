@@ -1,33 +1,25 @@
-﻿using System;
-using GtkDotNet;
+﻿using GtkDotNet;
 
-void clicked() => Console.WriteLine("Clicked button");
+using LinqTools;
 
-var app = Application.New("org.gtk.example");
-Action onActivate = () => 
-{
-    var window = Application.NewWindow(app);
-    Window.SetTitle(window, "Hello Gtk👍");
-    Window.SetDefaultSize(window, 200, 200);
+return Application.Run("org.gtk.example", app =>
+    Application
+        .NewWindow(app)
+        .SideEffect(w => w.SetTitle("Hello Gtk👍"))
+        .SideEffect(w => w.SetDefaultSize(200, 200))
+        .SideEffect(w => w.SetChild(
+            Box
+                .New(GtkDotNet.Orientation.Vertical, 0)
+                .SideEffect(b => b.SetHAlign(Align.Center))
+                .SideEffect(b => b.SetVAlign(Align.Center))
+                .SideEffect(b => b.Append(
+                    Button
+                        .NewWithLabel("Hello Wörld")
+                        .SideEffect(btn => btn.SignalConnect("clicked", () => Console.WriteLine("Clicked button")))
+                ))
+            ))
+        .Show());
 
-    var box = Box.New(GtkDotNet.Orientation.Vertical, 0);
-    Widget.SetHAlign(box, GtkDotNet.Align.Center);
-    Widget.SetVAlign(box, GtkDotNet.Align.Center);
 
-    Window.SetChild(window, box);
-
-    var button = Button.NewWithLabel("Hello Wörld");
-    Gtk.SignalConnect(button, "clicked", clicked);
-
-    Box.Append(box, button);
-
-    Widget.Show(window);
-};
-
-var status = Application.Run(app, onActivate);
-
-GObject.Unref(app);
-
-return status;
 
 

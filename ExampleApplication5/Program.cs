@@ -48,7 +48,7 @@ Action onActivate = () =>
 
     void searchTextChanged(IntPtr z1, IntPtr z2)
     {
-        var text = Editable.GetText(searchEntry);
+        var text = searchEntry.EditableGetText();
         if (text.Length == 0)
             return;
 

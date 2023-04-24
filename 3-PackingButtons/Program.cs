@@ -1,36 +1,33 @@
-﻿using System;
-using GtkDotNet;
+﻿using GtkDotNet;
 
-void clicked() => Console.WriteLine("Clicked button");
+using LinqTools;
 
-var app = Application.New("org.gtk.example");
-Action onActivate = () => 
-{
-    var window = Application.NewWindow(app);
-    Window.SetTitle(window, "Hello Gtk👍");
-    
-    var grid = Grid.New();
-    Window.SetChild(window, grid);
+return Application.Run("org.gtk.example", app =>
+    Application
+        .NewWindow(app)
+        .SideEffect(win => win.SetTitle("Hello Gtk👍"))
+        .SideEffect(win => win.SetChild(
+            Grid
+                .New()
+                .SideEffect(g => g.Attach(
+                    Button
+                        .NewWithLabel("Button 1")
+                        .SideEffect(btn => btn.SignalConnect("clicked", clicked))
+                    , 0, 0, 1, 1))
+                .SideEffect(g => g.Attach(
+                    Button
+                        .NewWithLabel("Button 2")
+                        .SideEffect(btn => btn.SignalConnect("clicked", clicked))
+                    , 1, 0, 1, 1))
+                .SideEffect(g => g.Attach(
+                    Button
+                        .NewWithLabel("Quit")
+                        .SideEffect(btn => btn.SignalConnect("clicked", () => win.Close()))
+                    , 0, 1, 2, 1))
+        ))
+        .Show());
 
-    var button = Button.NewWithLabel("Button 1");
-    Gtk.SignalConnect(button, "clicked", clicked);
-    Grid.Attach (grid, button, 0, 0, 1, 1);
+void clicked() => Console.WriteLine("Clicked button");    
 
-    button = Button.NewWithLabel("Button 2");
-    Gtk.SignalConnect(button, "clicked", clicked);
-    Grid.Attach(grid, button, 1, 0, 1, 1);
-
-    button = Button.NewWithLabel("Quit");
-    Gtk.SignalConnect(button, "clicked", () => Window.Close(window));
-    Grid.Attach(grid, button, 0, 1, 2, 1);
-
-    Widget.Show(window);
-};
-
-var status = Application.Run(app, onActivate);
-
-GObject.Unref(app);
-
-return status;
 
 

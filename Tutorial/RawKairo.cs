@@ -21,12 +21,12 @@ Application.Run(app, () =>
         Cairo.ArcNegative(context, 0, 0, (w < h ? w : h) / 2.0, -Math.PI / 2.0, -Math.PI / 2.0 + 0.1 * Math.PI);
         Cairo.LineTo(context, 0, 0);
         Cairo.SetSourceRgb(context, 0.7, 0.7, 0.7);
-        Cairo.Fill(context);
+        context.CairoFill();
         
-        Cairo.MoveTo(context, 0, 0);
+        context.CairoMoveTo(0, 0);
         Cairo.Arc(context, 0, 0, (w < h ? w : h) / 2.0, -Math.PI / 2.0, -Math.PI / 2.0 + 0.1 * Math.PI);
         Cairo.SetSourceRgb(context, 0.3, 0.3, 0.3);
-        Cairo.Fill(context);
+        context.CairoFill();
     });
 
     Window.SetChild(window, kairo);

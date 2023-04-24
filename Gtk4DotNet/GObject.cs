@@ -6,7 +6,7 @@ namespace GtkDotNet;
 public static class GObject
 {
     [DllImport(Globals.LibGtk, EntryPoint="g_object_ref", CallingConvention = CallingConvention.Cdecl)]
-    public extern static IntPtr Ref(IntPtr obj);
+    public extern static IntPtr Ref(this IntPtr obj);
 
     /// <summary>
     /// Increase the reference count of object, and possibly remove the [floating][floating-ref] reference, 
@@ -17,48 +17,48 @@ public static class GObject
     /// <param name="obj"></param>
     /// <returns></returns>
     [DllImport(Globals.LibGtk, EntryPoint="g_object_ref_sink", CallingConvention = CallingConvention.Cdecl)]
-    public extern static IntPtr RefSink(IntPtr obj);
+    public extern static IntPtr RefSink(this IntPtr obj);
     
     [DllImport(Globals.LibGtk, EntryPoint="g_object_unref", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void Unref(IntPtr obj);
+    public extern static void Unref(this IntPtr obj);
 
     [DllImport(Globals.LibGtk, EntryPoint="g_clear_object", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void Clear(IntPtr obj);
+    public extern static void Clear(this IntPtr obj);
 
     [DllImport(Globals.LibGtk, EntryPoint="g_free", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void Free(IntPtr obj);
+    public extern static void Free(this IntPtr obj);
 
-    public static void AddWeakRef(IntPtr obj, FinalizerDelegate finalizer) => AddWeakRef(obj, finalizer, IntPtr.Zero);
+    public static void AddWeakRef(this IntPtr obj, FinalizerDelegate finalizer) => AddWeakRef(obj, finalizer, IntPtr.Zero);
 
-    public static void SetBool(IntPtr obj, string name, bool value)
+    public static void SetBool(this IntPtr obj, string name, bool value)
         => SetBool(obj, name, value, IntPtr.Zero);
-    public static bool GetBool(IntPtr obj, string name)
+    public static bool GetBool(this IntPtr obj, string name)
     {
         GetBool(obj, name, out var value, IntPtr.Zero);
         return value;
     }
 
-    public static void SetInt(IntPtr obj, string name, int value)
+    public static void SetInt(this IntPtr obj, string name, int value)
         => SetInt(obj, name, value, IntPtr.Zero);
-    public static int GetInt(IntPtr obj, string name)
+    public static int GetInt(this IntPtr obj, string name)
     {
         GetInt(obj, name, out var value, IntPtr.Zero);
         return value;
     }
 
     [DllImport(Globals.LibGtk, EntryPoint="g_object_set", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void SetString(IntPtr obj, string name, string value, IntPtr end);
+    public extern static void SetString(this IntPtr obj, string name, string value, IntPtr end);
 
     public delegate void FinalizerDelegate(IntPtr zero, IntPtr obj);
 
     [DllImport(Globals.LibGtk, EntryPoint="g_object_bind_property", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void BindProperty(IntPtr source, string sourceProperty, IntPtr target, string targetProperty, BindingFlags bindingFlags);
+    public extern static void BindProperty(this IntPtr source, string sourceProperty, IntPtr target, string targetProperty, BindingFlags bindingFlags);
 
     [DllImport(Globals.LibGtk, EntryPoint="g_type_from_name", CallingConvention = CallingConvention.Cdecl)]
     public extern static GType TypeFromName(string objectName);
 
     [DllImport(Globals.LibGtk, EntryPoint="g_type_name", CallingConvention = CallingConvention.Cdecl)]
-    public extern static IntPtr TypeName(GType type);
+    public extern static IntPtr TypeName(this GType type);
     
 
     [DllImport(Globals.LibGtk, EntryPoint="g_object_set", CallingConvention = CallingConvention.Cdecl)]

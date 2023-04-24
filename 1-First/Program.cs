@@ -1,19 +1,15 @@
-﻿using System;
-using GtkDotNet;
+﻿using GtkDotNet;
 
-var app = Application.New("org.gtk.example");
-Action onActivate = () => 
-{
-    var window = Application.NewWindow(app);
-    Window.SetTitle(window, "Hello Gtk👍");
-    Window.SetDefaultSize(window, 1200, 1200);
-    Widget.Show(window);
-};
+using LinqTools;
 
-var status = Application.Run(app, onActivate);
+return Application.Run("org.gtk.example", app => 
+    Application
+        .NewWindow(app)
+        .SideEffect(w => w.SetTitle("Hello Gtk👍"))
+        .SideEffect(w => w.SetDefaultSize(1200, 1200))
+        .Show());
 
-GObject.Unref(app);
 
-return status;
+
 
 

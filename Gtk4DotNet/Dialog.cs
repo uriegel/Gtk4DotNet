@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 
 namespace GtkDotNet;
-public class Dialog
+public static class Dialog
 {
     [DllImport(Globals.LibGtk, EntryPoint="gtk_dialog_new", CallingConvention = CallingConvention.Cdecl)]
     public extern static IntPtr New();

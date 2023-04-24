@@ -64,7 +64,7 @@ Action onActivate = () =>
 
     void searchTextChanged(IntPtr z1, IntPtr z2)
     {
-        var text = Editable.GetText(searchEntry);
+        var text = searchEntry.EditableGetText();
         if (text.Length == 0)
             return;
 
@@ -90,7 +90,7 @@ Action onActivate = () =>
     void FindWord(IntPtr button)
     {
         var word = Button.GetLabel(button);
-        Editable.SetText(searchEntry, word);
+        searchEntry.EditableSetText(word);
     }
 
     string? GetText()

@@ -7,7 +7,7 @@ Action onActivate = () =>
 {
     Application.RegisterResources();
     var cssProvider = CssProvider.New();
-    CssProvider.LoadFromResource(cssProvider, "/org/gtk/example/style.css");
+    cssProvider.CssProviderLoadFromResource("/org/gtk/example/style.css");
     StyleContext.AddProviderForDisplay(Display.GetDefault(), cssProvider, StyleProviderPriority.Application);
 
     var builder = Builder.FromResource("/org/gtk/example/window.ui");

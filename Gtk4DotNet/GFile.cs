@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GtkDotNet;
 
-public class GFile
+public static class GFile
 {
     /// <summary>
     /// Creates a new GFile object. Free it with GObject.Unref
@@ -19,21 +19,21 @@ public class GFile
     public extern static IntPtr New(string path);
 
     [DllImport(Globals.LibGtk, EntryPoint = "g_file_trash", CallingConvention = CallingConvention.Cdecl)]
-    public extern static bool Trash(IntPtr file, IntPtr cancellable, ref IntPtr error);
+    public extern static bool Trash(this IntPtr file, IntPtr cancellable, ref IntPtr error);
 
     [DllImport(Globals.LibGtk, EntryPoint = "g_file_copy", CallingConvention = CallingConvention.Cdecl)]
-    public extern static bool Copy(IntPtr source, IntPtr destination, FileCopyFlags flags, IntPtr cancellable, FileProgressCallback progress, IntPtr data, ref IntPtr error);
+    public extern static bool FileCopy(this IntPtr source, IntPtr destination, FileCopyFlags flags, IntPtr cancellable, FileProgressCallback progress, IntPtr data, ref IntPtr error);
 
     [DllImport(Globals.LibGtk, EntryPoint = "g_file_move", CallingConvention = CallingConvention.Cdecl)]
-    public extern static bool Move(IntPtr source, IntPtr destination, FileCopyFlags flags, IntPtr cancellable, FileProgressCallback progress, IntPtr data, ref IntPtr error);
+    public extern static bool FileMove(this IntPtr source, IntPtr destination, FileCopyFlags flags, IntPtr cancellable, FileProgressCallback progress, IntPtr data, ref IntPtr error);
 
     [DllImport(Globals.LibGtk, EntryPoint = "g_file_get_basename", CallingConvention = CallingConvention.Cdecl)]
-    public extern static string GetBasename(IntPtr file);
+    public extern static string GetBasename(this IntPtr file);
 
     [DllImport(Globals.LibGtk, EntryPoint = "g_file_get_path", CallingConvention = CallingConvention.Cdecl)]
-    public extern static string GetPath(IntPtr file);
+    public extern static string FileGetPath(this IntPtr file);
     
-    public static (IntPtr content, long length)? LoadContents(IntPtr file)
+    public static (IntPtr content, long length)? LoadContents(this IntPtr file)
     {
         var result = LoadContents(file, IntPtr.Zero, out var content, out var length, IntPtr.Zero, IntPtr.Zero);    
         if (result)

@@ -1,30 +1,30 @@
-﻿using System;
-using GtkDotNet;
+﻿using GtkDotNet;
 
-void clicked() => Console.WriteLine("Clicked button");
+using LinqTools;
 
-var app = Application.New("org.gtk.example");
-Action onActivate = () => 
+return Application.Run("org.gtk.example", app => 
 {
     Application.RegisterResources();
-    var builder = Builder.FromResource("/org/gtk/example/window.ui");
-    var window = Builder.GetObject(builder, "window");
-    var button1 = Builder.GetObject(builder, "button1");
-    var button2 = Builder.GetObject(builder, "button2");
-    var quit = Builder.GetObject(builder, "quit");
-    Window.SetApplication(window, app);
-    GObject.Unref( builder);
+    GObjectRef
+        .WithRef(Builder.FromResource("/org/gtk/example/window.ui"))
+        .Use(builder =>
+        {
+            var window = builder.Value.GetObject("window");
+            var button1 = builder
+                            .Value
+                            .GetObject("button1")
+                            .SideEffect(b => b.SignalConnect("clicked", clicked));
+            var button2 = builder
+                            .Value
+                            .GetObject("button2")
+                            .SideEffect(b => b.SignalConnect("clicked", clicked));
+            var quit = builder
+                            .Value
+                            .GetObject("quit")
+                            .SideEffect(b => b.SignalConnect("clicked", () => window.Close()));
+            window.SetApplication(app);
+            window.Show();
+        });
+});
 
-    Gtk.SignalConnect(button1, "clicked", clicked);
-    Gtk.SignalConnect(button2, "clicked", clicked);
-    Gtk.SignalConnect(quit, "clicked", () => Window.Close(window));
-
-    Widget.Show(window);
-};
-
-var status = Application.Run(app, onActivate);
-
-GObject.Unref(app);
-
-return status;
-
+void clicked() => Console.WriteLine("Clicked button");

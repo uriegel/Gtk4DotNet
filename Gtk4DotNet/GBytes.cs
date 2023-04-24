@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace GtkDotNet;
 
-public class GBytes
+public static class GBytes
 {
     [DllImport(Globals.LibGtk, EntryPoint="g_bytes_new", CallingConvention = CallingConvention.Cdecl)]
     public extern static IntPtr New(IntPtr data, long size);

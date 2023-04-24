@@ -7,23 +7,30 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
+using LinqTools;
+
 namespace GtkDotNet;
 
 public static class Application
 {
-    public static int Run(string id, Action<IntPtr> onActivate) 
-    {
-        var app = New(id);
-        var status = Application.Run(app, () => onActivate(app));
-        GObject.Unref(app);
-        return status;
-    } 
-
     public static IntPtr New(string id) => _New(id, 0);
-   
-    public static int Run(IntPtr app, Action onActivate) 
+
+    public static int Run(string id, Action<IntPtr> onActivate) 
+        => GObjectRef
+                .WithRef(New(id))
+                .Use(gref => gref
+                                .Value
+                                .Run(onActivate));
+
+    public static int Run(this IntPtr app, Action onActivate) 
     {
         Gtk.SignalConnect(app, "activate", onActivate);
+        return _Run(app, 0, IntPtr.Zero);
+    }
+
+    public static int Run(this IntPtr app, Action<IntPtr> onActivate) 
+    {
+        Gtk.SignalConnect(app, "activate", () => onActivate(app));
         return _Run(app, 0, IntPtr.Zero);
     }
 
@@ -195,3 +202,7 @@ public static class Application
     [DllImport(Globals.LibGtk, EntryPoint="g_simple_action_set_enabled", CallingConvention = CallingConvention.Cdecl)]
     extern static void EnableAction(IntPtr action, int enabled);
 }
+
+
+
+
