@@ -135,7 +135,7 @@ public static class Application
 
     public static Task Dispatch(Action action, int priority)
     {
-        var tcs = new TaskCompletionSource();
+        var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         BeginInvoke(priority, () =>
         {
             try
@@ -156,7 +156,7 @@ public static class Application
 
     public static Task<T> Dispatch<T>(Func<T> action, int priority)
     {
-        var tcs = new TaskCompletionSource<T>();
+        var tcs = new TaskCompletionSource<T>(TaskCreationOptions.RunContinuationsAsynchronously);
         BeginInvoke(priority, () => 
         {
             try

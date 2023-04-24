@@ -5,10 +5,11 @@ using static System.Console;
 
 Application.Start();
 
-WriteLine("GTK initialized, press any key to stop...");
+WriteLine($"GTK initialized, press any key to stop...");
+
 
 // Retrieve icon file from mime type
-Application.Dispatch(() => GObjectRef
+await Application.Dispatch(() => GObjectRef
     .WithRef(GtkSettings.GetDefault())
     .Use(Settings =>
         Settings
@@ -16,9 +17,12 @@ Application.Dispatch(() => GObjectRef
             .SideEffect(s => WriteLine(s.GetString("gtk-theme-name")))
             .SignalConnect("notify::gtk-theme-name", () => WriteLine("Theme Changed"))));
 
+await Application
+        .Dispatch(() => WriteLine(Gtk.GuessContentType(".pdf")));
+
 try 
 {
-    Application.Dispatch(() =>
+    await Application.Dispatch(() =>
     {
         var filename = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "test.tst");
         var f = File.Create(filename);
@@ -35,5 +39,6 @@ catch (Exception e)
 
 ReadLine();
 Application.Stop();
-WriteLine("GTK un initialized, terminated");
+WriteLine("GTK uninitialized, terminated");
+
 

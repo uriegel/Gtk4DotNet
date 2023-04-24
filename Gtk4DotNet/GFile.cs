@@ -20,13 +20,14 @@ public static class GFile
     [DllImport(Globals.LibGtk, EntryPoint = "g_file_new_for_path", CallingConvention = CallingConvention.Cdecl)]
     public extern static IntPtr New(string path);
 
-    public static void Trash(string filename)
+    public static void Trash(string path)
         => GObjectRef
-            .WithRef(GFile.New(filename))
+            .WithRef(GFile.New(path))
             .Use(file =>
             {
                 var error = IntPtr.Zero;
-                GFile.Trash(file, IntPtr.Zero, ref error);
+                if (!GFile.Trash(file, IntPtr.Zero, ref error))
+                    throw GErrorException.New(new GError(error), path, null);
             });
 
 
