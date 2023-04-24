@@ -30,6 +30,7 @@ try
         GFile.Trash(filename);
 
         GFile.Trash("/notfound/nofile.txt");
+        GFile.Trash("/etc/fstab");
     });
 }
 catch (Exception e)

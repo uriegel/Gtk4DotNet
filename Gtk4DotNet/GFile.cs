@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -13,12 +14,81 @@ namespace GtkDotNet;
 public static class GFile
 {
     /// <summary>
-    /// Creates a new GFile object. Free it with GObject.Unref
+    /// Creates a new GFile object. Free it with GObject.Unref or use GObjectRef with using
     /// </summary>
     /// <param name="path"></param>
     /// <returns></returns>
     [DllImport(Globals.LibGtk, EntryPoint = "g_file_new_for_path", CallingConvention = CallingConvention.Cdecl)]
     public extern static IntPtr New(string path);
+
+    public static void Copy(string source, string destination, FileCopyFlags flags, ProgressCallback cb)
+        => Copy(source, destination, flags, false, cb);
+
+    public static void Copy(string source, string destination, FileCopyFlags flags, bool createTargetPath, ProgressCallback cb)            
+        => Copy(source, destination, flags, createTargetPath, cb, null);
+
+    public static void Copy(string source, string destination, FileCopyFlags flags, bool createTargetPath, ProgressCallback cb, CancellationToken? cancellation)
+    {
+        using var cancellable = cancellation.HasValue ? new Cancellable(cancellation.Value) : null;
+        using var sourceFile = GObjectRef.WithRef(New(source));
+        using var destinationFile = GObjectRef.WithRef(New(destination));
+        var error = IntPtr.Zero;
+        FileProgressCallback rcb = cb != null ? (c, t, _) => cb(c, t) : null;
+        if (!Copy(sourceFile.Value, destinationFile.Value, flags, cancellable?.handle ?? IntPtr.Zero, rcb, IntPtr.Zero, ref error))
+        {
+            var gerror = new GError(error);
+            if (createTargetPath && gerror.Domain == 232 && gerror.Code == 1 && File.Exists(source))
+            {
+                var fi = new FileInfo(destination);
+                var path = fi.Directory;
+                try 
+                {
+                    path.Create();
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    throw GErrorException.New(new GError(232, 14, "Access Denied"), source, destination);
+                }
+                Copy(source, destination, flags, true, cb, cancellation);
+            }
+            else
+                throw GErrorException.New(gerror, source, destination);
+        }
+    }
+
+        public static void Move(string source, string destination, FileCopyFlags flags, ProgressCallback cb)
+            => Move(source, destination, flags, false, cb);
+
+        public static void Move(string source, string destination, FileCopyFlags flags, bool createTargetPath, ProgressCallback cb)            
+            => Move(source, destination, flags, createTargetPath, cb, null);
+
+        public static void Move(string source, string destination, FileCopyFlags flags, bool createTargetPath, ProgressCallback cb, CancellationToken? cancellation)
+        {
+            using var sourceFile = GObjectRef.WithRef(New(source));
+            using var destinationFile = GObjectRef.WithRef(New(destination));
+            var error = IntPtr.Zero;
+            FileProgressCallback rcb = cb != null ? (c, t, _) => cb(c, t) : null;
+            if (!Move(sourceFile.Value, destinationFile.Value, flags, IntPtr.Zero, rcb, IntPtr.Zero, ref error))
+            {
+                var gerror = new GError(error);
+                if (createTargetPath && gerror.Domain == 232 && gerror.Code == 1 && File.Exists(source))
+                {
+                    var fi = new FileInfo(destination);
+                    var path = fi.Directory;
+                    try 
+                    {
+                        path.Create();
+                    }
+                    catch (AccessDeniedException)
+                    {
+                        throw GErrorException.New(new GError(232, 14, "Access Denied"), source, destination);
+                    }
+                    Move(source, destination, flags, true, cb);
+                }
+                else
+                    throw GErrorException.New(gerror, source, destination);
+            }
+        }
 
     public static void Trash(string path)
         => GObjectRef
@@ -30,15 +100,16 @@ public static class GFile
                     throw GErrorException.New(new GError(error), path, null);
             });
 
+    public delegate void ProgressCallback(long current, long total);
 
     [DllImport(Globals.LibGtk, EntryPoint = "g_file_trash", CallingConvention = CallingConvention.Cdecl)]
     public extern static bool Trash(this IntPtr file, IntPtr cancellable, ref IntPtr error);
 
     [DllImport(Globals.LibGtk, EntryPoint = "g_file_copy", CallingConvention = CallingConvention.Cdecl)]
-    public extern static bool FileCopy(this IntPtr source, IntPtr destination, FileCopyFlags flags, IntPtr cancellable, FileProgressCallback progress, IntPtr data, ref IntPtr error);
+    public extern static bool Copy(IntPtr source, IntPtr destination, FileCopyFlags flags, IntPtr cancellable, FileProgressCallback progress, IntPtr data, ref IntPtr error);
 
     [DllImport(Globals.LibGtk, EntryPoint = "g_file_move", CallingConvention = CallingConvention.Cdecl)]
-    public extern static bool FileMove(this IntPtr source, IntPtr destination, FileCopyFlags flags, IntPtr cancellable, FileProgressCallback progress, IntPtr data, ref IntPtr error);
+    public extern static bool Move(IntPtr source, IntPtr destination, FileCopyFlags flags, IntPtr cancellable, FileProgressCallback progress, IntPtr data, ref IntPtr error);
 
     [DllImport(Globals.LibGtk, EntryPoint = "g_file_get_basename", CallingConvention = CallingConvention.Cdecl)]
     public extern static string GetBasename(this IntPtr file);
