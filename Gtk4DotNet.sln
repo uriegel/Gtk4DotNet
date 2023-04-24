@@ -53,6 +53,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "6-WebView", "6-WebView\6-We
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebWindowLinuxTester", "WebWindowLinuxTester\WebWindowLinuxTester.csproj", "{52A64E3D-8593-4930-909A-8B8076DA8046}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "7-NonGtkApp", "7-NonGtkApp\7-NonGtkApp.csproj", "{5A84B8A3-3AB8-4FD7-8C28-B94700B3DF81}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -366,5 +368,17 @@ Global
 		{52A64E3D-8593-4930-909A-8B8076DA8046}.Release|x64.Build.0 = Release|Any CPU
 		{52A64E3D-8593-4930-909A-8B8076DA8046}.Release|x86.ActiveCfg = Release|Any CPU
 		{52A64E3D-8593-4930-909A-8B8076DA8046}.Release|x86.Build.0 = Release|Any CPU
+		{5A84B8A3-3AB8-4FD7-8C28-B94700B3DF81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A84B8A3-3AB8-4FD7-8C28-B94700B3DF81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A84B8A3-3AB8-4FD7-8C28-B94700B3DF81}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5A84B8A3-3AB8-4FD7-8C28-B94700B3DF81}.Debug|x64.Build.0 = Debug|Any CPU
+		{5A84B8A3-3AB8-4FD7-8C28-B94700B3DF81}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5A84B8A3-3AB8-4FD7-8C28-B94700B3DF81}.Debug|x86.Build.0 = Debug|Any CPU
+		{5A84B8A3-3AB8-4FD7-8C28-B94700B3DF81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A84B8A3-3AB8-4FD7-8C28-B94700B3DF81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A84B8A3-3AB8-4FD7-8C28-B94700B3DF81}.Release|x64.ActiveCfg = Release|Any CPU
+		{5A84B8A3-3AB8-4FD7-8C28-B94700B3DF81}.Release|x64.Build.0 = Release|Any CPU
+		{5A84B8A3-3AB8-4FD7-8C28-B94700B3DF81}.Release|x86.ActiveCfg = Release|Any CPU
+		{5A84B8A3-3AB8-4FD7-8C28-B94700B3DF81}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

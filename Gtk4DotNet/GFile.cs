@@ -6,6 +6,8 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 
+using LinqTools;
+
 namespace GtkDotNet;
 
 public static class GFile
@@ -17,6 +19,16 @@ public static class GFile
     /// <returns></returns>
     [DllImport(Globals.LibGtk, EntryPoint = "g_file_new_for_path", CallingConvention = CallingConvention.Cdecl)]
     public extern static IntPtr New(string path);
+
+    public static void Trash(string filename)
+        => GObjectRef
+            .WithRef(GFile.New(filename))
+            .Use(file =>
+            {
+                var error = IntPtr.Zero;
+                GFile.Trash(file, IntPtr.Zero, ref error);
+            });
+
 
     [DllImport(Globals.LibGtk, EntryPoint = "g_file_trash", CallingConvention = CallingConvention.Cdecl)]
     public extern static bool Trash(this IntPtr file, IntPtr cancellable, ref IntPtr error);

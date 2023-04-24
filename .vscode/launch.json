@@ -89,7 +89,21 @@
             "console": "internalConsole"
         },
         {
-            "name": "7 - WebWindowLinuxTester",
+            "name": "7 - Non Gtk App",
+            "type": "coreclr",
+            "request": "launch",
+            "requireExactSource": true, 
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/7-NonGtkApp/bin/Debug/net6.0/7-NonGtkApp.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/7-NonGtkApp",
+            "stopAtEntry": false,
+            "justMyCode": false,
+            "enableStepFiltering": true,
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "WebWindowLinuxTester",
             "type": "coreclr",
             "request": "launch",
             "requireExactSource": true, 

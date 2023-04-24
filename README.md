@@ -51,7 +51,7 @@ for use with WebView only:
 ```     
 ## Usage
 
-Look at the sample programs
+Look at the sample programs (https://github.com/uriegel/Gtk4DotNet)
 
 ## Checking if memory is being freed
 To check if GObjects are being freed, just run

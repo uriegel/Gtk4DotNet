@@ -34,6 +34,26 @@ public static class Application
         return _Run(app, 0, IntPtr.Zero);
     }
 
+    /// <summary>
+    /// Starts a new GTK application for use in a non GTK (console) app, see example '7-Non Gtk app'
+    /// </summary>
+    public static void Start()
+        => new Thread(() =>
+        {
+            application = Application.New("de.uriegel.gtk4dotnet");
+            Application.Run(application, (() =>  window = Application.NewWindow(application)));
+            GObject.Unref(application); 
+        }).Start();
+
+    /// <summary>
+    /// Stops the GTK application started with 'Start'
+    /// </summary>
+    public static void Stop()
+        => Application.Dispatch(() => {
+            Window.Close(window);
+            Application.Quit(application);
+        });
+
     public static bool RegisterResources()
     {
         var assembly = Assembly.GetEntryAssembly();
@@ -201,6 +221,15 @@ public static class Application
     
     [DllImport(Globals.LibGtk, EntryPoint="g_simple_action_set_enabled", CallingConvention = CallingConvention.Cdecl)]
     extern static void EnableAction(IntPtr action, int enabled);
+
+    /// <summary>
+    /// For usage in a non GTK app
+    /// </summary> 
+    static IntPtr window;
+    /// <summary>
+    /// For usage in a non GTK app
+    /// </summary> 
+    static IntPtr application;
 }
 
 
