@@ -103,6 +103,20 @@
             "console": "integratedTerminal"
         },
         {
+            "name": "8 - Gtk PixBuf",
+            "type": "coreclr",
+            "request": "launch",
+            "requireExactSource": true, 
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/8-PixBuf/bin/Debug/net6.0/8-PixBuf.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/8-PixBuf",
+            "stopAtEntry": false,
+            "justMyCode": false,
+            "enableStepFiltering": true,
+            "console": "integratedTerminal"
+        },
+        {
             "name": "WebWindowLinuxTester",
             "type": "coreclr",
             "request": "launch",
