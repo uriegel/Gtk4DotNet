@@ -25,6 +25,7 @@ void SaveThumbnails(IntPtr _)
         => file += ".thumbnail.jpg";
 }
 
+SaveThumbnails(IntPtr.Zero);
 
 return Application.Run("org.gtk.example", app => 
     Application

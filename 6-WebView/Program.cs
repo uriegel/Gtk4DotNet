@@ -15,7 +15,8 @@ return Application.Run("org.gtk.example", app =>
                         .GetSettings()
                         .SideEffect(s => s.SetBool("enable-developer-extras", true))
                     )
-                .SideEffect(wk => wk.LoadUri("https://www.google.de"))
+                //.SideEffect(wk => wk.LoadUri("https://www.google.de"))
+                .SideEffect(wk => wk.LoadUri("http://localhost:3000"))
         ))
         .Show());
 

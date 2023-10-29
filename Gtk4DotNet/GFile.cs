@@ -34,6 +34,7 @@ public static class GFile
         using var destinationFile = GObjectRef.WithRef(New(destination));
         var error = IntPtr.Zero;
         FileProgressCallback rcb = cb != null ? (c, t, _) => cb(c, t) : null;
+        cb?.Invoke(0, 0);
         if (!Copy(sourceFile.Value, destinationFile.Value, flags, cancellable?.handle ?? IntPtr.Zero, rcb, IntPtr.Zero, ref error))
         {
             var gerror = new GError(error);
@@ -68,6 +69,7 @@ public static class GFile
             using var destinationFile = GObjectRef.WithRef(New(destination));
             var error = IntPtr.Zero;
             FileProgressCallback rcb = cb != null ? (c, t, _) => cb(c, t) : null;
+            cb?.Invoke(0, 0);
             if (!Move(sourceFile.Value, destinationFile.Value, flags, IntPtr.Zero, rcb, IntPtr.Zero, ref error))
             {
                 var gerror = new GError(error);
