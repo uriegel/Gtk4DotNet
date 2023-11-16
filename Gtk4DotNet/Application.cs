@@ -178,13 +178,16 @@ public static class Application
     /// <param name="action">Action which runs in main thread</param>
     public static void BeginInvoke(int priority, Action action)
     {
+        var key = Delegates.GetKey();
         IdleFunctionDelegate mainFunction = _ =>
         {
             action();
             mainFunction = null;
             action = null;
+            Delegates.Remove(key);
             return false;
         };
+        Delegates.Add(key, mainFunction);
         var delegat = mainFunction as Delegate;
         var funcPtr = Marshal.GetFunctionPointerForDelegate(delegat);
         Gtk.IdleAddFull(priority, funcPtr, IntPtr.Zero, IntPtr.Zero);
