@@ -14,18 +14,15 @@ public static class WebKit
     public extern static IntPtr ScriptDialogGetMessage(this IntPtr dialog);
 
     public static void RunJavascript(this IntPtr webView, string script)
-    {
-        ThreeIntPtr callback = (_, result, ___) =>
-        {
-            var res = FinishJavascript(webView, result, IntPtr.Zero);
-            if (JscIsString(res))
-            {
-                GObject.Free(res);
-            }
-        };
-        var delegat = callback as Delegate;
-        EvaluateJavascript(webView, script, -1, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, Marshal.GetFunctionPointerForDelegate(delegat), IntPtr.Zero);
-    }
+        => EvaluateJavascript(webView, script, -1, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, 
+            Marshal.GetFunctionPointerForDelegate<ThreeIntPtr>((_, result, ___) => 
+                {
+                    var res = FinishJavascript(webView, result, IntPtr.Zero);
+                    if (JscIsString(res))
+                    {
+                        GObject.Free(res);
+                    }
+                }), IntPtr.Zero);
         
 
     [DllImport(Globals.LibWebKit, EntryPoint="webkit_web_view_get_settings", CallingConvention = CallingConvention.Cdecl)]

@@ -38,26 +38,16 @@ public class WebView : WebWindowNetCore.Base.WebView
             if (!saveBounds)
                 Widget.Show(window);
             else
-            {
-                var w = settings?.Width;
-                var h = settings?.Height;
-                Gtk.SignalConnect<TwoIntPtr>(window, "configure_event", (_, e) =>
-                {
-                    timer?.Dispose();
-                    var evt = Marshal.PtrToStructure<ConfigureEvent>(e);
-                    timer = new(() =>
-                    {
-                        if (!Window.IsMaximized(window))
-                            WebKit.RunJavascript(webView,
-                                $$"""
-                                    localStorage.setItem('window-bounds', JSON.stringify({width: {{evt.Width}}, height: {{evt.Height}}}))
-                                    localStorage.setItem('isMaximized', false)
-                                    """);
+                WebKit.RunJavascript(webView,
+                    """ 
+                        const bounds = JSON.parse(localStorage.getItem('window-bounds') || '{}')
+                        const isMaximized = localStorage.getItem('isMaximized')
+                        if (bounds.width && bounds.height)
+                            alert(JSON.stringify({action: 2, width: bounds.width, height: bounds.height, isMaximized: isMaximized == 'true'}))
                         else
-                            WebKit.RunJavascript(webView, $"localStorage.setItem('isMaximized', true)");
-                    }, TimeSpan.FromMilliseconds(400), Timeout.InfiniteTimeSpan);
-                });
-            }
+                            alert(JSON.stringify({action: 2}))
+                    """);
+            
 
             var showDevTools = settings?.DevTools == true;
             var withFetch = (settings?.HttpSettings?.RequestDelegates?.Length ?? 0) > 0;

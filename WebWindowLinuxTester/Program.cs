@@ -6,13 +6,14 @@ StartEvents(sseEventSource.Send);
 
 WebView
     .Create()
-    .InitialBounds(600, 800)
+    .InitialBounds(60, 800)
     .ResourceIcon("icon")
     .Title("Commander")
     .QueryString("?theme=adwaita")
     .SaveBounds()
     .DebugUrl("http://localhost:3000")
-    .Url($"file://{Directory.GetCurrentDirectory()}/webroot/index.html")
+    .Url("http://localhost:3000")
+    //.Url($"file://{Directory.GetCurrentDirectory()}/webroot/index.html")
     .ConfigureHttp(http => http
         .ResourceWebroot("webroot", "/web")
         .UseSse("sse/test", sseEventSource)
