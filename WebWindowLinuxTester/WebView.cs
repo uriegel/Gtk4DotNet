@@ -16,7 +16,6 @@ public class WebView : WebWindowNetCore.Base.WebView
         {
             saveBounds = settings?.SaveBounds == true;
             Application.EnableSynchronizationContext();
-            GtkDotNet.Timer? timer = null;
 
             var window = Application.NewWindow(app);
             Window.SetTitle(window, settings?.Title);
