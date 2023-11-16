@@ -4,6 +4,8 @@ using System.Runtime.InteropServices;
 
 namespace GtkDotNet;
 
+#nullable enable
+
 public class Pixbuf
 {
     public static IntPtr NewFromFile(string fileName) => NewFromFile(fileName, IntPtr.Zero);

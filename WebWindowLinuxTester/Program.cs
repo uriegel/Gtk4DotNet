@@ -12,7 +12,7 @@ WebView
     .QueryString("?theme=adwaita")
     .SaveBounds()
     .DebugUrl("http://localhost:3000")
-    //.Url($"file://{Directory.GetCurrentDirectory()}/webroot/index.html")
+    .Url($"file://{Directory.GetCurrentDirectory()}/webroot/index.html")
     .ConfigureHttp(http => http
         .ResourceWebroot("webroot", "/web")
         .UseSse("sse/test", sseEventSource)
