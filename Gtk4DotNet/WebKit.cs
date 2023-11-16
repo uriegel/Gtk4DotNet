@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace GtkDotNet; 
 public static class WebKit
@@ -13,17 +15,19 @@ public static class WebKit
     [DllImport(Globals.LibWebKit, EntryPoint="webkit_script_dialog_get_message", CallingConvention = CallingConvention.Cdecl)]
     public extern static IntPtr ScriptDialogGetMessage(this IntPtr dialog);
 
-    public static void RunJavascript(this IntPtr webView, string script)
-        => EvaluateJavascript(webView, script, -1, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, 
-            Marshal.GetFunctionPointerForDelegate<ThreeIntPtr>((_, result, ___) => 
-                {
-                    var res = FinishJavascript(webView, result, IntPtr.Zero);
-                    if (JscIsString(res))
-                    {
-                        GObject.Free(res);
-                    }
-                }), IntPtr.Zero);
-        
+ public static void RunJavascript(this IntPtr webView, string script)
+    {
+        var key = Interlocked.Increment(ref javascriptDelegateKey);
+        ThreeIntPtr callback = (_, result, ___) =>
+        {
+            var res = FinishJavascript(webView, result, IntPtr.Zero);
+            javascriptDelegates.TryRemove(key, out var _);
+            if (res != IntPtr.Zero && JscIsString(res))
+                GObject.Free(res);
+        };
+        javascriptDelegates[key] = callback;
+        EvaluateJavascript(webView, script, -1, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, Marshal.GetFunctionPointerForDelegate(callback as Delegate), IntPtr.Zero);
+    }
 
     [DllImport(Globals.LibWebKit, EntryPoint="webkit_web_view_get_settings", CallingConvention = CallingConvention.Cdecl)]
     public extern static IntPtr GetSettings(this IntPtr webView);
@@ -42,4 +46,10 @@ public static class WebKit
 
     [DllImport(Globals.LibWebKit, EntryPoint="jsc_value_is_string", CallingConvention = CallingConvention.Cdecl)]
     extern static bool JscIsString(IntPtr obj);
+
+    [DllImport(Globals.LibWebKit, EntryPoint="jsc_value_is_undefined", CallingConvention = CallingConvention.Cdecl)]
+    extern static bool JscIsUndefined(IntPtr obj);
+
+    static int javascriptDelegateKey;
+    static readonly ConcurrentDictionary<int, ThreeIntPtr> javascriptDelegates = new();
 }
