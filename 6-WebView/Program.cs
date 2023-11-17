@@ -13,6 +13,11 @@ return Application.Run("org.gtk.example", app =>
         })
         .SideEffect(w => w.SetTitle("Hello Web View👍"))
         .SideEffect(w => w.SetDefaultSize(800, 600))
+        .SideEffect(w => 
+        {
+            var affe = Application.Dispatch(() => 
+                    GtkSettings.GetDefault().GetString("gtk-theme-name")).Result;
+        })
         .SideEffect(w => w.SetChild(
             WebKit
                 .New()

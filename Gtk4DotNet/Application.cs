@@ -13,23 +13,28 @@ namespace GtkDotNet;
 
 public static class Application
 {
-    public static IntPtr New(string id) => _New(id, 0);
+    public static IntPtr New(string id) 
+        => _New(id, 0)
+                .SideEffect(_ => mainThreadId = Thread.CurrentThread.ManagedThreadId);
 
     public static int Run(string id, Action<IntPtr> onActivate) 
         => GObjectRef
                 .WithRef(New(id))
+                .SideEffect(_ => mainThreadId = Thread.CurrentThread.ManagedThreadId)
                 .Use(gref => gref
                                 .Value
                                 .Run(onActivate));
 
     public static int Run(this IntPtr app, Action onActivate) 
     {
+        mainThreadId = Thread.CurrentThread.ManagedThreadId;
         Gtk.SignalConnect(app, "activate", onActivate);
         return _Run(app, 0, IntPtr.Zero);
     }
 
     public static int Run(this IntPtr app, Action<IntPtr> onActivate) 
     {
+        mainThreadId = Thread.CurrentThread.ManagedThreadId;
         Gtk.SignalConnect(app, "activate", () => onActivate(app));
         return _Run(app, 0, IntPtr.Zero);
     }
@@ -178,19 +183,24 @@ public static class Application
     /// <param name="action">Action which runs in main thread</param>
     public static void BeginInvoke(int priority, Action action)
     {
-        var key = Delegates.GetKey();
-        IdleFunctionDelegate mainFunction = _ =>
-        {
+        if (mainThreadId == Thread.CurrentThread.ManagedThreadId)
             action();
-            mainFunction = null;
-            action = null;
-            Delegates.Remove(key);
-            return false;
-        };
-        Delegates.Add(key, mainFunction);
-        var delegat = mainFunction as Delegate;
-        var funcPtr = Marshal.GetFunctionPointerForDelegate(delegat);
-        Gtk.IdleAddFull(priority, funcPtr, IntPtr.Zero, IntPtr.Zero);
+        else
+        {
+            var key = Delegates.GetKey();
+            IdleFunctionDelegate mainFunction = _ =>
+            {
+                action();
+                mainFunction = null;
+                action = null;
+                Delegates.Remove(key);
+                return false;
+            };
+            Delegates.Add(key, mainFunction);
+            var delegat = mainFunction as Delegate;
+            var funcPtr = Marshal.GetFunctionPointerForDelegate(delegat);
+            Gtk.IdleAddFull(priority, funcPtr, IntPtr.Zero, IntPtr.Zero);
+        }
     }
 
     delegate bool IdleFunctionDelegate(IntPtr zero);
@@ -233,6 +243,8 @@ public static class Application
     /// For usage in a non GTK app
     /// </summary> 
     static IntPtr application;
+
+    static int mainThreadId;
 }
 
 
