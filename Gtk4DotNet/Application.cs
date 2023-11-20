@@ -13,7 +13,7 @@ public static class Application
     public extern static WindowHandle NewWindow(this ApplicationHandle app);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_application_add_window", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void AddWindow(this ApplicationHandle app, IntPtr window);
+    public extern static void AddWindow(this ApplicationHandle app, WindowHandle window);
 
     [DllImport(Libs.LibGtk, EntryPoint="g_application_quit", CallingConvention = CallingConvention.Cdecl)]
     public extern static void Quit(this ApplicationHandle app);
@@ -27,27 +27,27 @@ public static class Application
         return app.SideEffect(a => Gtk.SignalConnect(a, "activate", Marshal.GetFunctionPointerForDelegate((OnePointerDelegate)onActivate), IntPtr.Zero, IntPtr.Zero, 0));
     }
 
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_application_set_accels_for_action", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void SetAccelsForAction(ApplicationHandle app, string action, [In] string[] accels);
+    // [DllImport(Libs.LibGtk, EntryPoint="gtk_application_set_accels_for_action", CallingConvention = CallingConvention.Cdecl)]
+    // public extern static void SetAccelsForAction(ApplicationHandle app, string action, [In] string[] accels);
 
-    [DllImport(Libs.LibGtk, EntryPoint="g_simple_action_new", CallingConvention = CallingConvention.Cdecl)]
-    public extern static IntPtr NewAction(string action, string p);
+    // [DllImport(Libs.LibGtk, EntryPoint="g_simple_action_new", CallingConvention = CallingConvention.Cdecl)]
+    // public extern static IntPtr NewAction(string action, string p);
 
-    [DllImport(Libs.LibGtk, EntryPoint="g_simple_action_new_stateful", CallingConvention = CallingConvention.Cdecl)]
-    public extern static IntPtr NewStatefulAction(string action, string p, IntPtr state);
+    // [DllImport(Libs.LibGtk, EntryPoint="g_simple_action_new_stateful", CallingConvention = CallingConvention.Cdecl)]
+    // public extern static IntPtr NewStatefulAction(string action, string p, IntPtr state);
 
-    [DllImport(Libs.LibGtk, EntryPoint="g_variant_new_boolean", CallingConvention = CallingConvention.Cdecl)]
-    public extern static IntPtr NewBool(int value);
+    // [DllImport(Libs.LibGtk, EntryPoint="g_variant_new_boolean", CallingConvention = CallingConvention.Cdecl)]
+    // public extern static IntPtr NewBool(int value);
 
-    [DllImport(Libs.LibGtk, EntryPoint="g_variant_new_int32", CallingConvention = CallingConvention.Cdecl)]
-    public extern static IntPtr NewInt(int value);
+    // [DllImport(Libs.LibGtk, EntryPoint="g_variant_new_int32", CallingConvention = CallingConvention.Cdecl)]
+    // public extern static IntPtr NewInt(int value);
 
-    [DllImport(Libs.LibGtk, EntryPoint="g_variant_new_string", CallingConvention = CallingConvention.Cdecl)]
-    public extern static IntPtr NewString(string value);
+    // [DllImport(Libs.LibGtk, EntryPoint="g_variant_new_string", CallingConvention = CallingConvention.Cdecl)]
+    // public extern static IntPtr NewString(string value);
 
-    [DllImport(Libs.LibGtk, EntryPoint="g_action_map_add_action", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void AddAction(ApplicationHandle app, IntPtr action);
+    // [DllImport(Libs.LibGtk, EntryPoint="g_action_map_add_action", CallingConvention = CallingConvention.Cdecl)]
+    // public extern static void AddAction(ApplicationHandle app, IntPtr action);
     
-    [DllImport(Libs.LibGtk, EntryPoint="g_simple_action_set_enabled", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void EnableAction(IntPtr action, int enabled);
+    // [DllImport(Libs.LibGtk, EntryPoint="g_simple_action_set_enabled", CallingConvention = CallingConvention.Cdecl)]
+    // public extern static void EnableAction(IntPtr action, int enabled);
 }

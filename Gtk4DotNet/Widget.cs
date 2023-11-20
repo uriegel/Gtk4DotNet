@@ -26,14 +26,15 @@ public static class Widget
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_visible", CallingConvention = CallingConvention.Cdecl)]
     public extern static bool GetVisible(this WidgetHandle widget);
 
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_set_size_request", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void SetSizeRequest(this WidgetHandle widget, int width, int height);
-
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_width", CallingConvention = CallingConvention.Cdecl)]
     public extern static int GetWidth(this WidgetHandle widget);
     
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_height", CallingConvention = CallingConvention.Cdecl)]
     public extern static int GetHeight(this WidgetHandle widget);
+
+    public static THandle SizeRequest<THandle>(this THandle widget, int width, int height)
+        where THandle : WidgetHandle
+        => widget.SideEffect(w => w.SetSizeRequest(width, height));
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_destroy", CallingConvention = CallingConvention.Cdecl)]
     public extern static void Destroy(this WidgetHandle widget);
@@ -56,23 +57,27 @@ public static class Widget
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_native", CallingConvention = CallingConvention.Cdecl)]
     public extern static IntPtr GetNative(this WidgetHandle widget);
 
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_set_hexpand", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void SetHExpand(this WidgetHandle widget, bool expand);
-    
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_set_vexpand", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void SetVExpand(this WidgetHandle widget, bool expand);
+    public static THandle HExpand<THandle>(this THandle widget, bool expand)
+        where THandle : WidgetHandle
+        => widget.SideEffect(w => w.SetHExpand(expand));
+
+    public static THandle VExpand<THandle>(this THandle widget, bool expand)
+        where THandle : WidgetHandle
+        => widget.SideEffect(w => w.SetVExpand(expand));
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_set_sensitive", CallingConvention = CallingConvention.Cdecl)]
     public extern static void SetSensitive(this WidgetHandle widget, bool sensitive);
 
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_first_child", CallingConvention = CallingConvention.Cdecl)]
-    public extern static IntPtr GetFirstChild(this WidgetHandle widget);
+    public static THandle? GetFirstChild<THandle>(this THandle widget)
+        where THandle : WidgetHandle
+        => _GetFirstChild(widget) as THandle;
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_style_context", CallingConvention = CallingConvention.Cdecl)]
     public extern static IntPtr GetStyleContext(this WidgetHandle widget);
 
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_parent", CallingConvention = CallingConvention.Cdecl)]
-    public extern static IntPtr GetParent(this WidgetHandle widget);
+    public static THandle? GetParent<THandle>(this THandle widget)
+        where THandle : WidgetHandle
+        => _GetParent(widget) as THandle;
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_add_css_class", CallingConvention = CallingConvention.Cdecl)]
     public extern static void AddCssClass(this WidgetHandle widget, string cssClass);
@@ -83,11 +88,25 @@ public static class Widget
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_display", CallingConvention = CallingConvention.Cdecl)]
     public extern static IntPtr GetDisplay(this WidgetHandle widget);
 
-
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_set_halign", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetHAlign(this WidgetHandle widget, Align align);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_set_valign", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetVAlign(this WidgetHandle widget, Align align);
+
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_set_size_request", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetSizeRequest(this WidgetHandle widget, int width, int height);
+
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_set_hexpand", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetHExpand(this WidgetHandle widget, bool expand);
+
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_set_vexpand", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetVExpand(this WidgetHandle widget, bool expand);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_first_child", CallingConvention = CallingConvention.Cdecl)]
+    extern static WidgetHandle _GetFirstChild(this WidgetHandle widget);
+
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_parent", CallingConvention = CallingConvention.Cdecl)]
+    extern static WidgetHandle _GetParent(this WidgetHandle widget);
 }
 
