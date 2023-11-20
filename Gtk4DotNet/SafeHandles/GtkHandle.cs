@@ -1,0 +1,32 @@
+using Microsoft.Win32.SafeHandles;
+
+namespace GtkDotNet.SafeHandles;
+
+public abstract class GtkHandle : SafeHandleZeroOrMinusOneIsInvalid
+{
+    public GtkHandle()
+        : base(ownsHandle: true) { }
+
+    protected override bool ReleaseHandle() => true;
+    //     => NativeMethods.CloseHandle(handle);
+
+    // - There is no need to implement a finalizer, MySafeHandle already has one
+    // - You do not need to protect against multiple disposing, MySafeHandle already does
+}
+
+
+
+//     public MyFileWrapper(string fullPath)
+//     {
+//         _handle = NativeMethods.CreateFile(fullPath, ...);
+//     }
+
+// }
+
+// When working with unmanaged resources, you should consider:
+
+// Using an existing SafeHandle if possible
+// If not possible, subclass SafeHandle to create one that meets your needs. This class should not do anything more than managing unmanaged resources. It should be sealed.
+// If that's not possible, create your class which implements IDisposable and a finalizer
+// The class should be sealed
+// If sealing the class is not possible, add a method protected void Dispose(bool disposing), so subclasses can implements the dispose pattern correctly.

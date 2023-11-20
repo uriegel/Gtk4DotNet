@@ -6,8 +6,8 @@ WriteLine(
     1: First
     2: Quit
     """);
-return ReadLine() switch 
+WriteLine($"Return value: {ReadLine() switch 
 {
     "1" => First.Run(),
     _ => 0
-};
+}}");
