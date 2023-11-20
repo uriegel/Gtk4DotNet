@@ -1,2 +1,3 @@
 //[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-delegate void OnActivateDelegate(IntPtr app);
+delegate void OnePointerDelegate(IntPtr p);
+delegate void TwoPointerDelegate(IntPtr p, IntPtr pp);

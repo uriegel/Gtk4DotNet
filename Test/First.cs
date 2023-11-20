@@ -8,8 +8,8 @@ static class First
             .OnActivate(app => 
                 app
                     .NewWindow()
-                        .SetTitle("Hello Gtk👍")
-                        .SetDefaultSize(1200, 1200)
+                        .Title("Hello Gtk👍")
+                        .DefaultSize(1200, 1200)
                         .Show())
             .Run(0, IntPtr.Zero);
 }

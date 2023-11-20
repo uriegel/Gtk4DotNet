@@ -6,11 +6,14 @@ namespace GtkDotNet;
 
 public static class Window
 {
-    public static WindowHandle SetTitle(this WindowHandle window, string title)
-        => window.SideEffect(w => _SetTitle(window, title));
+    public static WindowHandle Title(this WindowHandle window, string title)
+        => window.SideEffect(w => SetTitle(window, title));
 
-    public static WindowHandle SetDefaultSize(this WindowHandle window, int width, int height)
-        => window.SideEffect(w => _SetDefaultSize(window, width, height));
+    public static WindowHandle DefaultSize(this WindowHandle window, int width, int height)
+        => window.SideEffect(w => SetDefaultSize(window, width, height));
+
+    public static WindowHandle Child(this WindowHandle window, WidgetHandle child)
+        => window.SideEffect(w => SetChild(window, child));
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_new", CallingConvention = CallingConvention.Cdecl)]
     public extern static WindowHandle New(WindowType windowType);
@@ -33,10 +36,7 @@ public static class Window
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_transient_for", CallingConvention = CallingConvention.Cdecl)]
     public extern static void SetTransientFor(this WindowHandle window, IntPtr parent);
 
-    [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_child", CallingConvention = CallingConvention.Cdecl)]
-    public extern static bool SetChild(this WindowHandle window, IntPtr child);
-
-    [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_application", CallingConvention = CallingConvention.Cdecl)]
+     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_application", CallingConvention = CallingConvention.Cdecl)]
     public extern static void SetApplication(this WindowHandle window, ApplicationHandle application);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_icon_name", CallingConvention = CallingConvention.Cdecl)]
@@ -48,11 +48,13 @@ public static class Window
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_get_position", CallingConvention = CallingConvention.Cdecl)]
     public extern static void GetPosition(WindowHandle window, out int x, out int y);
 
-    
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_child", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetChild(this WindowHandle window, WidgetHandle child);
+   
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_title", CallingConvention = CallingConvention.Cdecl)]
-    extern static void _SetTitle(this WindowHandle window, string title);
+    extern static void SetTitle(this WindowHandle window, string title);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_default_size", CallingConvention = CallingConvention.Cdecl)]
-    extern static void _SetDefaultSize(this WindowHandle window, int width, int height);
+    extern static void SetDefaultSize(this WindowHandle window, int width, int height);
 
 }

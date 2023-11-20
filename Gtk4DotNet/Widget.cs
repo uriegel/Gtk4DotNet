@@ -1,10 +1,19 @@
 using System.Runtime.InteropServices;
 using GtkDotNet.SafeHandles;
+using LinqTools;
 
 namespace GtkDotNet;
 
 public static class Widget
 {
+    public static THandle HAlign<THandle>(this THandle widget, Align align)
+        where THandle : WidgetHandle
+        => widget.SideEffect(w => w.SetHAlign(align));
+
+    public static THandle VAlign<THandle>(this THandle widget, Align align)
+        where THandle : WidgetHandle
+        => widget.SideEffect(w => w.SetVAlign(align));
+
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_show", CallingConvention = CallingConvention.Cdecl)]
     public extern static void Show(this WidgetHandle widget);
 
@@ -41,12 +50,6 @@ public static class Widget
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_queue_draw", CallingConvention = CallingConvention.Cdecl)]
     public extern static void QueueDraw(this WidgetHandle widget);
 
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_set_halign", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void SetHAlign(this WidgetHandle widget, Align align);
-
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_set_valign", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void SetVAlign(this WidgetHandle widget, Align align);
-
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_add_controller", CallingConvention = CallingConvention.Cdecl)]
     public extern static void AddController(this WidgetHandle widget, IntPtr eventController);
 
@@ -79,5 +82,12 @@ public static class Widget
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_display", CallingConvention = CallingConvention.Cdecl)]
     public extern static IntPtr GetDisplay(this WidgetHandle widget);
+
+
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_set_halign", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetHAlign(this WidgetHandle widget, Align align);
+
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_set_valign", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetVAlign(this WidgetHandle widget, Align align);
 }
 
