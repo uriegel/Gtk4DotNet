@@ -36,6 +36,9 @@ public static class Widget
         where THandle : WidgetHandle
         => widget.SideEffect(w => w.SetSizeRequest(width, height));
 
+    public static WidgetHandle AddController(this WidgetHandle widget, EventControllerHandle eventController)
+        => widget.SideEffect(w => w._AddController(eventController));
+
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_destroy", CallingConvention = CallingConvention.Cdecl)]
     public extern static void Destroy(this WidgetHandle widget);
 
@@ -50,9 +53,6 @@ public static class Widget
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_queue_draw", CallingConvention = CallingConvention.Cdecl)]
     public extern static void QueueDraw(this WidgetHandle widget);
-
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_add_controller", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void AddController(this WidgetHandle widget, IntPtr eventController);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_native", CallingConvention = CallingConvention.Cdecl)]
     public extern static IntPtr GetNative(this WidgetHandle widget);
@@ -108,5 +108,8 @@ public static class Widget
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_parent", CallingConvention = CallingConvention.Cdecl)]
     extern static WidgetHandle _GetParent(this WidgetHandle widget);
+
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_add_controller", CallingConvention = CallingConvention.Cdecl)]
+    extern static void _AddController(this WidgetHandle widget, EventControllerHandle eventController);
 }
 

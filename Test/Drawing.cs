@@ -20,7 +20,12 @@ static class Drawing
                                 .SizeRequest(400, 400)
                                 .SetDrawFunction((area, cairo, w, h) => {
 
-                                })))
+                                })
+                                .AddController(
+                                    GestureClick    
+                                        .New()
+                                        .Button(MouseButton.Secondary)
+                                )))
                     .Show())
             .Run(0, IntPtr.Zero);
 }
