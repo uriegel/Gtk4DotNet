@@ -6,7 +6,8 @@ namespace GtkDotNet;
 
 public static class GestureSingle
 {
-    public static GestureSingleHandle Button(this GestureSingleHandle gestureSingle, MouseButton button)
+    public static T Button<T>(this T gestureSingle, MouseButton button)
+        where T : GestureSingleHandle
         => gestureSingle.SideEffect(g => g.SetButton(button));
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_gesture_single_set_button", CallingConvention = CallingConvention.Cdecl)]

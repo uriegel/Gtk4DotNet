@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using GtkDotNet.SafeHandles;
 
 namespace GtkDotNet;
 
@@ -13,7 +14,13 @@ public static class Cairo
     [DllImport(Libs.LibGtk, EntryPoint = "cairo_set_source_surface", CallingConvention = CallingConvention.Cdecl)]
     public extern static void SetSourceSurface(this IntPtr cairo,  IntPtr surface, double x, double y);
 
+    // TODO Deprecated
+    [DllImport(Libs.LibGtk, EntryPoint = "gdk_surface_create_similar_surface", CallingConvention = CallingConvention.Cdecl)]
+    public extern static SurfaceHandle SurfaceCreateSimilar(this NativeHandle native, CairoContent cairoContent, int width, int height);
     
+    [DllImport(Libs.LibGtk, EntryPoint = "cairo_surface_destroy", CallingConvention = CallingConvention.Cdecl)]
+    internal extern static void SurfaceDestroy(this IntPtr surface);
+
     // [DllImport(Libs.LibGtk, EntryPoint = "cairo_set_antialias", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void SetAntiAlias(this IntPtr context, CairoAntialias antialias);
 
@@ -50,13 +57,6 @@ public static class Cairo
 
     // [DllImport(Libs.LibGtk, EntryPoint = "cairo_arc", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void Arc(this IntPtr context, double x, double y, double radius, double angle1, double angle2);
-
-    // // TODO Deprecated
-    // [DllImport(Libs.LibGtk, EntryPoint = "gdk_surface_create_similar_surface", CallingConvention = CallingConvention.Cdecl)]
-    // public extern static IntPtr SurfaceCreateSimilar(this IntPtr surface, CairoContent cairoContent, int width, int height);
-
-    // [DllImport(Libs.LibGtk, EntryPoint = "cairo_surface_destroy", CallingConvention = CallingConvention.Cdecl)]
-    // public extern static void SurfaceDestroy(this IntPtr surface);
 
     // [DllImport(Libs.LibGtk, EntryPoint = "cairo_set_source_surface", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void SetSourceSurface(this IntPtr cairo,  IntPtr surface, double x, double y);

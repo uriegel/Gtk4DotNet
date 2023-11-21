@@ -25,8 +25,14 @@ static class Drawing
                                     GestureClick    
                                         .New()
                                         .Button(MouseButton.Secondary)
+                                        .OnPressed((pressCount, x, y) => ClearSurface())
                                 )))
                     .Show())
             .Run(0, IntPtr.Zero);
+
+    static void ClearSurface()
+    {
+
+    }
 }
 
