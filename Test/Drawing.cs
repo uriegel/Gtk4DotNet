@@ -2,8 +2,6 @@ using GtkDotNet;
 using GtkDotNet.SafeHandles;
 using LinqTools;
 
-using static System.Console;
-
 static class Drawing
 {
     public static int Run()  
@@ -18,9 +16,11 @@ static class Drawing
                             .Child(DrawingArea
                                 .New()
                                 .SizeRequest(400, 400)
-                                .SetDrawFunction((area, cairo, w, h) => {
-
-                                })
+                                .SetDrawFunction((area, cairo, w, h) => 
+                                    cairo
+                                        .SideEffect(c => c.SetSourceSurface(surface, 0, 0))
+                                        .Paint())
+                                .OnResize(OnResize)
                                 .AddController(
                                     GestureClick    
                                         .New()
@@ -30,9 +30,28 @@ static class Drawing
                     .Show())
             .Run(0, IntPtr.Zero);
 
-    static void ClearSurface()
-    {
+    static SurfaceHandle surface = new();
 
+    static void OnResize(DrawingAreaHandle da, int w, int h)
+    {
+        if (!surface.IsInvalid)
+        {
+            surface.Dispose();
+            surface = new();
+        }
+        var nativeSurface = Native.GetSurface(da.GetNative());
+        if (!nativeSurface.IsInvalid)
+        {
+            surface = nativeSurface.SurfaceCreateSimilar(CairoContent.Color, w, h);
+            ClearSurface();
+        }
     }
+
+    static void ClearSurface()
+        => Cairo
+            .Create(surface)
+            .SourceRgb(1, 1, 1)
+            .Paint()
+            .Dispose();
 }
 

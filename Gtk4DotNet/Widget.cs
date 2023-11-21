@@ -55,7 +55,7 @@ public static class Widget
     public extern static void QueueDraw(this WidgetHandle widget);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_native", CallingConvention = CallingConvention.Cdecl)]
-    public extern static IntPtr GetNative(this WidgetHandle widget);
+    public extern static NativeHandle GetNative(this WidgetHandle widget);
 
     public static THandle HExpand<THandle>(this THandle widget, bool expand)
         where THandle : WidgetHandle

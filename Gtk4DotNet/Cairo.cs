@@ -1,25 +1,38 @@
 using System.Runtime.InteropServices;
 using GtkDotNet.SafeHandles;
+using LinqTools;
 
 namespace GtkDotNet;
 
 public static class Cairo
 {
     [DllImport(Libs.LibGtk, EntryPoint = "cairo_create", CallingConvention = CallingConvention.Cdecl)]
-    public extern static IntPtr Create(IntPtr surface);
-
-    [DllImport(Libs.LibGtk, EntryPoint = "cairo_paint", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void Paint(this IntPtr cairo);
+    public extern static CairoHandle Create(SurfaceHandle surface);
 
     [DllImport(Libs.LibGtk, EntryPoint = "cairo_set_source_surface", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void SetSourceSurface(this IntPtr cairo,  IntPtr surface, double x, double y);
+    public extern static void SetSourceSurface(this CairoHandle cairo, SurfaceHandle surface, double x, double y);
 
     // TODO Deprecated
     [DllImport(Libs.LibGtk, EntryPoint = "gdk_surface_create_similar_surface", CallingConvention = CallingConvention.Cdecl)]
-    public extern static SurfaceHandle SurfaceCreateSimilar(this NativeHandle native, CairoContent cairoContent, int width, int height);
+    public extern static SurfaceHandle SurfaceCreateSimilar(this SurfaceHandle native, CairoContent cairoContent, int width, int height);
+
+    public static CairoHandle SourceRgb(this CairoHandle cairo, double r, double g, double b)
+        => cairo.SideEffect(c => c.SetSourceRgb(r, g, b));
+
+    public static CairoHandle Paint(this CairoHandle cairo)
+        => cairo.SideEffect(c => c._Paint());
     
     [DllImport(Libs.LibGtk, EntryPoint = "cairo_surface_destroy", CallingConvention = CallingConvention.Cdecl)]
     internal extern static void SurfaceDestroy(this IntPtr surface);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "cairo_destroy", CallingConvention = CallingConvention.Cdecl)]
+    internal extern static void Destroy(this IntPtr cairo);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "cairo_set_source_rgb", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetSourceRgb(this CairoHandle cairo, double r, double g, double b);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "cairo_paint", CallingConvention = CallingConvention.Cdecl)]
+    extern static CairoHandle _Paint(this CairoHandle cairo);
 
     // [DllImport(Libs.LibGtk, EntryPoint = "cairo_set_antialias", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void SetAntiAlias(this IntPtr context, CairoAntialias antialias);
@@ -46,9 +59,6 @@ public static class Cairo
     // [DllImport(Libs.LibGtk, EntryPoint = "cairo_rectangle", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void Rectangle(this IntPtr context, double x, double y, double width, double height);
 
-    // [DllImport(Libs.LibGtk, EntryPoint = "cairo_set_source_rgb", CallingConvention = CallingConvention.Cdecl)]
-    // public extern static void SetSourceRgb(this IntPtr context, double r, double g, double b);
-
     // [DllImport(Libs.LibGtk, EntryPoint = "cairo_fill", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void CairoFill(this IntPtr context);
 
@@ -60,8 +70,5 @@ public static class Cairo
 
     // [DllImport(Libs.LibGtk, EntryPoint = "cairo_set_source_surface", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void SetSourceSurface(this IntPtr cairo,  IntPtr surface, double x, double y);
-    
-    // [DllImport(Libs.LibGtk, EntryPoint = "cairo_destroy", CallingConvention = CallingConvention.Cdecl)]
-    // public extern static void CairoDestroy(this IntPtr cairo);
 }
 
