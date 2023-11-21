@@ -9,6 +9,9 @@ public static class Window
     public static WindowHandle Title(this WindowHandle window, string title)
         => window.SideEffect(w => SetTitle(window, title));
 
+    public static WindowHandle SetApplication(this WindowHandle window, ApplicationHandle application)
+        => window.SideEffect(w => w._SetApplication(application));
+
     public static WindowHandle DefaultSize(this WindowHandle window, int width, int height)
         => window.SideEffect(w => SetDefaultSize(window, width, height));
 
@@ -36,8 +39,8 @@ public static class Window
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_transient_for", CallingConvention = CallingConvention.Cdecl)]
     public extern static void SetTransientFor(this WindowHandle window, IntPtr parent);
 
-     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_application", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void SetApplication(this WindowHandle window, ApplicationHandle application);
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_application", CallingConvention = CallingConvention.Cdecl)]
+    extern static void _SetApplication(this WindowHandle window, ApplicationHandle application);
 
     public static WindowHandle IconName(this WindowHandle window, string name)
         => window.SideEffect(w => w.SetIconName(name));

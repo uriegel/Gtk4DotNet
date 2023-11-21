@@ -35,7 +35,7 @@
 </ItemGroup>
 
 <ItemGroup>
-  <PackageReference Include="LinqTools" Version="5.3.0" />
+  <PackageReference Include="CsTools" Version="5.9.1" />
 </ItemGroup>  
 
 </Project>

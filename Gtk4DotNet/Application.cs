@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Reflection;
+using System.Runtime.InteropServices;
 using GtkDotNet.SafeHandles;
 using LinqTools;
 
@@ -6,8 +7,9 @@ namespace GtkDotNet;
 
 public static class Application
 {
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_application_new", CallingConvention = CallingConvention.Cdecl)]
-    public extern static ApplicationHandle New(string id, int flags = 0);
+    public static ApplicationHandle New(string id, int flags = 0)
+        => _New(id, 0)
+            .SideEffect(_ => mainThreadId = Environment.CurrentManagedThreadId);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_application_window_new", CallingConvention = CallingConvention.Cdecl)]
     public extern static WindowHandle NewWindow(this ApplicationHandle app);
@@ -26,6 +28,40 @@ public static class Application
         void onActivate(IntPtr _)  => activate(app);
         return app.SideEffect(a => Gtk.SignalConnect(a, "activate", Marshal.GetFunctionPointerForDelegate((OnePointerDelegate)onActivate), IntPtr.Zero, IntPtr.Zero, 0));
     }
+
+    public static bool RegisterResources()
+    {
+        var assembly = Assembly.GetEntryAssembly();
+        var resources = assembly?.GetManifestResourceNames();
+        var legacyName = $"{assembly?.GetName().Name}.resources.gresource";
+        var actualName = "app.gresource";
+        var resourceName = resources?.Contains(legacyName) == true
+            ? legacyName
+            : resources?.Contains(actualName) == true
+            ? actualName
+            : null;
+        if (resourceName == null)
+            return false;
+        var stream = assembly?.GetManifestResourceStream(resourceName);
+        var memIntPtr = Marshal.AllocHGlobal((int)(stream?.Length ?? 0));
+        unsafe 
+        {
+            var memBytePtr = (byte*)memIntPtr.ToPointer();
+            var writeStream = new UnmanagedMemoryStream(memBytePtr, stream?.Length ?? 0, stream?.Length ?? 0, FileAccess.Write);
+            stream?.CopyTo(writeStream);
+        }
+        using var gbytes = GBytes.New(memIntPtr, stream?.Length ?? 0);
+        Marshal.FreeHGlobal(memIntPtr);
+        using var res = Resource.NewFromData(gbytes);
+        Resource.Register(res); 
+        return true;
+    }
+
+
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_application_new", CallingConvention = CallingConvention.Cdecl)]
+    extern static ApplicationHandle _New(string id, int flags = 0);
+
+    static int mainThreadId;
 
     // [DllImport(Libs.LibGtk, EntryPoint="gtk_application_set_accels_for_action", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void SetAccelsForAction(ApplicationHandle app, string action, [In] string[] accels);
