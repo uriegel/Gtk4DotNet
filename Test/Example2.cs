@@ -1,5 +1,7 @@
 using GtkDotNet;
 
+// TODO StackSwitcher Stack(RefHandle<StackHandle>) 
+// TODO RefHandle if zero call callback when handle is set
 static class Example2
 {
     public static int Run()
@@ -10,17 +12,17 @@ static class Example2
                     .NewWindow()
                         .Title("Example Application 👍")
                         .DefaultSize(600, 400)
-                        .Child(
-                            Box
-                                .New(Orientation.Vertical)
-                                .Append(
-                                    Stack.New()))
                         .Titlebar(
                             HeaderBar
                             .New()
                             .TitleWidget(
                                 StackSwitcher.New()
                             ))
+                        .Child(
+                            Box
+                                .New(Orientation.Vertical)
+                                .Append(
+                                    Stack.New()))
                         .Show())
             .Run(0, IntPtr.Zero);
 }
