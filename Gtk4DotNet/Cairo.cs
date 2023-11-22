@@ -21,7 +21,13 @@ public static class Cairo
 
     public static CairoHandle Paint(this CairoHandle cairo)
         => cairo.SideEffect(c => c._Paint());
-    
+
+    public static CairoHandle Rectangle(this CairoHandle cairo, double x, double y, double width, double height)
+        => cairo.SideEffect(c => c._Rectangle(x, y, width, height));
+
+    public static CairoHandle Fill(this CairoHandle cairo)
+        => cairo.SideEffect(c => c._Fill());
+
     [DllImport(Libs.LibGtk, EntryPoint = "cairo_surface_destroy", CallingConvention = CallingConvention.Cdecl)]
     internal extern static void SurfaceDestroy(this IntPtr surface);
 
@@ -33,6 +39,12 @@ public static class Cairo
 
     [DllImport(Libs.LibGtk, EntryPoint = "cairo_paint", CallingConvention = CallingConvention.Cdecl)]
     extern static CairoHandle _Paint(this CairoHandle cairo);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "cairo_rectangle", CallingConvention = CallingConvention.Cdecl)]
+    extern static void _Rectangle(this CairoHandle cairo, double x, double y, double width, double height);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "cairo_fill", CallingConvention = CallingConvention.Cdecl)]
+    extern static void _Fill(this CairoHandle cairo);
 
     // [DllImport(Libs.LibGtk, EntryPoint = "cairo_set_antialias", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void SetAntiAlias(this IntPtr context, CairoAntialias antialias);
@@ -55,12 +67,6 @@ public static class Cairo
 
     // [DllImport(Libs.LibGtk, EntryPoint = "cairo_line_to", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void LineTo(this IntPtr context, double x, double y);
-
-    // [DllImport(Libs.LibGtk, EntryPoint = "cairo_rectangle", CallingConvention = CallingConvention.Cdecl)]
-    // public extern static void Rectangle(this IntPtr context, double x, double y, double width, double height);
-
-    // [DllImport(Libs.LibGtk, EntryPoint = "cairo_fill", CallingConvention = CallingConvention.Cdecl)]
-    // public extern static void CairoFill(this IntPtr context);
 
     // [DllImport(Libs.LibGtk, EntryPoint = "cairo_move_to", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void CairoMoveTo(this IntPtr context, double x, double y);

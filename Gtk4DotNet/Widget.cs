@@ -6,6 +6,10 @@ namespace GtkDotNet;
 
 public static class Widget
 {
+    public static THandle Ref<THandle>(this THandle widget, WidgetRef<THandle> widgetRef)
+        where THandle : WidgetHandle, new()
+        => widget.SideEffect(w => widgetRef.Handle = widget);
+
     public static THandle HAlign<THandle>(this THandle widget, Align align)
         where THandle : WidgetHandle
         => widget.SideEffect(w => w.SetHAlign(align));
