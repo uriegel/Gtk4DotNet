@@ -14,7 +14,5 @@ public static class Stack
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_stack_add_child", CallingConvention = CallingConvention.Cdecl)]
     extern static void _AddChild(this StackHandle grid, WidgetHandle widget);
-
-    
 }
 

@@ -14,6 +14,9 @@ public static class Window
     public static WindowHandle Title(this WindowHandle window, string title)
         => window.SideEffect(w => SetTitle(window, title));
 
+    public static WindowHandle Titlebar(this WindowHandle window, WidgetHandle titlebar)
+        => window.SideEffect(w => SetTitlebar(window, titlebar));
+
     public static WindowHandle SetApplication(this WindowHandle window, ApplicationHandle application)
         => window.SideEffect(w => w._SetApplication(application));
 
@@ -100,6 +103,9 @@ public static class Window
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_child", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetChild(this WindowHandle window, WidgetHandle child);
    
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_titlebar", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetTitlebar(this WindowHandle window, WidgetHandle titlebar);
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_title", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetTitle(this WindowHandle window, string title);
 
