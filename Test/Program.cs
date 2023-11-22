@@ -10,7 +10,8 @@ WriteLine(
     5: Builder
     6: Web View
     7: Threading
-    8: Quit
+    8: Example 1
+    9: Quit
     """);
 WriteLine($"Return value: {ReadLine() switch 
 {
@@ -21,5 +22,6 @@ WriteLine($"Return value: {ReadLine() switch
     "5" => BuilderProgram.Run(),
     "6" => Web.Run(),
     "7" => Threading.Run(),
+    "8" => Example1.Run(),
     _ => 0
 }}");
