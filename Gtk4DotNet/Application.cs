@@ -9,7 +9,7 @@ public static class Application
 {
     public static ApplicationHandle New(string id, int flags = 0)
         => _New(id, 0)
-            .SideEffect(_ => mainThreadId = Environment.CurrentManagedThreadId);
+                .SideEffect(_ => Gtk.Init());
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_application_window_new", CallingConvention = CallingConvention.Cdecl)]
     public extern static WindowHandle NewWindow(this ApplicationHandle app);
@@ -60,8 +60,6 @@ public static class Application
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_application_new", CallingConvention = CallingConvention.Cdecl)]
     extern static ApplicationHandle _New(string id, int flags = 0);
-
-    static int mainThreadId;
 
     // [DllImport(Libs.LibGtk, EntryPoint="gtk_application_set_accels_for_action", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void SetAccelsForAction(ApplicationHandle app, string action, [In] string[] accels);
