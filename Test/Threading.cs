@@ -2,7 +2,10 @@ using GtkDotNet;
 using LinqTools;
 using static System.Console;
 
-static class HelloWorld
+// TODO Application.EnableSynchronizationContext();
+// TODO replace Threading Test with Hello World Scaffold and labels which are changed from Thread
+
+static class Threading
 {
     public static int Run()
         => Application
@@ -12,7 +15,7 @@ static class HelloWorld
                     .SideEffect(_ => WriteLine($"Gkt theme: {GtkSettings.GetDefault().ThemeName}"))
                     .NewWindow()
                     .ResourceIcon("icon")
-                    .Title("Hello Gtk👍")
+                    .Title("Hello Threading👍")
                     .DefaultSize(200, 200)
                     .OnClose(_ => false.SideEffect(_ => WriteLine("Window is closing")))
                     .SideEffect(w => w

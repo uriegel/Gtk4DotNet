@@ -4,11 +4,6 @@ using LinqTools;
 
 namespace GtkDotNet;
 
-// TODO wk => wk.SignalConnect<BoolFunc>("context-menu", () => true))
-
-// TODO Threading example
-// TODO Application.EnableSynchronizationContext();
-// TODO replace Threading Test with Hello World Scaffold and labels which are changed from Thread
 public static class WebView
 {
     [DllImport(Libs.LibWebKit, EntryPoint = "webkit_web_view_new", CallingConvention = CallingConvention.Cdecl)]
@@ -27,6 +22,15 @@ public static class WebView
     {
         void onAlert(IntPtr _, IntPtr s) => alert(webView, Marshal.PtrToStringUTF8(ScriptDialogGetMessage(s)));
         return webView.SideEffect(a => Gtk.SignalConnect(a, "script-dialog", Marshal.GetFunctionPointerForDelegate((TwoPointerDelegate)onAlert), IntPtr.Zero, IntPtr.Zero, 0));
+    }
+
+    public static WebViewHandle DisableContextMenu(this WebViewHandle webView)
+        => webView.OnContextMenu(_ => true);
+
+    public static WebViewHandle OnContextMenu(this WebViewHandle webView, Func<WebViewHandle, bool> contextMenu)
+    {
+        bool onContextMenu() => contextMenu(webView);
+        return webView.SideEffect(a => Gtk.SignalConnect(a, "context-menu", Marshal.GetFunctionPointerForDelegate((BoolRetDelegate)onContextMenu), IntPtr.Zero, IntPtr.Zero, 0));
     }
 
     [DllImport(Libs.LibWebKit, EntryPoint = "webkit_script_dialog_get_message", CallingConvention = CallingConvention.Cdecl)]

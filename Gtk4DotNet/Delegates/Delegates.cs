@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using LinqTools;
 
+delegate bool BoolRetDelegate();
 delegate void OnePointerDelegate(IntPtr p);
 delegate void TwoPointerDelegate(IntPtr p, IntPtr pp);
 delegate bool TwoPointerBoolRetDelegate(IntPtr p, IntPtr pp);

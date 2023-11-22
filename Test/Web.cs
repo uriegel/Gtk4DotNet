@@ -27,6 +27,7 @@ static class Web
                             .OnLoadChanged((w, e) => 
                                 e.SideEffectIf(e == WebViewLoad.Finished, 
                                     _ => w.RunJavascript("console.log('called from C#')")))
+                            .DisableContextMenu()
                             .OnAlert((w, text) => 
                                 text
                                     .SideEffectIf(text == "showDevTools",
