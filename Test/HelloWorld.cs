@@ -1,5 +1,5 @@
 using GtkDotNet;
-
+using LinqTools;
 using static System.Console;
 
 static class HelloWorld
@@ -9,6 +9,7 @@ static class HelloWorld
             .New("org.gtk.example")
             .OnActivate(app => 
                 app
+                    .SideEffect(_ => WriteLine($"Gkt theme: {GtkSettings.GetDefault().ThemeName}"))
                     .NewWindow()
                     .Title("Hello Gtk👍")
                     .DefaultSize(200, 200)
