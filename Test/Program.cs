@@ -8,7 +8,8 @@ WriteLine(
     3: Packing buttons
     4: Drawing
     5: Builder
-    6: Quit
+    6: Web View
+    7: Quit
     """);
 WriteLine($"Return value: {ReadLine() switch 
 {
@@ -17,5 +18,6 @@ WriteLine($"Return value: {ReadLine() switch
     "3" => PackingButtons.Run(),
     "4" => Drawing.Run(),
     "5" => BuilderProgram.Run(),
+    "6" => Web.Run(),
     _ => 0
 }}");

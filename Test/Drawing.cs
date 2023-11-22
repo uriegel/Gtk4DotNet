@@ -1,4 +1,3 @@
-using System.Reflection.Metadata;
 using GtkDotNet;
 using GtkDotNet.SafeHandles;
 using LinqTools;
