@@ -4,6 +4,15 @@ using LinqTools;
 
 namespace GtkDotNet;
 
+// TODO InspectorShow
+// TODO ScriptDialogGetMessage
+// TODO RunJavascript
+// TODO Application.EnableSynchronizationContext();
+// TODO SetIconFromDotNetResource
+// TODO Gtk.SignalConnect<TwoIntPtr>(webView, "load-changed", (_, e) =>
+// TODO Gtk.SignalConnect<TwoIntPtr>(webView, "script-dialog", (_, d) =>
+// TODO Window.SetDefaultSize(
+// TODO Window.Maximize(window);
 public static class WebView
 {
     [DllImport(Libs.LibWebKit, EntryPoint = "webkit_web_view_new", CallingConvention = CallingConvention.Cdecl)]
