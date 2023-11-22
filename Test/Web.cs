@@ -24,7 +24,7 @@ static class Web
                                     s.EnableDeveloperExtras = true;
                                     WriteLine($"EnableDevExtras: {s.EnableDeveloperExtras}");
                                 }))
-                            .LoadUri("https://www.google.de")
+                            .LoadUri($"file://{Directory.GetCurrentDirectory()}/webroot/index.html")
                     )
                     .Show())
             .Run(0, IntPtr.Zero);
