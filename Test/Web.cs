@@ -27,6 +27,11 @@ static class Web
                             .OnLoadChanged((w, e) => 
                                 e.SideEffectIf(e == WebViewLoad.Finished, 
                                     _ => w.RunJavascript("console.log('called from C#')")))
+                            .OnAlert((w, text) => 
+                                text
+                                    .SideEffectIf(text == "showDevTools",
+                                        _ => w.GetInspector().Show())
+                                    .SideEffect(text => WriteLine($"on alert: {text}")))
                             .LoadUri($"file://{Directory.GetCurrentDirectory()}/webroot/index.html")
                     )
                     .Show())
