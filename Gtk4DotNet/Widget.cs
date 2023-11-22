@@ -90,7 +90,7 @@ public static class Widget
     public extern static void RemoveCssClass(this WidgetHandle widget, string cssClass);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_display", CallingConvention = CallingConvention.Cdecl)]
-    public extern static IntPtr GetDisplay(this WidgetHandle widget);
+    public extern static DisplayHandle GetDisplay(this WidgetHandle widget);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_set_halign", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetHAlign(this WidgetHandle widget, Align align);

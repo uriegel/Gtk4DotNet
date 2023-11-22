@@ -21,5 +21,10 @@
     <Exec Command="cd resources&#xD;&#xA;glib-compile-resources resources.xml" />
   </Target>
 
+  <ItemGroup>
+    <EmbeddedResource Include="./icon.png">
+      <LogicalName>icon</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
 
 </Project>

@@ -1,4 +1,6 @@
+using System.Reflection;
 using System.Runtime.InteropServices;
+using CsTools;
 using GtkDotNet.SafeHandles;
 using LinqTools;
 
@@ -11,6 +13,32 @@ public static class Window
 
     public static WindowHandle SetApplication(this WindowHandle window, ApplicationHandle application)
         => window.SideEffect(w => w._SetApplication(application));
+
+    public static WindowHandle ResourceIcon(this WindowHandle window, string resourceIconPath)
+    {
+        var themeDir = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "Gtk4DotNet", 
+            Assembly
+                .GetCallingAssembly()
+                .GetName()
+                .Name!);
+        var iconDir = Path
+                        .Combine(themeDir, "hicolor", "48x48", "apps")
+                        .EnsureDirectoryExists();
+        var resIcon = Assembly
+            .GetEntryAssembly()
+            ?.GetManifestResourceStream(resourceIconPath);
+        using var iconFile = File.OpenWrite(Path.Combine(iconDir, "icon.png"));
+        resIcon?.CopyTo(iconFile);
+
+        window
+            .GetDisplay()
+            .GetIconTheme()
+            .AddSearchPath(themeDir); 
+        window.SetIconName("icon");
+        return window;
+    }
 
     public static WindowHandle DefaultSize(this WindowHandle window, int width, int height)
         => window.SideEffect(w => SetDefaultSize(window, width, height));
@@ -80,4 +108,5 @@ public static class Window
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_get_position", CallingConvention = CallingConvention.Cdecl)]
     extern static void GetPosition(this WindowHandle window, out int x, out int y);
+   
 }

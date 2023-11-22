@@ -11,6 +11,7 @@ static class HelloWorld
                 app
                     .SideEffect(_ => WriteLine($"Gkt theme: {GtkSettings.GetDefault().ThemeName}"))
                     .NewWindow()
+                    .ResourceIcon("icon")
                     .Title("Hello Gtk👍")
                     .DefaultSize(200, 200)
                     .SideEffect(w => w

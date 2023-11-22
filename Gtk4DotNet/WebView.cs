@@ -4,9 +4,7 @@ using LinqTools;
 
 namespace GtkDotNet;
 
-// TODO SetIconFromDotNetResource
-
-
+// TODO Threading example
 // TODO Application.EnableSynchronizationContext();
 // TODO replace Threading Test with Hello World Scaffold and labels which are changed from Thread
 
