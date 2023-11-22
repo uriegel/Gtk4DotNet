@@ -24,6 +24,9 @@ static class Web
                                     s.EnableDeveloperExtras = true;
                                     WriteLine($"EnableDevExtras: {s.EnableDeveloperExtras}");
                                 }))
+                            .OnLoadChanged((w, e) => 
+                                e.SideEffectIf(e == WebViewLoad.Finished, 
+                                    _ => w.RunJavascript("console.log('called from C#')")))
                             .LoadUri($"file://{Directory.GetCurrentDirectory()}/webroot/index.html")
                     )
                     .Show())
