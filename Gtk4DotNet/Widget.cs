@@ -10,6 +10,10 @@ public static class Widget
         where THandle : WidgetHandle, new()
         => widget.SideEffect(w => widgetRef.Handle = widget);
 
+    public static THandle Show<THandle>(this THandle widget)
+        where THandle : WidgetHandle
+        => widget.SideEffect(w => w._Show());
+
     public static THandle HAlign<THandle>(this THandle widget, Align align)
         where THandle : WidgetHandle
         => widget.SideEffect(w => w.SetHAlign(align));
@@ -17,9 +21,6 @@ public static class Widget
     public static THandle VAlign<THandle>(this THandle widget, Align align)
         where THandle : WidgetHandle
         => widget.SideEffect(w => w.SetVAlign(align));
-
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_show", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void Show(this WidgetHandle widget);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_hide", CallingConvention = CallingConvention.Cdecl)]
     public extern static void Hide(this WidgetHandle widget);
@@ -91,6 +92,9 @@ public static class Widget
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_display", CallingConvention = CallingConvention.Cdecl)]
     public extern static DisplayHandle GetDisplay(this WidgetHandle widget);
+
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_show", CallingConvention = CallingConvention.Cdecl)]
+    extern static void _Show(this WidgetHandle widget);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_set_halign", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetHAlign(this WidgetHandle widget, Align align);

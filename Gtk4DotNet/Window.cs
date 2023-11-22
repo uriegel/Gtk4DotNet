@@ -8,6 +8,9 @@ namespace GtkDotNet;
 
 public static class Window
 {
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_new", CallingConvention = CallingConvention.Cdecl)]
+    public extern static WindowHandle New(WindowType windowType);
+
     public static WindowHandle Title(this WindowHandle window, string title)
         => window.SideEffect(w => SetTitle(window, title));
 
@@ -46,8 +49,11 @@ public static class Window
     public static WindowHandle Child(this WindowHandle window, WidgetHandle child)
         => window.SideEffect(w => SetChild(window, child));
 
-    [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_new", CallingConvention = CallingConvention.Cdecl)]
-    public extern static WindowHandle New(WindowType windowType);
+    public static WindowHandle OnClose(this WindowHandle window, Func<WindowHandle, bool> closing)
+    {
+        bool onClose(IntPtr _, IntPtr __)  => closing(window);
+        return window.SideEffect(a => Gtk.SignalConnect(a, "close-request", Marshal.GetFunctionPointerForDelegate((TwoPointerBoolRetDelegate)onClose), IntPtr.Zero, IntPtr.Zero, 0));
+    }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_move", CallingConvention = CallingConvention.Cdecl)]
     public extern static void Move(this WindowHandle window, int x, int y);
