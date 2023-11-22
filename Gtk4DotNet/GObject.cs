@@ -5,8 +5,8 @@ namespace GtkDotNet;
 
 public static class GObject
 {
-    public static void SetString(this GtkHandle obj, string name, string value)
-        => SetString(obj, name, value, IntPtr.Zero);
+    public static void SetString(this GtkHandle obj, string name, string? value)
+        => SetString(obj, name, value ?? "", IntPtr.Zero);
     public static string? GetString(this GtkHandle obj, string name)
     {
         GetString(obj, name, out var value, IntPtr.Zero);
@@ -15,8 +15,19 @@ public static class GObject
         return result;
     }
 
+    public static void SetBool(this GtkHandle obj, string name, bool value)
+        => obj.SetBool(name, value, IntPtr.Zero);
+    public static bool GetBool(this GtkHandle obj, string name)
+    {
+        GetBool(obj, name, out var value, IntPtr.Zero);
+        return value;
+    }
+
     [DllImport(Libs.LibGtk, EntryPoint="g_object_unref", CallingConvention = CallingConvention.Cdecl)]
     internal extern static void Unref(IntPtr obj);
+
+    [DllImport(Libs.LibGtk, EntryPoint="g_free", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void Free(this IntPtr obj);
 
     [DllImport(Libs.LibGtk, EntryPoint="g_object_set", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetString(this GtkHandle obj, string name, string value, IntPtr end);
@@ -24,8 +35,11 @@ public static class GObject
     [DllImport(Libs.LibGtk, EntryPoint="g_object_get", CallingConvention = CallingConvention.Cdecl)]
     extern static void GetString(this GtkHandle obj, string name, out IntPtr value, IntPtr end);
 
-    [DllImport(Libs.LibGtk, EntryPoint="g_free", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void Free(this IntPtr obj);
+    [DllImport(Libs.LibGtk, EntryPoint="g_object_set", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetBool(this GtkHandle GtkHandle, string name, bool value, IntPtr end);
+
+    [DllImport(Libs.LibGtk, EntryPoint="g_object_get", CallingConvention = CallingConvention.Cdecl)]
+    extern static bool GetBool(this GtkHandle GtkHandle, string name, out bool value, IntPtr end);
 
     // [DllImport(Libs.LibGtk, EntryPoint="g_object_ref", CallingConvention = CallingConvention.Cdecl)]
     // public extern static IntPtr Ref(this IntPtr obj);
@@ -49,14 +63,6 @@ public static class GObject
 
     // public static void AddWeakRef(this IntPtr obj, FinalizerDelegate finalizer) => AddWeakRef(obj, finalizer, IntPtr.Zero);
 
-    // public static void SetBool(this IntPtr obj, string name, bool value)
-    //     => SetBool(obj, name, value, IntPtr.Zero);
-    // public static bool GetBool(this IntPtr obj, string name)
-    // {
-    //     GetBool(obj, name, out var value, IntPtr.Zero);
-    //     return value;
-    // }
-
     // public static void SetInt(this IntPtr obj, string name, int value)
     //     => SetInt(obj, name, value, IntPtr.Zero);
     // public static int GetInt(this IntPtr obj, string name)
@@ -75,11 +81,6 @@ public static class GObject
 
     // [DllImport(Libs.LibGtk, EntryPoint="g_type_name", CallingConvention = CallingConvention.Cdecl)]
     // public extern static IntPtr TypeName(this GType type);
-
-    // [DllImport(Libs.LibGtk, EntryPoint="g_object_set", CallingConvention = CallingConvention.Cdecl)]
-    // extern static void SetBool(IntPtr obj, string name, bool value, IntPtr end);
-    // [DllImport(Libs.LibGtk, EntryPoint="g_object_get", CallingConvention = CallingConvention.Cdecl)]
-    // extern static bool GetBool(IntPtr obj, string name, out bool value, IntPtr end);
 
     // [DllImport(Libs.LibGtk, EntryPoint="g_object_set", CallingConvention = CallingConvention.Cdecl)]
     // extern static void SetInt(IntPtr obj, string name, int value, IntPtr end);

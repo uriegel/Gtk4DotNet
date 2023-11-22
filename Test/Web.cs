@@ -1,4 +1,7 @@
 using GtkDotNet;
+using LinqTools;
+
+using static System.Console;
 
 static class Web
 {
@@ -8,7 +11,23 @@ static class Web
             .OnActivate(app =>
                 app
                     .NewWindow()
-                    .Title("Web View👍")
+                    .Title("Hello Web View👍")
+                    .DefaultSize(800, 600)
+                    .Child(
+                        WebView
+                            .New()
+                            .SideEffect(w => w.GetSettings()
+                                .SideEffect(s => 
+                                {
+                                    WriteLine($"EnableDevExtras: {s.EnableDeveloperExtras}");
+                                    WriteLine($"CursiveFontFamily: {s.CursiveFontFamily}");
+                                    s.EnableDeveloperExtras = true;
+                                    WriteLine($"EnableDevExtras: {s.EnableDeveloperExtras}");
+                                }))
+                            .LoadUri("https://www.google.de")
+                    )
                     .Show())
             .Run(0, IntPtr.Zero);
 }
+
+
