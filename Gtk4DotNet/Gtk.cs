@@ -97,7 +97,7 @@ public static class Gtk
     /// <param name="n3"></param>
     /// <returns></returns>
     [DllImport(Libs.LibGtk, EntryPoint="g_signal_connect_object", CallingConvention = CallingConvention.Cdecl)]
-    internal extern static long SignalConnect(this ObjectHandle widget, string name, IntPtr callback, IntPtr obj, int n3);
+    internal extern static long SignalConnectObject(this ObjectHandle widget, string name, IntPtr callback, IntPtr obj, int n3);
 
     [DllImport(Libs.LibGtk, EntryPoint="g_signal_connect_data", CallingConvention = CallingConvention.Cdecl)]
     internal extern static long SignalConnect(this ObjectHandle widget, string name, IntPtr callback, IntPtr n, IntPtr n2, int n3);

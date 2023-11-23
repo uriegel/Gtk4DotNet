@@ -1,5 +1,4 @@
 using LinqTools;
-using Microsoft.Win32.SafeHandles;
 
 namespace GtkDotNet.SafeHandles;
 

@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using GtkDotNet.SafeHandles;
+using LinqTools;
 
 namespace GtkDotNet;
 
@@ -13,6 +14,16 @@ public static class GObject
         var result = Marshal.PtrToStringUTF8(value);
         value.Free();
         return result;
+    }
+
+    public static THandle AddWeakRef<THandle>(this THandle obj, Action dispose)
+        where THandle : ObjectHandle, new()
+    {
+        // TODO delegates.add
+        // TODO free delegate
+        void onDispose(IntPtr _, IntPtr __)  => dispose();
+        return obj.SideEffect(o => o.AddWeakRef(Marshal.GetFunctionPointerForDelegate((TwoPointerDelegate)onDispose), IntPtr.Zero));
+        return obj;
     }
 
     public static void SetBool(this ObjectHandle obj, string name, bool value)
@@ -71,8 +82,6 @@ public static class GObject
     //     return value;
     // }
 
-    //public delegate void FinalizerDelegate(IntPtr zero, IntPtr obj);
-
     // [DllImport(Libs.LibGtk, EntryPoint="g_object_bind_property", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void BindProperty(this IntPtr source, string sourceProperty, IntPtr target, string targetProperty, BindingFlags bindingFlags);
 
@@ -100,8 +109,8 @@ public static class GObject
     /// <param name="obj"></param>
     /// <param name="finalizer"></param>
     /// <param name="zero"></param>
-    // [DllImport(Libs.LibGtk, EntryPoint="g_object_weak_ref", CallingConvention = CallingConvention.Cdecl)]
-    // extern static void AddWeakRef(ObjectHandle obj, FinalizerDelegate finalizer, IntPtr zero);
+    [DllImport(Libs.LibGtk, EntryPoint="g_object_weak_ref", CallingConvention = CallingConvention.Cdecl)]
+    extern static void AddWeakRef(this ObjectHandle obj, IntPtr finalizer, IntPtr zero);
 }
 
 

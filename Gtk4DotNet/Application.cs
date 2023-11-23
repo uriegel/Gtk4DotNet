@@ -26,7 +26,7 @@ public static class Application
     public static ApplicationHandle OnActivate(this ApplicationHandle app, Action<ApplicationHandle> activate)
     {
         void onActivate(IntPtr _)  => activate(app);
-        return app.SideEffect(a => Gtk.SignalConnect(a, "activate", Marshal.GetFunctionPointerForDelegate((OnePointerDelegate)onActivate), IntPtr.Zero, IntPtr.Zero, 0));
+        return app.SideEffect(a => Gtk.SignalConnectObject(a, "activate", Marshal.GetFunctionPointerForDelegate((OnePointerDelegate)onActivate), IntPtr.Zero, 0));
     }
 
     public static bool RegisterResources()

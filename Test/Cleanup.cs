@@ -1,21 +1,57 @@
 using System.Runtime.InteropServices;
 using GtkDotNet;
 using LinqTools;
+
 using static System.Console;
 
 static class Cleanup
 {
     public static int Run()
+    {
+        Test(Check1, "Finished 1");
+        Test(Check2, "Finished 2");
+        Test(Check3, "Finished 3");
+        return 0;
+    }
+
+    static void Test(Action action, string text)
+    {
+        action();
+        GC.Collect();
+        GC.Collect();
+        Thread.Sleep(1000);
+        GC.Collect();
+        GC.Collect();
+        WriteLine(text);
+        ReadLine();
+    }
+
+    static void Check1()
+    {
+        var test1 = new Test1();
+    }
+
+    static void Check2()
         => Application
             .New("de.urigel.test")
             .OnActivate(app =>
             {
-                var label = New("label");
-                AddWeakRef(label, (a, b) =>
-                {
-                    var affe = 0;
-                }, IntPtr.Zero);
-                //Unref(label);
+                var test1 = new Test1();
+    //             var label = New("label");
+    //             AddWeakRef(label, (a, b) =>
+    //             {
+    //                 var affe = 0;
+    //             }, IntPtr.Zero);
+    //             //Unref(label);
+            })
+            .Run(0, IntPtr.Zero);
+
+    static void Check3()
+        => Application
+            .New("de.urigel.test")
+            .AddWeakRef(() => WriteLine("Application Check3 disposed"))
+            .OnActivate(app => {
+                var test1 = new Test1();
             })
             .Run(0, IntPtr.Zero);
 
@@ -32,7 +68,14 @@ static class Cleanup
     extern static void AddWeakRef(IntPtr obj, FinalizerDelegate finalizer, IntPtr zero);
 
     delegate void FinalizerDelegate(IntPtr zero, IntPtr obj);
+}
 
+class Test1
+{
+   string test = "Hallo";
+
+    ~Test1()
+        => WriteLine("Test1 disposed");
 }
 
 static class Libs
