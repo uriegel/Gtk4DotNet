@@ -79,6 +79,13 @@ public static class Gtk
             new GtkSynchronizationContext()
                 .SideEffect(_ => mainThreadId = Environment.CurrentManagedThreadId));
      
+    internal static void SignalConnect<TDelegate>(IntPtr action, string name, TDelegate callback) where TDelegate : Delegate
+    {
+        var delegat = callback as Delegate;
+        var id = SignalConnectAction(action, name, Marshal.GetFunctionPointerForDelegate(callback), IntPtr.Zero, IntPtr.Zero, 0);
+        Delegates.Add(id, delegat);
+    }
+
     [DllImport(Libs.LibGtk, EntryPoint="g_signal_connect_object", CallingConvention = CallingConvention.Cdecl)]
     internal extern static long SignalConnect(this GtkHandle widget, string name, IntPtr callback, IntPtr obj, int n3);
 
@@ -102,6 +109,9 @@ public static class Gtk
 
     [DllImport(Libs.LibGtk, EntryPoint="g_signal_handler_disconnect", CallingConvention = CallingConvention.Cdecl)]
     internal extern static void SignalDisconnect(this GtkHandle widget, long id);
+
+    [DllImport(Libs.LibGtk, EntryPoint="g_signal_connect_data", CallingConvention = CallingConvention.Cdecl)]
+    extern static long SignalConnectAction(IntPtr action, string name, IntPtr callback, IntPtr n, IntPtr n2, int n3);
 
     [DllImport(Libs.LibGtk, EntryPoint="g_idle_add_full", CallingConvention = CallingConvention.Cdecl)]
     extern static void IdleAddFull(int priority, IntPtr func, IntPtr nil, IntPtr nil2);

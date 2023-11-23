@@ -11,6 +11,7 @@ static class Example3
             .OnActivate(app => 
                 app
                 .NewWindow()
+                    .Ref(window)
                     .Title("Example Application 👍")
                     .DefaultSize(600, 400)
                     .Titlebar(
@@ -24,10 +25,10 @@ static class Example3
                             .Model(Menu.New()
                                 .AppendItem(MenuItem.NewSection(null,
                                     Menu.New()
-                                    .AppendItem(MenuItem.New("_Preferences", null))))
+                                    .AppendItem(MenuItem.New("_Preferences", "app.preferences"))))
                                 .AppendItem(MenuItem.NewSection(null,
                                     Menu.New()
-                                    .AppendItem(MenuItem.New("_Quit", null)))))
+                                    .AppendItem(MenuItem.New("_Quit", "app.quit")))))
                         ))
                     .Child(
                         Box
@@ -45,12 +46,17 @@ static class Example3
                                                     .VExpand(true)
                                                     .Child(
                                                         TextView.New()
-                                                        .SetEditable(true)
+                                                        .SetEditable(false)
                                                         .SetCursorVisible(true)
                                                         .Text(content.Content)),
                                                 content.Name, content.Name)
                                             ))))
                         .Show())
+            .AddActions(new GtkAction[]
+            {
+                new("preferences", () => Console.WriteLine("Preferences")),
+                new("quit", () => window.Ref.CloseWindow(), "<Ctrl>Q")
+            })
             .Run(0, IntPtr.Zero);
 
     static IEnumerable<FileContent> GetFiles()
@@ -65,6 +71,7 @@ static class Example3
             file => new FileContent(
                 file.GetBasename(), file.LoadStringContents() ?? ""));
 
+    static readonly WidgetRef<WindowHandle> window = new();
     static readonly WidgetRef<StackHandle> stack = new();
 
     record FileContent(string Name, string Content);
