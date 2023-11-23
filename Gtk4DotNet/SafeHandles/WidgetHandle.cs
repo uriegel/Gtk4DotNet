@@ -1,6 +1,6 @@
 namespace GtkDotNet.SafeHandles;
 
-public class WidgetHandle : ObjectHandle
+public class WidgetHandle : ObjectFloatingHandle
 {
     public WidgetHandle() : base() {}
 }

@@ -16,6 +16,14 @@ public static class GObject
         return result;
     }
 
+    /// <summary>
+    /// Adds a weak reference callback to an object. Weak references are used for notification when an object is disposed. They are called “weak references” 
+    /// because they allow you to safely hold a pointer to an object without calling g_object_ref() (g_object_ref() adds a strong reference, that is, 
+    /// forces the object to stay alive).
+    /// Note that the weak references created by this method are not thread-safe: they cannot safely be used in one thread if the object’s last g_object_unref() might happen in another thread. Use GWeakRef if thread-safety is required.
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="dispose"></param>
     public static THandle AddWeakRef<THandle>(this THandle obj, Action dispose)
         where THandle : ObjectHandle, new()
     {
@@ -27,6 +35,20 @@ public static class GObject
         };
         Delegates.Add(key, callback);
         return obj.SideEffect(o => o.AddWeakRef(Marshal.GetFunctionPointerForDelegate(callback as Delegate), IntPtr.Zero));
+    }
+
+    /// <summary>
+    /// Increase the reference count of object, and possibly remove the [floating][floating-ref] reference, 
+    /// if object has a floating reference. 
+    /// In other words, if the object is floating, then this call “assumes ownership” of the floating reference, 
+    /// converting it to a normal reference by clearing the floating flag while leaving the reference count unchanged. If the object is not floating, then this call adds a new normal reference increasing the reference count by one.
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <returns></returns>
+    public static void RefSink(this ObjectFloatingHandle obj)
+    {
+        obj.RefSink();
+        _RefSink(obj);
     }
 
     public static void SetBool(this ObjectHandle obj, string name, bool value)
@@ -58,17 +80,6 @@ public static class GObject
     [DllImport(Libs.LibGtk, EntryPoint="g_object_ref", CallingConvention = CallingConvention.Cdecl)]
     public extern static void Ref(this ObjectHandle obj);
 
-    /// <summary>
-    /// Increase the reference count of object, and possibly remove the [floating][floating-ref] reference, 
-    /// if object has a floating reference. 
-    /// In other words, if the object is floating, then this call “assumes ownership” of the floating reference, 
-    /// converting it to a normal reference by clearing the floating flag while leaving the reference count unchanged. If the object is not floating, then this call adds a new normal reference increasing the reference count by one.
-    /// </summary>
-    /// <param name="obj"></param>
-    /// <returns></returns>
-    [DllImport(Libs.LibGtk, EntryPoint="g_object_ref_sink", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void RefSink(this ObjectHandle obj);
-    
     // [DllImport(Libs.LibGtk, EntryPoint="g_object_unref", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void Unref(this IntPtr obj);
 
@@ -114,6 +125,17 @@ public static class GObject
     /// <param name="zero"></param>
     [DllImport(Libs.LibGtk, EntryPoint="g_object_weak_ref", CallingConvention = CallingConvention.Cdecl)]
     extern static void AddWeakRef(this ObjectHandle obj, IntPtr finalizer, IntPtr zero);
+
+    /// <summary>
+    /// Increase the reference count of object, and possibly remove the [floating][floating-ref] reference, 
+    /// if object has a floating reference. 
+    /// In other words, if the object is floating, then this call “assumes ownership” of the floating reference, 
+    /// converting it to a normal reference by clearing the floating flag while leaving the reference count unchanged. If the object is not floating, then this call adds a new normal reference increasing the reference count by one.
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <returns></returns>
+    [DllImport(Libs.LibGtk, EntryPoint="g_object_ref_sink", CallingConvention = CallingConvention.Cdecl)]
+    extern static void _RefSink(this ObjectHandle obj);
 }
 
 
