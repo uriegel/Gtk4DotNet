@@ -23,6 +23,7 @@
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	<NoWarn>1591</NoWarn>
+	<LangVersion>Latest</LangVersion>
   </PropertyGroup>
 
 <PropertyGroup>

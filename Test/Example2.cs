@@ -2,9 +2,8 @@ using System.Windows.Markup;
 using GtkDotNet;
 using CsTools.Extensions;
 using LinqTools;
+using GtkDotNet.SafeHandles;
 
-// TODO StackSwitcher Stack(RefHandle<StackHandle>) 
-// TODO RefHandle if zero call callback when handle is set
 static class Example2
 {
     public static int Run()
@@ -19,18 +18,27 @@ static class Example2
                         HeaderBar.New()
                         .TitleWidget(
                             StackSwitcher.New()
+                            .StackRef(stack)
                         ))
                     .Child(
                         Box
                             .New(Orientation.Vertical)
                             .Append(
                                 Stack.New()
+                                .Ref(stack)
                                 .SideEffect(stack => 
                                     GetFiles()
                                         .ForEach(content => 
                                             stack.AddTitled(
-                                                SrolledWindow
-                                                    .New(),
+                                                ScrolledWindow
+                                                    .New()
+                                                    .HExpand(true)
+                                                    .VExpand(true)
+                                                    .Child(
+                                                        TextView.New()
+                                                        .SetEditable(true)
+                                                        .SetCursorVisible(true)
+                                                        .Text(content.Content)),
                                                 content.Name, content.Name)
                                             ))))
                         .Show())
@@ -47,6 +55,8 @@ static class Example2
         => GFile.New(Directory.GetCurrentDirectory().AppendPath(path)).Use(
             file => new FileContent(
                 file.GetBasename(), file.LoadStringContents() ?? ""));
+
+    static readonly WidgetRef<StackHandle> stack = new();
 
     record FileContent(string Name, string Content);
 }

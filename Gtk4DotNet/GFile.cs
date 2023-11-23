@@ -27,7 +27,7 @@ public static class GFile
     }
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_load_contents", CallingConvention = CallingConvention.Cdecl)]
-    extern static bool LoadContents(this GFileHandle, IntPtr cancellable, out IntPtr content, out int length, IntPtr etagOut, IntPtr error);
+    extern static bool LoadContents(this GFileHandle gFile, IntPtr cancellable, out IntPtr content, out int length, IntPtr etagOut, IntPtr error);
 
 
    // public static DrawingAreaHandle SetDrawFunction(this DrawingAreaHandle drawingArea, Action<DrawingAreaHandle, CairoWeakHandle, int, int> draw)
