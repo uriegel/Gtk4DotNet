@@ -1,6 +1,5 @@
-using System.Runtime.InteropServices;
 using GtkDotNet;
-using LinqTools;
+using GtkDotNet.SafeHandles;
 
 using static System.Console;
 
@@ -13,6 +12,7 @@ static class Cleanup
         Test(Check3, "Finished 3");
         Test(Check4, "Finished 4");
         Test(Check5, "Finished 5");
+        Test(Check6, "Finished 6");
         return 0;
     }
 
@@ -80,6 +80,34 @@ static class Cleanup
             })
             .Run(0, IntPtr.Zero);
 
+    static void Check6()
+        => Application
+            .New("de.urigel.test")
+            .AddWeakRef(() => WriteLine("Application Check6 disposed"))
+            .OnActivate(app => 
+            {
+                var test1 = new Test1();
+                app
+                    .NewWindow()
+                    .Ref(window)
+                    .AddWeakRef(() => WriteLine("Window Check6 disposed"))
+                    .Title("Hello Gtk👍")
+                    .Child(Button
+                        .NewWithLabel("Button")
+                        .OnClicked(OnDialog)
+                        .AddWeakRef(() => WriteLine("Button Check6 disposed")))
+                    .Show();
+            })
+            .Run(0, IntPtr.Zero);
+
+    static void OnDialog()
+    {
+        Dialog
+            .New("Hello World beenden?", window.Ref, DialogFlags.DestroyWithParent | DialogFlags.Modal, "Ok", Dialog.RESPONSE_OK)
+            .AddWeakRef(() => WriteLine("Dialog Check6 disposed"))
+            .Show();
+    }
+
     static void Test(Action action, string text)
     {
         action();
@@ -91,6 +119,8 @@ static class Cleanup
         WriteLine(text);
         ReadLine();
     }
+
+    static WidgetRef<WindowHandle> window = new();
 }
 
 class Test1
