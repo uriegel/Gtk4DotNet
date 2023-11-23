@@ -22,6 +22,21 @@ public static class Widget
         where THandle : WidgetHandle
         => widget.SideEffect(w => w.SetVAlign(align));
 
+    public static THandle MarginStart<THandle>(this THandle widget, int margin)
+        where THandle : WidgetHandle
+        => widget.SideEffect(w => w.SetMarginStart(margin));
+
+    public static THandle MarginEnd<THandle>(this THandle widget, int margin)
+        where THandle : WidgetHandle
+        => widget.SideEffect(w => w.SetMarginEnd(margin));
+    
+    public static THandle MarginTop<THandle>(this THandle widget, int margin)
+        where THandle : WidgetHandle
+        => widget.SideEffect(w => w.SetMarginTop(margin));
+    public static THandle MarginBottom<THandle>(this THandle widget, int margin)
+        where THandle : WidgetHandle
+        => widget.SideEffect(w => w.SetMarginBottom(margin));
+
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_hide", CallingConvention = CallingConvention.Cdecl)]
     public extern static void Hide(this WidgetHandle widget);
 
@@ -110,6 +125,18 @@ public static class Widget
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_set_vexpand", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetVExpand(this WidgetHandle widget, bool expand);
+
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_set_margin_start", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetMarginStart(this WidgetHandle widget, int margin);
+
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_set_margin_end", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetMarginEnd(this WidgetHandle widget, int margin);
+
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_set_margin_top", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetMarginTop(this WidgetHandle widget, int margin);
+
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_set_margin_bottom", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetMarginBottom(this WidgetHandle widget, int margin);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_first_child", CallingConvention = CallingConvention.Cdecl)]
     extern static WidgetHandle _GetFirstChild(this WidgetHandle widget);

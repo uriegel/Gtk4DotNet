@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using CsTools;
 using GtkDotNet.SafeHandles;
@@ -19,6 +20,14 @@ public static class Window
 
     public static WindowHandle SetApplication(this WindowHandle window, ApplicationHandle application)
         => window.SideEffect(w => w._SetApplication(application));
+
+    public static WindowHandle TransientFor(this WindowHandle window, WindowHandle parent)
+        => window.SideEffect(w => w.SetTransientFor(parent));
+    public static WindowHandle Modal(this WindowHandle window)
+        => window.SideEffect(w => w.SetModal(true));
+
+    public static WindowHandle Resizable(this WindowHandle window, bool set)
+        => window.SideEffect(w => w.SetResizable(set));
 
     public static WindowHandle ResourceIcon(this WindowHandle window, string resourceIconPath)
     {
@@ -65,7 +74,7 @@ public static class Window
     public extern static void CloseWindow(this WindowHandle window);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_modal", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void SetModal(this WindowHandle window, bool set);
+    extern static void SetModal(this WindowHandle window, bool set);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_maximize", CallingConvention = CallingConvention.Cdecl)]
     public extern static void Maximize(this WindowHandle window);
@@ -74,7 +83,7 @@ public static class Window
     public extern static bool IsMaximized(this WindowHandle window);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_transient_for", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void SetTransientFor(this WindowHandle window, IntPtr parent);
+    extern static void SetTransientFor(this WindowHandle window, WindowHandle parent);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_application", CallingConvention = CallingConvention.Cdecl)]
     extern static void _SetApplication(this WindowHandle window, ApplicationHandle application);
@@ -120,5 +129,7 @@ public static class Window
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_get_position", CallingConvention = CallingConvention.Cdecl)]
     extern static void GetPosition(this WindowHandle window, out int x, out int y);
-   
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_resizable", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetResizable(this WindowHandle window, bool set);
 }
