@@ -19,11 +19,14 @@ public static class GObject
     public static THandle AddWeakRef<THandle>(this THandle obj, Action dispose)
         where THandle : ObjectHandle, new()
     {
-        // TODO delegates.add
-        // TODO free delegate
-        void onDispose(IntPtr _, IntPtr __)  => dispose();
-        return obj.SideEffect(o => o.AddWeakRef(Marshal.GetFunctionPointerForDelegate((TwoPointerDelegate)onDispose), IntPtr.Zero));
-        return obj;
+        var key = Delegates.GetKey();
+        TwoPointerDelegate callback = (_, ___) =>
+        {
+            Delegates.Remove(key);
+            dispose();
+        };
+        Delegates.Add(key, callback);
+        return obj.SideEffect(o => o.AddWeakRef(Marshal.GetFunctionPointerForDelegate(callback as Delegate), IntPtr.Zero));
     }
 
     public static void SetBool(this ObjectHandle obj, string name, bool value)
@@ -52,19 +55,19 @@ public static class GObject
     [DllImport(Libs.LibGtk, EntryPoint="g_object_get", CallingConvention = CallingConvention.Cdecl)]
     extern static bool GetBool(this ObjectHandle GtkHandle, string name, out bool value, IntPtr end);
 
-    // [DllImport(Libs.LibGtk, EntryPoint="g_object_ref", CallingConvention = CallingConvention.Cdecl)]
-    // public extern static IntPtr Ref(this IntPtr obj);
+    [DllImport(Libs.LibGtk, EntryPoint="g_object_ref", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void Ref(this ObjectHandle obj);
 
-    // /// <summary>
-    // /// Increase the reference count of object, and possibly remove the [floating][floating-ref] reference, 
-    // /// if object has a floating reference. 
-    // /// In other words, if the object is floating, then this call “assumes ownership” of the floating reference, 
-    // /// converting it to a normal reference by clearing the floating flag while leaving the reference count unchanged. If the object is not floating, then this call adds a new normal reference increasing the reference count by one.
-    // /// </summary>
-    // /// <param name="obj"></param>
-    // /// <returns></returns>
-    // [DllImport(Libs.LibGtk, EntryPoint="g_object_ref_sink", CallingConvention = CallingConvention.Cdecl)]
-    // public extern static IntPtr RefSink(this IntPtr obj);
+    /// <summary>
+    /// Increase the reference count of object, and possibly remove the [floating][floating-ref] reference, 
+    /// if object has a floating reference. 
+    /// In other words, if the object is floating, then this call “assumes ownership” of the floating reference, 
+    /// converting it to a normal reference by clearing the floating flag while leaving the reference count unchanged. If the object is not floating, then this call adds a new normal reference increasing the reference count by one.
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <returns></returns>
+    [DllImport(Libs.LibGtk, EntryPoint="g_object_ref_sink", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void RefSink(this ObjectHandle obj);
     
     // [DllImport(Libs.LibGtk, EntryPoint="g_object_unref", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void Unref(this IntPtr obj);
