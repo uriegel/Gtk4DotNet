@@ -1,6 +1,6 @@
 namespace GtkDotNet.SafeHandles;
 
-public class GtkSettingsHandle : GtkHandle
+public class GtkSettingsHandle : ObjectHandle
 {
     public GtkSettingsHandle() : base() {}
 

@@ -1,6 +1,6 @@
 namespace GtkDotNet.SafeHandles;
 
-public class MenuModelHandle : GtkHandle
+public class MenuModelHandle : ObjectHandle
 {
     public MenuModelHandle() : base() { }
 }

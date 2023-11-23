@@ -2,9 +2,9 @@ using Microsoft.Win32.SafeHandles;
 
 namespace GtkDotNet.SafeHandles;
 
-public abstract class GtkHandle : SafeHandleZeroOrMinusOneIsInvalid
+public abstract class BaseHandle : SafeHandleZeroOrMinusOneIsInvalid
 {
-    public GtkHandle()
+    public BaseHandle()
         : base(ownsHandle: true) { }
 
     protected override bool ReleaseHandle() => true;
@@ -14,14 +14,6 @@ public abstract class GtkHandle : SafeHandleZeroOrMinusOneIsInvalid
     // - You do not need to protect against multiple disposing, MySafeHandle already does
 }
 
-
-
-//     public MyFileWrapper(string fullPath)
-//     {
-//         _handle = NativeMethods.CreateFile(fullPath, ...);
-//     }
-
-// }
 
 // When working with unmanaged resources, you should consider:
 

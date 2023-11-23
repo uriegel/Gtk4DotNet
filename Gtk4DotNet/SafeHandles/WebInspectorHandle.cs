@@ -1,6 +1,6 @@
 namespace GtkDotNet.SafeHandles;
 
-public class WebInspectorHandle : GtkHandle
+public class WebInspectorHandle : ObjectHandle
 {
     public WebInspectorHandle() : base() { }
 }

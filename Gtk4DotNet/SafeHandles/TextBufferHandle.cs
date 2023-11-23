@@ -2,7 +2,7 @@ using LinqTools;
 
 namespace GtkDotNet.SafeHandles;
 
-public class TextBufferHandle : GtkHandle
+public class TextBufferHandle : ObjectHandle
 {
     public TextBufferHandle() : base() {}
 

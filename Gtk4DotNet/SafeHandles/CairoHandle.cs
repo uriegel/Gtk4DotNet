@@ -2,7 +2,7 @@ using LinqTools;
 
 namespace GtkDotNet.SafeHandles;
 
-public class CairoHandle : GtkHandle
+public class CairoHandle : ObjectHandle
 {
     public CairoHandle() : base() {}
 

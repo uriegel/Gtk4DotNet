@@ -2,7 +2,7 @@ using LinqTools;
 
 namespace GtkDotNet.SafeHandles;
 
-public class ResourceHandle : GtkHandle
+public class ResourceHandle : ObjectHandle
 {
     public ResourceHandle() : base() {}
 

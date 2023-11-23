@@ -1,10 +1,11 @@
 using LinqTools;
+using Microsoft.Win32.SafeHandles;
 
 namespace GtkDotNet.SafeHandles;
 
-public class GObjectRefHandle : GtkHandle
+public abstract class ObjectHandle : BaseHandle
 {
-    public GObjectRefHandle() : base() {}
+    public ObjectHandle() : base() {}
 
     protected override bool ReleaseHandle() 
         => true.SideEffect(_ => GObject.Unref(handle));

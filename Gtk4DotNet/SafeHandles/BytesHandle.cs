@@ -2,7 +2,7 @@ using LinqTools;
 
 namespace GtkDotNet.SafeHandles;
 
-public class BytesHandle : GtkHandle
+public class BytesHandle : BaseHandle
 {
     public BytesHandle() : base() {}
 

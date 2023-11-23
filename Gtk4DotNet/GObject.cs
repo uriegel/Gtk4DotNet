@@ -5,9 +5,9 @@ namespace GtkDotNet;
 
 public static class GObject
 {
-    public static void SetString(this GtkHandle obj, string name, string? value)
+    public static void SetString(this ObjectHandle obj, string name, string? value)
         => SetString(obj, name, value ?? "", IntPtr.Zero);
-    public static string? GetString(this GtkHandle obj, string name)
+    public static string? GetString(this ObjectHandle obj, string name)
     {
         GetString(obj, name, out var value, IntPtr.Zero);
         var result = Marshal.PtrToStringUTF8(value);
@@ -15,9 +15,9 @@ public static class GObject
         return result;
     }
 
-    public static void SetBool(this GtkHandle obj, string name, bool value)
+    public static void SetBool(this ObjectHandle obj, string name, bool value)
         => obj.SetBool(name, value, IntPtr.Zero);
-    public static bool GetBool(this GtkHandle obj, string name)
+    public static bool GetBool(this ObjectHandle obj, string name)
     {
         GetBool(obj, name, out var value, IntPtr.Zero);
         return value;
@@ -30,16 +30,16 @@ public static class GObject
     public extern static void Free(this IntPtr obj);
 
     [DllImport(Libs.LibGtk, EntryPoint="g_object_set", CallingConvention = CallingConvention.Cdecl)]
-    extern static void SetString(this GtkHandle obj, string name, string value, IntPtr end);
+    extern static void SetString(this ObjectHandle obj, string name, string value, IntPtr end);
 
     [DllImport(Libs.LibGtk, EntryPoint="g_object_get", CallingConvention = CallingConvention.Cdecl)]
-    extern static void GetString(this GtkHandle obj, string name, out IntPtr value, IntPtr end);
+    extern static void GetString(this ObjectHandle obj, string name, out IntPtr value, IntPtr end);
 
     [DllImport(Libs.LibGtk, EntryPoint="g_object_set", CallingConvention = CallingConvention.Cdecl)]
-    extern static void SetBool(this GtkHandle GtkHandle, string name, bool value, IntPtr end);
+    extern static void SetBool(this ObjectHandle GtkHandle, string name, bool value, IntPtr end);
 
     [DllImport(Libs.LibGtk, EntryPoint="g_object_get", CallingConvention = CallingConvention.Cdecl)]
-    extern static bool GetBool(this GtkHandle GtkHandle, string name, out bool value, IntPtr end);
+    extern static bool GetBool(this ObjectHandle GtkHandle, string name, out bool value, IntPtr end);
 
     // [DllImport(Libs.LibGtk, EntryPoint="g_object_ref", CallingConvention = CallingConvention.Cdecl)]
     // public extern static IntPtr Ref(this IntPtr obj);
@@ -71,7 +71,7 @@ public static class GObject
     //     return value;
     // }
 
-    // public delegate void FinalizerDelegate(IntPtr zero, IntPtr obj);
+    //public delegate void FinalizerDelegate(IntPtr zero, IntPtr obj);
 
     // [DllImport(Libs.LibGtk, EntryPoint="g_object_bind_property", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void BindProperty(this IntPtr source, string sourceProperty, IntPtr target, string targetProperty, BindingFlags bindingFlags);
@@ -91,8 +91,17 @@ public static class GObject
     // [DllImport(Libs.LibGtk, EntryPoint="g_object_new", CallingConvention = CallingConvention.Cdecl)]
     // internal extern static IntPtr New(long type, IntPtr zero);
 
+    /// <summary>
+    /// Adds a weak reference callback to an object. Weak references are used for notification when an object is disposed. They are called “weak references” 
+    /// because they allow you to safely hold a pointer to an object without calling g_object_ref() (g_object_ref() adds a strong reference, that is, 
+    /// forces the object to stay alive).
+    /// Note that the weak references created by this method are not thread-safe: they cannot safely be used in one thread if the object’s last g_object_unref() might happen in another thread. Use GWeakRef if thread-safety is required.
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="finalizer"></param>
+    /// <param name="zero"></param>
     // [DllImport(Libs.LibGtk, EntryPoint="g_object_weak_ref", CallingConvention = CallingConvention.Cdecl)]
-    // extern static void AddWeakRef(IntPtr obj, FinalizerDelegate finalizer, IntPtr zero);
+    // extern static void AddWeakRef(ObjectHandle obj, FinalizerDelegate finalizer, IntPtr zero);
 }
 
 

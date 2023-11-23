@@ -2,7 +2,7 @@ using LinqTools;
 
 namespace GtkDotNet.SafeHandles;
 
-public class SurfaceHandle : GtkHandle
+public class SurfaceHandle : ObjectHandle
 {
     public SurfaceHandle() : base() {}
 

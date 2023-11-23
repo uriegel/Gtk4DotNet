@@ -2,7 +2,7 @@ using LinqTools;
 
 namespace GtkDotNet.SafeHandles;
 
-public class GFileHandle : GtkHandle
+public class GFileHandle : ObjectHandle
 {
     public GFileHandle() : base() {}
 

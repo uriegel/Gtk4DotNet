@@ -1,6 +1,6 @@
 namespace GtkDotNet.SafeHandles;
 
-public class EventControllerHandle : GtkHandle
+public class EventControllerHandle : ObjectHandle
 {
     public EventControllerHandle() : base() {}
 }

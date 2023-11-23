@@ -1,6 +1,6 @@
 namespace GtkDotNet.SafeHandles;
 
-public class IconThemeHandle : GtkHandle
+public class IconThemeHandle : ObjectHandle
 {
     public IconThemeHandle() : base() { }
 }
