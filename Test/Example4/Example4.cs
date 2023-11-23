@@ -8,6 +8,7 @@ static class Example4
     public static int Run()
         => Application
             .New("org.gtk.example")
+            .SideEffect(a => settings = Settings.New("org.gtk.exampleapp"))
             .OnActivate(app => 
                 app
                 .NewWindow()
@@ -36,6 +37,7 @@ static class Example4
                             .Append(
                                 Stack.New()
                                 .Ref(stack)
+                                .SideEffect(s => Settings.Bind(settings, "transition", s, "transition-type", BindFlags.Default))
                                 .SideEffect(stack => 
                                     GetFiles()
                                         .ForEach(content => 
@@ -48,13 +50,18 @@ static class Example4
                                                         TextView.New()
                                                         .SetEditable(false)
                                                         .SetCursorVisible(true)
-                                                        .Text(content.Content)),
+                                                        .Text(content.Content)
+                                                        .SideEffect(t =>
+                                                        {
+                                                            var tag = t.GetBuffer().CreateTag();
+                                                            Settings.Bind(settings, "font", tag, "font", BindFlags.Default);
+                                                        })),
                                                 content.Name, content.Name)
                                             ))))
                         .Show())
             .AddActions(new GtkAction[]
             {
-                new("preferences", () => Dialog4.PreferenceDialog.Show(window.Ref)),
+                new("preferences", () => Dialog4.PreferenceDialog.Show(window.Ref, settings)),
                 new("quit", () => window.Ref.CloseWindow(), "<Ctrl>Q")
             })
             .Run(0, IntPtr.Zero);
@@ -71,6 +78,7 @@ static class Example4
             file => new FileContent(
                 file.GetBasename(), file.LoadStringContents() ?? ""));
 
+    static SettingsHandle settings = new();
     static readonly WidgetRef<WindowHandle> window = new();
     static readonly WidgetRef<StackHandle> stack = new();
 

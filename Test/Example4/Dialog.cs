@@ -1,11 +1,12 @@
 using GtkDotNet;
 using GtkDotNet.SafeHandles;
+using LinqTools;
 
 namespace Dialog4;
 
 static class PreferenceDialog
 {
-    public static void Show(WindowHandle window)
+    public static void Show(WindowHandle window, SettingsHandle settings)
         => Dialog.New()
             .TransientFor(window)
             .Modal()
@@ -30,8 +31,17 @@ static class PreferenceDialog
                     .Attach(Label
                         .New("_Transition:")
                         .XAlign(1)
-                        .UseUnderline(), 0, 1, 1, 1)))
+                        .MnemonicWidget(transition)
+                        .UseUnderline(), 0, 1, 1, 1)
+                    .Attach(ComboBoxText
+                        .New()
+                        .Ref(transition)
+                        .Append("none", "None")
+                        .Append("crossfade", "Fade")
+                        .Append("slide-left-right", "Slide"), 1, 1, 1, 1)))
+            .SideEffect(_ => Settings.Bind(settings, "transition", transition.Ref, "active-id", BindFlags.Default))                        
             .Show();
 
     static readonly WidgetRef<FontButtonHandle> font = new();
+    static readonly WidgetRef<ComboBoxTextHandle> transition = new();
 }
