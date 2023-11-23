@@ -3,15 +3,16 @@
 WriteLine(
     """
     Choose to run:
-    1: First
-    2: Hello World
-    3: Packing buttons
-    4: Drawing
-    5: Builder
-    6: Web View
-    7: Threading
-    8: Example 1
-    9: Example 2
+    1:  First
+    2:  Hello World
+    3:  Packing buttons
+    4:  Drawing
+    5:  Builder
+    6:  Web View
+    7:  Threading
+    8:  Example 1
+    9:  Example 2
+    10: Example 3
     <any>: Quit
     """);
 WriteLine($"Return value: {ReadLine() switch 
@@ -25,5 +26,6 @@ WriteLine($"Return value: {ReadLine() switch
     "7" => Threading.Run(),
     "8" => Example1.Run(),
     "9" => Example2.Run(),
+    "10" => Example3.Run(),
     _ => 0
 }}");

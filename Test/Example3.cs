@@ -3,7 +3,7 @@ using CsTools.Extensions;
 using LinqTools;
 using GtkDotNet.SafeHandles;
 
-static class Example2
+static class Example3
 {
     public static int Run()
         => Application
@@ -17,7 +17,10 @@ static class Example2
                         HeaderBar.New()
                         .TitleWidget(
                             StackSwitcher.New()
-                            .StackRef(stack)
+                            .StackRef(stack))
+                        .PackEnd(
+                            MenuButton.New()
+                            .Direction(Arrow.None)
                         ))
                     .Child(
                         Box
