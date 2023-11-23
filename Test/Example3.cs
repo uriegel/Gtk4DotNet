@@ -21,6 +21,13 @@ static class Example3
                         .PackEnd(
                             MenuButton.New()
                             .Direction(Arrow.None)
+                            .Model(Menu.New()
+                                .AppendItem(MenuItem.NewSection(null,
+                                    Menu.New()
+                                    .AppendItem(MenuItem.New("_Preferences", null))))
+                                .AppendItem(MenuItem.NewSection(null,
+                                    Menu.New()
+                                    .AppendItem(MenuItem.New("_Quit", null)))))
                         ))
                     .Child(
                         Box
