@@ -3,6 +3,8 @@ using CsTools.Extensions;
 using LinqTools;
 using GtkDotNet.SafeHandles;
 
+
+// TODO static mnemonics
 static class Example4
 {
     public static int Run()
@@ -53,8 +55,10 @@ static class Example4
                                                         .Text(content.Content)
                                                         .SideEffect(t =>
                                                         {
-                                                            var tag = t.GetBuffer().CreateTag();
+                                                            var buffer = t.GetBuffer();
+                                                            var tag = buffer.CreateTag();
                                                             Settings.Bind(settings, "font", tag, "font", BindFlags.Default);
+                                                            buffer.ApplyTag(tag, buffer.GetStartIter(), buffer.GetEndIter());
                                                         })),
                                                 content.Name, content.Name)
                                             ))))

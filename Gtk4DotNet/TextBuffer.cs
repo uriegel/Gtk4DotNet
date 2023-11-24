@@ -1,5 +1,3 @@
-using System;
-using System.Reflection.Metadata.Ecma335;
 using System.Runtime.InteropServices;
 using GtkDotNet.SafeHandles;
 
@@ -12,7 +10,22 @@ public class TextBuffer
 
     public IntPtr CreateTag(string? name = null, string? firstPropertyName = null)
         => _CreateTag(buffer, name, firstPropertyName);
-        
+
+    public TextIter GetStartIter()
+    {
+        GetStartIter(buffer, out var res);
+        return res;
+    }
+
+    public TextIter GetEndIter()
+    {
+        GetEndIter(buffer, out var res);
+        return res;
+    }
+
+    public IntPtr ApplyTag(IntPtr tag, TextIter startIter, TextIter endIter)
+        => ApplyTag(buffer, tag, ref startIter, ref endIter);
+
     internal TextBuffer(IntPtr buffer) => this.buffer = buffer; 
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_text_view_new", CallingConvention = CallingConvention.Cdecl)]
@@ -23,6 +36,15 @@ public class TextBuffer
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_text_buffer_create_tag", CallingConvention = CallingConvention.Cdecl)]
     extern static IntPtr _CreateTag(IntPtr buffer, string? name = null, string? firstPropertyName = null);
+
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_text_buffer_get_start_iter", CallingConvention = CallingConvention.Cdecl)]
+    extern static void GetStartIter(IntPtr buffer, out TextIter startIter);
+
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_text_buffer_get_end_iter", CallingConvention = CallingConvention.Cdecl)]
+    extern static void GetEndIter(IntPtr buffer, out TextIter endIter);
+
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_text_buffer_apply_tag", CallingConvention = CallingConvention.Cdecl)]
+    extern static IntPtr ApplyTag(IntPtr buffer, IntPtr tag, ref TextIter startIter, ref TextIter endIter);
 
     readonly IntPtr buffer;
 }
