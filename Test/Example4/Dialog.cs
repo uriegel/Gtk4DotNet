@@ -23,15 +23,16 @@ static class PreferenceDialog
                     .Attach(Label
                         .New("_Font:")
                         .XAlign(1)
-                        .MnemonicWidget(font)
+                        //.MnemonicWidget(font)
                         .UseUnderline(), 0, 0, 1, 1)
                     .Attach(FontButton
                         .New()
-                        .Ref(font), 1, 0, 1, 1)
+                        //.Ref(font)
+                        , 1, 0, 1, 1)
                     .Attach(Label
                         .New("_Transition:")
                         .XAlign(1)
-                        .MnemonicWidget(transition)
+                        //.MnemonicWidget(transition)
                         .UseUnderline(), 0, 1, 1, 1)
                     .Attach(ComboBoxText
                         .New()
@@ -39,9 +40,10 @@ static class PreferenceDialog
                         .Append("none", "None")
                         .Append("crossfade", "Fade")
                         .Append("slide-left-right", "Slide"), 1, 1, 1, 1)))
-            .SideEffect(_ => Settings.Bind(settings, "transition", transition.Ref, "active-id", BindFlags.Default))                        
+            .SideEffect(_ => Settings.Bind(settings, "transition", transition.Ref, "active-id", BindFlags.Default))
             .Show();
+            
 
-    static readonly WidgetRef<FontButtonHandle> font = new();
+    //static readonly WidgetRef<FontButtonHandle> font = new();
     static readonly WidgetRef<ComboBoxTextHandle> transition = new();
 }

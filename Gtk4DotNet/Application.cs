@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
+using CsTools.Functional;
 using GtkDotNet.SafeHandles;
 using LinqTools;
 
@@ -17,17 +18,21 @@ public static class Application
     [DllImport(Libs.LibGtk, EntryPoint="gtk_application_add_window", CallingConvention = CallingConvention.Cdecl)]
     public extern static void AddWindow(this ApplicationHandle app, WindowHandle window);
 
+    public static int Run(this ApplicationHandle app, int c, IntPtr a)
+    {
+        var result = app._Run(c, a);
+        app.Dispose();
+        return result;
+    }
+
     [DllImport(Libs.LibGtk, EntryPoint="g_application_quit", CallingConvention = CallingConvention.Cdecl)]
     public extern static void Quit(this ApplicationHandle app);
 
     [DllImport(Libs.LibGtk, EntryPoint="g_application_run", CallingConvention = CallingConvention.Cdecl)]
-    public extern static int Run(this ApplicationHandle app, int c, IntPtr a);
+    extern static int _Run(this ApplicationHandle app, int c, IntPtr a);
 
     public static ApplicationHandle OnActivate(this ApplicationHandle app, Action<ApplicationHandle> activate)
-    {
-        void onActivate(IntPtr _)  => activate(app);
-        return app.SideEffect(a => Gtk.SignalConnectObject(a, "activate", Marshal.GetFunctionPointerForDelegate((OnePointerDelegate)onActivate), IntPtr.Zero, 0));
-    }
+        => app.SideEffect(a => Gtk.SignalConnect<OnePointerDelegate>(a, "activate", (IntPtr _) => activate(app)));
 
     public static bool RegisterResources()
     {
@@ -64,10 +69,11 @@ public static class Application
         {
             if (action.Action != null)
             {
-                Delegates.Add(action.Action);
+                GtkDelegates.Add(action.Action);
+                // TODO DO actions have to be freed?
                 var simpleAction = NewAction(action.Name, null);
                 action.action = simpleAction;
-                Gtk.SignalConnect<Action>(simpleAction, "activate", action.Action);
+                Gtk.SignalConnectAction(simpleAction, "activate", Marshal.GetFunctionPointerForDelegate(action.Action as Delegate), IntPtr.Zero, 0);
                 AddAction(app, simpleAction);                    
             }
             else 

@@ -14,31 +14,30 @@ delegate bool BoolRetDelegate();
 delegate bool OnePointerBoolRetDelegate(IntPtr p);
 delegate bool TwoPointerBoolRetDelegate(IntPtr p, IntPtr pp);
 
-static class Delegates
+public static class GtkDelegates
 {
-    public static long GetKey()
+    public static int Instances { get => delegates.Count; }
+    internal static long GetKey()
         => Interlocked.Increment(ref delegateKey);
 
-    public static long Add(Delegate delegat)
+    internal static long Add(Delegate delegat)
         => Add(GetKey(), delegat);
 
-    public static long Add(long key, Delegate delegat) 
+    internal static long Add(long key, Delegate delegat) 
     {
         delegates[key] = delegat;
         return key;
     } 
 
-    public static void Remove(long key) 
+    internal static void Remove(long key) 
         => delegates.TryRemove(key, out var _);
 
-    public static long Remove(Delegate delegat)
+    internal static long Remove(Delegate delegat)
     {
         var kvp = delegates.FirstOrDefault(n => n.Value == delegat);
         return kvp.Value != null
             ? kvp.Key.SideEffect(Remove)
             : -1;
-
-
     }
 
     static long delegateKey;

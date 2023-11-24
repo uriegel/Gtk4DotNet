@@ -62,10 +62,7 @@ public static class Window
         => window.SideEffect(w => SetChild(window, child));
 
     public static WindowHandle OnClose(this WindowHandle window, Func<WindowHandle, bool> closing)
-    {
-        bool onClose(IntPtr _, IntPtr __)  => closing(window);
-        return window.SideEffect(a => Gtk.SignalConnect(a, "close-request", Marshal.GetFunctionPointerForDelegate((TwoPointerBoolRetDelegate)onClose), IntPtr.Zero, IntPtr.Zero, 0));
-    }
+        => window.SideEffect(a => Gtk.SignalConnect<TwoPointerBoolRetDelegate>(a, "close-request", (_, ___) => closing(window)));
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_move", CallingConvention = CallingConvention.Cdecl)]
     public extern static void Move(this WindowHandle window, int x, int y);

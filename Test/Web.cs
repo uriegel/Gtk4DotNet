@@ -6,7 +6,7 @@ using static System.Console;
 static class Web
 {
     public static int Run()
-        => Application
+        =>  Application
             .New("org.gtk.example")
             .OnActivate(app =>
                 app

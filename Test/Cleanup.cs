@@ -1,6 +1,6 @@
 using GtkDotNet;
 using GtkDotNet.SafeHandles;
-
+using LinqTools;
 using static System.Console;
 
 static class Cleanup
@@ -12,7 +12,11 @@ static class Cleanup
         Test(Check3, "Finished 3");
         Test(Check4, "Finished 4");
         Test(Check5, "Finished 5");
+        Test(Check5, "Finished 5");
+        Test(Check5, "Finished 5");
+        Test(Check5, "Finished 5");
         Test(Check6, "Finished 6");
+        Test(Check7, "Finished 7");
         return 0;
     }
 
@@ -41,6 +45,8 @@ static class Cleanup
         => Application
             .New("de.urigel.test")
             .AddWeakRef(() => WriteLine("Application Check3 disposed"))
+            .AddWeakRef(() => WriteLine("Application Check3 disposed"))
+            .AddWeakRef(() => WriteLine("Application Check3 disposed"))
             .OnActivate(app => 
             {
                 var test1 = new Test1();
@@ -50,7 +56,6 @@ static class Cleanup
     static void Check4()
         => Application
             .New("de.urigel.test")
-            .AddWeakRef(() => WriteLine("Application Check4 disposed"))
             .OnActivate(app => 
             {
                 var test1 = new Test1();
@@ -66,16 +71,18 @@ static class Cleanup
         => Application
             .New("de.urigel.test")
             .AddWeakRef(() => WriteLine("Application Check5 disposed"))
-            .OnActivate(app => 
+            .OnActivate(app =>
             {
                 var test1 = new Test1();
                 app
                     .NewWindow()
                     .AddWeakRef(() => WriteLine("Window Check5 disposed"))
+                    .OnClose(_ => false.SideEffect(_ =>
+                    {
+                        var test1 = new Test1();
+                        WriteLine("Window5 is closing");
+                    }))
                     .Title("Hello Gtk👍")
-                    .Child(Button
-                        .NewWithLabel("Button")
-                        .AddWeakRef(() => WriteLine("Button Check5 disposed")))
                     .Show();
             })
             .Run(0, IntPtr.Zero);
@@ -89,13 +96,32 @@ static class Cleanup
                 var test1 = new Test1();
                 app
                     .NewWindow()
-                    .Ref(window)
                     .AddWeakRef(() => WriteLine("Window Check6 disposed"))
                     .Title("Hello Gtk👍")
                     .Child(Button
                         .NewWithLabel("Button")
-                        .OnClicked(OnDialog)
+                        .OnClicked(() => WriteLine("clicked 6"))
                         .AddWeakRef(() => WriteLine("Button Check6 disposed")))
+                    .Show();
+            })
+            .Run(0, IntPtr.Zero);
+
+    static void Check7()
+        => Application
+            .New("de.urigel.test")
+            .AddWeakRef(() => WriteLine("Application Check7 disposed"))
+            .OnActivate(app => 
+            {
+                var test1 = new Test1();
+                app
+                    .NewWindow()
+                    .Ref(window)
+                    .AddWeakRef(() => WriteLine("Window Check7 disposed"))
+                    .Title("Hello Gtk👍")
+                    .Child(Button
+                        .NewWithLabel("Button")
+                        .OnClicked(OnDialog)
+                        .AddWeakRef(() => WriteLine("Button Check7 disposed")))
                     .Show();
             })
             .Run(0, IntPtr.Zero);
@@ -117,6 +143,7 @@ static class Cleanup
         GC.Collect();
         GC.Collect();
         WriteLine(text);
+        WriteLine($"Signal handlers: {GtkDelegates.Instances}");
         ReadLine();
     }
 

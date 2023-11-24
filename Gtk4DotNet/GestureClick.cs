@@ -10,10 +10,7 @@ public static class GestureClick
     public extern static GestureClickHandle New();
 
     public static GestureClickHandle OnPressed(this GestureClickHandle gestureClick, Action<int, double, double> pressed)
-    {
-        void Pressed(IntPtr _, int pressCount, double x, double y, IntPtr __)  => pressed(pressCount, x, y);
-        return gestureClick.SideEffect(g => Gtk.SignalConnect(g, "pressed", Marshal.GetFunctionPointerForDelegate((PressedGestureDelegate)Pressed), IntPtr.Zero, IntPtr.Zero, 0));
-    }
-
+        => gestureClick.SideEffect(g => Gtk.SignalConnect<PressedGestureDelegate>(g, "pressed", 
+            (IntPtr _, int pressCount, double x, double y, IntPtr __)  => pressed(pressCount, x, y)));
 }
 

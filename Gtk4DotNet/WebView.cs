@@ -13,25 +13,18 @@ public static class WebView
         => webView.SideEffect(w => w._LoadUri(uri));
 
     public static WebViewHandle OnLoadChanged(this WebViewHandle webView, Action<WebViewHandle, WebViewLoad> loadChanged)
-    {
-        void onClick(IntPtr _, IntPtr e)  => loadChanged(webView, (WebViewLoad)e);
-        return webView.SideEffect(a => Gtk.SignalConnect(a, "load-changed", Marshal.GetFunctionPointerForDelegate((TwoPointerDelegate)onClick), IntPtr.Zero, IntPtr.Zero, 0));
-    }
+        => webView.SideEffect(a => Gtk.SignalConnect<TwoPointerDelegate>(a, "load-changed", 
+            (IntPtr _, IntPtr e)  => loadChanged(webView, (WebViewLoad)e)));
 
     public static WebViewHandle OnAlert(this WebViewHandle webView, Action<WebViewHandle, string?> alert)
-    {
-        void onAlert(IntPtr _, IntPtr s) => alert(webView, Marshal.PtrToStringUTF8(ScriptDialogGetMessage(s)));
-        return webView.SideEffect(a => Gtk.SignalConnect(a, "script-dialog", Marshal.GetFunctionPointerForDelegate((TwoPointerDelegate)onAlert), IntPtr.Zero, IntPtr.Zero, 0));
-    }
+        => webView.SideEffect(a => Gtk.SignalConnect<TwoPointerDelegate>(a, "script-dialog", 
+            (IntPtr _, IntPtr s) => alert(webView, Marshal.PtrToStringUTF8(ScriptDialogGetMessage(s)))));
 
     public static WebViewHandle DisableContextMenu(this WebViewHandle webView)
         => webView.OnContextMenu(_ => true);
 
     public static WebViewHandle OnContextMenu(this WebViewHandle webView, Func<WebViewHandle, bool> contextMenu)
-    {
-        bool onContextMenu() => contextMenu(webView);
-        return webView.SideEffect(a => Gtk.SignalConnect(a, "context-menu", Marshal.GetFunctionPointerForDelegate((BoolRetDelegate)onContextMenu), IntPtr.Zero, IntPtr.Zero, 0));
-    }
+        => webView.SideEffect(a => Gtk.SignalConnect<Action>(a, "context-menu", () => contextMenu(webView)));
 
     [DllImport(Libs.LibWebKit, EntryPoint = "webkit_script_dialog_get_message", CallingConvention = CallingConvention.Cdecl)]
     extern static IntPtr ScriptDialogGetMessage(IntPtr msg);
@@ -41,15 +34,15 @@ public static class WebView
 
     public static void RunJavascript(this WebViewHandle webView, string script)
     {
-        var key = Delegates.GetKey();
+        var key = GtkDelegates.GetKey();
         ThreePointerDelegate callback = (_, result, ___) =>
         {
             var res = FinishJavascript(webView, result, IntPtr.Zero);
-            Delegates.Remove(key);
+            GtkDelegates.Remove(key);
             if (res != IntPtr.Zero && JscIsString(res))
                 GObject.Free(res);
         };
-        Delegates.Add(key, callback);
+        GtkDelegates.Add(key, callback);
         EvaluateJavascript(webView, script, -1, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, Marshal.GetFunctionPointerForDelegate(callback as Delegate), IntPtr.Zero);
     }
 

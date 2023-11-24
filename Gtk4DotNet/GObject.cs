@@ -26,16 +26,7 @@ public static class GObject
     /// <param name="dispose"></param>
     public static THandle AddWeakRef<THandle>(this THandle obj, Action dispose)
         where THandle : ObjectHandle, new()
-    {
-        var key = Delegates.GetKey();
-        TwoPointerDelegate callback = (_, ___) =>
-        {
-            Delegates.Remove(key);
-            dispose();
-        };
-        Delegates.Add(key, callback);
-        return obj.SideEffect(o => o.AddWeakRef(Marshal.GetFunctionPointerForDelegate(callback as Delegate), IntPtr.Zero));
-    }
+        => obj.SideEffect(o => o.AddWeakRefRaw(dispose));
 
     /// <summary>
     /// Increase the reference count of object, and possibly remove the [floating][floating-ref] reference, 
@@ -80,6 +71,18 @@ public static class GObject
     [DllImport(Libs.LibGtk, EntryPoint="g_object_ref", CallingConvention = CallingConvention.Cdecl)]
     public extern static void Ref(this ObjectHandle obj);
 
+    internal static void AddWeakRefRaw(this ObjectHandle obj, Action dispose)
+    {
+        var key = GtkDelegates.GetKey();
+        TwoPointerDelegate callback = (_, ___) =>
+        {
+            GtkDelegates.Remove(key);
+            dispose();
+        };
+        GtkDelegates.Add(key, callback);
+        obj.AddWeakRef(Marshal.GetFunctionPointerForDelegate(callback as Delegate), IntPtr.Zero);
+    }
+
     // [DllImport(Libs.LibGtk, EntryPoint="g_object_unref", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void Unref(this IntPtr obj);
 
@@ -115,6 +118,17 @@ public static class GObject
     // internal extern static IntPtr New(long type, IntPtr zero);
 
     /// <summary>
+    /// Increase the reference count of object, and possibly remove the [floating][floating-ref] reference, 
+    /// if object has a floating reference. 
+    /// In other words, if the object is floating, then this call “assumes ownership” of the floating reference, 
+    /// converting it to a normal reference by clearing the floating flag while leaving the reference count unchanged. If the object is not floating, then this call adds a new normal reference increasing the reference count by one.
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <returns></returns>
+    [DllImport(Libs.LibGtk, EntryPoint="g_object_ref_sink", CallingConvention = CallingConvention.Cdecl)]
+    extern static void _RefSink(this ObjectHandle obj);
+
+    /// <summary>
     /// Adds a weak reference callback to an object. Weak references are used for notification when an object is disposed. They are called “weak references” 
     /// because they allow you to safely hold a pointer to an object without calling g_object_ref() (g_object_ref() adds a strong reference, that is, 
     /// forces the object to stay alive).
@@ -125,17 +139,6 @@ public static class GObject
     /// <param name="zero"></param>
     [DllImport(Libs.LibGtk, EntryPoint="g_object_weak_ref", CallingConvention = CallingConvention.Cdecl)]
     extern static void AddWeakRef(this ObjectHandle obj, IntPtr finalizer, IntPtr zero);
-
-    /// <summary>
-    /// Increase the reference count of object, and possibly remove the [floating][floating-ref] reference, 
-    /// if object has a floating reference. 
-    /// In other words, if the object is floating, then this call “assumes ownership” of the floating reference, 
-    /// converting it to a normal reference by clearing the floating flag while leaving the reference count unchanged. If the object is not floating, then this call adds a new normal reference increasing the reference count by one.
-    /// </summary>
-    /// <param name="obj"></param>
-    /// <returns></returns>
-    [DllImport(Libs.LibGtk, EntryPoint="g_object_ref_sink", CallingConvention = CallingConvention.Cdecl)]
-    extern static void _RefSink(this ObjectHandle obj);
 }
 
 

@@ -13,10 +13,7 @@ public static class Button
         => button.SideEffect(b => b.SetLabel(label));
 
     public static ButtonHandle OnClicked(this ButtonHandle button, Action click)
-    {
-        void onClick(IntPtr _, IntPtr __)  => click();
-        return button.SideEffect(a => Gtk.SignalConnect(a, "clicked", Marshal.GetFunctionPointerForDelegate((TwoPointerDelegate)onClick), IntPtr.Zero, IntPtr.Zero, 0));
-    }
+        => button.SideEffect(a => Gtk.SignalConnect<TwoPointerDelegate>(a, "clicked", (IntPtr _, IntPtr __)  => click()));
 
     public static string? GetLabel(this ButtonHandle button)
     {

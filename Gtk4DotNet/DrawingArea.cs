@@ -17,10 +17,8 @@ public static class DrawingArea
     }
 
     public static DrawingAreaHandle OnResize(this DrawingAreaHandle da, Action<DrawingAreaHandle, int, int> resize)
-    {
-        void onResize(IntPtr drawingArea, int width, int height, IntPtr data) => resize(da, width, height);
-        return da.SideEffect(a => Gtk.SignalConnectAfter(a, "resize", Marshal.GetFunctionPointerForDelegate((DrawingAreaResizeDelegate)onResize), IntPtr.Zero, IntPtr.Zero, 0));
-    }
+        => da.SideEffect(a => Gtk.SignalConnect<DrawingAreaResizeDelegate>(a, "resize", 
+            (IntPtr drawingArea, int width, int height, IntPtr data) => resize(da, width, height)));
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_drawing_area_set_draw_func", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetDrawFunction(this DrawingAreaHandle drawingArea, IntPtr drawFunction, IntPtr zero, OnePointerDelegate onDestroy);

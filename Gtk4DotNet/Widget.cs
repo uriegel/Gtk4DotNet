@@ -10,9 +10,17 @@ public static class Widget
         where THandle : WidgetHandle, new()
         => widget.SideEffect(w => widgetRef.Handle = widget);
 
+    // TODO Text cleanup and GC collect
     public static THandle Show<THandle>(this THandle widget)
         where THandle : WidgetHandle
-        => widget.SideEffect(w => w._Show());
+        => widget
+        .SideEffect(w => w._Show())
+        .SideEffect(w => GC.Collect())
+        .SideEffect(w => GC.Collect());
+
+    // public static THandle Show<THandle>(this THandle widget)
+    //     where THandle : WidgetHandle
+    //     => widget.SideEffect(w => w._Show());
 
     public static THandle HAlign<THandle>(this THandle widget, Align align)
         where THandle : WidgetHandle

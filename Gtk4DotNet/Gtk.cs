@@ -1,9 +1,11 @@
 using System.Runtime.InteropServices;
+using CsTools.Functional;
 using GtkDotNet.SafeHandles;
 using LinqTools;
 
 namespace GtkDotNet;
 
+// TODO Drawing sample crashes
 public static class Gtk
 {
     public static Task Dispatch(Action action, bool highPriority = false)
@@ -58,16 +60,16 @@ public static class Gtk
             action?.Invoke();
         else
         {
-            var key = Delegates.GetKey();
+            var key = GtkDelegates.GetKey();
             OnePointerBoolRetDelegate? mainFunction = _ =>
             {
                 action?.Invoke();
                 mainFunction = null;
                 action = null;
-                Delegates.Remove(key);
+                GtkDelegates.Remove(key);
                 return false;
             };
-            Delegates.Add(key, mainFunction);
+            GtkDelegates.Add(key, mainFunction);
             var delegat = mainFunction as Delegate;
             var funcPtr = Marshal.GetFunctionPointerForDelegate(delegat);
             IdleAddFull(priority, funcPtr, IntPtr.Zero, IntPtr.Zero);
@@ -78,29 +80,22 @@ public static class Gtk
         SynchronizationContext.SetSynchronizationContext(
             new GtkSynchronizationContext()
                 .SideEffect(_ => mainThreadId = Environment.CurrentManagedThreadId));
-     
-    internal static void SignalConnect<TDelegate>(IntPtr action, string name, TDelegate callback) where TDelegate : Delegate
+
+    internal static long SignalConnect<TDelegate>(ObjectHandle obj, string name, TDelegate callback)
+        where TDelegate : Delegate
     {
-        var delegat = callback as Delegate;
-        var id = SignalConnectAction(action, name, Marshal.GetFunctionPointerForDelegate(callback), IntPtr.Zero, IntPtr.Zero, 0);
-        Delegates.Add(id, delegat);
+        // TODO Signal disconnect
+        var key = GtkDelegates.GetKey();
+        GtkDelegates.Add(key, callback);
+        obj.AddWeakRefRaw(() => GtkDelegates.Remove(key));
+        return SignalConnect(obj, name, Marshal.GetFunctionPointerForDelegate((Delegate)callback), IntPtr.Zero, 0);
     }
 
-    /// <summary>
-    /// This is similar to g_signal_connect_data(), but uses a closure which ensures that the gobject stays alive during the call to c_handler by temporarily adding a reference count to gobject.
-    /// When the gobject is destroyed the signal handler will be automatically disconnected. Note that this is not currently threadsafe (ie: emitting a signal while gobject is being destroyed in another thread is not safe).
-    /// </summary>
-    /// <param name="widget"></param>
-    /// <param name="name"></param>
-    /// <param name="callback"></param>
-    /// <param name="obj"></param>
-    /// <param name="n3"></param>
-    /// <returns></returns>
     [DllImport(Libs.LibGtk, EntryPoint="g_signal_connect_object", CallingConvention = CallingConvention.Cdecl)]
-    internal extern static long SignalConnectObject(this ObjectHandle widget, string name, IntPtr callback, IntPtr obj, int n3);
+    extern static long SignalConnect(this ObjectHandle widget, string name, IntPtr callback, IntPtr obj, int n3);
 
-    [DllImport(Libs.LibGtk, EntryPoint="g_signal_connect_data", CallingConvention = CallingConvention.Cdecl)]
-    internal extern static long SignalConnect(this ObjectHandle widget, string name, IntPtr callback, IntPtr n, IntPtr n2, int n3);
+    [DllImport(Libs.LibGtk, EntryPoint="g_signal_connect_object", CallingConvention = CallingConvention.Cdecl)]
+    internal extern static long SignalConnectAction(IntPtr action, string name, IntPtr callback, IntPtr obj, int n3);
 
     // [DllImport(Libs.LibGtk, EntryPoint="gtk_main", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void Main();
@@ -114,14 +109,8 @@ public static class Gtk
     // [DllImport(Libs.LibGtk, EntryPoint="gtk_init", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void Init (ref int argc, ref IntPtr argv);
    
-    [DllImport(Libs.LibGtk, EntryPoint="g_signal_connect_data", CallingConvention = CallingConvention.Cdecl)]
-    internal extern static long SignalConnectAfter(this ObjectHandle widget, string name, IntPtr callback, IntPtr n, IntPtr n2, int n3);
-
     [DllImport(Libs.LibGtk, EntryPoint="g_signal_handler_disconnect", CallingConvention = CallingConvention.Cdecl)]
     internal extern static void SignalDisconnect(this ObjectHandle widget, long id);
-
-    [DllImport(Libs.LibGtk, EntryPoint="g_signal_connect_data", CallingConvention = CallingConvention.Cdecl)]
-    extern static long SignalConnectAction(IntPtr action, string name, IntPtr callback, IntPtr n, IntPtr n2, int n3);
 
     [DllImport(Libs.LibGtk, EntryPoint="g_idle_add_full", CallingConvention = CallingConvention.Cdecl)]
     extern static void IdleAddFull(int priority, IntPtr func, IntPtr nil, IntPtr nil2);

@@ -10,21 +10,15 @@ public static class GestureDrag
     public extern static GestureDragHandle New();
 
     public static GestureDragHandle OnDragBegin(this GestureDragHandle gestureDrag, Action<double, double> onDragBegin)
-    {
-        void dragBegin(IntPtr _, double x, double y, IntPtr __)  => onDragBegin(x, y);
-        return gestureDrag.SideEffect(g => Gtk.SignalConnect(g, "drag-begin", Marshal.GetFunctionPointerForDelegate((DragGestureDelegate)dragBegin), IntPtr.Zero, IntPtr.Zero, 0));
-    }
+        => gestureDrag.SideEffect(g => Gtk.SignalConnect<DragGestureDelegate>(g, "drag-begin", 
+            (IntPtr _, double x, double y, IntPtr __)  => onDragBegin(x, y)));
 
     public static GestureDragHandle OnDragUpdate(this GestureDragHandle gestureDrag, Action<double, double> onDragUpdate)
-    {
-        void dragUpdate(IntPtr _, double x, double y, IntPtr __)  => onDragUpdate(x, y);
-        return gestureDrag.SideEffect(g => Gtk.SignalConnect(g, "drag-update", Marshal.GetFunctionPointerForDelegate((DragGestureDelegate)dragUpdate), IntPtr.Zero, IntPtr.Zero, 0));
-    }
+        => gestureDrag.SideEffect(g => Gtk.SignalConnect<DragGestureDelegate>(g, "drag-update", 
+            (IntPtr _, double x, double y, IntPtr __)  => onDragUpdate(x, y)));
 
     public static GestureDragHandle OnDragEnd(this GestureDragHandle gestureDrag, Action<double, double> onDragEnd)
-    {
-        void dragEnd(IntPtr _, double x, double y, IntPtr __)  => onDragEnd(x, y);
-        return gestureDrag.SideEffect(g => Gtk.SignalConnect(g, "drag-end", Marshal.GetFunctionPointerForDelegate((DragGestureDelegate)dragEnd), IntPtr.Zero, IntPtr.Zero, 0));
-    }
+        => gestureDrag.SideEffect(g => Gtk.SignalConnect<DragGestureDelegate>(g, "drag-end", 
+            (IntPtr _, double x, double y, IntPtr __)  => onDragEnd(x, y)));
 }
 
