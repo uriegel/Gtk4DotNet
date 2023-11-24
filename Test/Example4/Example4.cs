@@ -53,8 +53,8 @@ static class Example4
                                                         .Text(content.Content)
                                                         .SideEffect(t =>
                                                         {
-                                                            // var tag = t.GetBuffer().CreateTag();
-                                                            // Settings.Bind(settings, "font", tag, "font", BindFlags.Default);
+                                                            var tag = t.GetBuffer().CreateTag();
+                                                            Settings.Bind(settings, "font", tag, "font", BindFlags.Default);
                                                         })),
                                                 content.Name, content.Name)
                                             ))))
@@ -65,9 +65,10 @@ static class Example4
 
 
                 {
+                    // TODO
                     GC.Collect();
                     GC.Collect();
-                    //Dialog4.PreferenceDialog.Show(window.Ref, settings);
+                    Dialog4.PreferenceDialog.Show(window.Ref, settings);
                 }
                     ),
                 new("quit", () => window.Ref.CloseWindow(), "<Ctrl>Q")
