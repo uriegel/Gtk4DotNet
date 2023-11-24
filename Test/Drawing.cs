@@ -17,7 +17,10 @@ static class Drawing
                                 .New()
                                 .Ref(drawingArea)
                                 .SizeRequest(400, 400)
-                                .SetDrawFunction(OnDraw)
+                                .SetDrawFunction((area, cairo, w, h) =>
+                                    cairo
+                                        .SideEffect(c => c.SetSourceSurface(surface, 0, 0))
+                                        .Paint())
                                 .OnResize(OnResize)
                                 .AddController(
                                     GestureDrag    
@@ -45,11 +48,6 @@ static class Drawing
                                 )))
                     .Show())
             .Run(0, IntPtr.Zero);
-
-    static void OnDraw(DrawingAreaHandle area, CairoHandle cairo, int w, int h) =>
-        cairo
-            .SideEffect(c => c.SetSourceSurface(surface, 0, 0))
-            .Paint();        
 
     static void OnResize(DrawingAreaHandle da, int w, int h)
     {

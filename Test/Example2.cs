@@ -27,20 +27,19 @@ static class Example2
                                 .Ref(stack)
                                 .SideEffect(stack => 
                                     GetFiles()
-                                        .ForEach(content => 
-                                            stack.AddTitled(
-                                                ScrolledWindow
-                                                    .New()
-                                                    .HExpand(true)
-                                                    .VExpand(true)
-                                                    .Child(
-                                                        TextView.New()
-                                                        .SetEditable(true)
-                                                        .SetCursorVisible(true)
-                                                        .Text(content.Content)),
-                                                content.Name, content.Name)
-                                            ))))
-                        .Show())
+                                    .ForEach(content => 
+                                        stack.AddTitled(
+                                            ScrolledWindow
+                                            .New()
+                                            .HExpand(true)
+                                            .VExpand(true)
+                                            .Child(
+                                                TextView.New()
+                                                .SetEditable(true)
+                                                .SetCursorVisible(true)
+                                                .Text(content.Content)),
+                                            content.Name, content.Name)))))
+                    .Show())
             .Run(0, IntPtr.Zero);
 
     static IEnumerable<FileContent> GetFiles()

@@ -10,9 +10,14 @@ public static class DrawingArea
     public extern static DrawingAreaHandle New();
 
     public static DrawingAreaHandle SetDrawFunction(this DrawingAreaHandle drawingArea, Action<DrawingAreaHandle, CairoWeakHandle, int, int> draw)
+        => SetDrawFunction(drawingArea, (IntPtr _, IntPtr cairo, int w, int h, IntPtr ___) => draw(drawingArea, CairoWeakHandle.Create(cairo), w, h));
+
+    static DrawingAreaHandle SetDrawFunction(this DrawingAreaHandle drawingArea, DrawFunctionDelegate draw)
     {
-        void drawFunction(IntPtr _, IntPtr cairo, int w, int h, IntPtr ___)  => draw(drawingArea, CairoWeakHandle.Create(cairo), w, h);
-        drawingArea.SetDrawFunction(Marshal.GetFunctionPointerForDelegate((DrawFunctionDelegate)drawFunction), IntPtr.Zero, p => { });
+        var key = GtkDelegates.GetKey();
+        GtkDelegates.Add(key, draw);
+        drawingArea.AddWeakRefRaw(() => GtkDelegates.Remove(key));
+        drawingArea.SetDrawFunction(Marshal.GetFunctionPointerForDelegate((Delegate)draw), IntPtr.Zero, p=>{});
         return drawingArea;
     }
 
