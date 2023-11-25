@@ -3,8 +3,6 @@ using CsTools.Extensions;
 using LinqTools;
 using GtkDotNet.SafeHandles;
 
-
-// TODO static mnemonics
 static class Example4
 {
     public static int Run()
@@ -65,16 +63,7 @@ static class Example4
                         .Show())
             .AddActions(new GtkAction[]
             {
-                new("preferences", () =>
-
-
-                {
-                    // TODO
-                    GC.Collect();
-                    GC.Collect();
-                    Dialog4.PreferenceDialog.Show(window.Ref, settings);
-                }
-                    ),
+                new("preferences", () => new Dialog4.PreferenceDialog().Show(window.Ref, settings)),
                 new("quit", () => window.Ref.CloseWindow(), "<Ctrl>Q")
             })
             .Run(0, IntPtr.Zero);

@@ -4,9 +4,9 @@ using LinqTools;
 
 namespace Dialog4;
 
-static class PreferenceDialog
+class PreferenceDialog
 {
-    public static void Show(WindowHandle window, SettingsHandle settings)
+    public void Show(WindowHandle window, SettingsHandle settings)
         => Dialog.New()
             .TransientFor(window)
             .Modal()
@@ -23,7 +23,7 @@ static class PreferenceDialog
                     .Attach(Label
                         .New("_Font:")
                         .XAlign(1)
-                        //.MnemonicWidget(font)
+                        .MnemonicWidget(font)
                         .UseUnderline(), 0, 0, 1, 1)
                     .Attach(FontButton
                         .New()
@@ -32,7 +32,7 @@ static class PreferenceDialog
                     .Attach(Label
                         .New("_Transition:")
                         .XAlign(1)
-                        //.MnemonicWidget(transition)
+                        .MnemonicWidget(transition)
                         .UseUnderline(), 0, 1, 1, 1)
                     .Attach(ComboBoxText
                         .New()
@@ -45,6 +45,6 @@ static class PreferenceDialog
             .Show();
             
 
-    static readonly WidgetRef<FontButtonHandle> font = new();
-    static readonly WidgetRef<ComboBoxTextHandle> transition = new();
+    readonly WidgetRef<FontButtonHandle> font = new();
+    readonly WidgetRef<ComboBoxTextHandle> transition = new();
 }
