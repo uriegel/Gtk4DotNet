@@ -1,6 +1,6 @@
 namespace GtkDotNet.SafeHandles;
 
-public class HeaderBarHandle : ContainerHandle
+public class HeaderBarHandle : WidgetHandle
 {
     public HeaderBarHandle() : base() {}
 }

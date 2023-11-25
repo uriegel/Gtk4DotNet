@@ -1,6 +1,6 @@
 namespace GtkDotNet.SafeHandles;
 
-public class SearchBarHandle : BinHandle
+public class SearchBarHandle : WidgetHandle
 {
     public SearchBarHandle() : base() {}
 }

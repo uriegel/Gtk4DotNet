@@ -1,6 +1,6 @@
 namespace GtkDotNet.SafeHandles;
 
-public class WindowHandle : BinHandle
+public class WindowHandle : WidgetHandle
 {
     public WindowHandle() : base() {}
 }

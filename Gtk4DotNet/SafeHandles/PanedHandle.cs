@@ -1,6 +1,6 @@
 namespace GtkDotNet.SafeHandles;
 
-public class PanedHandle : ContainerHandle
+public class PanedHandle : WidgetHandle
 {
     public PanedHandle() : base() {}
 }

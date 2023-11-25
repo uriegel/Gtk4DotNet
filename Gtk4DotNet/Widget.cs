@@ -148,6 +148,30 @@ public static class Widget
     public static string? GetName(this WidgetHandle widget)
         => widget._GetName().PtrToString();
 
+    public static IEnumerable<WidgetHandle> GetChildren(this WidgetHandle widget)
+    {
+        var first = widget._GetFirstChild();
+        yield return first!;
+
+        if (first?.IsInvalid != true)
+        {
+            var current = first!;
+            while (true)
+            {
+                var next = current._GetNextSibling();
+                if (next.IsInvalid)
+                     break;
+                yield return next;
+                current = next;
+            }
+        }
+    }
+
+    public static IEnumerable<WidgetHandle> GetAllChildren(this WidgetHandle widget)
+        => from n in widget.GetChildren()
+           from m in n.GetChildren()
+           select m;
+
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_show", CallingConvention = CallingConvention.Cdecl)]
     extern static void _Show(this WidgetHandle widget);
 
@@ -180,6 +204,9 @@ public static class Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_first_child", CallingConvention = CallingConvention.Cdecl)]
     extern static WidgetHandle _GetFirstChild(this WidgetHandle widget);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_next_sibling", CallingConvention = CallingConvention.Cdecl)]
+    extern static WidgetHandle _GetNextSibling(this WidgetHandle widget);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_parent", CallingConvention = CallingConvention.Cdecl)]
     extern static WidgetHandle _GetParent(this WidgetHandle widget);

@@ -1,6 +1,6 @@
 namespace GtkDotNet.SafeHandles;
 
-public class GridHandle : ContainerHandle
+public class GridHandle : WidgetHandle
 {
     public GridHandle() : base() {}
 }

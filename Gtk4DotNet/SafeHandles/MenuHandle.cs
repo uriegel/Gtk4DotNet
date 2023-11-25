@@ -1,6 +1,6 @@
 namespace GtkDotNet.SafeHandles;
 
-public class MenuHandle : ContainerHandle
+public class MenuHandle : WidgetHandle
 {
     public MenuHandle() : base() { }
 }

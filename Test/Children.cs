@@ -1,4 +1,5 @@
 using GtkDotNet;
+using GtkDotNet.SafeHandles;
 using LinqTools;
 using static System.Console;
 
@@ -32,7 +33,7 @@ static class Children
                         .StartChild(Button
                             .NewWithLabel("Test")
                             .Name("Btn3")
-                            .OnClicked(() => win.CloseWindow()), true, true) 
+                            .OnClicked(() => GetChildren(win)), true, true) 
                         .EndChild(Button
                             .NewWithLabel("Quit")
                             .Name("Btn4")
@@ -40,5 +41,11 @@ static class Children
                         0, 1, 2, 1)))
                 .Show())
             .Run(0, IntPtr.Zero);
+
+    static void GetChildren(WindowHandle win)
+    {
+        var children = win.GetChildren();
+        var affen = children.ToArray();
+    }
 }
 

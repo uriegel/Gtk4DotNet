@@ -1,6 +1,6 @@
 namespace GtkDotNet.SafeHandles;
 
-public class StackHandle : ContainerHandle
+public class StackHandle : WidgetHandle
 {
     public StackHandle() : base() {}
 }
