@@ -151,7 +151,10 @@ public static class Widget
     public static IEnumerable<WidgetHandle> GetChildren(this WidgetHandle widget)
     {
         var first = widget._GetFirstChild();
-        yield return first!;
+        if (first?.IsInvalid == true)
+            yield break;
+        else
+            yield return first!;
 
         if (first?.IsInvalid != true)
         {
@@ -160,17 +163,26 @@ public static class Widget
             {
                 var next = current._GetNextSibling();
                 if (next.IsInvalid)
-                     break;
+                    yield break;
                 yield return next;
                 current = next;
             }
         }
     }
 
+    public static WidgetHandle? FindWidget(this WidgetHandle widget, Func<WidgetHandle, bool> predicate)
+        => widget
+            .GetAllChildren()
+            .FirstOrDefault(predicate);
+
     public static IEnumerable<WidgetHandle> GetAllChildren(this WidgetHandle widget)
-        => from n in widget.GetChildren()
-           from m in n.GetChildren()
-           select m;
+    {
+        var children = widget.GetChildren();
+        var childrensChildren = from n in children
+                                from m in n.GetAllChildren()
+                                select m;
+        return children.Concat(childrensChildren);
+    }
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_show", CallingConvention = CallingConvention.Cdecl)]
     extern static void _Show(this WidgetHandle widget);

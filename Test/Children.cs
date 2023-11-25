@@ -35,7 +35,7 @@ static class Children
                             .Name("Btn3")
                             .OnClicked(() => GetChildren(win)), true, true) 
                         .EndChild(Button
-                            .NewWithLabel("Quit")
+                            .NewWithLabel("Quit")   
                             .Name("Btn4")
                             .OnClicked(() => win.CloseWindow()), true, true), 
                         0, 1, 2, 1)))
@@ -44,8 +44,14 @@ static class Children
 
     static void GetChildren(WindowHandle win)
     {
-        var children = win.GetChildren();
-        var affen = children.ToArray();
+        win
+            .GetAllChildren()
+            .Select(n => n.GetName())
+            .ForEach(WriteLine);
+        WriteLine();
+        WriteLine(win.FindWidget(w => w.GetName() == "Btn3")?.GetName());
+        WriteLine();
+        WriteLine(win.FindWidget(w => w.GetName() == "Not found")?.GetName() ?? "not found");
     }
 }
 
