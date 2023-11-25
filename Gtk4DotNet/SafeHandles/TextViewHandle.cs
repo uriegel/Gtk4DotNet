@@ -1,6 +1,6 @@
 namespace GtkDotNet.SafeHandles;
 
-public class TextViewHandle : WidgetHandle
+public class TextViewHandle : ContainerHandle
 {
     public TextViewHandle() : base() { }
 }

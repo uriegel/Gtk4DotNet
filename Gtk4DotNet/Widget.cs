@@ -1,4 +1,6 @@
+using System.Diagnostics.Metrics;
 using System.Runtime.InteropServices;
+using GtkDotNet.Extensions;
 using GtkDotNet.SafeHandles;
 using LinqTools;
 
@@ -125,6 +127,27 @@ public static class Widget
         where THandle : WidgetHandle
         => widget.SideEffect(w => _InsertAfter(child, w, previous ?? new WidgetHandle()));
 
+    /// <summary>
+    /// Widgets can be named, which allows you to refer to them from a CSS file. You can apply a style to widgets with a particular name in the CSS file. See the documentation for the CSS syntax (on the same page as the docs for GtkStyleContext).
+    /// Note that the CSS syntax has certain special characters to delimit and represent elements in a selector (period, #, >, *…), so using these will make your widget impossible to match by name. Any combination of alphanumeric symbols, dashes and underscores will suffice
+    /// </summary>
+    /// <typeparam name="THandle"></typeparam>
+    /// <param name="widget"></param>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public static THandle Name<THandle>(this THandle widget, string name)
+        where THandle : WidgetHandle
+        => widget.SideEffect(w => w.SetName(name));
+
+    /// <summary>
+    /// Widgets can be named, which allows you to refer to them from a CSS file. You can apply a style to widgets with a particular name in the CSS file. See the documentation for the CSS syntax (on the same page as the docs for GtkStyleContext).
+    /// Note that the CSS syntax has certain special characters to delimit and represent elements in a selector (period, #, >, *…), so using these will make your widget impossible to match by name. Any combination of alphanumeric symbols, dashes and underscores will suffice
+    /// </summary>
+    /// <param name="widget"></param>
+    /// <returns></returns>
+    public static string? GetName(this WidgetHandle widget)
+        => widget._GetName().PtrToString();
+
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_show", CallingConvention = CallingConvention.Cdecl)]
     extern static void _Show(this WidgetHandle widget);
 
@@ -169,5 +192,11 @@ public static class Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_insert_after", CallingConvention = CallingConvention.Cdecl)]
     extern static void _InsertAfter(WidgetHandle widget, WidgetHandle parent, WidgetHandle? previous);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_name", CallingConvention = CallingConvention.Cdecl)]
+    extern static IntPtr _GetName(this WidgetHandle widget);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_set_name", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetName(this WidgetHandle widget, string name);
 }
 

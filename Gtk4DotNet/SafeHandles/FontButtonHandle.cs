@@ -1,6 +1,6 @@
 namespace GtkDotNet.SafeHandles;
 
-public class FontButtonHandle : WidgetHandle
+public class FontButtonHandle : ButtonHandle
 {
     public FontButtonHandle() : base() {}
 }

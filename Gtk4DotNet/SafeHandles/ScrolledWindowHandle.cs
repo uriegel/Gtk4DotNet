@@ -1,6 +1,6 @@
 namespace GtkDotNet.SafeHandles;
 
-public class ScrolledWindowHandle : WidgetHandle
+public class ScrolledWindowHandle : ContainerHandle
 {
     public ScrolledWindowHandle() : base() {}
 }

@@ -25,7 +25,7 @@ public static class Button
     public static string? GetIconName(this ButtonHandle button)
         => _GetIconName(button).PtrToString();
 
-[DllImport(Libs.LibGtk, EntryPoint="gtk_button_get_label", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_button_get_label", CallingConvention = CallingConvention.Cdecl)]
     extern static IntPtr _GetLabel(ButtonHandle button);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_button_set_label", CallingConvention = CallingConvention.Cdecl)]

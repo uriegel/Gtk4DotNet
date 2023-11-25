@@ -44,7 +44,8 @@ static class Example5
                                 SearchBar.New()
                                 .Ref(searchBar)
                                 .Child(
-                                    SearchEntry.New()))
+                                    SearchEntry.New()
+                                    .OnSearchChanged(SearchTextChanged)))
                             .Append(
                                 Stack.New()
                                 .Ref(stack)
@@ -60,6 +61,7 @@ static class Example5
                                                     .VExpand(true)
                                                     .Child(
                                                         TextView.New()
+                                                        .Ref(textview)
                                                         .SetEditable(false)
                                                         .SetCursorVisible(true)
                                                         .Text(content.Content)
@@ -95,12 +97,25 @@ static class Example5
             file => new FileContent(
                 file.GetBasename(), file.LoadStringContents() ?? ""));
 
+    static void SearchTextChanged(SearchEntryHandle entry)
+    {
+        var buffer = textview.Ref.GetBuffer();
+        var startIter = buffer.GetStartIter();
+        var result = startIter.ForwardSearch(entry.GetText() ?? "", SearchFlags.CaseInsensitive);
+        if (result.HasValue)
+        {
+            var range = buffer.SelectRange(result.Value);
+            textview.Ref.ScrollToIter(range.Start);
+        }
+    }
+
     static SettingsHandle settings = new();
     static readonly ObjectRef<WindowHandle> window = new();
     static readonly ObjectRef<StackHandle> stack = new();
     static readonly ObjectRef<ToggleButtonHandle> search = new();
     static readonly ObjectRef<SearchBarHandle> searchBar = new();
-    
+    static readonly ObjectRef<TextViewHandle> textview = new();
+        
     record FileContent(string Name, string Content);
 }
 

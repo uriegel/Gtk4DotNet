@@ -1,6 +1,6 @@
 namespace GtkDotNet.SafeHandles;
 
-public class BoxHandle : WidgetHandle
+public class BoxHandle : ContainerHandle
 {
     public BoxHandle() : base() {}
 }

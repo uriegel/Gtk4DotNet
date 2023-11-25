@@ -1,6 +1,6 @@
 namespace GtkDotNet.SafeHandles;
 
-public class StackSwitcherHandle : WidgetHandle
+public class StackSwitcherHandle : BoxHandle
 {
     public StackSwitcherHandle() : base() {}
 }

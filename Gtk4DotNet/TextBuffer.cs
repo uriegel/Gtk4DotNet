@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using Gtk4DotNet.Structs;
 using GtkDotNet.SafeHandles;
 
 namespace GtkDotNet;
@@ -26,6 +27,15 @@ public class TextBuffer
     public IntPtr ApplyTag(IntPtr tag, TextIter startIter, TextIter endIter)
         => ApplyTag(buffer, tag, ref startIter, ref endIter);
 
+    public RangeIter SelectRange(RangeIter range)
+    {
+        var s = range.Start;
+        var e = range.End;
+        SelectRange(buffer, ref s, ref e);
+        return new(s, e);
+    }
+        
+
     internal TextBuffer(IntPtr buffer) => this.buffer = buffer; 
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_text_view_new", CallingConvention = CallingConvention.Cdecl)]
@@ -45,6 +55,9 @@ public class TextBuffer
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_text_buffer_apply_tag", CallingConvention = CallingConvention.Cdecl)]
     extern static IntPtr ApplyTag(IntPtr buffer, IntPtr tag, ref TextIter startIter, ref TextIter endIter);
+
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_text_buffer_select_range", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SelectRange(IntPtr buffer, ref TextIter matchStart, ref TextIter matchEnd);
 
     readonly IntPtr buffer;
 }

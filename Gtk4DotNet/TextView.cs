@@ -26,6 +26,9 @@ public static class TextView
     public static TextViewHandle SetCursorVisible(this TextViewHandle textview, bool set)
         => textview.SideEffect(s => s._SetCursorVisible(set));
 
+    public static bool ScrollToIter(this TextViewHandle textView, TextIter iter, double withinMargin = 0, bool useAlign = false, double xAlign = 0, double yAlign = 0)
+        => textView._ScrollToIter(ref iter, withinMargin, useAlign, xAlign, yAlign);        
+
     /// <summary>
     /// Returns the GtkTextBuffer being displayed by this text view.
     /// The reference count on the buffer is not incremented; the caller of this function won’t own a new reference.
@@ -41,8 +44,8 @@ public static class TextView
     [DllImport(Libs.LibGtk, EntryPoint="gtk_text_view_set_cursor_visible", CallingConvention = CallingConvention.Cdecl)]
     extern static void _SetCursorVisible(this TextViewHandle textView, bool set);
 
-    // [DllImport(Libs.LibGtk, EntryPoint="gtk_text_view_scroll_to_iter", CallingConvention = CallingConvention.Cdecl)]
-    // extern static bool ScrollToIter(this TextViewHandle textView, ref GtkTextIter iter, double withinMargin, bool useAlign, double xAlign, double yAlign);
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_text_view_scroll_to_iter", CallingConvention = CallingConvention.Cdecl)]
+    extern static bool _ScrollToIter(this TextViewHandle textView, ref TextIter iter, double withinMargin, bool useAlign, double xAlign, double yAlign);
 }
 
 
