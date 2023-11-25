@@ -1,6 +1,6 @@
 namespace GtkDotNet.SafeHandles;
 
-public class ComboBoxHandle : ContainerHandle
+public class ComboBoxHandle : BinHandle
 {
     public ComboBoxHandle() : base() {}
 }

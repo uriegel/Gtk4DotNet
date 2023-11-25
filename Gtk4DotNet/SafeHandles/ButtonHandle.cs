@@ -1,6 +1,6 @@
 namespace GtkDotNet.SafeHandles;
 
-public class ButtonHandle : ContainerHandle
+public class ButtonHandle : BinHandle
 {
     public ButtonHandle() : base() {}
 }
