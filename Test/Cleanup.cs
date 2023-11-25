@@ -147,7 +147,7 @@ static class Cleanup
         ReadLine();
     }
 
-    static WidgetRef<WindowHandle> window = new();
+    static ObjectRef<WindowHandle> window = new();
 }
 
 class Test1

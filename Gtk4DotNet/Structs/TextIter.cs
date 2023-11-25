@@ -1,3 +1,5 @@
+namespace GtkDotNet;
+
 using System.Runtime.InteropServices;
 
 [StructLayout(LayoutKind.Sequential)]

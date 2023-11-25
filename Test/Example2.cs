@@ -54,7 +54,7 @@ static class Example2
             file => new FileContent(
                 file.GetBasename(), file.LoadStringContents() ?? ""));
 
-    static readonly WidgetRef<StackHandle> stack = new();
+    static readonly ObjectRef<StackHandle> stack = new();
 
     record FileContent(string Name, string Content);
 }

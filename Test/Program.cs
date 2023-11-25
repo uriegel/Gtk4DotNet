@@ -15,6 +15,7 @@ WriteLine(
     10: Example 2
     11: Example 3
     12: Example 4
+    13: Example 5
     <any>: Quit
     """);
 WriteLine($"Return value: {ReadLine() switch 
@@ -31,5 +32,6 @@ WriteLine($"Return value: {ReadLine() switch
     "10" => Example2.Run(),
     "11" => Example3.Run(),
     "12" => Example4.Run(),
+    "13" => Example5.Run(),
     _ => 0
 }}");

@@ -95,7 +95,7 @@ static class Drawing
     static void Stroke(double x, double y)
         => DrawBrush(startX + x, startY + y);
 
-    static readonly WidgetRef<DrawingAreaHandle> drawingArea = new();
+    static readonly ObjectRef<DrawingAreaHandle> drawingArea = new();
     static SurfaceHandle surface = new();
     static double startX;
     static double startY;

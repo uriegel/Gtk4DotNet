@@ -12,19 +12,8 @@ public static class StackSwitcher
     public static StackSwitcherHandle Stack(this StackSwitcherHandle stackSwitcher, StackHandle stack)
         => stackSwitcher.SideEffect(s => s.SetStack(stack));
 
-    public static StackSwitcherHandle StackRef(this StackSwitcherHandle stackSwitcher, WidgetRef<StackHandle> stack)
-    {
-        if (stack.Handle != null)
-            stackSwitcher.Stack(stack.Handle);
-
-        // TODO if StackSwitcher is disposed, remove this eventhandler
-        stack.Changed += () =>
-        {
-            if (stack.Handle != null)
-                stackSwitcher.Stack(stack.Handle);
-        };
-        return stackSwitcher;
-    }
+    public static StackSwitcherHandle StackRef(this StackSwitcherHandle stackSwitcher, ObjectRef<StackHandle> stack)
+        => stackSwitcher.SideEffect(s => stack.SetHandle<StackHandle>(st => s.Stack(st)));
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_stack_switcher_set_stack", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetStack(this StackSwitcherHandle stackSwitcher, StackHandle stack);

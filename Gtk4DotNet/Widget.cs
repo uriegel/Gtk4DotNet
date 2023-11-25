@@ -6,21 +6,21 @@ namespace GtkDotNet;
 
 public static class Widget
 {
-    public static THandle Ref<THandle>(this THandle widget, WidgetRef<THandle> widgetRef)
+    public static THandle Ref<THandle>(this THandle widget, ObjectRef<THandle> ObjectRef)
         where THandle : WidgetHandle, new()
-        => widget.SideEffect(w => widgetRef.Handle = widget);
+        => widget.SideEffect(w => ObjectRef.Handle = widget);
 
     // TODO Text cleanup and GC collect
-    public static THandle Show<THandle>(this THandle widget)
-        where THandle : WidgetHandle
-        => widget
-        .SideEffect(w => w._Show())
-        .SideEffect(w => GC.Collect())
-        .SideEffect(w => GC.Collect());
-
     // public static THandle Show<THandle>(this THandle widget)
     //     where THandle : WidgetHandle
-    //     => widget.SideEffect(w => w._Show());
+    //     => widget
+    //     .SideEffect(w => w._Show())
+    //     .SideEffect(w => GC.Collect())
+    //     .SideEffect(w => GC.Collect());
+
+    public static THandle Show<THandle>(this THandle widget)
+        where THandle : WidgetHandle
+        => widget.SideEffect(w => w._Show());
 
     public static THandle HAlign<THandle>(this THandle widget, Align align)
         where THandle : WidgetHandle
@@ -93,9 +93,6 @@ public static class Widget
         where THandle : WidgetHandle
         => widget.SideEffect(w => w.SetVExpand(expand));
 
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_set_sensitive", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void SetSensitive(this WidgetHandle widget, bool sensitive);
-
     public static THandle? GetFirstChild<THandle>(this THandle widget)
         where THandle : WidgetHandle
         => _GetFirstChild(widget) as THandle;
@@ -107,6 +104,14 @@ public static class Widget
         where THandle : WidgetHandle
         => _GetParent(widget) as THandle;
 
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_sensitive", CallingConvention = CallingConvention.Cdecl)]
+    public extern static bool GetSensitive(this WidgetHandle widget);
+
+    public static THandle Sensitive<THandle>(this THandle widget, bool sensitive)
+        where THandle : WidgetHandle
+        => widget.SideEffect(w => w.SetSensitive(sensitive));
+
+
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_add_css_class", CallingConvention = CallingConvention.Cdecl)]
     public extern static void AddCssClass(this WidgetHandle widget, string cssClass);
 
@@ -115,6 +120,10 @@ public static class Widget
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_display", CallingConvention = CallingConvention.Cdecl)]
     public extern static DisplayHandle GetDisplay(this WidgetHandle widget);
+
+    public static THandle InsertAfter<THandle>(this THandle widget, WidgetHandle child, WidgetHandle? previous = null)
+        where THandle : WidgetHandle
+        => widget.SideEffect(w => _InsertAfter(child, w, previous ?? new WidgetHandle()));
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_show", CallingConvention = CallingConvention.Cdecl)]
     extern static void _Show(this WidgetHandle widget);
@@ -154,5 +163,11 @@ public static class Widget
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_add_controller", CallingConvention = CallingConvention.Cdecl)]
     extern static void _AddController(this WidgetHandle widget, EventControllerHandle eventController);
+
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_set_sensitive", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetSensitive(this WidgetHandle widget, bool sensitive);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_insert_after", CallingConvention = CallingConvention.Cdecl)]
+    extern static void _InsertAfter(WidgetHandle widget, WidgetHandle parent, WidgetHandle? previous);
 }
 

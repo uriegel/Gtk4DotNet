@@ -21,21 +21,9 @@ public static class Label
     public  static LabelHandle MnemonicWidget(this LabelHandle label, WidgetHandle widget)
         => label.SideEffect(l => l.SetMnemonicWidget(widget));
 
-    public static LabelHandle MnemonicWidget<THandle>(this LabelHandle label, WidgetRef<THandle> widget)
+    public static LabelHandle MnemonicWidget<THandle>(this LabelHandle label, ObjectRef<THandle> widget)
         where THandle : WidgetHandle, new()
-    {
-        if (widget.Handle != null)
-            label.SetMnemonicWidget(widget.Handle);
-        else
-        {
-            widget.Changed += () =>
-            {
-                if (widget.Handle != null)
-                    label.SetMnemonicWidget(widget.Handle);
-            };
-        }
-        return label;
-    }
+        => label.SideEffect(l => widget.SetHandle<THandle>(w => l.SetMnemonicWidget(w)));
 
     public  static LabelHandle XAlign(this LabelHandle label, float xalign)
         => label.SideEffect(l => l.SetXAlign(xalign));

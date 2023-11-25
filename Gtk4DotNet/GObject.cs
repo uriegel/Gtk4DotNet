@@ -71,6 +71,15 @@ public static class GObject
     [DllImport(Libs.LibGtk, EntryPoint="g_object_ref", CallingConvention = CallingConvention.Cdecl)]
     public extern static void Ref(this ObjectHandle obj);
 
+    public static THandle BindProperty<THandle, TTargetHandle>(this THandle source, string sourceProperty, ObjectRef<TTargetHandle> target, string targetProperty, BindingFlags bindingFlags)
+        where THandle : ObjectHandle, new()
+        where TTargetHandle : ObjectHandle, new()
+        => source.SideEffect(s => target.SetHandle<TTargetHandle>(t => s._BindProperty(sourceProperty, t, targetProperty, bindingFlags)));
+
+    public static THandle BindProperty<THandle>(this THandle source, string sourceProperty, ObjectHandle target, string targetProperty, BindingFlags bindingFlags)
+        where THandle : ObjectHandle, new()
+        => source.SideEffect(s => s._BindProperty(sourceProperty, target, targetProperty, bindingFlags));
+    
     internal static void AddWeakRefRaw(this ObjectHandle obj, Action dispose)
     {
         var key = GtkDelegates.GetKey();
@@ -82,6 +91,9 @@ public static class GObject
         GtkDelegates.Add(key, callback);
         obj.AddWeakRef(Marshal.GetFunctionPointerForDelegate(callback as Delegate), IntPtr.Zero);
     }
+
+    [DllImport(Libs.LibGtk, EntryPoint="g_object_bind_property", CallingConvention = CallingConvention.Cdecl)]
+    extern static void _BindProperty(this ObjectHandle source, string sourceProperty, ObjectHandle target, string targetProperty, BindingFlags bindingFlags);
 
     // [DllImport(Libs.LibGtk, EntryPoint="g_object_unref", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void Unref(this IntPtr obj);
@@ -98,9 +110,6 @@ public static class GObject
     //     GetInt(obj, name, out var value, IntPtr.Zero);
     //     return value;
     // }
-
-    // [DllImport(Libs.LibGtk, EntryPoint="g_object_bind_property", CallingConvention = CallingConvention.Cdecl)]
-    // public extern static void BindProperty(this IntPtr source, string sourceProperty, IntPtr target, string targetProperty, BindingFlags bindingFlags);
 
     // [DllImport(Libs.LibGtk, EntryPoint="g_type_from_name", CallingConvention = CallingConvention.Cdecl)]
     // public extern static GType TypeFromName(string objectName);

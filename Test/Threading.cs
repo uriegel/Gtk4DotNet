@@ -72,6 +72,6 @@ static class Threading
         WriteLine($"Leaving AsyncInvoke, Thread {Environment.CurrentManagedThreadId}");
     }
 
-    static readonly WidgetRef<LabelHandle> label = new();
+    static readonly ObjectRef<LabelHandle> label = new();
 }
 

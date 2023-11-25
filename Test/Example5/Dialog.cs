@@ -2,7 +2,7 @@ using GtkDotNet;
 using GtkDotNet.SafeHandles;
 using LinqTools;
 
-namespace Dialog4;
+namespace Dialog5;
 
 class PreferenceDialog
 {

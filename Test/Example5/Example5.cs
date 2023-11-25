@@ -3,7 +3,7 @@ using CsTools.Extensions;
 using LinqTools;
 using GtkDotNet.SafeHandles;
 
-static class Example4
+static class Example5
 {
     public static int Run()
         => Application
@@ -29,17 +29,29 @@ static class Example4
                                     .AppendItem(MenuItem.New("_Preferences", "app.preferences"))))
                                 .AppendItem(MenuItem.NewSection(null,
                                     Menu.New()
-                                    .AppendItem(MenuItem.New("_Quit", "app.quit")))))
-                        ))
+                                    .AppendItem(MenuItem.New("_Quit", "app.quit"))))))
+                        .PackEnd(
+                            ToggleButton.New()
+                            .Ref(search)
+                            .BindProperty("active", searchBar, "search-mode-enabled", BindingFlags.Bidirectional)
+                            .IconName("edit-find-symbolic")
+                            .Sensitive(false))
+                        )
                     .Child(
                         Box
                             .New(Orientation.Vertical)
+                            .Append(
+                                SearchBar.New()
+                                .Ref(searchBar)
+                                .Child(
+                                    SearchEntry.New()))
                             .Append(
                                 Stack.New()
                                 .Ref(stack)
                                 .SideEffect(s => Settings.Bind(settings, "transition", s, "transition-type", BindFlags.Default))
                                 .SideEffect(stack => 
                                     GetFiles()
+                                        .SideEffect(files => search.Ref.Sensitive(files.Length > 0))
                                         .ForEach(content => 
                                             stack.AddTitled(
                                                 ScrolledWindow
@@ -68,12 +80,15 @@ static class Example4
             })
             .Run(0, IntPtr.Zero);
 
-    static IEnumerable<FileContent> GetFiles()
-        => new[] {
-            "First.cs",
-            "Drawing.cs",
-            "Example2.cs"
-        }.Select(GetFile);
+    static FileContent[] GetFiles()
+        => new []
+            {
+                "First.cs",
+                "Drawing.cs",
+                "Example2.cs"
+            }
+            .Select(GetFile)
+            .ToArray();
 
     static FileContent GetFile(string path)
         => GFile.New(Directory.GetCurrentDirectory().AppendPath(path)).Use(
@@ -83,7 +98,9 @@ static class Example4
     static SettingsHandle settings = new();
     static readonly ObjectRef<WindowHandle> window = new();
     static readonly ObjectRef<StackHandle> stack = new();
-
+    static readonly ObjectRef<ToggleButtonHandle> search = new();
+    static readonly ObjectRef<SearchBarHandle> searchBar = new();
+    
     record FileContent(string Name, string Content);
 }
 

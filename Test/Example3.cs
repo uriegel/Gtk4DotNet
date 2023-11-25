@@ -71,8 +71,8 @@ static class Example3
             file => new FileContent(
                 file.GetBasename(), file.LoadStringContents() ?? ""));
 
-    static readonly WidgetRef<WindowHandle> window = new();
-    static readonly WidgetRef<StackHandle> stack = new();
+    static readonly ObjectRef<WindowHandle> window = new();
+    static readonly ObjectRef<StackHandle> stack = new();
 
     record FileContent(string Name, string Content);
 }
