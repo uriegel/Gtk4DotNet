@@ -10,6 +10,13 @@ public abstract class BaseHandle : SafeHandleZeroOrMinusOneIsInvalid
     protected override bool ReleaseHandle() => true;
     //     => NativeMethods.CloseHandle(handle);
 
+    internal IntPtr TakeHandle() 
+    {
+        var result = handle;
+        handle = IntPtr.Zero;
+        return result;
+    }
+
     // - There is no need to implement a finalizer, MySafeHandle already has one
     // - You do not need to protect against multiple disposing, MySafeHandle already does
 }

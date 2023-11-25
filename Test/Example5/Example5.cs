@@ -48,6 +48,7 @@ static class Example5
                                     .OnSearchChanged(SearchTextChanged)))
                             .Append(
                                 Stack.New()
+                                .OnVisibleChanged(OnStackChanged)
                                 .Ref(stack)
                                 .SideEffect(s => Settings.Bind(settings, "transition", s, "transition-type", BindFlags.Default))
                                 .SideEffect(stack => 
@@ -61,7 +62,7 @@ static class Example5
                                                     .VExpand(true)
                                                     .Child(
                                                         TextView.New()
-                                                        .Ref(textview)
+                                                        .Name("TextView")
                                                         .SetEditable(false)
                                                         .SetCursorVisible(true)
                                                         .Text(content.Content)
@@ -99,22 +100,31 @@ static class Example5
 
     static void SearchTextChanged(SearchEntryHandle entry)
     {
-        var buffer = textview.Ref.GetBuffer();
-        var startIter = buffer.GetStartIter();
-        var result = startIter.ForwardSearch(entry.GetText() ?? "", SearchFlags.CaseInsensitive);
-        if (result.HasValue)
+        var textView =
+            stack.Ref
+                .GetVisibleChild()
+                .FindWidget(n => n.GetName() == "TextView")
+                ?.DownCastTextViewHandle();
+        if (textView != null)
         {
-            var range = buffer.SelectRange(result.Value);
-            textview.Ref.ScrollToIter(range.Start);
+            var buffer = textView.GetBuffer();
+            var startIter = buffer.GetStartIter();
+            var result = startIter.ForwardSearch(entry.GetText() ?? "", SearchFlags.CaseInsensitive);
+            if (result.HasValue)
+            {
+                var range = buffer.SelectRange(result.Value);
+                textView.ScrollToIter(range.Start);
+            }
         }
     }
+
+    static void OnStackChanged() => searchBar.Ref.SearchMode(false);
 
     static SettingsHandle settings = new();
     static readonly ObjectRef<WindowHandle> window = new();
     static readonly ObjectRef<StackHandle> stack = new();
     static readonly ObjectRef<ToggleButtonHandle> search = new();
     static readonly ObjectRef<SearchBarHandle> searchBar = new();
-    static readonly ObjectRef<TextViewHandle> textview = new();
         
     record FileContent(string Name, string Content);
 }
