@@ -24,6 +24,10 @@ public static class Widget
         where THandle : WidgetHandle
         => widget.SideEffect(w => w._Show());
 
+    public static THandle Visible<THandle>(this THandle widget, bool set)
+        where THandle : WidgetHandle
+        => widget.SideEffect(w => w.SetVisible(set));
+
     public static THandle HAlign<THandle>(this THandle widget, Align align)
         where THandle : WidgetHandle
         => widget.SideEffect(w => w.SetHAlign(align));
