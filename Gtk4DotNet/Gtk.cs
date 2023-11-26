@@ -1,11 +1,11 @@
 using System.Runtime.InteropServices;
-using CsTools.Functional;
 using GtkDotNet.SafeHandles;
 using LinqTools;
 
 namespace GtkDotNet;
 
-// TODO Drawing sample crashes
+// TODO Extended Samples in Branch "OldVersion"
+
 public static class Gtk
 {
     public static Task Dispatch(Action action, bool highPriority = false)
