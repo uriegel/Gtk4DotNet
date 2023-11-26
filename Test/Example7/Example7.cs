@@ -17,14 +17,17 @@ static class Example7
                     .DefaultSize(600, 400)
                     .Titlebar(
                         HeaderBar.New()
-                        .PackStart(
+                        .SideEffect(hb => 
                             Label.New("Lines:")
-                            .Visible(false)
-                        )
-                        .PackStart(
-                            Label.New("")
-                            .Visible(false)
-                        )
+                            .SideEffect(label => hb
+                                .PackStart(
+                                    label
+                                    .Visible(false))
+                                .PackStart(
+                                    Label.New("")
+                                    .Ref(lines)
+                                    .BindProperty("visible", label, "visible", BindingFlags.Default)
+                                    .Visible(false))))
                         .TitleWidget(
                             StackSwitcher.New()
                             .StackRef(stack))
@@ -102,7 +105,9 @@ static class Example7
                                                     content.Name, content.Name)
                                                 )))))
                     .AddAction(settings.CreateAction("show-words"))
+                    .AddAction(PropertyAction.New("show-lines", lines.Ref, "visible"))
                     .SideEffect(_ => UpdateWords())
+                    .SideEffect(_ => UpdateLines())
                     .Show())
             .AddActions(new GtkAction[]
             {
@@ -127,54 +132,52 @@ static class Example7
                 file.GetBasename(), file.LoadStringContents() ?? ""));
 
     static void SearchTextChanged(SearchEntryHandle entry)
-    {
-        var textView =
-            stack.Ref
-                .GetVisibleChild()
-                .FindWidget(n => n.GetName() == "TextView")
-                ?.DownCastTextViewHandle();
-        if (textView != null)
-        {
-            var buffer = textView.GetBuffer();
-            var startIter = buffer.GetStartIter();
-            var result = startIter.ForwardSearch(entry.GetText(), SearchFlags.CaseInsensitive);
-            if (result.HasValue)
+        => stack.Ref
+            .GetVisibleChild()
+            .FindWidget(n => n.GetName() == "TextView")
+            ?.DownCastTextViewHandle()
+            ?.SideEffect(textView =>
             {
-                var range = buffer.SelectRange(result.Value);
-                textView.ScrollToIter(range.Start);
-            }
-        }
-    }
+                var buffer = textView.GetBuffer();
+                var result = buffer.GetStartIter().ForwardSearch(entry.GetText(), SearchFlags.CaseInsensitive);
+                if (result.HasValue)
+                {
+                    var range = buffer.SelectRange(result.Value);
+                    textView.ScrollToIter(range.Start);
+                }
+            });
 
     static void UpdateWords() 
-    {
-        var textView =
-            stack.Ref
-                .GetVisibleChild()
-                .FindWidget(n => n.GetName() == "TextView")
-                ?.DownCastTextViewHandle();
-        if (textView != null)
-        {
-            wordsBox.Ref.RemoveAll();
-            textView
-                .GetText()
+        => stack.Ref
+            .GetVisibleChild()
+            .FindWidget(n => n.GetName() == "TextView")
+            ?.DownCastTextViewHandle()
+            ?.SideEffect(_ => wordsBox.Ref.RemoveAll())
+            ?.GetText()
                 .Split(new[] { ' ', '\n', '.', '"', '(', ')', ';', '}', '{', '/', ',', '<', '>', '=' }, StringSplitOptions.RemoveEmptyEntries)
                 .Select(n => n.Trim())
                 .Where(n => n.Length > 0)
                 .Distinct()
-                .ForEach(n => Button
-                                .NewWithLabel(n)
-                                .SideEffect(b => b.OnClicked(() =>
-                                    searchEntry.Ref.SetText(b.GetLabel())))
-                                .SideEffect(b => wordsBox.Ref.Insert(b)));
-        }
-    }
+                .ForEach(n => 
+                    Button
+                    .NewWithLabel(n)
+                    .SideEffect(b => b.OnClicked(() =>
+                        searchEntry.Ref.SetText(b.GetLabel())))
+                    .SideEffect(b => wordsBox.Ref.Insert(b)));
 
     static void OnStackChanged(StackHandle _) 
     {
         searchBar.Ref.SearchMode(false);
         UpdateWords();
+        UpdateLines();
     } 
+
+    static void UpdateLines()
+        => stack.Ref
+            .GetVisibleChild()
+            .FindWidget(n => n.GetName() == "TextView")
+            ?.DownCastTextViewHandle()
+            ?.SideEffect(tv => lines.Ref.Set($"{tv.GetText().Length}"));
 
     static SettingsHandle settings = new();
     static readonly ObjectRef<WindowHandle> window = new();
@@ -183,6 +186,8 @@ static class Example7
     static readonly ObjectRef<SearchBarHandle> searchBar = new();
     static readonly ObjectRef<ListBoxHandle> wordsBox = new();
     static readonly ObjectRef<SearchEntryHandle> searchEntry = new();
+    static readonly ObjectRef<LabelHandle> lines = new();
+    
         
     record FileContent(string Name, string Content);
 }
