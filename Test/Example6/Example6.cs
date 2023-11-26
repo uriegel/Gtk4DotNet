@@ -3,7 +3,7 @@ using CsTools.Extensions;
 using LinqTools;
 using GtkDotNet.SafeHandles;
 
-static class Example5
+static class Example6
 {
     public static int Run()
         => Application
@@ -26,6 +26,7 @@ static class Example5
                             .Model(Menu.New()
                                 .AppendItem(MenuItem.NewSection(null,
                                     Menu.New()
+                                    .AppendItem(MenuItem.New("_Words", "win.show-words"))
                                     .AppendItem(MenuItem.New("_Preferences", "app.preferences"))))
                                 .AppendItem(MenuItem.NewSection(null,
                                     Menu.New()
@@ -47,38 +48,43 @@ static class Example5
                                     SearchEntry.New()
                                     .OnSearchChanged(SearchTextChanged)))
                             .Append(
-                                Stack.New()
-                                .OnVisibleChanged(OnStackChanged)
-                                .Ref(stack)
-                                .SideEffect(s => Settings.Bind(settings, "transition", s, "transition-type", BindFlags.Default))
-                                .SideEffect(stack => 
-                                    GetFiles()
-                                        .SideEffect(files => search.Ref.Sensitive(files.Length > 0))
-                                        .ForEach(content => 
-                                            stack.AddTitled(
-                                                ScrolledWindow
-                                                    .New()
-                                                    .HExpand(true)
-                                                    .VExpand(true)
-                                                    .Child(
-                                                        TextView.New()
-                                                        .Name("TextView")
-                                                        .SetEditable(false)
-                                                        .SetCursorVisible(true)
-                                                        .Text(content.Content)
-                                                        .SideEffect(t =>
-                                                        {
-                                                            var buffer = t.GetBuffer();
-                                                            var tag = buffer.CreateTag();
-                                                            Settings.Bind(settings, "font", tag, "font", BindFlags.Default);
-                                                            buffer.ApplyTag(tag, buffer.GetStartIter(), buffer.GetEndIter());
-                                                        })),
-                                                content.Name, content.Name)
-                                            ))))
-                        .Show())
+                                Box.New(Orientation.Horizontal)
+                                .Append(
+                                    Revealer.New())
+                                .Append(
+                                    Stack.New()
+                                    .OnVisibleChanged(OnStackChanged)
+                                    .Ref(stack)
+                                    .SideEffect(s => Settings.Bind(settings, "transition", s, "transition-type", BindFlags.Default))
+                                    .SideEffect(stack => 
+                                        GetFiles()
+                                            .SideEffect(files => search.Ref.Sensitive(files.Length > 0))
+                                            .ForEach(content => 
+                                                stack.AddTitled(
+                                                    ScrolledWindow
+                                                        .New()
+                                                        .HExpand(true)
+                                                        .VExpand(true)
+                                                        .Child(
+                                                            TextView.New()
+                                                            .Name("TextView")
+                                                            .SetEditable(false)
+                                                            .SetCursorVisible(true)
+                                                            .Text(content.Content)
+                                                            .SideEffect(t =>
+                                                            {
+                                                                var buffer = t.GetBuffer();
+                                                                var tag = buffer.CreateTag();
+                                                                Settings.Bind(settings, "font", tag, "font", BindFlags.Default);
+                                                                buffer.ApplyTag(tag, buffer.GetStartIter(), buffer.GetEndIter());
+                                                            })),
+                                                    content.Name, content.Name)
+                                                )))))
+                    .AddAction(settings.CreateAction("show-words"))
+                    .Show())
             .AddActions(new GtkAction[]
             {
-                new("preferences", () => new Dialog5.PreferenceDialog().Show(window.Ref, settings)),
+                new("preferences", () => new Dialog6.PreferenceDialog().Show(window.Ref, settings)),
                 new("quit", () => window.Ref.CloseWindow(), "<Ctrl>Q")
             })
             .Run(0, IntPtr.Zero);

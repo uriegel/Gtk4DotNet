@@ -32,6 +32,6 @@ public static class Settings
     public extern static int GetInt(this SettingsHandle settings, string name);
 
     [DllImport(Libs.LibGtk, EntryPoint="g_settings_create_action", CallingConvention = CallingConvention.Cdecl)]
-    extern static IntPtr CreateAction(this SettingsHandle settings, string key);
+    public extern static ActionHandle CreateAction(this SettingsHandle settings, string key);
 }
 

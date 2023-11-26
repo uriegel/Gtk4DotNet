@@ -78,12 +78,6 @@ public static class Window
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_is_maximized", CallingConvention = CallingConvention.Cdecl)]
     public extern static bool IsMaximized(this WindowHandle window);
 
-    [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_transient_for", CallingConvention = CallingConvention.Cdecl)]
-    extern static void SetTransientFor(this WindowHandle window, WindowHandle parent);
-
-    [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_application", CallingConvention = CallingConvention.Cdecl)]
-    extern static void _SetApplication(this WindowHandle window, ApplicationHandle application);
-
     public static WindowHandle IconName(this WindowHandle window, string name)
         => window.SideEffect(w => w.SetIconName(name));
 
@@ -104,6 +98,15 @@ public static class Window
         window.GetPosition(out var x, out var y);
         return (x, y);
     }
+
+    public static WindowHandle AddAction(this WindowHandle window, ActionHandle action)
+        => window.SideEffect(w => w._AddAction(action));
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_transient_for", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetTransientFor(this WindowHandle window, WindowHandle parent);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_application", CallingConvention = CallingConvention.Cdecl)]
+    extern static void _SetApplication(this WindowHandle window, ApplicationHandle application);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_child", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetChild(this WindowHandle window, WidgetHandle child);
@@ -128,4 +131,7 @@ public static class Window
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_resizable", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetResizable(this WindowHandle window, bool set);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_action_map_add_action", CallingConvention = CallingConvention.Cdecl)]
+    extern static void _AddAction(this WindowHandle window, ActionHandle action);
 }
