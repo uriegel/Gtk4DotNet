@@ -184,6 +184,10 @@ public static class Widget
         return children.Concat(childrensChildren);
     }
 
+    public static THandle OnNotify<THandle>(this THandle widget, string property, Action<THandle> onNotify)
+        where THandle : WidgetHandle
+        => widget.SideEffect(w => Gtk.SignalConnect<ThreePointerDelegate>(w, $"notify::{property}", (IntPtr _, IntPtr __, IntPtr ___)  => onNotify(widget)));
+
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_show", CallingConvention = CallingConvention.Cdecl)]
     extern static void _Show(this WidgetHandle widget);
 

@@ -22,10 +22,6 @@ public static class Stack
         where THandle : WidgetHandle
         => stack.GetVisibleChild() as THandle;
 
-    public static StackHandle OnVisibleChanged(this StackHandle stack, Action onChanged)
-        => stack.SideEffect(s => Gtk.SignalConnect<ThreePointerDelegate>(s, "notify::visible-child", (IntPtr _, IntPtr __, IntPtr ___)  => onChanged()));
-
-
     [DllImport(Libs.LibGtk, EntryPoint="gtk_stack_add_titled", CallingConvention = CallingConvention.Cdecl)]
     extern static void _AddTitled(this StackHandle stack, WidgetHandle widget, string name, string title);
 

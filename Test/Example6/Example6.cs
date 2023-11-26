@@ -50,10 +50,19 @@ static class Example6
                             .Append(
                                 Box.New(Orientation.Horizontal)
                                 .Append(
-                                    Revealer.New())
+                                    Revealer.New()
+                                    .SideEffect(r => Settings.Bind(settings, "show-words", r, "reveal-child", BindFlags.Default))
+                                    .TransitionType(RevealerTransition.SlideRight)
+                                    .OnNotify("reveal-child", _ => UpdateWords())
+                                    .Child(
+                                        ScrolledWindow
+                                            .New()
+                                            .Policy(PolicyType.Never, PolicyType.Never)
+                                            .Child(
+                                                Label.New("HAllo"))))
                                 .Append(
                                     Stack.New()
-                                    .OnVisibleChanged(OnStackChanged)
+                                    .OnNotify("visible-child", OnStackChanged)
                                     .Ref(stack)
                                     .SideEffect(s => Settings.Bind(settings, "transition", s, "transition-type", BindFlags.Default))
                                     .SideEffect(stack => 
@@ -124,7 +133,9 @@ static class Example6
         }
     }
 
-    static void OnStackChanged() => searchBar.Ref.SearchMode(false);
+    static void UpdateWords() => Console.WriteLine("Update Wörds");
+
+    static void OnStackChanged(StackHandle _) => searchBar.Ref.SearchMode(false);
 
     static SettingsHandle settings = new();
     static readonly ObjectRef<WindowHandle> window = new();

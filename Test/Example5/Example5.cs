@@ -48,7 +48,7 @@ static class Example5
                                     .OnSearchChanged(SearchTextChanged)))
                             .Append(
                                 Stack.New()
-                                .OnVisibleChanged(OnStackChanged)
+                                .OnNotify("visible-child", OnStackChanged)
                                 .Ref(stack)
                                 .SideEffect(s => Settings.Bind(settings, "transition", s, "transition-type", BindFlags.Default))
                                 .SideEffect(stack => 
@@ -118,7 +118,7 @@ static class Example5
         }
     }
 
-    static void OnStackChanged() => searchBar.Ref.SearchMode(false);
+    static void OnStackChanged(StackHandle _) => searchBar.Ref.SearchMode(false);
 
     static SettingsHandle settings = new();
     static readonly ObjectRef<WindowHandle> window = new();
