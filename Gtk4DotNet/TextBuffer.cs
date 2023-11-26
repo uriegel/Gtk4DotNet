@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using Gtk4DotNet.Structs;
+using GtkDotNet.Extensions;
 using GtkDotNet.SafeHandles;
 
 namespace GtkDotNet;
@@ -7,10 +8,20 @@ namespace GtkDotNet;
 public class TextBuffer
 {
     public void SetText(string content, int size)
-        => _SetText(buffer, content, size);
+        => SetText(buffer, content, size);
+
+    public string GetText(bool includeHidden = false)
+    {
+        var s = GetStartIter();
+        var e = GetEndIter();
+        return GetText(buffer, ref s, ref e, includeHidden).PtrToString() ?? "";
+    }
+
+    public string GetText(TextIter start, TextIter end, bool includeHidden = false)
+        => GetText(buffer, ref start, ref end, includeHidden).PtrToString() ?? "";
 
     public IntPtr CreateTag(string? name = null, string? firstPropertyName = null)
-        => _CreateTag(buffer, name, firstPropertyName);
+        => CreateTag(buffer, name, firstPropertyName);
 
     public TextIter GetStartIter()
     {
@@ -35,17 +46,19 @@ public class TextBuffer
         return new(s, e);
     }
         
-
     internal TextBuffer(IntPtr buffer) => this.buffer = buffer; 
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_text_view_new", CallingConvention = CallingConvention.Cdecl)]
     extern static TextViewHandle New();
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_text_buffer_set_text", CallingConvention = CallingConvention.Cdecl)]
-    extern static void _SetText(IntPtr buffer, string content, int size);
+    extern static void SetText(IntPtr buffer, string content, int size);
+
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_text_buffer_get_text", CallingConvention = CallingConvention.Cdecl)]
+    extern static IntPtr GetText(IntPtr buffer, ref TextIter start, ref TextIter end, bool includeHidden);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_text_buffer_create_tag", CallingConvention = CallingConvention.Cdecl)]
-    extern static IntPtr _CreateTag(IntPtr buffer, string? name = null, string? firstPropertyName = null);
+    extern static IntPtr CreateTag(IntPtr buffer, string? name = null, string? firstPropertyName = null);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_text_buffer_get_start_iter", CallingConvention = CallingConvention.Cdecl)]
     extern static void GetStartIter(IntPtr buffer, out TextIter startIter);

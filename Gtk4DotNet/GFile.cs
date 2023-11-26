@@ -19,7 +19,7 @@ public static class GFile
         {
             var val = Marshal.PtrToStringUTF8(content);
             content.Free();
-            return val;
+            return val ?? "";
         }
             
         else

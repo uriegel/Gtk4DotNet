@@ -17,6 +17,9 @@ public static class TextView
         return textview;
     }
 
+    public static string GetText(this TextViewHandle textview, bool includeHidden = false)
+        => textview.GetBuffer().GetText();
+
     public static TextBuffer GetBuffer(this TextViewHandle textView)
         => new TextBuffer(textView.GetRawBuffer());
 

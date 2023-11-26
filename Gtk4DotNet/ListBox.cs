@@ -6,28 +6,24 @@ namespace GtkDotNet;
 
 public static class ListBox
 {
-    [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_new ", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_new", CallingConvention = CallingConvention.Cdecl)]
     public extern static ListBoxHandle New();
 
-    // public static LabelHandle Set(this LabelHandle label, string text)
-    //     => label.SideEffect(l => l._Set(text));
+    public static ListBoxHandle SelectionMode(this ListBoxHandle listbox, SelectionMode selectionMode)
+        => listbox.SideEffect(l => l.SetSelectionMode(selectionMode));
 
-    // public static LabelHandle SetSelectable(this LabelHandle label, bool selectable)
-    //     => label.SideEffect(l => l._SetSelectable(selectable));
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_remove_all", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void RemoveAll(this ListBoxHandle listbox);
 
-    // public static LabelHandle UseUnderline(this LabelHandle label)
-    //     => label.SideEffect(l => l.SetUseUnderline(true));
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_list_box_insert", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void Insert(this ListBoxHandle listbox, WidgetHandle widget, int position = -1);
+    
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_list_box_prepend", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void Prepend(this ListBoxHandle listbox, WidgetHandle widget);
 
-    // public static LabelHandle MnemonicWidget(this LabelHandle label, WidgetHandle widget)
-    //     => label.SideEffect(l => l.SetMnemonicWidget(widget));
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_list_box_remove", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void Remove(this ListBoxHandle listbox, WidgetHandle widget);
 
-    // public static LabelHandle MnemonicWidget<THandle>(this LabelHandle label, ObjectRef<THandle> widget)
-    //     where THandle : WidgetHandle, new()
-    //     => label.SideEffect(l => widget.SetHandle<THandle>(w => l.SetMnemonicWidget(w)));
-
-    // public static LabelHandle XAlign(this LabelHandle label, float xalign)
-    //     => label.SideEffect(l => l.SetXAlign(xalign));
-
-    // [DllImport(Libs.LibGtk, EntryPoint = "gtk_label_set_label", CallingConvention = CallingConvention.Cdecl)]
-    // extern static void _Set(this LabelHandle label, string text);
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_set_selection_mode", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetSelectionMode(this ListBoxHandle listbox, SelectionMode selectionMode);
 }

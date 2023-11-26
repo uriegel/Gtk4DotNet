@@ -9,7 +9,7 @@ static class Example6
         => Application
             .New("org.gtk.example")
             .SideEffect(a => settings = Settings.New("org.gtk.exampleapp"))
-            .OnActivate(app => 
+            .OnActivate(app =>
                 app
                 .NewWindow()
                     .Ref(window)
@@ -46,29 +46,32 @@ static class Example6
                                 .Ref(searchBar)
                                 .Child(
                                     SearchEntry.New()
+                                    .Ref(searchEntry)
                                     .OnSearchChanged(SearchTextChanged)))
                             .Append(
                                 Box.New(Orientation.Horizontal)
                                 .Append(
                                     Revealer.New()
                                     .SideEffect(r => Settings.Bind(settings, "show-words", r, "reveal-child", BindFlags.Default))
-                                    .TransitionType(RevealerTransition.SlideRight)
+                                    .TransitionType(RevealerTransition.SwingRight)
                                     .OnNotify("reveal-child", _ => UpdateWords())
                                     .Child(
                                         ScrolledWindow
                                             .New()
-                                            .Policy(PolicyType.Never, PolicyType.Never)
+                                            .Policy(PolicyType.Never, PolicyType.Automatic)
                                             .Child(
-                                                Label.New("HAllo"))))
+                                                ListBox.New()
+                                                .Ref(wordsBox)
+                                                .SelectionMode(SelectionMode.None))))
                                 .Append(
                                     Stack.New()
                                     .OnNotify("visible-child", OnStackChanged)
                                     .Ref(stack)
                                     .SideEffect(s => Settings.Bind(settings, "transition", s, "transition-type", BindFlags.Default))
-                                    .SideEffect(stack => 
+                                    .SideEffect(stack =>
                                         GetFiles()
                                             .SideEffect(files => search.Ref.Sensitive(files.Length > 0))
-                                            .ForEach(content => 
+                                            .ForEach(content =>
                                                 stack.AddTitled(
                                                     ScrolledWindow
                                                         .New()
@@ -90,6 +93,7 @@ static class Example6
                                                     content.Name, content.Name)
                                                 )))))
                     .AddAction(settings.CreateAction("show-words"))
+                    .SideEffect(_ => UpdateWords())
                     .Show())
             .AddActions(new GtkAction[]
             {
@@ -124,7 +128,7 @@ static class Example6
         {
             var buffer = textView.GetBuffer();
             var startIter = buffer.GetStartIter();
-            var result = startIter.ForwardSearch(entry.GetText() ?? "", SearchFlags.CaseInsensitive);
+            var result = startIter.ForwardSearch(entry.GetText(), SearchFlags.CaseInsensitive);
             if (result.HasValue)
             {
                 var range = buffer.SelectRange(result.Value);
@@ -133,15 +137,43 @@ static class Example6
         }
     }
 
-    static void UpdateWords() => Console.WriteLine("Update Wörds");
+    static void UpdateWords() 
+    {
+        var textView =
+            stack.Ref
+                .GetVisibleChild()
+                .FindWidget(n => n.GetName() == "TextView")
+                ?.DownCastTextViewHandle();
+        if (textView != null)
+        {
+            wordsBox.Ref.RemoveAll();
+            textView
+                .GetText()
+                .Split(new[] { ' ', '\n', '.', '"', '(', ')', ';', '}', '{', '/', ',', '<', '>', '=' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(n => n.Trim())
+                .Where(n => n.Length > 0)
+                .Distinct()
+                .ForEach(n => Button
+                                .NewWithLabel(n)
+                                .SideEffect(b => b.OnClicked(() =>
+                                    searchEntry.Ref.SetText(b.GetLabel())))
+                                .SideEffect(b => wordsBox.Ref.Insert(b)));
+        }
+    }
 
-    static void OnStackChanged(StackHandle _) => searchBar.Ref.SearchMode(false);
+    static void OnStackChanged(StackHandle _) 
+    {
+        searchBar.Ref.SearchMode(false);
+        UpdateWords();
+    } 
 
     static SettingsHandle settings = new();
     static readonly ObjectRef<WindowHandle> window = new();
     static readonly ObjectRef<StackHandle> stack = new();
     static readonly ObjectRef<ToggleButtonHandle> search = new();
     static readonly ObjectRef<SearchBarHandle> searchBar = new();
+    static readonly ObjectRef<ListBoxHandle> wordsBox = new();
+    static readonly ObjectRef<SearchEntryHandle> searchEntry = new();
         
     record FileContent(string Name, string Content);
 }

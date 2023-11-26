@@ -1,4 +1,4 @@
-using GtkDotNet;
+namespace GtkDotNet;
 
 public enum WebViewLoad
 {

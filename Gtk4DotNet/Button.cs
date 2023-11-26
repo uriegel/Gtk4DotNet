@@ -16,8 +16,8 @@ public static class Button
     public static ButtonHandle Label(this ButtonHandle button, string label)
         => button.SideEffect(b => b.SetLabel(label));
 
-    public static string? GetLabel(this ButtonHandle button)
-        => _GetLabel(button).PtrToString();
+    public static string GetLabel(this ButtonHandle button)
+        => _GetLabel(button).PtrToString() ?? "";
 
     public static ButtonHandle IconName(this ButtonHandle button, string iconName)
         => button.SideEffect(b => b.SetIconName(iconName));
