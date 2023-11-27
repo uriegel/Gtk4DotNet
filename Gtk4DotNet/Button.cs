@@ -17,13 +17,13 @@ public static class Button
         => button.SideEffect(b => b.SetLabel(label));
 
     public static string GetLabel(this ButtonHandle button)
-        => _GetLabel(button).PtrToString() ?? "";
+        => _GetLabel(button).PtrToString(false) ?? "";
 
     public static ButtonHandle IconName(this ButtonHandle button, string iconName)
         => button.SideEffect(b => b.SetIconName(iconName));
 
     public static string? GetIconName(this ButtonHandle button)
-        => _GetIconName(button).PtrToString();
+        => _GetIconName(button).PtrToString(false);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_button_get_label", CallingConvention = CallingConvention.Cdecl)]
     extern static IntPtr _GetLabel(ButtonHandle button);

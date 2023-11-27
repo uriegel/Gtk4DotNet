@@ -7,7 +7,7 @@ namespace GtkDotNet.Interfaces;
 public static class Editable 
 {
     public static string? GetText(WidgetHandle handle)
-        => _GetText(handle).PtrToString();
+        => _GetText(handle).PtrToString(false);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_editable_set_text", CallingConvention = CallingConvention.Cdecl)]
     public extern static void SetText(WidgetHandle editable, string text);

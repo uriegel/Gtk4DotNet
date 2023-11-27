@@ -50,6 +50,10 @@ public static class GObject
         return value;
     }
 
+    public static THandle OnNotify<THandle>(this THandle widget, string property, Action<THandle> onNotify)
+        where THandle : ObjectHandle
+        => widget.SideEffect(w => Gtk.SignalConnect<ThreePointerDelegate>(w, $"notify::{property}", (IntPtr _, IntPtr __, IntPtr ___)  => onNotify(widget)));
+
     [DllImport(Libs.LibGtk, EntryPoint="g_object_unref", CallingConvention = CallingConvention.Cdecl)]
     internal extern static void Unref(IntPtr obj);
 

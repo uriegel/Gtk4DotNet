@@ -4,6 +4,13 @@ namespace GtkDotNet.Extensions;
 
 static class IntPtrExtensions
 {
-    public static string? PtrToString(this IntPtr obj)
-        => Marshal.PtrToStringUTF8(obj);
+    // TODO free if it has to be freed
+    public static string? PtrToString(this IntPtr obj, bool free)
+    {
+        var val = Marshal.PtrToStringUTF8(obj);
+        if (free)
+            obj.Free();
+        return val ?? "";
+    }
+        
 }

@@ -149,7 +149,7 @@ public static class Widget
     /// <param name="widget"></param>
     /// <returns></returns>
     public static string? GetName(this WidgetHandle widget)
-        => widget._GetName().PtrToString();
+        => widget._GetName().PtrToString(false);
 
     public static IEnumerable<WidgetHandle> GetChildren(this WidgetHandle widget)
     {
@@ -186,10 +186,6 @@ public static class Widget
                                 select m;
         return children.Concat(childrensChildren);
     }
-
-    public static THandle OnNotify<THandle>(this THandle widget, string property, Action<THandle> onNotify)
-        where THandle : WidgetHandle
-        => widget.SideEffect(w => Gtk.SignalConnect<ThreePointerDelegate>(w, $"notify::{property}", (IntPtr _, IntPtr __, IntPtr ___)  => onNotify(widget)));
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_show", CallingConvention = CallingConvention.Cdecl)]
     extern static void _Show(this WidgetHandle widget);

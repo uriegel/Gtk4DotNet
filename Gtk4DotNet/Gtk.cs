@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using GtkDotNet.Extensions;
 using GtkDotNet.SafeHandles;
 using LinqTools;
 
@@ -8,6 +9,27 @@ namespace GtkDotNet;
 
 public static class Gtk
 {
+    /// <summary>
+    /// Starts a new GTK application for use in a non GTK (console) app, see example '7-Non Gtk app'
+    /// </summary>
+    public static void Start()
+        => new Thread(() =>
+        {
+            nonGtkApp = Application.New("de.uriegel.gtk4dotnet");
+            nonGtkApp.OnActivate(a => nonGtkWindow = a.NewWindow());
+            nonGtkApp.Run(0, IntPtr.Zero);
+            nonGtkApp.Dispose();
+        }).Start();
+
+    /// <summary>
+    /// Stops the GTK application started with 'Start'
+    /// </summary>
+    public static void Stop()
+        => Dispatch(() => {
+            nonGtkWindow?.Close();
+            nonGtkApp?.Quit();
+        });
+
     public static Task Dispatch(Action action, bool highPriority = false)
         => Dispatch(action, highPriority ? 100 : 200);
 
@@ -76,6 +98,10 @@ public static class Gtk
         }
     }
 
+    public static string? GuessContentType(string filename)
+        => GuessContentType(filename, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero).PtrToString(true);
+
+
     internal static void Init() => 
         SynchronizationContext.SetSynchronizationContext(
             new GtkSynchronizationContext()
@@ -103,8 +129,8 @@ public static class Gtk
     // [DllImport(Libs.LibGtk, EntryPoint="gtk_main_quit", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void MainQuit();
 
-    // [DllImport(Libs.LibGtk, EntryPoint="g_content_type_guess", CallingConvention = CallingConvention.Cdecl)]
-    // public extern static IntPtr GuessContentType(string filename, IntPtr nil1,  IntPtr nil2, IntPtr nil3);
+    [DllImport(Libs.LibGtk, EntryPoint="g_content_type_guess", CallingConvention = CallingConvention.Cdecl)]
+    extern static IntPtr GuessContentType(string filename, IntPtr nil1,  IntPtr nil2, IntPtr nil3);
 
     // [DllImport(Libs.LibGtk, EntryPoint="gtk_init", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void Init (ref int argc, ref IntPtr argv);
@@ -114,6 +140,15 @@ public static class Gtk
 
     [DllImport(Libs.LibGtk, EntryPoint="g_idle_add_full", CallingConvention = CallingConvention.Cdecl)]
     extern static void IdleAddFull(int priority, IntPtr func, IntPtr nil, IntPtr nil2);
+
+    /// <summary>
+    /// For usage in a non GTK app
+    /// </summary> 
+    static WindowHandle? nonGtkWindow;
+    /// <summary>
+    /// For usage in a non GTK app
+    /// </summary> 
+    static ApplicationHandle? nonGtkApp;
 
     static int mainThreadId;
 }

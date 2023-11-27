@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
+using GtkDotNet.Extensions;
 using GtkDotNet.SafeHandles;
-using LinqTools;
 
 namespace GtkDotNet;
 
@@ -14,17 +14,12 @@ public static class GFile
 
     public static string? LoadStringContents(this GFileHandle file)
     {
-        var result = LoadContents(file, IntPtr.Zero, out var content, out var length, IntPtr.Zero, IntPtr.Zero);    
-        if (result)
-        {
-            var val = Marshal.PtrToStringUTF8(content);
-            content.Free();
-            return val ?? "";
-        }
-            
-        else
-            return null;
+        var result = LoadContents(file, IntPtr.Zero, out var content, out var length, IntPtr.Zero, IntPtr.Zero);
+        return result
+            ? content.PtrToString(true) ?? ""
+            : null;
     }
+        
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_load_contents", CallingConvention = CallingConvention.Cdecl)]
     extern static bool LoadContents(this GFileHandle gFile, IntPtr cancellable, out IntPtr content, out int length, IntPtr etagOut, IntPtr error);

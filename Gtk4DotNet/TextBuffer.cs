@@ -14,11 +14,11 @@ public class TextBuffer
     {
         var s = GetStartIter();
         var e = GetEndIter();
-        return GetText(buffer, ref s, ref e, includeHidden).PtrToString() ?? "";
+        return GetText(buffer, ref s, ref e, includeHidden).PtrToString(false) ?? "";
     }
 
     public string GetText(TextIter start, TextIter end, bool includeHidden = false)
-        => GetText(buffer, ref start, ref end, includeHidden).PtrToString() ?? "";
+        => GetText(buffer, ref start, ref end, includeHidden).PtrToString(false) ?? "";
 
     public IntPtr CreateTag(string? name = null, string? firstPropertyName = null)
         => CreateTag(buffer, name, firstPropertyName);

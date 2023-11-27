@@ -19,6 +19,7 @@ WriteLine(
     14: Example 5
     15: Example 6
     16: Example 7
+    17: Non GTK
     <any>: Quit
     """);
 WriteLine($"Return value: {ReadLine() switch 
@@ -39,5 +40,6 @@ WriteLine($"Return value: {ReadLine() switch
     "14" => Example5.Run(),
     "15" => Example6.Run(),
     "16" => Example7.Run(),
+    "17" => NonGtkApp.Run(),
     _ => 0
 }}");
