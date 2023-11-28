@@ -6,7 +6,7 @@ static class HelloWorld
 {
     public static int Run()
         => Application
-            .New("org.gtk.example")
+            .NewAdwaita("org.gtk.example")
             .OnActivate(app => 
                 app
                     .SideEffect(_ => WriteLine($"Gkt theme: {GtkSettings.GetDefault().ThemeName}"))

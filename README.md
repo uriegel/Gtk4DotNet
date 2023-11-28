@@ -1,7 +1,7 @@
 # Gtk4DotNet
 .Net 6 bindings for GTK 4
 
-Gtk4DotNet uses a functional declaarative approach to GTK4 similar to REACT or Kotlin Compose:
+Gtk4DotNet uses a functional declarative approach to GTK4 similar to REACT or Kotlin Compose:
 
 ```
 return Application
@@ -50,7 +50,7 @@ if you want to use WebView (WebKitGTK):
 ```     
 ## Usage
 
-Look at the sample programs (https://github.com/uriegel/Gtk4DotNet/Test)
+Look at the sample programs (https://github.com/uriegel/Gtk4DotNet/tree/Main/Test)
 
 ## Checking if memory is being freed
 To check if GObjects are being freed, just run

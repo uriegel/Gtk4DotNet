@@ -12,14 +12,15 @@ WriteLine(
     7:  Web View
     8:  Threading
     9:  Cleanup
-    10:  Example 1
-    11: Example 2
-    12: Example 3
-    13: Example 4
-    14: Example 5
-    15: Example 6
-    16: Example 7
-    17: Non GTK
+    10: Non GTK
+    11: Example 1
+    12: Example 2
+    13: Example 3
+    14: Example 4
+    15: Example 5
+    16: Example 6
+    17: Example 7
+    18: Example 8
     <any>: Quit
     """);
 WriteLine($"Return value: {ReadLine() switch 
@@ -33,13 +34,14 @@ WriteLine($"Return value: {ReadLine() switch
     "7" => Web.Run(),
     "8" => Threading.Run(),
     "9" => Cleanup.Run(),
-    "10"=> Example1.Run(),
-    "11" => Example2.Run(),
-    "12" => Example3.Run(),
-    "13" => Example4.Run(),
-    "14" => Example5.Run(),
-    "15" => Example6.Run(),
-    "16" => Example7.Run(),
-    "17" => NonGtkApp.Run(),
+    "10" => NonGtkApp.Run(),
+    "11"=> Example1.Run(),
+    "12" => Example2.Run(),
+    "13" => Example3.Run(),
+    "14" => Example4.Run(),
+    "15" => Example5.Run(),
+    "16" => Example6.Run(),
+    "17" => Example7.Run(),
+    "18" => Example8.Run(),
     _ => 0
 }}");

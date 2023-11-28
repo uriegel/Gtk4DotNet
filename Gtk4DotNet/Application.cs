@@ -12,8 +12,15 @@ public static class Application
         => _New(id, 0)
                 .SideEffect(_ => Gtk.Init());
 
+    public static ApplicationHandle NewAdwaita(string id, int flags = 0)
+        => _NewAdw(id, 0)
+                .SideEffect(_ => Gtk.Init());
+
     [DllImport(Libs.LibGtk, EntryPoint="gtk_application_window_new", CallingConvention = CallingConvention.Cdecl)]
     public extern static WindowHandle NewWindow(this ApplicationHandle app);
+
+    [DllImport(Libs.LibAdw, EntryPoint="adw_application_window_new", CallingConvention = CallingConvention.Cdecl)]
+    public extern static WindowHandle NewAdwaitaWindow(this ApplicationHandle app);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_application_add_window", CallingConvention = CallingConvention.Cdecl)]
     public extern static void AddWindow(this ApplicationHandle app, WindowHandle window);
@@ -97,6 +104,9 @@ public static class Application
             SetAccelsForAction(app, accelEntry.Name, new [] { accelEntry.Accelerator, null});
         return app;
     }
+
+    [DllImport(Libs.LibAdw, EntryPoint="adw_application_new", CallingConvention = CallingConvention.Cdecl)]
+    extern static ApplicationHandle _NewAdw(string id, int flags = 0);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_application_new", CallingConvention = CallingConvention.Cdecl)]
     extern static ApplicationHandle _New(string id, int flags = 0);
