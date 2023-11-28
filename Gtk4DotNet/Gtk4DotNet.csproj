@@ -5,19 +5,19 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<Version>2.0.0-alpha</Version>
+	<Version>2.0.0</Version>
 	<FileVersion>2.0.0.0</FileVersion>
 	<AssemblyName>Gtk4DotNet</AssemblyName>
 	<AssemblyVersion>2.0.0.0</AssemblyVersion>
 	<Authors>Uwe Riegel</Authors>
 	<Company>Uwe Riegel</Company>		
-	<Description>.NET 6 Bindings for GTK 4</Description>
+	<Description>.NET 6 Bindings for GTK 4, functional declarative similar to REACT or Kotlin Compose</Description>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageProjectUrl>https://github.com/uriegel/Gtk4DotNet</PackageProjectUrl>
-	<PackageReleaseNotes>Beginning...</PackageReleaseNotes>
 	<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 	<PackageLicenseFile>LICENSE</PackageLicenseFile>
 	<PackageTags>DotNet GTK4</PackageTags>
+	<PackageReleaseNotes>Version 2.* completely redesigned for a more functional declarative approach</PackageReleaseNotes>
 	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
