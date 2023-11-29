@@ -2,6 +2,8 @@
 using System.Collections.Concurrent;
 using LinqTools;
 
+public delegate void ProgressCallback(long current, long total);
+
 delegate void OnePointerDelegate(IntPtr p);
 delegate void TwoPointerDelegate(IntPtr p, IntPtr pp);
 delegate void ThreePointerDelegate(IntPtr p, IntPtr pp, IntPtr ppp);
@@ -9,7 +11,7 @@ delegate void DrawFunctionDelegate(IntPtr drawingArea, IntPtr cairo, int width, 
 delegate void DrawingAreaResizeDelegate(IntPtr drawingArea, int width, int height, IntPtr data);
 delegate void PressedGestureDelegate(IntPtr _, int pressCount, double x, double y, IntPtr __);
 delegate void DragGestureDelegate(IntPtr _, double x, double y, IntPtr __);
-
+delegate void TwoLongAndPtrCallback(long current, long total, IntPtr zero);
 delegate bool BoolRetDelegate();
 delegate bool OnePointerBoolRetDelegate(IntPtr p);
 delegate bool TwoPointerBoolRetDelegate(IntPtr p, IntPtr pp);
