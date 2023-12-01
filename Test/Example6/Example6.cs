@@ -115,7 +115,7 @@ static class Example6
     static FileContent GetFile(string path)
         => GFile.New(Directory.GetCurrentDirectory().AppendPath(path)).Use(
             file => new FileContent(
-                file.GetBasename(), file.LoadStringContents() ?? ""));
+                file.GetBasename() ?? "", file.LoadStringContents() ?? ""));
 
     static void SearchTextChanged(SearchEntryHandle entry)
     {

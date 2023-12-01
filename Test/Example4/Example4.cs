@@ -78,7 +78,7 @@ static class Example4
     static FileContent GetFile(string path)
         => GFile.New(Directory.GetCurrentDirectory().AppendPath(path)).Use(
             file => new FileContent(
-                file.GetBasename(), file.LoadStringContents() ?? ""));
+                file.GetBasename() ?? "", file.LoadStringContents() ?? ""));
 
     static SettingsHandle settings = new();
     static readonly ObjectRef<WindowHandle> window = new();

@@ -52,7 +52,7 @@ static class Example2
     static FileContent GetFile(string path)
         => GFile.New(Directory.GetCurrentDirectory().AppendPath(path)).Use(
             file => new FileContent(
-                file.GetBasename(), file.LoadStringContents() ?? ""));
+                file.GetBasename() ?? "", file.LoadStringContents() ?? ""));
 
     static readonly ObjectRef<StackHandle> stack = new();
 

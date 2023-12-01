@@ -5,7 +5,7 @@ public class GException : Exception
     public uint Domain { get; }
     public int Code { get; }
 
-    internal static Exception New(GError error, string source, string destination)
+    internal static GException New(GError error, string source, string destination)
         => error.Domain switch
         {
             232 => FileException.Create(error, source, destination),

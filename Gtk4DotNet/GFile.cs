@@ -1,6 +1,9 @@
 using System.Runtime.InteropServices;
 using GtkDotNet.Extensions;
 using GtkDotNet.SafeHandles;
+using LinqTools;
+
+using static LinqTools.Core;
 
 namespace GtkDotNet;
 
@@ -23,10 +26,10 @@ public static class GFile
             : null;
     }
         
-    public static void Copy(this GFileHandle source, string destination, FileCopyFlags flags, ProgressCallback cb)
+    public static Result<int, GException> Copy(this GFileHandle source, string destination, FileCopyFlags flags, ProgressCallback? cb)
         => Copy(source, destination, flags, false, cb);
 
-    public static void Copy(this GFileHandle source, string destination, FileCopyFlags flags, bool createTargetPath = false, 
+    public static Result<int, GException> Copy(this GFileHandle source, string destination, FileCopyFlags flags, bool createTargetPath = false, 
         ProgressCallback? cb = null, CancellationToken? cancellation = null)
     {
         using var cancellable = cancellation.HasValue ? new Cancellable(cancellation.Value) : null;
@@ -48,13 +51,19 @@ public static class GFile
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    throw GException.New(new GError(232, 14, "Access Denied"), path, destination);
+                    return Error<int, GException>(GException.New(new GError(232, 14, "Access Denied"), path, destination));
+                }
+                catch 
+                {
+                    return Error<int, GException>(GException.New(new GError(0, 0, "General Exception"), path, destination));
                 }
                 Copy(source, destination, flags, true, cb, cancellation);
+                return 0;
             }
             else
-                throw GException.New(gerror, path ?? "", destination);
+                return Error<int, GException>(GException.New(gerror, path ?? "", destination));
         }
+        return 0;
     }
 
     public static void Trash(this GFileHandle file)

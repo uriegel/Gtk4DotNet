@@ -1,4 +1,3 @@
-using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using GtkDotNet;
 using GtkDotNet.SafeHandles;
