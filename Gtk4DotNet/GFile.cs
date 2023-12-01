@@ -1,4 +1,6 @@
+using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
+using CsTools.Functional;
 using GtkDotNet.Extensions;
 using GtkDotNet.SafeHandles;
 using LinqTools;
@@ -66,6 +68,62 @@ public static class GFile
         return 0;
     }
 
+    public static Task<Result<int, GException>> CopyAsync(this GFileHandle source, string destination, FileCopyFlags flags, ProgressCallback? cb)
+        => CopyAsync(source, destination, flags, 100, false, cb);
+
+    public static Task<Result<int, GException>> CopyAsync(this GFileHandle source, string destination, FileCopyFlags flags, int ioPriority = 100, 
+        bool createTargetPath = false, ProgressCallback? cb = null, CancellationToken? cancellation = null)
+    {
+        var tcs = new TaskCompletionSource<Result<int, GException>>();
+        var id = getId();
+        var asyncReady = new ThreePointerDelegate(AsyncReady);
+        asyncReadyCallbacks[id] = asyncReady;
+        using var cancellable = cancellation.HasValue ? new Cancellable(cancellation.Value) : null;
+        using var destinationFile = New(destination);
+        TwoLongAndPtrCallback? rcb = cb != null ? (c, t, _) => cb(c, t) : null;
+        cb?.Invoke(0, 0);
+        CopyAsync(source, destinationFile, flags, ioPriority, cancellable?.handle?.IsInvalid == false ? cancellable.handle : Cancellable.Zero().handle, rcb, IntPtr.Zero, asyncReady, IntPtr.Zero);
+        return tcs.Task;
+
+        void AsyncReady(IntPtr _, IntPtr result, IntPtr zero)
+        {     
+            asyncReadyCallbacks.Remove(id, out var _);
+            var error = IntPtr.Zero;
+            var res = CopyFinish(source, result, ref error);
+            if (res)
+                tcs.TrySetResult(0);
+            else
+            {
+                var gerror = new GError(error);
+                var path = source.GetPath();
+                if (createTargetPath && gerror.Domain == 232 && gerror.Code == 1 && File.Exists(path))
+                {
+                    var fi = new FileInfo(destination);
+                    var destPath = fi.Directory;
+                    try
+                    {
+                        destPath?.Create();
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        tcs.TrySetResult(Error<int, GException>(GException.New(new GError(232, 14, "Access Denied"), path, destination)));
+                    }
+                    catch
+                    {
+                        tcs.TrySetResult(Error<int, GException>(GException.New(new GError(0, 0, "General Exception"), path, destination)));
+                    }
+
+                    // TODO try again
+                    tcs.TrySetResult(Error<int, GException>(GException.New(gerror, path ?? "", destination)));
+                    //Copy(source, destination, flags, true, cb, cancellation);
+                    //return 0;
+                }
+                else
+                    tcs.TrySetResult(Error<int, GException>(GException.New(gerror, path ?? "", destination)));
+            }
+        }
+    }
+
     public static void Trash(this GFileHandle file)
     {
         var error = IntPtr.Zero;
@@ -76,6 +134,13 @@ public static class GFile
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_copy", CallingConvention = CallingConvention.Cdecl)]
     extern static bool Copy(GFileHandle source, GFileHandle destination, FileCopyFlags flags, CancellableHandle cancellable, 
         TwoLongAndPtrCallback? progress, IntPtr data, ref IntPtr error);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_file_copy_async", CallingConvention = CallingConvention.Cdecl)]
+    extern static void CopyAsync(GFileHandle source, GFileHandle destination, FileCopyFlags flags, int priority, CancellableHandle cancellable, 
+        TwoLongAndPtrCallback? progress, IntPtr data, ThreePointerDelegate asyncCallback, IntPtr zero);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_file_copy_finish", CallingConvention = CallingConvention.Cdecl)]
+    extern static bool CopyFinish(GFileHandle source, IntPtr asyncResult, ref IntPtr error);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_move", CallingConvention = CallingConvention.Cdecl)]
     extern static bool Move(IntPtr source, IntPtr destination, FileCopyFlags flags, CancellableHandle cancellable, 
@@ -92,4 +157,7 @@ public static class GFile
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_get_path", CallingConvention = CallingConvention.Cdecl)]
     extern static IntPtr _GetPath(this GFileHandle file);
+
+    readonly static Func<int> getId = Incrementor.UseInt();
+    readonly static ConcurrentDictionary<int, ThreePointerDelegate> asyncReadyCallbacks = new();
 }

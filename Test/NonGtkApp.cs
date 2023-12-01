@@ -28,20 +28,46 @@ static class NonGtkApp
         const string testDirectory = "TestDirectory";
         Directory.CreateDirectory(testDirectory);
 
-        // TODO GFileError enum
         CopyFile(testDirectory.AppendPath("NonExisting.txt"), "non");
         CopyFile(testDirectory.AppendPath("../First.cs"), "non/u");
         CopyFile(testDirectory.AppendPath("../First.cs"), "/etc");
         CopyFile(testDirectory.AppendPath("../First.cs"), "/etc/non");
+        CopyFile(testDirectory.AppendPath("../First.cs"), testDirectory.AppendPath("First.cs"));
+        CopyFile(testDirectory.AppendPath("../First.cs"), testDirectory.AppendPath("First.cs"));
+        CopyFile(testDirectory.AppendPath("../First.cs"), testDirectory.AppendPath("First.cs"), FileCopyFlags.Overwrite);
+        WriteLine();
+        CopyFile(testDirectory.AppendPath("../bin/Debug/net6.0/System.Linq.Async.dll"), testDirectory.AppendPath("linqasync.dll"), 
+            progress: (c, t) => WriteLine($"Copy progress: {c}/{t}"));
+        WriteLine();
 
-        Directory.Delete(testDirectory);
+        // TODO async
+        // WriteLine();
+        // await CopyFileAsync(testDirectory.AppendPath("../bin/Debug/net6.0/System.Linq.Async.dll"), testDirectory.AppendPath("linqasync.dll"), 
+        //     progress: (c, t) => WriteLine($"Copy progress: {c}/{t}"));
+        // WriteLine();
+        // ReadLine();
 
-        void CopyFile(string source, string target)
+        WriteLine();
+        CopyFile(testDirectory.AppendPath("/media/uwe/3d292b08-7b9a-4813-acb9-3148884177c6/Videos/Burning.mp4"), testDirectory.AppendPath("burning.mp4"), 
+            progress: (c, t) => WriteLine($"Copy progress: {c}/{t}"));
+        WriteLine();
+
+        Directory.Delete(testDirectory, true);
+
+        void CopyFile(string source, string target, FileCopyFlags fileCopyFlags = FileCopyFlags.None, ProgressCallback? progress = null)
             => GFile
                 .New(source)
-                .Use(f => f.Copy(target, FileCopyFlags.Overwrite, null))
+                .Use(f => f.Copy(target, fileCopyFlags, progress))
                 .Match(
                     _ => WriteLine("File copied"),
                     e => WriteLine($"File not copied, {e.GetType()} {e.Code}, {e}"));
+
+        Task CopyFileAsync(string source, string target, FileCopyFlags fileCopyFlags = FileCopyFlags.None, ProgressCallback? progress = null)
+            => GFile
+                .New(source)
+                .UseAsync(f => f.CopyAsync(target, fileCopyFlags, progress))
+                .MatchAsync(
+                    _ => 1.SideEffect(_ => WriteLine("File copied")),
+                    e => 1.SideEffect(_ => WriteLine($"File not copied, {e.GetType()} {e.Code}, {e}")));
     }
 }
