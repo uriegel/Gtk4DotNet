@@ -8,7 +8,7 @@ public class GException : Exception
     internal static GException New(GError error, string source, string destination)
         => error.Domain switch
         {
-            232 => FileException.Create(error, source, destination),
+            236 or 232 => FileException.Create(error, source, destination),
             _ => new GException(error)
         };
 

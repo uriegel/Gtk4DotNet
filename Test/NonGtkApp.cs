@@ -42,6 +42,6 @@ static class NonGtkApp
                 .Use(f => f.Copy(target, FileCopyFlags.Overwrite, null))
                 .Match(
                     _ => WriteLine("File copied"),
-                    e => WriteLine($"File not copied, {e.Code}, {e}"));
+                    e => WriteLine($"File not copied, {e.GetType()} {e.Code}, {e}"));
     }
 }
