@@ -68,6 +68,46 @@ public static class GFile
         return 0;
     }
 
+    public static Result<int, GException> Move(this GFileHandle source, string destination, FileCopyFlags flags, ProgressCallback? cb)
+        => Move(source, destination, flags, false, cb);
+
+    public static Result<int, GException> Move(this GFileHandle source, string destination, FileCopyFlags flags, bool createTargetPath = false, 
+        ProgressCallback? cb = null, CancellationToken? cancellation = null)
+    {
+        using var cancellable = cancellation.HasValue ? new Cancellable(cancellation.Value) : null;
+        using var destinationFile = New(destination);
+        var error = IntPtr.Zero;
+        TwoLongAndPtrCallback? rcb = cb != null ? (c, t, _) => cb(c, t) : null;
+        cb?.Invoke(0, 0);
+        if (!Copy(source, destinationFile, flags, cancellable?.handle?.IsInvalid == false ? cancellable.handle : Cancellable.Zero().handle, rcb, IntPtr.Zero, ref error))
+        {
+            var gerror = new GError(error);
+            var path = source.GetPath();
+            if (createTargetPath && gerror.Domain == 232 && gerror.Code == 1 && File.Exists(path))
+            {
+                var fi = new FileInfo(destination);
+                var destPath = fi.Directory;
+                try 
+                {
+                    destPath?.Create();
+                }
+                catch (AccessDeniedException)
+                {
+                    return Error<int, GException>(GException.New(new GError(232, 14, "Access Denied"), path, destination));
+                }
+                catch 
+                {
+                    return Error<int, GException>(GException.New(new GError(0, 0, "General Exception"), path, destination));
+                }
+                Copy(source, destination, flags, true, cb, cancellation);
+                return 0;
+            }
+            else
+                return Error<int, GException>(GException.New(gerror, path ?? "", destination));
+        }
+        return 0;
+    }
+
     public static Task<Result<int, GException>> CopyAsync(this GFileHandle source, string destination, FileCopyFlags flags, ProgressCallback? cb)
         => CopyAsync(source, destination, flags, 100, false, cb);
 
@@ -85,7 +125,7 @@ public static class GFile
         CopyAsync(source, destinationFile, flags, ioPriority, cancellable?.handle?.IsInvalid == false ? cancellable.handle : Cancellable.Zero().handle, rcb, IntPtr.Zero, asyncReady, IntPtr.Zero);
         return tcs.Task;
 
-        void AsyncReady(IntPtr _, IntPtr result, IntPtr zero)
+        async void AsyncReady(IntPtr _, IntPtr result, IntPtr zero)
         {     
             asyncReadyCallbacks.Remove(id, out var _);
             var error = IntPtr.Zero;
@@ -114,8 +154,7 @@ public static class GFile
                     }
 
                     // TODO try again
-                    tcs.TrySetResult(Error<int, GException>(GException.New(gerror, path ?? "", destination)));
-                    //Copy(source, destination, flags, true, cb, cancellation);
+                    await CopyAsync(source, destination, flags, ioPriority, true, cb, cancellation);
                     //return 0;
                 }
                 else

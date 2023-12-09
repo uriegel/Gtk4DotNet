@@ -40,15 +40,13 @@ static class NonGtkApp
             progress: (c, t) => WriteLine($"Copy progress: {c}/{t}"));
         WriteLine();
 
-        // TODO async
-        // WriteLine();
         // await CopyFileAsync(testDirectory.AppendPath("../bin/Debug/net6.0/System.Linq.Async.dll"), testDirectory.AppendPath("linqasync.dll"), 
         //     progress: (c, t) => WriteLine($"Copy progress: {c}/{t}"));
         // WriteLine();
         // ReadLine();
 
         WriteLine();
-        CopyFile(testDirectory.AppendPath("/media/uwe/3d292b08-7b9a-4813-acb9-3148884177c6/Videos/Burning.mp4"), testDirectory.AppendPath("burning.mp4"), 
+        CopyFile(testDirectory.AppendPath("/speicher/Videos/Burning.mp4"), testDirectory.AppendPath("burning.mp4"), 
             progress: (c, t) => WriteLine($"Copy progress: {c}/{t}"));
         WriteLine();
 
@@ -62,12 +60,12 @@ static class NonGtkApp
                     _ => WriteLine("File copied"),
                     e => WriteLine($"File not copied, {e.GetType()} {e.Code}, {e}"));
 
-        Task CopyFileAsync(string source, string target, FileCopyFlags fileCopyFlags = FileCopyFlags.None, ProgressCallback? progress = null)
-            => GFile
-                .New(source)
-                .UseAsync(f => f.CopyAsync(target, fileCopyFlags, progress))
-                .MatchAsync(
-                    _ => 1.SideEffect(_ => WriteLine("File copied")),
-                    e => 1.SideEffect(_ => WriteLine($"File not copied, {e.GetType()} {e.Code}, {e}")));
+        // Task CopyFileAsync(string source, string target, FileCopyFlags fileCopyFlags = FileCopyFlags.None, ProgressCallback? progress = null)
+        //     => GFile
+        //         .New(source)
+        //         .UseAsync(f => f.CopyAsync(target, fileCopyFlags, progress))
+        //         .MatchAsync(
+        //             _ => 1.SideEffect(_ => WriteLine("File copied")),
+        //             e => 1.SideEffect(_ => WriteLine($"File not copied, {e.GetType()} {e.Code}, {e}")));
     }
 }
