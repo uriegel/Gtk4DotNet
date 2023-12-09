@@ -1,5 +1,5 @@
 # Gtk4DotNet
-.Net 6 bindings for GTK 4
+.Net 8 bindings for GTK 4
 
 Gtk4DotNet uses a functional declarative approach to GTK4 similar to REACT or Kotlin Compose:
 
