@@ -46,8 +46,8 @@ public static class Cairo
     [DllImport(Libs.LibGtk, EntryPoint = "cairo_fill", CallingConvention = CallingConvention.Cdecl)]
     extern static void _Fill(this CairoHandle cairo);
 
-    // [DllImport(Libs.LibGtk, EntryPoint = "cairo_set_antialias", CallingConvention = CallingConvention.Cdecl)]
-    // public extern static void SetAntiAlias(this IntPtr context, CairoAntialias antialias);
+    [DllImport(Libs.LibGtk, EntryPoint = "cairo_set_antialias", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void SetAntiAlias(this IntPtr context, CairoAntialias antialias);
 
 
     // [DllImport(Libs.LibGtk, EntryPoint = "cairo_set_line_join", CallingConvention = CallingConvention.Cdecl)]

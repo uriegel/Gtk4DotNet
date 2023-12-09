@@ -15,10 +15,23 @@ public static class MenuButton
     public static MenuButtonHandle Model(this MenuButtonHandle menuButton, MenuHandle menuModel)
         => menuButton.SideEffect(b => b.SetModel(menuModel));
 
+    public static MenuButtonHandle IconName(this MenuButtonHandle menuButton, string name)
+        => menuButton.SideEffect(b => b.SetIconName(name));
+
+    public static MenuButtonHandle Child(this MenuButtonHandle menuButton, WidgetHandle child)
+        => menuButton.SideEffect(b => b.SetChild(child));
+
     [DllImport(Libs.LibGtk, EntryPoint="gtk_menu_button_set_direction", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetDirection(this MenuButtonHandle menuButton, Arrow arrow);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_menu_button_set_menu_model", CallingConvention = CallingConvention.Cdecl)]
      extern static void SetModel(this MenuButtonHandle menuButton, MenuHandle menuModel);
+
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_menu_button_set_icon_name", CallingConvention = CallingConvention.Cdecl)]
+     extern static void SetIconName(this MenuButtonHandle menuButton, string name);
+
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_menu_button_set_child", CallingConvention = CallingConvention.Cdecl)]
+     extern static void SetChild(this MenuButtonHandle menuButton, WidgetHandle child);
+     
 }
 
