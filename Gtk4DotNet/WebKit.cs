@@ -4,7 +4,7 @@ using LinqTools;
 
 namespace GtkDotNet;
 
-public static class WebView
+public static class WebKit
 {
     [DllImport(Libs.LibWebKit, EntryPoint = "webkit_web_view_new", CallingConvention = CallingConvention.Cdecl)]
     public extern static WebViewHandle New();

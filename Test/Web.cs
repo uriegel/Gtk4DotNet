@@ -14,7 +14,7 @@ static class Web
                     .Title("Hello Web View👍")
                     .DefaultSize(800, 600)
                     .Child(
-                        WebView
+                        WebKit
                             .New()
                             .SideEffect(w => w.GetSettings()
                                 .SideEffect(s => 

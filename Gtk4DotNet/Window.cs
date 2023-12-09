@@ -28,6 +28,9 @@ public static class Window
     public static WindowHandle Resizable(this WindowHandle window, bool set)
         => window.SideEffect(w => w.SetResizable(set));
 
+    public static WindowHandle NotDecorated(this WindowHandle window)
+        => window.SideEffect(w => w._SetDecorated(false));
+
     public static WindowHandle ResourceIcon(this WindowHandle window, string resourceIconPath)
     {
         var themeDir = Path.Combine(
@@ -134,4 +137,7 @@ public static class Window
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_action_map_add_action", CallingConvention = CallingConvention.Cdecl)]
     extern static void _AddAction(this WindowHandle window, ActionHandle action);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_decorated", CallingConvention = CallingConvention.Cdecl)]
+    extern static void _SetDecorated(this WindowHandle window, bool set);
 }

@@ -10,7 +10,7 @@
             "request": "launch",
             "requireExactSource": true, 
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Test/bin/Debug/net6.0/Test.dll",
+            "program": "${workspaceFolder}/Test/bin/Debug/net8.0/Test.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Test",
             "stopAtEntry": false,
