@@ -28,6 +28,7 @@ static class Progress
                                         Popover.New()
                                         .Child(
                                             ProgressBar.New()
+                                            .Ref(progressBar)
                                             .ShowText()
                                             .Fraction(.04)
                                         )
@@ -41,12 +42,12 @@ static class Progress
                                             .LineCap(LineCap.Round)
                                             .Translate(w / 2.0, h / 2.0)
                                             .StrokePreserve()
-                                            .ArcNegative(0, 0, (w < h ? w : h) / 2.0, -Math.PI / 2.0, -Math.PI / 2.0 + progressRadius * Math.PI * 2)
+                                            .ArcNegative(0, 0, (w < h ? w : h) / 2.0, -Math.PI / 2.0, -Math.PI / 2.0 + progress * Math.PI * 2)
                                             .LineTo(0, 0)
                                             .SourceRgb(0.7, 0.7, 0.7)
                                             .Fill()
                                             .MoveTo(0, 0)
-                                            .Arc(0, 0, (w < h ? w : h) / 2.0, -Math.PI / 2.0, -Math.PI / 2.0 + progressRadius * Math.PI * 2)
+                                            .Arc(0, 0, (w < h ? w : h) / 2.0, -Math.PI / 2.0, -Math.PI / 2.0 + progress * Math.PI * 2)
                                             .SourceRgb(0.3, 0.3, 0.3)
                                             .Fill()
                                         )
@@ -64,68 +65,17 @@ static class Progress
         if (!revealer.IsChildRevealed())
             for (int i = 0; i < 1000; i++)
             {
-                progressRadius = i / 1000f;
+                progress = i / 1000f;
                 await Task.Delay(10);
                 drawingArea.Ref.QueueDraw();
+                progressBar.Ref.Fraction(progress);
             }
     }
 
-    static float progressRadius = 0.0f;
+    static float progress = 0.0f;
 
     static readonly ObjectRef<ToggleButtonHandle> progressStarter = new();
     static readonly ObjectRef<DrawingAreaHandle> drawingArea = new();
+    static readonly ObjectRef<ProgressBarHandle> progressBar = new();
 }
 
-// <child>
-//               <object class="GtkRevealer" id="ProgressRevealer">
-//                 <property name="visible">True</property>
-//                 <property name="can-focus">False</property>
-//                 <property name="icon-name">open-menu-symbolic</property>
-//                 <property name="transition-type">slide-left</property>
-//                 <child>
-//                   <object class="GtkMenuButton">
-//                     <property name="visible">True</property>
-//                     <property name="can-focus">True</property>
-//                     <property name="focus-on-click">False</property>
-//                     <property name="receives-default">True</property>
-//                     <property name="margin-end">5</property>
-//                     <property name="popover">ProgressDisplay</property>
-//                     <child>
-//                       <object class="GtkDrawingArea" id="ProgressArea">
-//                         <property name="visible">True</property>
-//                         <property name="can-focus">False</property>
-//                       </object>
-//                     </child>
-//                   </object>
-//                 </child>
-
-// <object class="GtkPopoverMenu" id="ProgressDisplay">
-//     <property name="can-focus">False</property>
-//     <property name="position">bottom</property>
-//     <child>
-//       <object class="GtkBox">
-//         <property name="visible">True</property>
-//         <property name="can-focus">False</property>
-//         <property name="orientation">vertical</property>
-//         <child>
-//           <object class="GtkModelButton">
-//             <property name="visible">True</property>
-//             <property name="can-focus">True</property>
-//             <property name="receives-default">True</property>
-//             <property name="text" translatable="yes">Test</property>
-//           </object>
-//           <packing>
-//             <property name="expand">False</property>
-//             <property name="fill">True</property>
-//             <property name="position">0</property>
-//           </packing>
-//         </child>
-//       </object>
-//       <packing>
-//         <property name="submenu">main</property>
-//         <property name="position">1</property>
-//       </packing>
-//     </child>
-//   </object>
-
-// gtk_widget_queue_draw
