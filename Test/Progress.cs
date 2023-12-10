@@ -26,6 +26,11 @@ static class Progress
                                     MenuButton.New()
                                     .Popover(
                                         Popover.New()
+                                        .Child(
+                                            ProgressBar.New()
+                                            .ShowText()
+                                            .Fraction(.04)
+                                        )
                                     )
                                     .Child(
                                         DrawingArea.New()
