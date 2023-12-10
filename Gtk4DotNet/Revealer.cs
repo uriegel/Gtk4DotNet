@@ -15,6 +15,12 @@ public static class Revealer
     public static RevealerHandle Child(this RevealerHandle revealer, WidgetHandle widget)
         => revealer.SideEffect(r => r.SetChild(widget));
 
+    public static RevealerHandle RevealChild(this RevealerHandle revealer, bool reveal = true)
+        => revealer.SideEffect(r => r._RevealChild(reveal));
+
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_revealer_set_reveal_child", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void _RevealChild(this RevealerHandle revealer, bool reveal);
+
     [DllImport(Libs.LibGtk, EntryPoint="gtk_revealer_get_child_revealed", CallingConvention = CallingConvention.Cdecl)]
     public extern static bool IsChildRevealed(this RevealerHandle revealer);
 
