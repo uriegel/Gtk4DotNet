@@ -1,5 +1,6 @@
 using GtkDotNet;
 using GtkDotNet.SafeHandles;
+using LinqTools;
 
 static class Progress
 {
@@ -12,25 +13,34 @@ static class Progress
                         .Titlebar(
                             HeaderBar.New()
                             .PackEnd(
-                                MenuButton.New()
+                                ToggleButton.New()
+                                .Ref(progressStarter)
                                 .IconName("open-menu-symbolic")
+                            )
+                            .PackEnd(
+                                Revealer.New()
+                                .SideEffect(r => progressStarter.Ref.BindProperty("active", r, "reveal-child", BindingFlags.Default))
+                                .TransitionType(RevealerTransition.SlideLeft)
                                 .Child(
-                                    DrawingArea.New()
-                                    .Ref(drawingArea)
-                                    .SetDrawFunction((area, cairo, w, h) => cairo
-                                        .AntiAlias(CairoAntialias.Best)
-                                        .LineJoin(LineJoin.Miter)
-                                        .LineCap(LineCap.Round)
-                                        .Translate(w / 2.0, h / 2.0)
-                                        .StrokePreserve()
-                                        .ArcNegative(0, 0, (w < h ? w : h) / 2.0, -Math.PI / 2.0, -Math.PI / 2.0 + progressRadius * Math.PI * 2)
-                                        .LineTo(0, 0)
-                                        .SourceRgb(0.7, 0.7, 0.7)
-                                        .Fill()
-                                        .MoveTo(0, 0)
-                                        .Arc(0, 0, (w < h ? w : h) / 2.0, -Math.PI / 2.0, -Math.PI / 2.0 + progressRadius * Math.PI * 2)
-                                        .SourceRgb(0.3, 0.3, 0.3)
-                                        .Fill()
+                                    MenuButton.New()
+                                    .Child(
+                                        DrawingArea.New()
+                                        .Ref(drawingArea)
+                                        .SetDrawFunction((area, cairo, w, h) => cairo
+                                            .AntiAlias(CairoAntialias.Best)
+                                            .LineJoin(LineJoin.Miter)
+                                            .LineCap(LineCap.Round)
+                                            .Translate(w / 2.0, h / 2.0)
+                                            .StrokePreserve()
+                                            .ArcNegative(0, 0, (w < h ? w : h) / 2.0, -Math.PI / 2.0, -Math.PI / 2.0 + progressRadius * Math.PI * 2)
+                                            .LineTo(0, 0)
+                                            .SourceRgb(0.7, 0.7, 0.7)
+                                            .Fill()
+                                            .MoveTo(0, 0)
+                                            .Arc(0, 0, (w < h ? w : h) / 2.0, -Math.PI / 2.0, -Math.PI / 2.0 + progressRadius * Math.PI * 2)
+                                            .SourceRgb(0.3, 0.3, 0.3)
+                                            .Fill()
+                                        )
                                     )
                                 )
                             )
@@ -41,6 +51,8 @@ static class Progress
             .Run(0, IntPtr.Zero);
 
     static float progressRadius = 0.3f;
+
+    static readonly ObjectRef<ToggleButtonHandle> progressStarter = new();
     static readonly ObjectRef<DrawingAreaHandle> drawingArea = new();
 }
 
