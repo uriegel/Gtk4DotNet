@@ -1,6 +1,5 @@
 using GtkDotNet;
 using GtkDotNet.SafeHandles;
-using LinqTools;
 
 static class Progress
 {
@@ -18,10 +17,21 @@ static class Progress
                                 .Child(
                                     DrawingArea.New()
                                     .Ref(drawingArea)
-                                    .SetDrawFunction((area, cairo, w, h) =>
-                                    {
-                                        //cairo.                                           
-                                    })
+                                    .SetDrawFunction((area, cairo, w, h) => cairo
+                                        .AntiAlias(CairoAntialias.Best)
+                                        .LineJoin(LineJoin.Miter)
+                                        .LineCap(LineCap.Round)
+                                        .Translate(w / 2.0, h / 2.0)
+                                        .StrokePreserve()
+                                        .ArcNegative(0, 0, (w < h ? w : h) / 2.0, -Math.PI / 2.0, -Math.PI / 2.0 + progressRadius * Math.PI * 2)
+                                        .LineTo(0, 0)
+                                        .SourceRgb(0.7, 0.7, 0.7)
+                                        .Fill()
+                                        .MoveTo(0, 0)
+                                        .Arc(0, 0, (w < h ? w : h) / 2.0, -Math.PI / 2.0, -Math.PI / 2.0 + progressRadius * Math.PI * 2)
+                                        .SourceRgb(0.3, 0.3, 0.3)
+                                        .Fill()
+                                    )
                                 )
                             )
                         )
@@ -30,28 +40,9 @@ static class Progress
                         .Show())
             .Run(0, IntPtr.Zero);
 
+    static float progressRadius = 0.3f;
     static readonly ObjectRef<DrawingAreaHandle> drawingArea = new();
 }
-
-// Gtk.SignalConnect<DrawFunc>(kairo, "draw", (a, context, data) =>
-//         {
-//             var w = Widget.GetAllocatedWidth(a);
-//             var h = Widget.GetAllocatedHeight(a);
-//             CairoContext.SetAntiAlias(context, GtkDotNet.CairoAntialias.Best);
-//             CairoContext.SetLineJoin(context, GtkDotNet.LineJoin.Miter);
-//             CairoContext.SetLineCap(context, GtkDotNet.LineCap.Round);
-//             CairoContext.Translate(context, w / 2.0, h / 2.0);
-//             CairoContext.StrokePreserve(context);
-//             CairoContext.ArcNegative(context, 0, 0, (w < h ? w : h) / 2.0, -Math.PI / 2.0, -Math.PI / 2.0 + 0.1 * Math.PI);
-//             CairoContext.LineTo(context, 0, 0);
-//             CairoContext.SetSourceRgb(context, 0.7, 0.7, 0.7);
-//             CairoContext.Fill(context);
-            
-//             CairoContext.MoveTo(context, 0, 0);
-//             CairoContext.Arc(context, 0, 0, (w < h ? w : h) / 2.0, -Math.PI / 2.0, -Math.PI / 2.0 + 0.1 * Math.PI);
-//             CairoContext.SetSourceRgb(context, 0.3, 0.3, 0.3);
-//             CairoContext.Fill(context);
-//         });
 
 // <child>
 //               <object class="GtkRevealer" id="ProgressRevealer">
@@ -104,3 +95,5 @@ static class Progress
 //       </packing>
 //     </child>
 //   </object>
+
+// gtk_widget_queue_draw

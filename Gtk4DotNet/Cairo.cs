@@ -28,6 +28,33 @@ public static class Cairo
     public static CairoHandle Fill(this CairoHandle cairo)
         => cairo.SideEffect(c => c._Fill());
 
+    public static CairoHandle AntiAlias(this CairoHandle cairo, CairoAntialias antialias)
+        => cairo.SideEffect(c => c.SetAntiAlias(antialias));
+
+    public static CairoHandle LineJoin(this CairoHandle cairo, LineJoin lineJoin)
+        => cairo.SideEffect(c => c.SetLineJoin(lineJoin));
+
+    public static CairoHandle LineCap(this CairoHandle cairo, LineCap lineCap)
+        => cairo.SideEffect(c => c.SetLineCap(lineCap));
+
+    public static CairoHandle Translate(this CairoHandle cairo, double x, double y)
+        => cairo.SideEffect(c => c._Translate(x, y));
+
+    public static CairoHandle StrokePreserve(this CairoHandle cairo)
+        => cairo.SideEffect(c => c._StrokePreserve());
+
+    public static CairoHandle ArcNegative(this CairoHandle cairo, double x, double y, double radius, double angle1, double angle2)
+        => cairo.SideEffect(c => c._ArcNegative(x, y, radius, angle1, angle2));
+
+    public static CairoHandle LineTo(this CairoHandle cairo, double x, double y)
+        => cairo.SideEffect(c => c._LineTo(x, y));
+
+    public static CairoHandle MoveTo(this CairoHandle cairo, double x, double y)
+        => cairo.SideEffect(c => c._MoveTo(x, y));
+
+    public static CairoHandle Arc(this CairoHandle cairo, double x, double y, double radius, double angle1, double angle2)
+        => cairo.SideEffect(c => c._Arc(x, y, radius, angle1, angle2));
+
     [DllImport(Libs.LibGtk, EntryPoint = "cairo_surface_destroy", CallingConvention = CallingConvention.Cdecl)]
     internal extern static void SurfaceDestroy(this IntPtr surface);
 
@@ -47,34 +74,30 @@ public static class Cairo
     extern static void _Fill(this CairoHandle cairo);
 
     [DllImport(Libs.LibGtk, EntryPoint = "cairo_set_antialias", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void SetAntiAlias(this IntPtr context, CairoAntialias antialias);
+    extern static void SetAntiAlias(this CairoHandle cairo, CairoAntialias antialias);
 
+    [DllImport(Libs.LibGtk, EntryPoint = "cairo_set_line_join", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetLineJoin(this CairoHandle cairo, LineJoin lineJoin);
 
-    // [DllImport(Libs.LibGtk, EntryPoint = "cairo_set_line_join", CallingConvention = CallingConvention.Cdecl)]
-    // public extern static void SetLineJoin(this IntPtr context, LineJoin lineJoin);
+    [DllImport(Libs.LibGtk, EntryPoint = "cairo_set_line_cap", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetLineCap(this CairoHandle cairo, LineCap lineCap);
 
-    // [DllImport(Libs.LibGtk, EntryPoint = "cairo_set_line_cap", CallingConvention = CallingConvention.Cdecl)]
-    // public extern static void SetLineCap(this IntPtr context, LineCap lineCap);
+    [DllImport(Libs.LibGtk, EntryPoint = "cairo_translate", CallingConvention = CallingConvention.Cdecl)]
+    extern static void _Translate(this CairoHandle cairo, double x, double y);
 
-    // [DllImport(Libs.LibGtk, EntryPoint = "cairo_translate", CallingConvention = CallingConvention.Cdecl)]
-    // public extern static void Translate(this IntPtr context, double x, double y);
+    [DllImport(Libs.LibGtk, EntryPoint = "cairo_stroke_preserve", CallingConvention = CallingConvention.Cdecl)]
+    extern static void _StrokePreserve(this CairoHandle cairo);
 
-    // [DllImport(Libs.LibGtk, EntryPoint = "cairo_stroke_preserve", CallingConvention = CallingConvention.Cdecl)]
-    // public extern static void StrokePreserve(this IntPtr context);
+    [DllImport(Libs.LibGtk, EntryPoint = "cairo_arc_negative", CallingConvention = CallingConvention.Cdecl)]
+    extern static void _ArcNegative(this CairoHandle cairo, double x, double y, double radius, double angle1, double angle2);
 
-    // [DllImport(Libs.LibGtk, EntryPoint = "cairo_arc_negative", CallingConvention = CallingConvention.Cdecl)]
-    // public extern static void ArcNegative(this IntPtr context, double x, double y, double radius, double angle1, double angle2);
+    [DllImport(Libs.LibGtk, EntryPoint = "cairo_line_to", CallingConvention = CallingConvention.Cdecl)]
+    extern static void _LineTo(this CairoHandle cairo, double x, double y);
 
-    // [DllImport(Libs.LibGtk, EntryPoint = "cairo_line_to", CallingConvention = CallingConvention.Cdecl)]
-    // public extern static void LineTo(this IntPtr context, double x, double y);
+    [DllImport(Libs.LibGtk, EntryPoint = "cairo_move_to", CallingConvention = CallingConvention.Cdecl)]
+    extern static void _MoveTo(this CairoHandle cairo, double x, double y);
 
-    // [DllImport(Libs.LibGtk, EntryPoint = "cairo_move_to", CallingConvention = CallingConvention.Cdecl)]
-    // public extern static void CairoMoveTo(this IntPtr context, double x, double y);
-
-    // [DllImport(Libs.LibGtk, EntryPoint = "cairo_arc", CallingConvention = CallingConvention.Cdecl)]
-    // public extern static void Arc(this IntPtr context, double x, double y, double radius, double angle1, double angle2);
-
-    // [DllImport(Libs.LibGtk, EntryPoint = "cairo_set_source_surface", CallingConvention = CallingConvention.Cdecl)]
-    // public extern static void SetSourceSurface(this IntPtr cairo,  IntPtr surface, double x, double y);
+    [DllImport(Libs.LibGtk, EntryPoint = "cairo_arc", CallingConvention = CallingConvention.Cdecl)]
+    extern static void _Arc(this CairoHandle cairo, double x, double y, double radius, double angle1, double angle2);
 }
 
