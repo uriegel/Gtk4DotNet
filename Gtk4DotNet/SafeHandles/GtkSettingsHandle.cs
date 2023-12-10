@@ -1,6 +1,6 @@
 namespace GtkDotNet.SafeHandles;
 
-public class GtkSettingsHandle : ObjectHandle
+public class GtkSettingsHandle : ObjectFloatingHandle
 {
     public GtkSettingsHandle() : base() {}
 
