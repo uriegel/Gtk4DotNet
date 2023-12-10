@@ -20,6 +20,7 @@ static class Progress
                             .PackEnd(
                                 Revealer.New()
                                 .SideEffect(r => progressStarter.Ref.BindProperty("active", r, "reveal-child", BindingFlags.Default))
+                                .OnNotify("reveal-child", MakeProgress)                                                                
                                 .TransitionType(RevealerTransition.SlideLeft)
                                 .Child(
                                     MenuButton.New()
@@ -50,7 +51,18 @@ static class Progress
                         .Show())
             .Run(0, IntPtr.Zero);
 
-    static float progressRadius = 0.3f;
+    static async void MakeProgress(RevealerHandle revealer)
+    {
+        if (!revealer.IsChildRevealed())
+            for (int i = 0; i < 1000; i++)
+            {
+                progressRadius = i / 1000f;
+                await Task.Delay(10);
+                drawingArea.Ref.QueueDraw();
+            }
+    }
+
+    static float progressRadius = 0.0f;
 
     static readonly ObjectRef<ToggleButtonHandle> progressStarter = new();
     static readonly ObjectRef<DrawingAreaHandle> drawingArea = new();

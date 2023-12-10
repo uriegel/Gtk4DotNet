@@ -15,6 +15,9 @@ public static class Revealer
     public static RevealerHandle Child(this RevealerHandle revealer, WidgetHandle widget)
         => revealer.SideEffect(r => r.SetChild(widget));
 
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_revealer_get_child_revealed", CallingConvention = CallingConvention.Cdecl)]
+    public extern static bool IsChildRevealed(this RevealerHandle revealer);
+
     [DllImport(Libs.LibGtk, EntryPoint="gtk_revealer_set_transition_type", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetTransitionType(this RevealerHandle revealer, RevealerTransition transition);
     
