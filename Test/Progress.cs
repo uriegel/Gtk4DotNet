@@ -24,6 +24,9 @@ static class Progress
                                 .TransitionType(RevealerTransition.SlideLeft)
                                 .Child(
                                     MenuButton.New()
+                                    .Popover(
+                                        Popover.New()
+                                    )
                                     .Child(
                                         DrawingArea.New()
                                         .Ref(drawingArea)
