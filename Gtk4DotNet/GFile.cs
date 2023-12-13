@@ -63,7 +63,18 @@ public static class GFile
                 return nothing;
             }
             else
+            {
+                if (gerror.Code == 19 && gerror.Domain == 236)
+                {
+                    try
+                    {
+                        if (path != null)
+                            File.Delete(destination);
+                    }
+                    catch { }
+                }
                 return Error<Nothing, GError>(GError.New(gerror, path ?? ""));
+            }
         }
         return nothing;
     }
@@ -103,7 +114,18 @@ public static class GFile
                 return nothing;
             }
             else
+            {
+                if (gerror.Code == 19 && gerror.Domain == 236)
+                {
+                    try
+                    {
+                        if (path != null)
+                            File.Delete(destination);
+                    }
+                    catch { }
+                }
                 return Error<Nothing, GError>(GError.New(gerror, path ?? ""));
+            }
         }
         return nothing;
     }

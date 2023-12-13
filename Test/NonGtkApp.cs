@@ -52,13 +52,23 @@ static class NonGtkApp
 
         Directory.Delete(testDirectory, true);
 
-        void CopyFile(string source, string target, FileCopyFlags fileCopyFlags = FileCopyFlags.None, ProgressCallback? progress = null)
+        Directory.CreateDirectory(testDirectory);
+
+        WriteLine("Cancel after 1s");
+        CopyFile(testDirectory.AppendPath("/speicher/Videos/Burning.mp4"), testDirectory.AppendPath("burning.mp4"), 
+            progress: (c, t) => WriteLine($"Copy progress: {c}/{t}"), token: new CancellationTokenSource(1000).Token);
+        WriteLine();
+
+        Directory.Delete(testDirectory, true);
+
+
+        void CopyFile(string source, string target, FileCopyFlags fileCopyFlags = FileCopyFlags.None, ProgressCallback? progress = null, CancellationToken? token = null)
             => GFile
                 .New(source)
-                .Use(f => f.Copy(target, fileCopyFlags, progress))
+                .Use(f => f.Copy(target, fileCopyFlags, false, progress, token))
                 .Match(
                     _ => WriteLine("File copied"),
-                    e => WriteLine($"File not copied, {e.GetType()} {e.Code}, {e}"));
+                    e => WriteLine($"File not copied, {e.GetType()} {e.Code}, {(e is FileError fe ? fe.Error : "General error")}"));
 
         // Task CopyFileAsync(string source, string target, FileCopyFlags fileCopyFlags = FileCopyFlags.None, ProgressCallback? progress = null)
         //     => GFile

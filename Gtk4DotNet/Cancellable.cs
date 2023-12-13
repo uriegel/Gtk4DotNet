@@ -1,8 +1,9 @@
 using System.Runtime.InteropServices;
-using GtkDotNet;
 using GtkDotNet.SafeHandles;
 
-public class Cancellable : IDisposable
+namespace GtkDotNet;
+
+class Cancellable : IDisposable
 {
     public Cancellable(CancellationToken cancellationToken) : this(true)
         => cancellationToken.Register(Cancel);
