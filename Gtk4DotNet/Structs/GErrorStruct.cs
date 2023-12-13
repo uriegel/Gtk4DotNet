@@ -3,24 +3,24 @@ using System.Runtime.InteropServices;
 namespace GtkDotNet;
 
 [StructLayout(LayoutKind.Sequential)]
-public struct GError  
+struct GErrorStruct  
 {
     public uint Domain;
     public int Code;
     public string Message;
 
-    internal GError(uint domain, int code, string message)
+    internal GErrorStruct(uint domain, int code, string message)
     {
         Domain = domain;
         Code = code;
         Message = message;
     }
 
-    internal GError(IntPtr error)
+    internal GErrorStruct(IntPtr error)
     {
         if (error != IntPtr.Zero)
         {
-            this = Marshal.PtrToStructure<GError>(error);
+            this = Marshal.PtrToStructure<GErrorStruct>(error);
             Free(error);
         }
         else

@@ -28,10 +28,10 @@ public static class GFile
             : null;
     }
         
-    public static Result<int, GException> Copy(this GFileHandle source, string destination, FileCopyFlags flags, ProgressCallback? cb)
+    public static Result<Nothing, GError> Copy(this GFileHandle source, string destination, FileCopyFlags flags, ProgressCallback? cb)
         => Copy(source, destination, flags, false, cb);
 
-    public static Result<int, GException> Copy(this GFileHandle source, string destination, FileCopyFlags flags, bool createTargetPath = false, 
+    public static Result<Nothing, GError> Copy(this GFileHandle source, string destination, FileCopyFlags flags, bool createTargetPath = false, 
         ProgressCallback? cb = null, CancellationToken? cancellation = null)
     {
         using var cancellable = cancellation.HasValue ? new Cancellable(cancellation.Value) : null;
@@ -41,7 +41,7 @@ public static class GFile
         cb?.Invoke(0, 0);
         if (!Copy(source, destinationFile, flags, cancellable?.handle?.IsInvalid == false ? cancellable.handle : Cancellable.Zero().handle, rcb, IntPtr.Zero, ref error))
         {
-            var gerror = new GError(error);
+            var gerror = new GErrorStruct(error);
             var path = source.GetPath();
             if (createTargetPath && gerror.Domain == 232 && gerror.Code == 1 && File.Exists(path))
             {
@@ -53,25 +53,25 @@ public static class GFile
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    return Error<int, GException>(GException.New(new GError(232, 14, "Access Denied"), path, destination));
+                    return Error<Nothing, GError>(GError.New(new GErrorStruct(232, 14, "Access Denied"), path));
                 }
                 catch 
                 {
-                    return Error<int, GException>(GException.New(new GError(0, 0, "General Exception"), path, destination));
+                    return Error<Nothing, GError>(GError.New(new GErrorStruct(0, 0, "General Exception"), path));
                 }
                 Copy(source, destination, flags, true, cb, cancellation);
-                return 0;
+                return nothing;
             }
             else
-                return Error<int, GException>(GException.New(gerror, path ?? "", destination));
+                return Error<Nothing, GError>(GError.New(gerror, path ?? ""));
         }
-        return 0;
+        return nothing;
     }
 
-    public static Result<int, GException> Move(this GFileHandle source, string destination, FileCopyFlags flags, ProgressCallback? cb)
+    public static Result<Nothing, GError> Move(this GFileHandle source, string destination, FileCopyFlags flags, ProgressCallback? cb)
         => Move(source, destination, flags, false, cb);
 
-    public static Result<int, GException> Move(this GFileHandle source, string destination, FileCopyFlags flags, bool createTargetPath = false, 
+    public static Result<Nothing, GError> Move(this GFileHandle source, string destination, FileCopyFlags flags, bool createTargetPath = false, 
         ProgressCallback? cb = null, CancellationToken? cancellation = null)
     {
         using var cancellable = cancellation.HasValue ? new Cancellable(cancellation.Value) : null;
@@ -81,7 +81,7 @@ public static class GFile
         cb?.Invoke(0, 0);
         if (!Copy(source, destinationFile, flags, cancellable?.handle?.IsInvalid == false ? cancellable.handle : Cancellable.Zero().handle, rcb, IntPtr.Zero, ref error))
         {
-            var gerror = new GError(error);
+            var gerror = new GErrorStruct(error);
             var path = source.GetPath();
             if (createTargetPath && gerror.Domain == 232 && gerror.Code == 1 && File.Exists(path))
             {
@@ -91,30 +91,30 @@ public static class GFile
                 {
                     destPath?.Create();
                 }
-                catch (AccessDeniedException)
+                catch (UnauthorizedAccessException)
                 {
-                    return Error<int, GException>(GException.New(new GError(232, 14, "Access Denied"), path, destination));
+                    return Error<Nothing, GError>(GError.New(new GErrorStruct(232, 14, "Access Denied"), path));
                 }
                 catch 
                 {
-                    return Error<int, GException>(GException.New(new GError(0, 0, "General Exception"), path, destination));
+                    return Error<Nothing, GError>(GError.New(new GErrorStruct(0, 0, "General Exception"), path));
                 }
                 Copy(source, destination, flags, true, cb, cancellation);
-                return 0;
+                return nothing;
             }
             else
-                return Error<int, GException>(GException.New(gerror, path ?? "", destination));
+                return Error<Nothing, GError>(GError.New(gerror, path ?? ""));
         }
-        return 0;
+        return nothing;
     }
 
-    public static Task<Result<int, GException>> CopyAsync(this GFileHandle source, string destination, FileCopyFlags flags, ProgressCallback? cb)
+    public static Task<Result<Nothing, GError>> CopyAsync(this GFileHandle source, string destination, FileCopyFlags flags, ProgressCallback? cb)
         => CopyAsync(source, destination, flags, 100, false, cb);
 
-    public static Task<Result<int, GException>> CopyAsync(this GFileHandle source, string destination, FileCopyFlags flags, int ioPriority = 100, 
+    public static Task<Result<Nothing, GError>> CopyAsync(this GFileHandle source, string destination, FileCopyFlags flags, int ioPriority = 100, 
         bool createTargetPath = false, ProgressCallback? cb = null, CancellationToken? cancellation = null)
     {
-        var tcs = new TaskCompletionSource<Result<int, GException>>();
+        var tcs = new TaskCompletionSource<Result<Nothing, GError>>();
         var id = getId();
         var asyncReady = new ThreePointerDelegate(AsyncReady);
         asyncReadyCallbacks[id] = asyncReady;
@@ -131,10 +131,10 @@ public static class GFile
             var error = IntPtr.Zero;
             var res = CopyFinish(source, result, ref error);
             if (res)
-                tcs.TrySetResult(0);
+                tcs.TrySetResult(nothing);
             else
             {
-                var gerror = new GError(error);
+                var gerror = new GErrorStruct(error);
                 var path = source.GetPath();
                 if (createTargetPath && gerror.Domain == 232 && gerror.Code == 1 && File.Exists(path))
                 {
@@ -146,11 +146,11 @@ public static class GFile
                     }
                     catch (UnauthorizedAccessException)
                     {
-                        tcs.TrySetResult(Error<int, GException>(GException.New(new GError(232, 14, "Access Denied"), path, destination)));
+                        tcs.TrySetResult(Error<Nothing, GError>(GError.New(new GErrorStruct(232, 14, "Access Denied"), path)));
                     }
                     catch
                     {
-                        tcs.TrySetResult(Error<int, GException>(GException.New(new GError(0, 0, "General Exception"), path, destination)));
+                        tcs.TrySetResult(Error<Nothing, GError>(GError.New(new GErrorStruct(0, 0, "General Exception"), path)));
                     }
 
                     // TODO try again
@@ -158,16 +158,17 @@ public static class GFile
                     //return 0;
                 }
                 else
-                    tcs.TrySetResult(Error<int, GException>(GException.New(gerror, path ?? "", destination)));
+                    tcs.TrySetResult(Error<Nothing, GError>(GError.New(gerror, path ?? "")));
             }
         }
     }
 
-    public static void Trash(this GFileHandle file)
+    public static Result<Nothing, GError> Trash(this GFileHandle file)
     {
         var error = IntPtr.Zero;
-        if (!Trash(file, Cancellable.Zero().handle, ref error))
-            throw GException.New(new GError(error), file.GetPath() ?? "", "");
+        return Trash(file, Cancellable.Zero().handle, ref error)
+            ? nothing
+            : Error<Nothing, GError>(GError.New(new GErrorStruct(error), file.GetPath() ?? ""));
     }
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_copy", CallingConvention = CallingConvention.Cdecl)]

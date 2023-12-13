@@ -5,10 +5,10 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<Version>3.4.0</Version>
-	<FileVersion>3.4.0.0</FileVersion>
+	<Version>4.0.0</Version>
+	<FileVersion>4.0.0.0</FileVersion>
 	<AssemblyName>Gtk4DotNet</AssemblyName>
-	<AssemblyVersion>3.4.0.0</AssemblyVersion>
+	<AssemblyVersion>4.0.0.0</AssemblyVersion>
 	<Authors>Uwe Riegel</Authors>
 	<Company>Uwe Riegel</Company>		
 	<Description>.NET 8 Bindings for GTK 4, functional declarative similar to REACT or Kotlin Compose</Description>
@@ -17,7 +17,7 @@
 	<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 	<PackageLicenseFile>LICENSE</PackageLicenseFile>
 	<PackageTags>DotNet GTK4</PackageTags>
-	<PackageReleaseNotes>Now .NET 8 is target platform</PackageReleaseNotes>
+	<PackageReleaseNotes>Now .NET 8 is target platform, using Railway oriented programming with Result instead of exceptions (GFile)</PackageReleaseNotes>
 	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -36,7 +36,7 @@
 </ItemGroup>
 
 <ItemGroup>
-  <PackageReference Include="CsTools" Version="6.0.0" />
+  <PackageReference Include="CsTools" Version="6.1.0" />
 </ItemGroup>  
 
 </Project>
