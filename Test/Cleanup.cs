@@ -1,6 +1,6 @@
 using GtkDotNet;
 using GtkDotNet.SafeHandles;
-using LinqTools;
+using CsTools.Extensions;
 using static System.Console;
 
 static class Cleanup
@@ -152,7 +152,9 @@ static class Cleanup
 
 class Test1
 {
-   string test = "Hallo";
+
+    #pragma warning disable CS0414
+    string test = "Hallo";
 
     ~Test1()
         => WriteLine("Test1 disposed");

@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
+using CsTools.Extensions;
 using GtkDotNet.SafeHandles;
-using LinqTools;
 
 namespace GtkDotNet;
 

@@ -1,6 +1,7 @@
 using GtkDotNet;
 using GtkDotNet.SafeHandles;
-using LinqTools;
+using CsTools.Extensions;
+using CsTools.Functional;
 
 static class Drawing
 {

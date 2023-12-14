@@ -5,10 +5,10 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<Version>4.0.0</Version>
-	<FileVersion>4.0.0.0</FileVersion>
+	<Version>5.0.0</Version>
+	<FileVersion>5.0.0.0</FileVersion>
+	<AssemblyVersion>5.0.0.0</AssemblyVersion>
 	<AssemblyName>Gtk4DotNet</AssemblyName>
-	<AssemblyVersion>4.0.0.0</AssemblyVersion>
 	<Authors>Uwe Riegel</Authors>
 	<Company>Uwe Riegel</Company>		
 	<Description>.NET 8 Bindings for GTK 4, functional declarative similar to REACT or Kotlin Compose</Description>
@@ -36,7 +36,7 @@
 </ItemGroup>
 
 <ItemGroup>
-  <PackageReference Include="CsTools" Version="6.1.0" />
+  <PackageReference Include="CsTools" Version="7.0.1" />
 </ItemGroup>  
 
 </Project>

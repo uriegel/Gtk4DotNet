@@ -1,6 +1,6 @@
 using GtkDotNet;
 using GtkDotNet.SafeHandles;
-using LinqTools;
+using CsTools.Extensions;
 using static System.Console;
 
 static class Threading

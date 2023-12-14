@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using CsTools.Functional;
 using GtkDotNet.SafeHandles;
-using LinqTools;
+using CsTools.Extensions;
 
 namespace GtkDotNet;
 

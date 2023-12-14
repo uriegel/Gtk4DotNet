@@ -1,5 +1,5 @@
 using GtkDotNet;
-using LinqTools;
+using CsTools.Extensions;
 using static System.Console;
 
 static class HelloWorld

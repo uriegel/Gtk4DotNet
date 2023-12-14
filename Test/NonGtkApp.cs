@@ -1,6 +1,6 @@
 using CsTools.Extensions;
+using CsTools.Functional;
 using GtkDotNet;
-using LinqTools;
 
 using static System.Console;
 

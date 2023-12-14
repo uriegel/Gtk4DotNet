@@ -3,9 +3,8 @@ using System.Runtime.InteropServices;
 using CsTools.Functional;
 using GtkDotNet.Extensions;
 using GtkDotNet.SafeHandles;
-using LinqTools;
 
-using static LinqTools.Core;
+using static CsTools.Core;
 
 namespace GtkDotNet;
 

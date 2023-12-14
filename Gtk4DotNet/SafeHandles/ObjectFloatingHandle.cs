@@ -1,4 +1,4 @@
-using LinqTools;
+using CsTools.Extensions;
 
 namespace GtkDotNet.SafeHandles;
 

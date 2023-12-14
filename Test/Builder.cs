@@ -1,8 +1,9 @@
 using GtkDotNet;
 using GtkDotNet.SafeHandles;
-using LinqTools;
+using CsTools.Extensions;
 
 using static System.Console;
+using CsTools.Functional;
 
 static class BuilderProgram
 {

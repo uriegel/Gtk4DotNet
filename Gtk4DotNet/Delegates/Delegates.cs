@@ -1,6 +1,6 @@
 //[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 using System.Collections.Concurrent;
-using LinqTools;
+using CsTools.Extensions;
 
 public delegate void ProgressCallback(long current, long total);
 

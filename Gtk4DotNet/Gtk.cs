@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
 using GtkDotNet.Extensions;
 using GtkDotNet.SafeHandles;
-using LinqTools;
+using CsTools.Extensions;
 
 namespace GtkDotNet;
 

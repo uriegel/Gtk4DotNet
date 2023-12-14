@@ -1,6 +1,6 @@
 using GtkDotNet;
 using GtkDotNet.SafeHandles;
-using LinqTools;
+using CsTools.Extensions;
 
 namespace Dialog4;
 

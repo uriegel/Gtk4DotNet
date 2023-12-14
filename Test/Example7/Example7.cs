@@ -1,7 +1,7 @@
 using GtkDotNet;
 using CsTools.Extensions;
-using LinqTools;
 using GtkDotNet.SafeHandles;
+using CsTools.Functional;
 
 static class Example7
 {

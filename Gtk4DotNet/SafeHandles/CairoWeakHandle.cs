@@ -1,5 +1,5 @@
 using System.Runtime.InteropServices;
-using LinqTools;
+using CsTools.Extensions;
 
 namespace GtkDotNet.SafeHandles;
 
