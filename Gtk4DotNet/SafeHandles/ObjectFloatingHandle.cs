@@ -6,7 +6,7 @@ public abstract class ObjectFloatingHandle : ObjectHandle
 {
     public ObjectFloatingHandle() : base() {}
 
-    internal void RefSink() => floating = false;
+    internal void   RefSink() => floating = false;
 
     protected override bool ReleaseHandle() => 
         floating 

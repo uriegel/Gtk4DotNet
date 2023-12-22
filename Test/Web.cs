@@ -20,6 +20,7 @@ static class Web
                                 wk.AddController(
                                 EventControllerKey
                                     .New()
+                                    .RefSink()
                                     .OnKeyPressed((k, kc, m) => {
                                         if (kc == 73)
                                         {
@@ -32,6 +33,7 @@ static class Web
         code: "F7"
     })) 
 """);
+                                            GC.Collect();
                                             return true;
                                         }
                                         else

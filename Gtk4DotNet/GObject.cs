@@ -42,6 +42,18 @@ public static class GObject
         _RefSink(obj);
     }
 
+    /// <summary>
+    /// Increase the reference count of object, and possibly remove the [floating][floating-ref] reference, 
+    /// if object has a floating reference. 
+    /// In other words, if the object is floating, then this call “assumes ownership” of the floating reference, 
+    /// converting it to a normal reference by clearing the floating flag while leaving the reference count unchanged. If the object is not floating, then this call adds a new normal reference increasing the reference count by one.
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <returns></returns>
+    public static THandle RefSink<THandle>(this THandle obj)
+        where THandle : ObjectHandle
+        => obj.SideEffect(o => _RefSink(o));
+
     public static void SetBool(this ObjectHandle obj, string name, bool value)
         => obj.SetBool(name, value, IntPtr.Zero);
     public static bool GetBool(this ObjectHandle obj, string name)
