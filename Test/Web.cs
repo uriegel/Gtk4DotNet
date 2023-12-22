@@ -27,21 +27,10 @@ static class Web
                                             wk.RunJavascript(
 """
     console.log("Der F7")
-    const keyboardEvent = document.createEvent('KeyboardEvent')
-    const initMethod = typeof keyboardEvent.initKeyboardEvent !== 'undefined' ? 'initKeyboardEvent' : 'initKeyEvent'
-    keyboardEvent[initMethod](
-        'keydown', // event type: keydown, keyup, keypress
-        true, // bubbles
-        true, // cancelable
-        window, // view: should be window
-        false, // ctrlKey
-        false, // altKey
-        false, // shiftKey
-        false, // metaKey
-        118, // keyCode: unsigned long - the virtual key code, else 0
-        0, // charCode: unsigned long - the Unicode character associated with the depressed key, else 0
-    )
-    document.dispatchEvent(keyboardEvent) 
+    document.dispatchEvent(new KeyboardEvent('keydown', {
+        key: "F7",
+        code: "F7"
+    })) 
 """);
                                             return true;
                                         }
