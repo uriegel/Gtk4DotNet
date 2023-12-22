@@ -9,3 +9,8 @@ btnDevTools.onclick = () => {
     alert("showDevTools")
 }
 
+document.addEventListener('keydown', evt => {
+    console.log("key", evt)
+    evt.preventDefault()
+    evt.stopPropagation()
+})

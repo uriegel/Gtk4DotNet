@@ -69,7 +69,8 @@ public static class Widget
         where THandle : WidgetHandle
         => widget.SideEffect(w => w.SetSizeRequest(width, height));
 
-    public static WidgetHandle AddController(this WidgetHandle widget, EventControllerHandle eventController)
+    public static THandle AddController<THandle>(this THandle widget, EventControllerHandle eventController)
+        where THandle : WidgetHandle
         => widget.SideEffect(w => w._AddController(eventController));
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_destroy", CallingConvention = CallingConvention.Cdecl)]

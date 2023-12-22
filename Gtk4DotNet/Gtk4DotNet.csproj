@@ -36,7 +36,7 @@
 </ItemGroup>
 
 <ItemGroup>
-  <PackageReference Include="CsTools" Version="7.0.1" />
+  <PackageReference Include="CsTools" Version="7.4.0" />
 </ItemGroup>  
 
 </Project>
