@@ -69,6 +69,10 @@ public static class Widget
         where THandle : WidgetHandle
         => widget.SideEffect(w => w.SetSizeRequest(width, height));
 
+    public static THandle CssClass<THandle>(this THandle widget, string cssClass)
+        where THandle : WidgetHandle
+        => widget.SideEffect(w => w.AddCssClass(cssClass));
+
     public static THandle AddController<THandle>(this THandle widget, EventControllerHandle eventController)
         where THandle : WidgetHandle
         => widget.SideEffect(w => w._AddController(eventController));

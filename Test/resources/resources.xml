@@ -2,5 +2,6 @@
 <gresources>
   <gresource prefix="/org/gtk/example">
     <file>builder.ui</file>
+    <file>style.css</file>
   </gresource>
 </gresources>

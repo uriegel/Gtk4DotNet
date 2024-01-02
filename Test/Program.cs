@@ -10,19 +10,20 @@ WriteLine(
     5:  Builder
     6:  Children
     7:  Web View
-    8:  Progress
-    0:  NotDecorated
-    10:  Threading
-    11: Cleanup
-    12: Non GTK
-    13: Example 1
-    14: Example 2
-    15: Example 3
-    16: Example 4
-    17: Example 5
-    18: Example 6
-    19: Example 7
-    20: Example 8
+    8:  CSS
+    9:  Progress
+    10:  NotDecorated
+    11:  Threading
+    12: Cleanup
+    13: Non GTK
+    14: Example 1
+    15: Example 2
+    16: Example 3
+    17: Example 4
+    18: Example 5
+    19: Example 6
+    20: Example 7
+    21: Example 8
     <any>: Quit
     """);
 WriteLine($"Return value: {ReadLine() switch 
@@ -34,18 +35,19 @@ WriteLine($"Return value: {ReadLine() switch
     "5" => BuilderProgram.Run(),
     "6" => Children.Run(),
     "7" => Web.Run(),
-    "8" => Progress.Run(),
-    "9" => NotDecorated.Run(),
-    "10"=> Threading.Run(),
-    "11"=> Cleanup.Run(),
-    "12"=> NonGtkApp.Run(),
-    "13"=> Example1.Run(),
-    "14" => Example2.Run(),
-    "15" => Example3.Run(),
-    "16" => Example4.Run(),
-    "17" => Example5.Run(),
-    "18" => Example6.Run(),
-    "19" => Example7.Run(),
-    "20" => Example8.Run(),
+    "8" => Css.Run(),
+    "9" => Progress.Run(),
+    "10"=> NotDecorated.Run(),
+    "11"=> Threading.Run(),
+    "12"=> Cleanup.Run(),
+    "13"=> NonGtkApp.Run(),
+    "14"=> Example1.Run(),
+    "15" => Example2.Run(),
+    "16" => Example3.Run(),
+    "17" => Example4.Run(),
+    "18" => Example5.Run(),
+    "19" => Example6.Run(),
+    "20" => Example7.Run(),
+    "21" => Example8.Run(),
     _ => 0
 }}");

@@ -8,3 +8,4 @@ Test/bin
 Test/obj
 Test/bin/Debug/net6.0/Gtk4DotNet.dll
 Test/TestDirectory/linqasync.dll
+Test/resources/resources.gresource
