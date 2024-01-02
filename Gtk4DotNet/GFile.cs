@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
+using CsTools.Extensions;
 using CsTools.Functional;
 using GtkDotNet.Extensions;
 using GtkDotNet.SafeHandles;
@@ -37,7 +38,7 @@ public static class GFile
         using var destinationFile = New(destination);
         var error = IntPtr.Zero;
         TwoLongAndPtrCallback? rcb = cb != null ? (c, t, _) => cb(c, t) : null;
-        cb?.Invoke(0, 0);
+        cb?.Invoke(0, new FileInfo(source.GetPath() ?? "").Length);
         if (!Copy(source, destinationFile, flags, cancellable?.handle?.IsInvalid == false ? cancellable.handle : Cancellable.Zero().handle, rcb, IntPtr.Zero, ref error))
         {
             var gerror = new GErrorStruct(error);
@@ -88,7 +89,7 @@ public static class GFile
         using var destinationFile = New(destination);
         var error = IntPtr.Zero;
         TwoLongAndPtrCallback? rcb = cb != null ? (c, t, _) => cb(c, t) : null;
-        cb?.Invoke(0, 0);
+        cb?.Invoke(0, new FileInfo(source.GetPath() ?? "").Length);
         if (!Move(source, destinationFile, flags, cancellable?.handle?.IsInvalid == false ? cancellable.handle : Cancellable.Zero().handle, rcb, IntPtr.Zero, ref error))
         {
             var gerror = new GErrorStruct(error);
@@ -109,7 +110,7 @@ public static class GFile
                 {
                     return Error<Nothing, GError>(GError.New(new GErrorStruct(0, 0, "General Exception"), path));
                 }
-                Copy(source, destination, flags, true, cb, cancellation);
+                Move(source, destination, flags, true, cb, cancellation);
                 return nothing;
             }
             else
