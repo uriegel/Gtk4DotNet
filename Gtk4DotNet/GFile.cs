@@ -89,7 +89,7 @@ public static class GFile
         var error = IntPtr.Zero;
         TwoLongAndPtrCallback? rcb = cb != null ? (c, t, _) => cb(c, t) : null;
         cb?.Invoke(0, 0);
-        if (!Copy(source, destinationFile, flags, cancellable?.handle?.IsInvalid == false ? cancellable.handle : Cancellable.Zero().handle, rcb, IntPtr.Zero, ref error))
+        if (!Move(source, destinationFile, flags, cancellable?.handle?.IsInvalid == false ? cancellable.handle : Cancellable.Zero().handle, rcb, IntPtr.Zero, ref error))
         {
             var gerror = new GErrorStruct(error);
             var path = source.GetPath();
@@ -204,8 +204,8 @@ public static class GFile
     extern static bool CopyFinish(GFileHandle source, IntPtr asyncResult, ref IntPtr error);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_move", CallingConvention = CallingConvention.Cdecl)]
-    extern static bool Move(IntPtr source, IntPtr destination, FileCopyFlags flags, CancellableHandle cancellable, 
-        TwoLongAndPtrCallback progress, IntPtr data, ref IntPtr error);
+    extern static bool Move(GFileHandle source, GFileHandle destination, FileCopyFlags flags, CancellableHandle cancellable, 
+        TwoLongAndPtrCallback? progress, IntPtr data, ref IntPtr error);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_load_contents", CallingConvention = CallingConvention.Cdecl)]
     extern static bool LoadContents(this GFileHandle gFile, CancellableHandle cancellable, out IntPtr content, out int length, IntPtr etagOut, IntPtr error);
