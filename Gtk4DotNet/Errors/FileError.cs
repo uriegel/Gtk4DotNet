@@ -9,7 +9,8 @@ public class FileError : GError
         TargetExisting,
         SourceNotFound,
         TargetNotFound,
-        Canceled
+        Canceled,
+        NoDiskSpace
     }
 
     public ErrorType Error { get; }
@@ -25,6 +26,7 @@ public class FileError : GError
                 1 when File.Exists(source) => ErrorType.TargetNotFound,
                 1                          => ErrorType.SourceNotFound,
                 2                          => ErrorType.TargetExisting,
+                12                         => ErrorType.NoDiskSpace,
                 14                         => ErrorType.AccessDenied,
                 19                         => ErrorType.Canceled,
                 _                          => ErrorType.General,
