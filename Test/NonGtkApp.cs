@@ -25,6 +25,8 @@ static class NonGtkApp
 
         await Gtk.Dispatch(() => WriteLine(Gtk.GuessContentType(".pdf")));
 
+        SaveThumbnail("/daten/Bilder/Fotos/1995/1/Bild017.jpg");
+
         const string testDirectory = "TestDirectory";
         Directory.CreateDirectory(testDirectory);
 
@@ -77,5 +79,19 @@ static class NonGtkApp
         //         .MatchAsync(
         //             _ => 1.SideEffect(_ => WriteLine("File copied")),
         //             e => 1.SideEffect(_ => WriteLine($"File not copied, {e.GetType()} {e.Code}, {e}")));
+    }
+
+    static void SaveThumbnail(string file)
+    {
+        string GetThumbnailFilename(string file)
+            => file += ".thumbnail.jpg";
+
+        var pb = Pixbuf.NewFromFile(file);
+        var (w, h) = file.GetFileInfo();
+        var newh = 64 * h / w;
+        var thumbnail = pb.Scale(64, newh, Interpolation.Bilinear);
+        var stream = Pixbuf.SaveJpgToBuffer(thumbnail);
+        using var thumbnailFile = File.Create(GetThumbnailFilename(file));
+        stream?.CopyTo(thumbnailFile);
     }
 }
