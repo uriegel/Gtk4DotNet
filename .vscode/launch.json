@@ -16,7 +16,7 @@
             "stopAtEntry": false,
             "justMyCode": false,
             "enableStepFiltering": true,
-            "console": "externalTerminal"
+            "console": "integratedTerminal"
         }
     ]
 }
