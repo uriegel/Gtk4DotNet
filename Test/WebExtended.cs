@@ -15,7 +15,7 @@ static class WebExtended
             .OnActivate(app =>
                 app
                     .NewWindow()
-                    .Title("Hello Web View👍")
+                    .Title("Hello Web View Adwaita👍")
                     .DefaultSize(800, 600)
                     .SideEffect(_ => WebKitWebContext
                                         .GetDefault()

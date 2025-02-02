@@ -12,9 +12,9 @@ WriteLine(
     7:  Web View
     8:  Web View extended
     9:  CSS
-    10:  Progress
-    11:  NotDecorated
-    12:  Threading
+    10: Progress
+    11: NotDecorated
+    12: Threading
     13: Cleanup
     14: Non GTK
     15: Example 1
