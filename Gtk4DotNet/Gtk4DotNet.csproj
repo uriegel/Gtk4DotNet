@@ -5,9 +5,9 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<Version>6.5.6</Version>
-	<FileVersion>6.5.6.0</FileVersion>
-	<AssemblyVersion>6.5.6.0</AssemblyVersion>
+	<Version>6.6.0</Version>
+	<FileVersion>6.6.0.0</FileVersion>
+	<AssemblyVersion>6.6.0.0</AssemblyVersion>
 	<AssemblyName>Gtk4DotNet</AssemblyName>
 	<Authors>Uwe Riegel</Authors>
 	<Company>Uwe Riegel</Company>		
@@ -17,7 +17,7 @@
 	<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 	<PackageLicenseFile>LICENSE</PackageLicenseFile>
 	<PackageTags>DotNet;.NET;C#;CSharp;Gtk4;Gtk;P/Invoke</PackageTags>
-	<PackageReleaseNotes>BackgroundColor in WebKit</PackageReleaseNotes>
+	<PackageReleaseNotes>Builder from .Net Resource</PackageReleaseNotes>
 	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>

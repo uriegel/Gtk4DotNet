@@ -13,6 +13,15 @@ public static class Builder
         return _FromResource(path);        
     } 
 
+    public static BuilderHandle FromDotNetResource(string path)
+    {
+        var ui = new StreamReader(Resources.Get(path)!).ReadToEnd();
+        return _FromString(ui, -1);        
+    }
+        
+    public static BuilderHandle FromString(string ui)
+        => _FromString(ui, -1);        
+
     public static BuilderHandle GetObject<THandle>(this BuilderHandle builder, string objectName, Action<WindowHandle> withObject)
         where THandle : WindowHandle
             => builder.SideEffect(b => withObject(b.GetWindowObject(objectName)));
@@ -24,6 +33,9 @@ public static class Builder
     [DllImport(Libs.LibGtk, EntryPoint="gtk_builder_new_from_resource", CallingConvention = CallingConvention.Cdecl)]
     extern static BuilderHandle _FromResource(string path);
 
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_builder_new_from_string", CallingConvention = CallingConvention.Cdecl)]
+    extern static BuilderHandle _FromString(string ui, int length);
+    
     [DllImport(Libs.LibGtk, EntryPoint="gtk_builder_get_object", CallingConvention = CallingConvention.Cdecl)]
     extern static WindowHandle GetWindowObject(this BuilderHandle builder, string objectName);
 

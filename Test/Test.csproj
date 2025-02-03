@@ -22,6 +22,11 @@
   </Target> -->
 
   <ItemGroup>
+    <EmbeddedResource Include="./resources/builder.ui">
+      <LogicalName>ui</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="./resources/style.css">
       <LogicalName>style</LogicalName>
     </EmbeddedResource>
