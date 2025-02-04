@@ -20,7 +20,9 @@ static class WebExtended
                     .SideEffect(_ => WebKitWebContext
                                         .GetDefault()
                                         .RegisterUriScheme("my", ServeCustomRequest)
-                                        .RegisterUriScheme("request", ServeRequest))
+                                        .RegisterUriScheme("request", ServeRequest)
+                                        .GetSecurityManager()
+                                            .RegisterUriSchemeAsCorsEnabled("my"))
                     .Child(
                         WebKit
                             .New()
@@ -60,7 +62,7 @@ static class WebExtended
                             .OnLoadChanged((w, e) => 
                                 e.SideEffectIf(e == WebViewLoad.Finished, 
                                     _ => w.RunJavascript("console.log('called from C#')")))
-                            .DisableContextMenu()
+                            //.DisableContextMenu()
                             .OnAlert((w, text) => 
                                 text
                                     .SideEffectIf(text == "showDevTools", _ => w.GetInspector().Show())
@@ -142,7 +144,7 @@ static class WebExtended
                 <body>
                     <h1>Hello from my custom scheme!</h1>
                     <div>
-                        <video controls><source src='my://video/2010.mp4' type='video/mp4'>Your browser does not support the video tag.</video>
+                        <video controls><source src='http://illmatic:8080/media/video/Fasten.mp4' type='video/mp4'>Your browser does not support the video tag.</video>
                     </div>
                     <div>
                         <img src='pic.jpg'/>
