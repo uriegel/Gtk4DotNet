@@ -32,6 +32,9 @@ public static class Builder
     public extern static RevealerHandle GetRevealer(this BuilderHandle builder, string objectName);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_builder_get_object", CallingConvention = CallingConvention.Cdecl)]
+    public extern static ButtonHandle GetButton(this BuilderHandle builder, string objectName);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_builder_get_object", CallingConvention = CallingConvention.Cdecl)]
     public extern static ProgressBarHandle GetProgressBar(this BuilderHandle builder, string objectName);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_builder_get_object", CallingConvention = CallingConvention.Cdecl)]
