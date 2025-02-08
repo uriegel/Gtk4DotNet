@@ -154,7 +154,7 @@ static class WebExtended
                 <body>
                     <h1>Hello from my custom scheme!</h1>
                     <div>
-                        <button tab=1000 id='button'>Request</button>
+                        <button id='button'>Request</button>
                     </div>
                     <div>
                         <video controls><source src='http://illmatic:8080/media/video/Fasten.mp4' type='video/mp4'>Your browser does not support the video tag.</video>
@@ -164,11 +164,9 @@ static class WebExtended
                     </div>
                     <div id='drag'></div>
                     <script>
-                        window.onload = function() {
-                            document.getElementById('button').focus();
-                        }
-
                         const b = document.getElementById('button')
+                        b.focus()
+
                         const data = {
                             name: 'Uwe Riegel',
                             id: 9865
