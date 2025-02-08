@@ -11,11 +11,16 @@ static class WebExtended
 {
     public static int Run()
         => Application
-            .New("org.gtk.example")
+            .NewAdwaita("org.gtk.example")
             .OnActivate(app =>
                 app
                     .NewWindow()
                     .Title("Hello Web View Adwaita👍")
+                    .Titlebar(
+                        Builder
+                            .FromDotNetResource("headerbar")
+                            .GetHeaderBar("header")
+                    )
                     .DefaultSize(800, 600)
                     .SideEffect(_ => WebKitWebContext
                                         .GetDefault()
@@ -28,6 +33,13 @@ static class WebExtended
                             .New()
                             .LoadUri($"my://index")
                             //.LoadUri($"http://localhost:5173")
+                            .SideEffect(wk => 
+                                app.AddActions([
+                                    new("devtools", () => {
+                                        WriteLine("Devtools");
+                                        wk.GrabFocus();
+                                    }, "<Ctrl><Shift>I"),                                                
+                                ]))
                             .SideEffect(wk =>
                                 wk.AddController(
                                 EventControllerKey
@@ -93,13 +105,6 @@ static class WebExtended
                                     .SideEffect(text => WriteLine($"on alert: {text}")))
                     )
                     .Show())
-                    // .SideEffect(async w => {
-                    //     await Task.Delay(1000);
-                    //     var affe = w.GetChild();
-                    //     affe.GrabFocus();
-                    // })
-                    // .GetChild()
-                    // .GrabFocus())
             .Run(0, IntPtr.Zero);
 
     static readonly JsonSerializerOptions defaults = new()
