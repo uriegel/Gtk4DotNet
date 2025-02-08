@@ -64,6 +64,9 @@ public static class Window
     public static WindowHandle Child(this WindowHandle window, WidgetHandle child)
         => window.SideEffect(w => SetChild(window, child));
 
+    [DllImport("libgtk-4.so.1", CallingConvention = CallingConvention.Cdecl, EntryPoint = "gtk_window_get_child")]
+    public static extern WidgetHandle GetChild(this WindowHandle window);
+
     public static WindowHandle OnClose(this WindowHandle window, Func<WindowHandle, bool> preventClosing)
         => window.SideEffect(a => Gtk.SignalConnect<TwoPointerBoolRetDelegate>(a, "close-request", (_, ___) => preventClosing(window)));
 

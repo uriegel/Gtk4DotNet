@@ -10,7 +10,7 @@ using System.Text.Json.Serialization;
 static class WebExtended
 {
     public static int Run()
-        =>  Application
+        => Application
             .New("org.gtk.example")
             .OnActivate(app =>
                 app
@@ -28,16 +28,18 @@ static class WebExtended
                             .New()
                             .LoadUri($"my://index")
                             //.LoadUri($"http://localhost:5173")
-                            .SideEffect(wk => 
+                            .SideEffect(wk =>
                                 wk.AddController(
                                 EventControllerKey
                                     .New()
                                     .RefSink()
-                                    .OnKeyPressed((k, kc, m) => {
+                                    .OnKeyPressed((k, kc, m) =>
+                                    {
                                         if (kc == 73)
                                         {
                                             // prevent blink_cb crash!
                                             wk.RunJavascript(
+
 """
     console.log("Der F7")
     document.dispatchEvent(new KeyboardEvent('keydown', {
@@ -52,21 +54,22 @@ static class WebExtended
                                             return false;
                                     })))
                             .SideEffect(w => w.GetSettings()
-                                .SideEffect(s => 
+                                .SideEffect(s =>
                                 {
                                     WriteLine($"EnableDevExtras: {s.EnableDeveloperExtras}");
                                     WriteLine($"CursiveFontFamily: {s.CursiveFontFamily}");
                                     s.EnableDeveloperExtras = true;
                                     WriteLine($"EnableDevExtras: {s.EnableDeveloperExtras}");
                                 }))
-                            .OnLoadChanged((w, e) => 
-                                e.SideEffectIf(e == WebViewLoad.Finished, 
+                            .OnLoadChanged((w, e) =>
+                                e.SideEffectIf(e == WebViewLoad.Finished,
                                     _ => w.RunJavascript("console.log('called from C#')")))
                             //.DisableContextMenu()
-                            .OnAlert((w, text) => 
+                            .OnAlert((w, text) =>
                                 text
                                     .SideEffectIf(text == "showDevTools", _ => w.GetInspector().Show())
-                                    .SideEffectIf(text == "dragstart", _ => {
+                                    .SideEffectIf(text == "dragstart", _ =>
+                                    {
                                         var device = w.GetDisplay().GetDefaultSeat().GetDevice();
                                         var was = device.GetSource();
                                         //using var provider = ContentProvider.NewString(GType.String, "Das ist ein Text");
@@ -90,6 +93,13 @@ static class WebExtended
                                     .SideEffect(text => WriteLine($"on alert: {text}")))
                     )
                     .Show())
+                    // .SideEffect(async w => {
+                    //     await Task.Delay(1000);
+                    //     var affe = w.GetChild();
+                    //     affe.GrabFocus();
+                    // })
+                    // .GetChild()
+                    // .GrabFocus())
             .Run(0, IntPtr.Zero);
 
     static readonly JsonSerializerOptions defaults = new()
@@ -144,16 +154,20 @@ static class WebExtended
                 <body>
                     <h1>Hello from my custom scheme!</h1>
                     <div>
+                        <button tab=1000 id='button'>Request</button>
+                    </div>
+                    <div>
                         <video controls><source src='http://illmatic:8080/media/video/Fasten.mp4' type='video/mp4'>Your browser does not support the video tag.</video>
                     </div>
                     <div>
                         <img src='pic.jpg'/>
                     </div>
-                    <div>
-                        <button id='button'>Request</button>
-                    </div>
                     <div id='drag'></div>
                     <script>
+                        window.onload = function() {
+                            document.getElementById('button').focus();
+                        }
+
                         const b = document.getElementById('button')
                         const data = {
                             name: 'Uwe Riegel',
