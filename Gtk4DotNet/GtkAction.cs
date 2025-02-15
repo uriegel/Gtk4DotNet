@@ -10,7 +10,7 @@ public class GtkAction
         Name = actionName;
         Accelerator = accelerator;
     }
-    public GtkAction(string actionName, bool initialState, BoolStateChangedDelegate stateChanged, string? accelerator = null)
+    public GtkAction(string actionName, bool initialState, Action<bool> stateChanged, string? accelerator = null)
     {
         Name = actionName;
         Accelerator = accelerator;
@@ -22,7 +22,7 @@ public class GtkAction
             stateChanged(state);
         };
     }
-    public GtkAction(string actionName, string initialState, StringStateChangedDelegate stateChanged, string? accelerator = null)
+    public GtkAction(string actionName, string initialState, Action<string> stateChanged, string? accelerator = null)
     {
         Name = actionName;
         Accelerator = accelerator;
@@ -68,8 +68,8 @@ public class GtkAction
 */
     internal IntPtr action { get; set; } = IntPtr.Zero;
 
-    public delegate void BoolStateChangedDelegate(bool newState);
-    public delegate void StringStateChangedDelegate(string newState);
+    internal delegate void BoolStateChangedDelegate(bool newState);
+    internal delegate void StringStateChangedDelegate(string newState);
     
     internal delegate void StateChangedDelegate(IntPtr action, IntPtr state);
 
