@@ -1,6 +1,6 @@
 namespace GtkDotNet.SafeHandles;
 
-public class WebKitWebContextHandle : ObjectHandle
+public class WebKitWebContextHandle : ObjectFloatingHandle
 {
     public WebKitWebContextHandle() : base() {}
 }

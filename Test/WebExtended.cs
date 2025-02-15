@@ -33,12 +33,12 @@ static class WebExtended
                             .New()
                             .LoadUri($"my://index")
                             //.LoadUri($"http://localhost:5173")
-                            .SideEffect(wk => 
+                            .SideEffect(wk =>
                                 app.AddActions([
                                     new("devtools", () => {
                                         WriteLine("Devtools");
                                         wk.GrabFocus();
-                                    }, "<Ctrl><Shift>I"),                                                
+                                    }, "<Ctrl><Shift>I"),
                                 ]))
                             .SideEffect(wk =>
                                 wk.AddController(
@@ -105,13 +105,15 @@ static class WebExtended
                                     .SideEffect(text => WriteLine($"on alert: {text}")))
                     )
                     .Show())
-            .Run(0, IntPtr.Zero);
+            .Run(0, IntPtr.Zero)
+            .SideEffect(_ => GC.Collect())
+            .SideEffect(_ => GC.Collect());
 
     static readonly JsonSerializerOptions defaults = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-    };
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        };
 
     static void ServeRequest(WebkitUriSchemeRequestHandle request)
     {

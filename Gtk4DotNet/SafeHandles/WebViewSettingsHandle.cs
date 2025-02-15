@@ -1,6 +1,6 @@
 namespace GtkDotNet.SafeHandles;
 
-public class WebViewSettingsHandle : ObjectHandle
+public class WebViewSettingsHandle : ObjectFloatingHandle
 {
     public WebViewSettingsHandle() : base() { }
 

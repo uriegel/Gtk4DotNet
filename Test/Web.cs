@@ -6,7 +6,7 @@ using static System.Console;
 static class Web
 {
     public static int Run()
-        =>  Application
+        => Application
             .New("org.gtk.example")
             .OnActivate(app =>
                 app
@@ -16,12 +16,13 @@ static class Web
                     .Child(
                         WebKit
                             .New()
-                            .SideEffect(wk => 
+                            .SideEffect(wk =>
                                 wk.AddController(
                                 EventControllerKey
                                     .New()
                                     .RefSink()
-                                    .OnKeyPressed((k, kc, m) => {
+                                    .OnKeyPressed((k, kc, m) =>
+                                    {
                                         if (kc == 73)
                                         {
                                             // prevent blink_cb crash!
@@ -40,18 +41,18 @@ static class Web
                                             return false;
                                     })))
                             .SideEffect(w => w.GetSettings()
-                                .SideEffect(s => 
+                                .SideEffect(s =>
                                 {
                                     WriteLine($"EnableDevExtras: {s.EnableDeveloperExtras}");
                                     WriteLine($"CursiveFontFamily: {s.CursiveFontFamily}");
                                     s.EnableDeveloperExtras = true;
                                     WriteLine($"EnableDevExtras: {s.EnableDeveloperExtras}");
                                 }))
-                            .OnLoadChanged((w, e) => 
-                                e.SideEffectIf(e == WebViewLoad.Finished, 
+                            .OnLoadChanged((w, e) =>
+                                e.SideEffectIf(e == WebViewLoad.Finished,
                                     _ => w.RunJavascript("console.log('called from C#')")))
                             .DisableContextMenu()
-                            .OnAlert((w, text) => 
+                            .OnAlert((w, text) =>
                                 text
                                     .SideEffectIf(text == "showDevTools",
                                         _ => w.GetInspector().Show())
@@ -59,5 +60,7 @@ static class Web
                             .LoadUri($"file://{Directory.GetCurrentDirectory()}/webroot/index.html")
                     )
                     .Show())
-            .Run(0, IntPtr.Zero);
+            .Run(0, IntPtr.Zero)
+            .SideEffect(_ => GC.Collect())
+            .SideEffect(_ => GC.Collect());
 }
