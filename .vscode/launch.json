@@ -35,7 +35,24 @@
                 "text": "-enable-pretty-printing",
                 "ignoreFailures": true
             }]            
+        }, {
+            "name": "Test C Custom Button",
+            "type": "cppdbg",
+            "request": "launch",
+            // "preLaunchTask": "build",
+            "program": "${workspaceFolder}/C/button",
+            "args": [],
+            "cwd": "${workspaceFolder}/C",
+            "stopAtEntry": true,
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [{
+                "description": "Enable pretty-printing for gdb",
+                "text": "-enable-pretty-printing",
+                "ignoreFailures": true
+            }]            
         }
-
     ]
 }
