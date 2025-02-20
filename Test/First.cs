@@ -22,7 +22,7 @@ public struct GObjectClass
     IntPtr specs;
     ulong size;
 
-    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 12)]
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
     public IntPtr[] padding; // Reserved for future expansion
 }
 
