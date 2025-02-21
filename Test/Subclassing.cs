@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 using CsTools.Extensions;
 using GtkDotNet;
@@ -12,6 +13,8 @@ static class SubClassing
     {
         WriteLine("1 - GObject");
         WriteLine("2 - Custom Buttom");
+        WriteLine("3 - Custom Box");
+
         var input = ReadLine();
         switch (input)
         {
@@ -21,12 +24,15 @@ static class SubClassing
             case "2":
                 RunButton();
                 break;
+            case "3":
+                RunWidget();
+                break;
         }
         return 0;
     }
     static void RunGObject()
     {
-        var tDoubleClass = new TDoubleClass(Parent.GObject, "TDouble", p => new TDouble(p));
+        var tDoubleClass = new TDoubleClass(GTypeEnum.GObject, "TDouble", p => new TDouble(p));
 
         var d1 = tDoubleClass.New();
         var d2 = tDoubleClass.New();
@@ -42,7 +48,7 @@ static class SubClassing
            .New("org.gtk.example")
            .OnActivate(app =>
                app
-                   .SideEffect(_ => customButtonClass = new CustomButtonClass(Parent.Button, "CustomButton", p => new CustomButton(p)))
+                   .SideEffect(_ => customButtonClass = new CustomButtonClass(GTypeEnum.Button, "CustomButton", p => new CustomButton(p)))
                    .NewWindow()
                        .Title("Hello Gtk👍")
                        .DefaultSize(600, 200)
@@ -57,15 +63,30 @@ static class SubClassing
                        .Show())
             .Run(0, IntPtr.Zero);
 
+    static void RunWidget()
+        => Application
+           .New("org.gtk.example")
+           .OnActivate(app =>
+               app
+                   .SideEffect(_ => customBoxClass = new CustomBoxClass(GTypeEnum.Box, "CustomBox", p => new CustomBox(p)))
+                   .NewWindow()
+                       .Title("Hello Gtk👍")
+                       .DefaultSize(600, 200)
+                       .Child(customBoxClass!.New())
+                       .Show())
+            .Run(0, IntPtr.Zero);
+
     static CustomButtonClass? customButtonClass;
+    static CustomBoxClass? customBoxClass;
 }
 
 // TODO Test Custom Box with Box with 2 CustomButtons from ui
+// TODO Template initialization in Gtk4DotNet library
 // TODO Custom properties
 // TODO gtk_combo_box_get_type
 
 // Custom GObject ========================================================================================================================
-class TDoubleClass(Parent parent, string name, Func<nint, TDouble> constructor)
+class TDoubleClass(GTypeEnum parent, string name, Func<nint, TDouble> constructor)
     : SubClass<GObjectHandle>(parent, name, constructor)
 {
 }
@@ -80,7 +101,7 @@ class TDouble(nint obj) : SubClassInst<GObjectHandle>(obj)
 
 // Custom Button ========================================================================================================================
 
-class CustomButtonClass(Parent parent, string name, Func<nint, CustomButton> constructor)
+class CustomButtonClass(GTypeEnum parent, string name, Func<nint, CustomButton> constructor)
     : SubClass<ButtonHandle>(parent, name, constructor) {}
 
 class CustomButton(nint obj) : SubClassInst<ButtonHandle>(obj)
@@ -91,4 +112,29 @@ class CustomButton(nint obj) : SubClassInst<ButtonHandle>(obj)
     protected override ButtonHandle CreateHandle(nint obj) => new(obj);
 
     int count;
+}
+
+// Custom Box ========================================================================================================================
+
+class CustomBoxClass(GTypeEnum parent, string name, Func<nint, CustomBox> constructor)
+    : SubClass<BoxHandle>(parent, name, constructor)
+{
+    protected override void ClassInit(nint gClass, nint classData)
+    {
+        base.ClassInit(gClass, classData);
+        var widget = new WidgetHandle(gClass);
+        widget.ClassSetTemplateFromDotNetResource("custombox");
+    }
+}
+
+class CustomBox(nint obj) : SubClassInst<BoxHandle>(obj)
+{
+    protected override void OnCreate()
+    {
+        Handle.InitTemplate();
+        var label = Handle.GetTemplateLabelChild(GTypeEnum.Label, "label");
+    }
+        
+    protected override void OnFinalize() => WriteLine("Box finalized");
+    protected override BoxHandle CreateHandle(nint obj) => new(obj);
 }

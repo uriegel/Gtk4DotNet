@@ -1,6 +1,6 @@
 namespace GtkDotNet.SubClassing;
 
-public enum Parent
+public enum GTypeEnum
 {
     Box,
     Button,

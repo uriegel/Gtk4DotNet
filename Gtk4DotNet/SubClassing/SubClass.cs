@@ -9,10 +9,10 @@ public abstract class SubClass<THandle>
 {
     public GTypeHandle Type { get; }
 
-    public SubClass(Parent parent, string name, Func<nint, SubClassInst<THandle>> constructor)
+    public SubClass(GTypeEnum parent, string name, Func<nint, SubClassInst<THandle>> constructor)
     {
         this.constructor = constructor;
-        GTypeHandle parentType = InitializeParentType();
+        GTypeHandle parentType = GType.Get(parent);
 
         var typeInfo = new GTypeInfo()
         {
@@ -25,39 +25,17 @@ public abstract class SubClass<THandle>
         if (Type.IsInvalid)
             throw new Exception("Custom sub class could not be registered");
 
-        GTypeHandle InitializeParentType()
-            => parent switch
-            {
-                Parent.Box => Box.Type(),
-                Parent.Button => Button.Type(),
-                Parent.ComboBoxText => ComboBoxText.Type(),
-                Parent.Dialog => Dialog.Type(),
-                Parent.DrawingArea => DrawingArea.Type(),
-                Parent.GObject => GObject.Type(),
-                Parent.Label => Label.Type(),
-                Parent.ListBox => ListBox.Type(),
-                Parent.MenuButton => MenuButton.Type(),
-                Parent.Popover => Popover.Type(),
-                Parent.ProgressBar => ProgressBar.Type(),
-                Parent.Revealer => Revealer.Type(),
-                Parent.TextView => TextView.Type(),
-                Parent.ToggleButton => ToggleButton.Type(),
-                Parent.Widget => Widget.Type(),
-                Parent.Window => Window.Type(),
-                _ => GObject.Type(),
-            };
-
         ushort GetParentInstanceSize()
             => parent switch
             {
-                Parent.GObject => (ushort)Marshal.SizeOf<GObjectType>(),
+                GTypeEnum.GObject => (ushort)Marshal.SizeOf<GObjectType>(),
                 _ => RetrieveParentInstanceSize()
             };
 
         ushort GetParentClassSize()
             => parent switch
             {
-                Parent.GObject => (ushort)Marshal.SizeOf<GObjectClass>(),
+                GTypeEnum.GObject => (ushort)Marshal.SizeOf<GObjectClass>(),
                 _ => RetrieveParentClassSize()
             };
 

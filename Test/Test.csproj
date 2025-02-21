@@ -32,6 +32,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="./resources/custombox.ui">
+      <LogicalName>custombox</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="./resources/style.css">
       <LogicalName>style</LogicalName>
     </EmbeddedResource>

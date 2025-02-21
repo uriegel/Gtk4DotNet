@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="CustomBox" parent="GtkBox">
+    <property name="orientation">vertical</property>
+    <child>
+      <object class="GtkLabel" id="label">
+        <property name="label">Hello from Template</property>
+      </object>
+    </child>
+  </template>
+</interface>

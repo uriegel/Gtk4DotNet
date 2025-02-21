@@ -99,6 +99,30 @@ public static class Widget
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_native", CallingConvention = CallingConvention.Cdecl)]
     public extern static NativeHandle GetNative(this WidgetHandle widget);
 
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_init_template", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void InitTemplate(this WidgetHandle widget);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_class_set_template", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void ClassSetTemplate(this WidgetHandle widget, BytesHandle gbytes);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_template_child", CallingConvention = CallingConvention.Cdecl)]
+    public extern static nint GetTemplateChild(this WidgetHandle widget, GTypeHandle widgetType, string name);
+
+    //[DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_class_bind_template_child_full", CallingConvention = CallingConvention.Cdecl)]
+    //public extern static nint ClassBindTemplateChildFull(this WidgetHandle widget, GTypeHandle widgetType, string name);
+    
+    public static LabelHandle GetTemplateLabelChild(this WidgetHandle widget, SubClassing.GTypeEnum widgetType, string name)
+        => new(widget.GetTemplateChild(GType.Get(widgetType), name));
+
+    public static void ClassSetTemplate(this WidgetHandle widget, string template)
+    {
+        using var bytes = GBytes.New(template);
+        widget.ClassSetTemplate(bytes);
+    }
+
+    public static void ClassSetTemplateFromDotNetResource(this WidgetHandle widget, string templatePath)
+        => widget.ClassSetTemplate(new StreamReader(Resources.Get(templatePath)!).ReadToEnd());
+
     public static THandle HExpand<THandle>(this THandle widget, bool expand)
         where THandle : WidgetHandle
         => widget.SideEffect(w => w.SetHExpand(expand));
