@@ -74,8 +74,14 @@ public static class GObject
     public static THandle BindProperty<THandle>(this THandle source, string sourceProperty, ObjectHandle target, string targetProperty, BindingFlags bindingFlags)
         where THandle : ObjectHandle, new()
         => source.SideEffect(s => s._BindProperty(sourceProperty, target, targetProperty, bindingFlags));
+        
+    [DllImport(Libs.LibGtk, EntryPoint="g_object_get_type", CallingConvention = CallingConvention.Cdecl)]
+    public static extern GTypeHandle Type();        
     
-    [DllImport(Libs.LibGtk, EntryPoint="g_free", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(Libs.LibGtk, EntryPoint="g_object_new", CallingConvention = CallingConvention.Cdecl)]
+    public static extern nint New(GTypeHandle type, nint _);        
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_free", CallingConvention = CallingConvention.Cdecl)]
     public extern static void Free(this IntPtr obj);
 
     [DllImport(Libs.LibGtk, EntryPoint="g_object_ref", CallingConvention = CallingConvention.Cdecl)]

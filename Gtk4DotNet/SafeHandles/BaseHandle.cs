@@ -9,14 +9,18 @@ public abstract class BaseHandle : SafeHandleZeroOrMinusOneIsInvalid
 
     public BaseHandle(nint handle)
         : base(ownsHandle: true) => this.handle = handle;
-    
+
+    public nint GetInternalHandle() => handle;
+
+    public void SetInternalHandle(nint handle) => this.handle = handle;
+
     protected override bool ReleaseHandle() => true;
     //     => NativeMethods.CloseHandle(handle);
 
     internal IntPtr TakeHandle() 
     {
         var result = handle;
-        handle = IntPtr.Zero;
+        handle = 0;
         return result;
     }
 
