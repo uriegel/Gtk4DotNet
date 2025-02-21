@@ -49,8 +49,10 @@ static class SubClassing
                        .Child(
                             Box
                                 .New(Orientation.Vertical)
-                                .Append(customButtonClass!.New())
-                                .Append(customButtonClass!.New())
+                                .Append(customButtonClass!.New()
+                                    .Handle.Label("Button 1"))
+                                .Append(customButtonClass!.New()
+                                    .Handle.Label("Button 2"))
                        )
                        .Show())
             .Run(0, IntPtr.Zero);
@@ -58,11 +60,11 @@ static class SubClassing
     static CustomButtonClass? customButtonClass;
 }
 
-// TODO CustomButton with label text
-// TODO click counts and displays in label
 // TODO Test Custom Box with Box with 2 CustomButtons from ui
 // TODO Custom properties
 // TODO gtk_combo_box_get_type
+
+// Custom GObject ========================================================================================================================
 class TDoubleClass(Parent parent, string name, Func<nint, TDouble> constructor)
     : SubClass<GObjectHandle>(parent, name, constructor)
 {
@@ -76,14 +78,17 @@ class TDouble(nint obj) : SubClassInst<GObjectHandle>(obj)
     protected override GObjectHandle CreateHandle(nint obj) => new(obj);
 }
 
+// Custom Button ========================================================================================================================
 
-class CustomButtonClass(Parent parent, string name, Func<nint, CustomButton> constructor) 
-    : SubClass<ButtonHandle>(parent, name, constructor)
-{
-}
+class CustomButtonClass(Parent parent, string name, Func<nint, CustomButton> constructor)
+    : SubClass<ButtonHandle>(parent, name, constructor) {}
 
 class CustomButton(nint obj) : SubClassInst<ButtonHandle>(obj)
 {
+    protected override void OnCreate()
+        => Handle.OnClicked(() => Handle.Label($"{++count} times clicked"));
     protected override void OnFinalize() => WriteLine("Button finalized");
     protected override ButtonHandle CreateHandle(nint obj) => new(obj);
+
+    int count;
 }
