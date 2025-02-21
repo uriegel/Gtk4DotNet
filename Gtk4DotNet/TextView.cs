@@ -17,6 +17,9 @@ public static class TextView
         return textview;
     }
 
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_text_view_get_type", CallingConvention = CallingConvention.Cdecl)]
+    public static extern GTypeHandle Type();
+
     public static string GetText(this TextViewHandle textview, bool includeHidden = false)
         => textview.GetBuffer().GetText();
 

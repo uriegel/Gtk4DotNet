@@ -11,6 +11,9 @@ public static class Window
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_new", CallingConvention = CallingConvention.Cdecl)]
     public extern static WindowHandle New(WindowType windowType);
 
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_window_get_type", CallingConvention = CallingConvention.Cdecl)]
+    public static extern GTypeHandle Type();
+
     public static WindowHandle Title(this WindowHandle window, string title)
         => window.SideEffect(w => SetTitle(window, title));
 

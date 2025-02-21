@@ -53,6 +53,9 @@ public static class Dialog
     [DllImport(Libs.LibGtk, EntryPoint="gtk_dialog_new", CallingConvention = CallingConvention.Cdecl)]
     public extern static DialogHandle New();
 
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_dialog_get_type", CallingConvention = CallingConvention.Cdecl)]
+    public static extern GTypeHandle Type();        
+
     public static DialogHandle New(string title, WindowHandle parent, DialogFlags flags, string button, int response)
         => New(title, parent, flags, button, response, IntPtr.Zero);
 

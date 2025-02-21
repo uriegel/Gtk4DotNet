@@ -9,6 +9,9 @@ public static class ListBox
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_new", CallingConvention = CallingConvention.Cdecl)]
     public extern static ListBoxHandle New();
 
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_list_box_get_type", CallingConvention = CallingConvention.Cdecl)]
+    public static extern GTypeHandle Type();        
+
     public static ListBoxHandle SelectionMode(this ListBoxHandle listbox, SelectionMode selectionMode)
         => listbox.SideEffect(l => l.SetSelectionMode(selectionMode));
 

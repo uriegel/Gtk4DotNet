@@ -8,6 +8,9 @@ public static class ToggleButton
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_toggle_button_new", CallingConvention = CallingConvention.Cdecl)]
     public extern static ToggleButtonHandle New();
 
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_toggle_button_get_type", CallingConvention = CallingConvention.Cdecl)]
+    public static extern GTypeHandle Type();
+
     public static bool Active(this ToggleButtonHandle toggleButton)
         => GetActive(toggleButton);
 

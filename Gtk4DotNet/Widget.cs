@@ -11,6 +11,9 @@ public static class Widget
         where THandle : WidgetHandle, new()
         => widget.SideEffect(w => ObjectRef.Handle = widget);
 
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_type", CallingConvention = CallingConvention.Cdecl)]
+    public static extern GTypeHandle Type();
+
     // TODO Text cleanup and GC collect
     // public static THandle Show<THandle>(this THandle widget)
     //     where THandle : WidgetHandle

@@ -3,6 +3,7 @@ namespace GtkDotNet.SafeHandles;
 public class TextViewHandle : WidgetHandle
 {
     public TextViewHandle() : base() { }
+    public TextViewHandle(nint obj) : base() => SetInternalHandle(obj);
 
     internal TextViewHandle(WidgetHandle widget) : base() => handle = widget.TakeHandle();
 }

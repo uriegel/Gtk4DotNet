@@ -5,6 +5,8 @@ namespace GtkDotNet.SubClassing;
 public abstract class SubClassInst<THandle>
     where THandle : ObjectHandle, IDisposable
 {
+    public static implicit operator THandle(SubClassInst<THandle> obj) => obj.Handle;
+
     public THandle Handle { get; }
 
     protected SubClassInst(nint obj)

@@ -9,6 +9,9 @@ public static class MenuButton
     [DllImport(Libs.LibGtk, EntryPoint="gtk_menu_button_new", CallingConvention = CallingConvention.Cdecl)]
     public extern static MenuButtonHandle New();
 
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_menu_button_get_type", CallingConvention = CallingConvention.Cdecl)]
+    public static extern GTypeHandle Type();        
+
     public static MenuButtonHandle Direction(this MenuButtonHandle menuButton, Arrow arrow)
         => menuButton.SideEffect(b => b.SetDirection(arrow));
 

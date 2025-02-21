@@ -9,6 +9,9 @@ public static class Revealer
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_revealer_new", CallingConvention = CallingConvention.Cdecl)]
     public extern static RevealerHandle New();
 
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_revealer_get_type", CallingConvention = CallingConvention.Cdecl)]
+    public static extern GTypeHandle Type();
+
     public static RevealerHandle TransitionType(this RevealerHandle revealer, RevealerTransition transition)
         => revealer.SideEffect(r => r.SetTransitionType(transition));
 

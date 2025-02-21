@@ -9,6 +9,9 @@ public static class Box
     [DllImport(Libs.LibGtk, EntryPoint="gtk_box_new", CallingConvention = CallingConvention.Cdecl)]
     public extern static BoxHandle New(Orientation orientation, int spacing = 0);
 
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_box_get_type", CallingConvention = CallingConvention.Cdecl)]
+    public static extern GTypeHandle Type();        
+
     public static BoxHandle Append(this BoxHandle box, WidgetHandle widget)
         => box.SideEffect(b => b._Append(widget));
 

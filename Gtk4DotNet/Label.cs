@@ -9,6 +9,9 @@ public static class Label
     [DllImport(Libs.LibGtk, EntryPoint="gtk_label_new", CallingConvention = CallingConvention.Cdecl)]
     public extern static LabelHandle New(string text);
 
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_label_get_type", CallingConvention = CallingConvention.Cdecl)]
+    public static extern GTypeHandle Type();        
+
     public static LabelHandle Set(this LabelHandle label, string text)
         => label.SideEffect(l => l._Set(text));
     

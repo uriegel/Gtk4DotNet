@@ -9,6 +9,9 @@ public static class ProgressBar
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_progress_bar_new", CallingConvention = CallingConvention.Cdecl)]
     public extern static ProgressBarHandle New();
 
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_progress_bar_get_type", CallingConvention = CallingConvention.Cdecl)]
+    public static extern GTypeHandle Type();
+
     public static ProgressBarHandle ShowText(this ProgressBarHandle progressBar, bool show = true)
         => progressBar.SideEffect(p => p.SetShowText(show));
 

@@ -28,9 +28,23 @@ public abstract class SubClass<THandle>
         GTypeHandle InitializeParentType()
             => parent switch
             {
-                Parent.GObject => GObject.Type(),
+                Parent.Box => Box.Type(),
                 Parent.Button => Button.Type(),
-                _ => new GTypeHandle()
+                Parent.ComboBoxText => ComboBoxText.Type(),
+                Parent.Dialog => Dialog.Type(),
+                Parent.DrawingArea => DrawingArea.Type(),
+                Parent.GObject => GObject.Type(),
+                Parent.Label => Label.Type(),
+                Parent.ListBox => ListBox.Type(),
+                Parent.MenuButton => MenuButton.Type(),
+                Parent.Popover => Popover.Type(),
+                Parent.ProgressBar => ProgressBar.Type(),
+                Parent.Revealer => Revealer.Type(),
+                Parent.TextView => TextView.Type(),
+                Parent.ToggleButton => ToggleButton.Type(),
+                Parent.Widget => Widget.Type(),
+                Parent.Window => Window.Type(),
+                _ => GObject.Type(),
             };
 
         ushort GetParentInstanceSize()
@@ -72,15 +86,12 @@ public abstract class SubClass<THandle>
 
     protected virtual void ClassInit(IntPtr gClass, IntPtr classData)
     {
-        Console.WriteLine($"ClassInit {gClass}");
-
         IntPtr finalizePtr = Marshal.GetFunctionPointerForDelegate(SubClassInst<THandle>.finalizeDelegate);
         Marshal.WriteIntPtr(gClass, 6 * IntPtr.Size, finalizePtr);
     }
 
     protected virtual void InstanceInit(IntPtr gClass, IntPtr classData)
     {
-        Console.WriteLine($"InstanceInit {gClass}");
     }
 
     Func<nint, SubClassInst<THandle>> constructor;
