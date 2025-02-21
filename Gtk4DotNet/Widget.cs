@@ -103,25 +103,25 @@ public static class Widget
     public extern static void InitTemplate(this WidgetHandle widget);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_class_set_template", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void ClassSetTemplate(this WidgetHandle widget, BytesHandle gbytes);
+    internal extern static void ClassSetTemplate(this nint widgetClass, BytesHandle gbytes);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_template_child", CallingConvention = CallingConvention.Cdecl)]
     public extern static nint GetTemplateChild(this WidgetHandle widget, GTypeHandle widgetType, string name);
 
-    //[DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_class_bind_template_child_full", CallingConvention = CallingConvention.Cdecl)]
-    //public extern static nint ClassBindTemplateChildFull(this WidgetHandle widget, GTypeHandle widgetType, string name);
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_class_bind_template_child_full", CallingConvention = CallingConvention.Cdecl)]
+    internal extern static nint ClassBindTemplateChildFull(this nint widgetClass, string name, bool internalChild, int offset);
     
     public static LabelHandle GetTemplateLabelChild(this WidgetHandle widget, SubClassing.GTypeEnum widgetType, string name)
         => new(widget.GetTemplateChild(GType.Get(widgetType), name));
 
-    public static void ClassSetTemplate(this WidgetHandle widget, string template)
+    internal static void ClassSetTemplate(this nint widgetClass, string template)
     {
         using var bytes = GBytes.New(template);
-        widget.ClassSetTemplate(bytes);
+        widgetClass.ClassSetTemplate(bytes);
     }
 
-    public static void ClassSetTemplateFromDotNetResource(this WidgetHandle widget, string templatePath)
-        => widget.ClassSetTemplate(new StreamReader(Resources.Get(templatePath)!).ReadToEnd());
+    internal static void ClassSetTemplateFromDotNetResource(this nint widgetClass, string templatePath)
+        => widgetClass.ClassSetTemplate(new StreamReader(Resources.Get(templatePath)!).ReadToEnd());
 
     public static THandle HExpand<THandle>(this THandle widget, bool expand)
         where THandle : WidgetHandle

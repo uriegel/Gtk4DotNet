@@ -80,8 +80,7 @@ static class SubClassing
     static CustomBoxClass? customBoxClass;
 }
 
-// TODO Test Custom Box with Box with 2 CustomButtons from ui
-// TODO Template initialization in Gtk4DotNet library
+// TODO Template initialization in Gtk4DotNet library not working!!!
 // TODO Custom properties
 // TODO gtk_combo_box_get_type
 
@@ -122,8 +121,7 @@ class CustomBoxClass(GTypeEnum parent, string name, Func<nint, CustomBox> constr
     protected override void ClassInit(nint gClass, nint classData)
     {
         base.ClassInit(gClass, classData);
-        var widget = new WidgetHandle(gClass);
-        widget.ClassSetTemplateFromDotNetResource("custombox");
+        InitTemplateFromResource(gClass, "custombox");
     }
 }
 
@@ -132,7 +130,7 @@ class CustomBox(nint obj) : SubClassInst<BoxHandle>(obj)
     protected override void OnCreate()
     {
         Handle.InitTemplate();
-        var label = Handle.GetTemplateLabelChild(GTypeEnum.Label, "label");
+        var label = Handle.GetTemplateLabelChild(GTypeEnum.Widget, "label");
     }
         
     protected override void OnFinalize() => WriteLine("Box finalized");

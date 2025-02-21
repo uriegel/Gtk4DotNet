@@ -62,14 +62,20 @@ public abstract class SubClass<THandle>
         return constructor(ptr);
     }
 
-    protected virtual void ClassInit(IntPtr gClass, IntPtr classData)
+    protected virtual void ClassInit(nint gClass, nint classData)
     {
         IntPtr finalizePtr = Marshal.GetFunctionPointerForDelegate(SubClassInst<THandle>.finalizeDelegate);
         Marshal.WriteIntPtr(gClass, 6 * IntPtr.Size, finalizePtr);
     }
 
-    protected virtual void InstanceInit(IntPtr gClass, IntPtr classData)
+    protected virtual void InstanceInit(nint gClass, nint classData)
     {
+    }
+
+    protected void InitTemplateFromResource(nint gClass, string name)
+    {
+        gClass.ClassSetTemplateFromDotNetResource("custombox");
+        gClass.ClassBindTemplateChildFull("label", false, 0);
     }
 
     Func<nint, SubClassInst<THandle>> constructor;
