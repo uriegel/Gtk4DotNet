@@ -23,13 +23,13 @@ public abstract class SubClass<THandle>
         };
         Type = GType.RegisterStatic(parentType, name, ref typeInfo);
         if (Type.IsInvalid)
-            // TODO
             throw new Exception("Custom sub class could not be registered");
 
         GTypeHandle InitializeParentType()
             => parent switch
             {
                 Parent.GObject => GObject.Type(),
+                Parent.Button => Button.Type(),
                 _ => new GTypeHandle()
             };
 
@@ -73,6 +73,9 @@ public abstract class SubClass<THandle>
     protected virtual void ClassInit(IntPtr gClass, IntPtr classData)
     {
         Console.WriteLine($"ClassInit {gClass}");
+
+        IntPtr finalizePtr = Marshal.GetFunctionPointerForDelegate(SubClassInst<THandle>.finalizeDelegate);
+        Marshal.WriteIntPtr(gClass, 6 * IntPtr.Size, finalizePtr);
     }
 
     protected virtual void InstanceInit(IntPtr gClass, IntPtr classData)
@@ -83,6 +86,9 @@ public abstract class SubClass<THandle>
     Func<nint, SubClassInst<THandle>> constructor;
 }
 
+
+[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+delegate void DisposeCallback(IntPtr obj);
 delegate void SubClassInitDelegate(IntPtr gClass, IntPtr classData);
 delegate void SubClassInstanceInitDelegate(IntPtr gClass, IntPtr classData);
 

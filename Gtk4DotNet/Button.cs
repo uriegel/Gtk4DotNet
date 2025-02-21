@@ -10,8 +10,11 @@ public static class Button
     [DllImport(Libs.LibGtk, EntryPoint="gtk_button_new_with_label", CallingConvention = CallingConvention.Cdecl)]
     public extern static ButtonHandle NewWithLabel(string label);
 
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_button_get_type", CallingConvention = CallingConvention.Cdecl)]
+    public static extern GTypeHandle Type();        
+
     public static ButtonHandle OnClicked(this ButtonHandle button, Action click)
-        => button.SideEffect(a => Gtk.SignalConnect<TwoPointerDelegate>(a, "clicked", (IntPtr _, IntPtr __)  => click()));
+        => button.SideEffect(a => Gtk.SignalConnect<TwoPointerDelegate>(a, "clicked", (IntPtr _, IntPtr __) => click()));
 
     public static ButtonHandle Label(this ButtonHandle button, string label)
         => button.SideEffect(b => b.SetLabel(label));
