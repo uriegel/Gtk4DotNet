@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="./resources/builder.ui">
-      <LogicalName>ui</LogicalName>
+      <LogicalName>builder</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

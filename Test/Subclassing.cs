@@ -12,7 +12,8 @@ static class SubClassing
     {
         WriteLine("1 - GObject");
         WriteLine("2 - Custom Buttom");
-        WriteLine("3 - Custom Box");
+        WriteLine("3 - Custom Buttom in template");
+        WriteLine("4 - Custom Box");
 
         var input = ReadLine();
         switch (input)
@@ -24,6 +25,9 @@ static class SubClassing
                 RunButton();
                 break;
             case "3":
+                RunButton();
+                break;
+            case "4":
                 RunWidget();
                 break;
         }
