@@ -76,8 +76,9 @@ static class SubClassing
         => Application
             .New("org.gtk.example")
             .OnActivate(app => app
+            .SubClass(new CustomButtonClass(GTypeEnum.Button, "CustomButton", p => new CustomButton(p)))
             .SideEffect(app =>
-                Builder.FromDotNetResource("builder").Use(
+                Builder.FromDotNetResource("buildersubclass").Use(
                     builder => builder
                         .GetObject<WindowHandle>("window", w => w
                             .SetApplication(app)
@@ -107,7 +108,6 @@ static class SubClassing
 
 }
 
-// TODO new Example: load ui builder template with a CustomButton
 // TODO Remove all templates in widgets
 // TODO Downcast operator : widgetHandle to WindowHandle,  BoxHandle ... generic
 

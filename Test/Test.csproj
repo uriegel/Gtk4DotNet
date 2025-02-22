@@ -27,6 +27,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="./resources/buildersubclass.ui">
+      <LogicalName>buildersubclass</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="./resources/headerbar.ui">
       <LogicalName>headerbar</LogicalName>
     </EmbeddedResource>
