@@ -1,4 +1,4 @@
-using System.Reflection.Metadata;
+using System.Buffers;
 using System.Runtime.InteropServices;
 using CsTools.Extensions;
 using GtkDotNet;
@@ -32,7 +32,16 @@ static class SubClassing
     }
     static void RunGObject()
     {
+        var typ = TypeFromName("TDouble");
         var tDoubleClass = new TDoubleClass(GTypeEnum.GObject, "TDouble", p => new TDouble(p));
+        typ = TypeFromName("TDouble");
+        var typeHandle = new GTypeHandle(typ);
+
+        var obj = GObject.New(typeHandle, 0);
+        var refcount = Marshal.ReadInt32(obj, IntPtr.Size);
+        Unref(obj);
+        refcount = Marshal.ReadInt32(obj, IntPtr.Size);
+
 
         var d1 = tDoubleClass.New();
         var d2 = tDoubleClass.New();
@@ -42,6 +51,10 @@ static class SubClassing
         refcount2 = Marshal.ReadInt32(d2.Handle.GetInternalHandle(), IntPtr.Size);
         d1.Dispose();
     }
+    [DllImport("libgtk-4.so.1", EntryPoint="g_type_from_name", CallingConvention = CallingConvention.Cdecl)]
+    public extern static nint TypeFromName(string objectName);
+    [DllImport("libgtk-4.so.1", EntryPoint = "g_object_unref", CallingConvention = CallingConvention.Cdecl)]
+    extern static void Unref(IntPtr obj);
 
     static void RunButton()
         => Application
@@ -80,8 +93,11 @@ static class SubClassing
     static CustomBoxClass? customBoxClass;
 }
 
-// TODO there are no static class factories (perhaps in a dictionary)
-// TODO There is no constructor when building with g_object_new!!!
+// TODO OK there are no static class factories (perhaps in a dictionary)
+// TODO OK  There is no constructor when building with g_object_new!!!
+// TODO Template GObject New for creating sub classes
+// TODO Access C# Subclassed object via dictionnary function and handle
+// TODO load ui builder template with a CustomButton
 // TODO Remove all templates in widgets
 // TODO Downcast operator : widgetHandle to WindowHandle,  BoxHandle ... generic
 
@@ -146,7 +162,7 @@ class CustomBox(nint obj) : SubClassInst<BoxHandle>(obj)
         IntPtr[] objects = new IntPtr[count];
         Marshal.Copy(objekte, objects, 0, count);
 
-        
+
         var instance = bülder.GetWidget("instance");
         gtk_widget_set_parent(instance.GetInternalHandle(), 0);
         // Handle.InitTemplate();
@@ -164,16 +180,16 @@ class CustomBox(nint obj) : SubClassInst<BoxHandle>(obj)
     protected override void OnFinalize() => WriteLine("Box finalized");
     protected override BoxHandle CreateHandle(nint obj) => new(obj);
 
-[DllImport("libgtk-4.so.1")]
-public static extern IntPtr gtk_builder_get_objects(IntPtr builder, out IntPtr n_objects);
+    [DllImport("libgtk-4.so.1")]
+    public static extern IntPtr gtk_builder_get_objects(IntPtr builder, out IntPtr n_objects);
 
     [DllImport("libgtk-4.so.1")]
     public static extern IntPtr gtk_widget_get_template_child(nint widget, IntPtr widgetClass, string name);
 
-
-[DllImport("libgtk-4.so.1")]
-public static extern void gtk_widget_set_parent(IntPtr widget, IntPtr parent);
+    [DllImport("libgtk-4.so.1")]
+    public static extern void gtk_widget_set_parent(IntPtr widget, IntPtr parent);
     [DllImport("libgtk-4.so.1")]
     static extern IntPtr gtk_widget_lookup(IntPtr widget, string name);
+    
 
 }

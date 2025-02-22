@@ -17,7 +17,7 @@ public abstract class SubClass<THandle>
         var typeInfo = new GTypeInfo()
         {
             classSize = GetParentClassSize(),
-            instanceSize = (ushort)(GetParentInstanceSize()),
+            instanceSize = GetParentInstanceSize(),
             classInit = Marshal.GetFunctionPointerForDelegate<SubClassInitDelegate>(ClassInit),
             instanceInit = Marshal.GetFunctionPointerForDelegate<SubClassInstanceInitDelegate>(InstanceInit)
         };
@@ -70,6 +70,7 @@ public abstract class SubClass<THandle>
 
     protected virtual void InstanceInit(nint gClass, nint classData)
     {
+        constructor(gClass);
     }
 
     protected void InitTemplateFromResource(nint gClass, string name)
@@ -99,6 +100,8 @@ static class Affe
 {
     [DllImport("libgobject-2.0.so.0")]
     public static extern int g_type_class_get_instance_private_offset(this IntPtr gtypeClass);
+
+
 
 [DllImport("libgtk-4.so.1")]
 public static extern void gtk_widget_class_bind_template_child_full(
