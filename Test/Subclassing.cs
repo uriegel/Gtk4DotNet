@@ -37,8 +37,8 @@ static class SubClassing
         typeDouble = "TDouble".TypeFromName();
         var typeCustomButton = "CustomButton".TypeFromName();
 
-        var obj = GObject.New<ObjectHandle>(typeDouble);
-        var obj2 = GObject.New<ObjectHandle>(typeDouble);
+        var obj = GObject.New<GObjectHandle>(typeDouble);
+        var obj2 = GObject.New<GObjectHandle>(typeDouble);
         var refcount = Marshal.ReadInt32(obj.GetInternalHandle(), IntPtr.Size);
         obj2.Dispose();
         obj.Dispose();
@@ -51,6 +51,7 @@ static class SubClassing
            .OnActivate(app =>
                app
                    .SubClass(new CustomButtonClass(GTypeEnum.Button, "CustomButton", p => new CustomButton(p)))
+                   .SubClass(new TDoubleClass(GTypeEnum.Button, "TDouble", p => new TDouble(p)))
                    .NewWindow()
                        .Title("Hello Gtk👍")
                        .DefaultSize(600, 200)
@@ -70,17 +71,15 @@ static class SubClassing
            .New("org.gtk.example")
            .OnActivate(app =>
                app
-//                   .SideEffect(_ => customBoxClass = new CustomBoxClass(GTypeEnum.Box, "CustomBox", p => new CustomBox(p)))
+                   //                   .SideEffect(_ => customBoxClass = new CustomBoxClass(GTypeEnum.Box, "CustomBox", p => new CustomBox(p)))
                    .NewWindow()
                        .Title("Hello Gtk👍")
                        .DefaultSize(600, 200)
-  //                     .Child(customBoxClass!.New())
+                       //                     .Child(customBoxClass!.New())
                        .Show())
             .Run(0, IntPtr.Zero);
 
 }
-
-// TODO Access C# Subclassed object via dictionary function and handle
 
 // TODO new Example: load ui builder template with a CustomButton
 // TODO Remove all templates in widgets
@@ -115,7 +114,11 @@ class CustomButtonClass(GTypeEnum parent, string name, Func<nint, CustomButton> 
 class CustomButton(nint obj) : SubClassInst<ButtonHandle>(obj)
 {
     protected override void OnCreate()
-        => Handle.OnClicked(() => Handle.Label($"{++count} times clicked"));
+        => Handle.OnClicked(() =>
+        {
+            Handle.Label($"{++count} times clicked");
+            var instance = GetInstance(Handle);
+        });
     protected override void OnFinalize() => WriteLine("Button finalized");
     protected override ButtonHandle CreateHandle(nint obj) => new(obj);
 

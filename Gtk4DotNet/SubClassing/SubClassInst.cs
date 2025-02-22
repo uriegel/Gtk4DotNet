@@ -1,3 +1,4 @@
+using CsTools.Extensions;
 using GtkDotNet.SafeHandles;
 
 namespace GtkDotNet.SubClassing;
@@ -7,6 +8,9 @@ public abstract class SubClassInst<THandle>
 {
     public static implicit operator THandle(SubClassInst<THandle> obj) => obj.Handle;
 
+    public static SubClassInst<THandle>? GetInstance(THandle handle)
+        => objects.GetValue(handle.GetInternalHandle());
+       
     public THandle Handle { get; }
 
     protected SubClassInst(nint obj)

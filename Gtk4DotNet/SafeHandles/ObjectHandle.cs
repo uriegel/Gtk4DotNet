@@ -2,7 +2,7 @@ using CsTools.Extensions;
 
 namespace GtkDotNet.SafeHandles;
 
-public class ObjectHandle : BaseHandle
+public abstract class ObjectHandle : BaseHandle
 {
     public ObjectHandle() : base() {}
 
