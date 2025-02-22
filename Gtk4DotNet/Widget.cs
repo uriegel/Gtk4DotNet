@@ -144,8 +144,26 @@ public static class Widget
         where THandle : WidgetHandle
         => widget.SideEffect(w => w.SetSensitive(sensitive));
 
+    public static string? GetBuildableId<THandle>(this THandle widget)
+        where THandle : WidgetHandle
+        => BuildableGetBuildableId(widget).PtrToString(false);
 
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_add_css_class", CallingConvention = CallingConvention.Cdecl)]
+    public static TResultHandle? GetTemplateChild<TResultHandle, THandle>(this THandle widget, string id)
+        where THandle : WidgetHandle
+        where TResultHandle : WidgetHandle, new()
+    {
+        var foundWidget = widget.GetAllChildren().FirstOrDefault(n => n.GetBuildableId() == id);
+        if (foundWidget != null)
+        {
+            var res = new TResultHandle();
+            res.SetInternalHandle(foundWidget.GetInternalHandle());
+            return res;
+        }
+        else
+            return null;
+    }
+    
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_add_css_class", CallingConvention = CallingConvention.Cdecl)]
     public extern static void AddCssClass(this WidgetHandle widget, string cssClass);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_remove_css_class", CallingConvention = CallingConvention.Cdecl)]
@@ -282,5 +300,8 @@ public static class Widget
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_set_tooltip_text", CallingConvention = CallingConvention.Cdecl)]
     extern static WidgetHandle SetTooltipText(this WidgetHandle widget, string text);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_buildable_get_buildable_id", CallingConvention = CallingConvention.Cdecl)]
+    extern static IntPtr BuildableGetBuildableId(this WidgetHandle buildable);
 }
 

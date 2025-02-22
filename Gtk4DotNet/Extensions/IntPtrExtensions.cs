@@ -31,6 +31,6 @@ public static class IntPtrExtensions
         var val = Marshal.PtrToStringUTF8(obj);
         if (free)
             obj.Free();
-        return val ?? "";
+        return val;
     }
 }

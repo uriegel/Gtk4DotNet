@@ -1,4 +1,3 @@
-using System.Buffers;
 using System.Runtime.InteropServices;
 using CsTools.Extensions;
 using CsTools.Functional;
@@ -106,7 +105,6 @@ static class SubClassing
             .Run(0, IntPtr.Zero);
 }
 
-// TODO connect id's by examining and comparing window.ui and widget hierarchy
 // TODO parallel to window a menu
 // TODO Connect actions
 // TODO Access menu items
@@ -114,8 +112,6 @@ static class SubClassing
 // TODO Remove all templates in widgets
 // TODO Downcast operator : widgetHandle to WindowHandle,  BoxHandle ... generic
 
-// TODO Template initialization in Gtk4DotNet library not working!!!
-// TODO Manually parsing ui template:
 // TODO menu in AdwHeaderbar
 // TODO custom widgets in ui template
 // TODO Custom properties
@@ -123,9 +119,7 @@ static class SubClassing
 
 // Custom GObject ========================================================================================================================
 class TDoubleClass(GTypeEnum parent, string name, Func<nint, TDouble> constructor)
-    : SubClass<GObjectHandle>(parent, name, constructor)
-{
-}
+    : SubClass<GObjectHandle>(parent, name, constructor) { }
 
 class TDouble(nint obj) : SubClassInst<GObjectHandle>(obj)
 {
@@ -142,12 +136,8 @@ class CustomButtonClass(GTypeEnum parent, string name, Func<nint, CustomButton> 
 
 class CustomButton(nint obj) : SubClassInst<ButtonHandle>(obj)
 {
-    protected override void OnCreate()
-        => Handle.OnClicked(() =>
-        {
-            Handle.Label($"{++count} times clicked");
-            var instance = GetInstance(Handle);
-        });
+    protected override void OnCreate() => Handle.OnClicked(() => Handle.Label($"{++count} times clicked"));
+
     protected override void OnFinalize() => WriteLine("Button finalized");
     protected override ButtonHandle CreateHandle(nint obj) => new(obj);
 
@@ -171,57 +161,14 @@ class CustomWindow(nint obj) : SubClassInst<WindowHandle>(obj)
     protected override void OnCreate()
     {
         Handle.InitTemplate();
+        Handle
+            .GetTemplateChild<ButtonHandle, WindowHandle>("button1")
+            ?.OnClicked(() => WriteLine("Button1 clicked"));
+        Handle
+            .GetTemplateChild<ButtonHandle, WindowHandle>("quit")
+            ?.OnClicked(() => Handle.CloseWindow());
     }
     protected override void OnFinalize() => WriteLine("Window finalized");
     protected override WindowHandle CreateHandle(nint obj) => new(obj);
 }
 
-// Custom Box ========================================================================================================================
-
-class CustomBoxClass(GTypeEnum parent, string name, Func<nint, CustomBox> constructor)
-    : SubClass<BoxHandle>(parent, name, constructor)
-{
-    // protected override void ClassInit(nint gClass, nint classData)
-    // {
-    //     base.ClassInit(gClass, classData);
-    //     //InitTemplateFromResource(gClass, "custombox");
-    // }
-}
-
-class CustomBox(nint obj) : SubClassInst<BoxHandle>(obj)
-{
-    protected override void OnCreate()
-    {
-        var bülder = Builder.FromDotNetResource("windowsubclass");
-
-
-
-        gtk_builder_get_objects(bülder.GetInternalHandle(), out var objekte);
-        int count = objekte.ToInt32();
-        IntPtr[] objects = new IntPtr[count];
-        Marshal.Copy(objekte, objects, 0, count);
-
-
-        var instance = bülder.GetWidget("instance");
-        gtk_widget_set_parent(instance.GetInternalHandle(), 0);
-        // Handle.InitTemplate();
-
-
-
-        // var pointer = gtk_widget_get_template_child(Handle.GetInternalHandle(), CustomBoxClass.Klasse, "label");
-
-
-        // var affe = gtk_widget_lookup(Handle.GetInternalHandle(), "label");
-
-        var alls = Handle.GetAllChildren().Select(n => n.GetName()).ToArray();
-    }
-
-    protected override void OnFinalize() => WriteLine("Box finalized");
-    protected override BoxHandle CreateHandle(nint obj) => new(obj);
-
-    [DllImport("libgtk-4.so.1")]
-    public static extern IntPtr gtk_builder_get_objects(IntPtr builder, out IntPtr n_objects);
-
-    [DllImport("libgtk-4.so.1")]
-    public static extern void gtk_widget_set_parent(IntPtr widget, IntPtr parent);
-}
