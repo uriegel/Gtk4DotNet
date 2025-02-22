@@ -95,9 +95,15 @@ static class SubClassing
 
 // TODO OK there are no static class factories (perhaps in a dictionary)
 // TODO OK  There is no constructor when building with g_object_new!!!
+
 // TODO Template GObject New for creating sub classes
-// TODO Access C# Subclassed object via dictionnary function and handle
-// TODO load ui builder template with a CustomButton
+// TODO Access C# Subclassed object via dictionary function and handle
+// TODO Check Disposing of sub class resources
+
+// TODO In OnActivate build subclasses with an app builder function, set them in an list
+// TODO CustomButton example
+
+// TODO new Example: load ui builder template with a CustomButton
 // TODO Remove all templates in widgets
 // TODO Downcast operator : widgetHandle to WindowHandle,  BoxHandle ... generic
 
