@@ -76,15 +76,27 @@ public static class GObject
         => source.SideEffect(s => s._BindProperty(sourceProperty, target, targetProperty, bindingFlags));
         
     [DllImport(Libs.LibGtk, EntryPoint="g_object_get_type", CallingConvention = CallingConvention.Cdecl)]
-    public static extern GTypeHandle Type();        
-    
-    [DllImport(Libs.LibGtk, EntryPoint="g_object_new", CallingConvention = CallingConvention.Cdecl)]
+    public static extern GTypeHandle Type();
+
+    public static THandle New<THandle>(GTypeHandle type)
+        where THandle : ObjectHandle, new()
+    {
+        var obj = New(type, 0);
+        var res = new THandle();
+        res.SetInternalHandle(obj);
+        return res;
+    }
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_new", CallingConvention = CallingConvention.Cdecl)]
     public static extern nint New(GTypeHandle type, nint _);        
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_free", CallingConvention = CallingConvention.Cdecl)]
     public extern static void Free(this IntPtr obj);
 
-    [DllImport(Libs.LibGtk, EntryPoint="g_object_ref", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(Libs.LibGtk, EntryPoint="g_type_from_name", CallingConvention = CallingConvention.Cdecl)]
+    public extern static GTypeHandle TypeFromName(this string objectName);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_ref", CallingConvention = CallingConvention.Cdecl)]
     internal extern static void Ref(this ObjectHandle obj);
 
     internal static void AddWeakRefRaw(this ObjectHandle obj, Action dispose)
@@ -133,9 +145,6 @@ public static class GObject
     //     GetInt(obj, name, out var value, IntPtr.Zero);
     //     return value;
     // }
-
-    // [DllImport(Libs.LibGtk, EntryPoint="g_type_from_name", CallingConvention = CallingConvention.Cdecl)]
-    // public extern static GType TypeFromName(string objectName);
 
     // [DllImport(Libs.LibGtk, EntryPoint="g_type_name", CallingConvention = CallingConvention.Cdecl)]
     // public extern static IntPtr TypeName(this GType type);

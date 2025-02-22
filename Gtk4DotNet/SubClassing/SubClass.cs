@@ -62,32 +62,16 @@ public abstract class SubClass<THandle>
         return constructor(ptr);
     }
 
-    protected virtual void ClassInit(nint gClass, nint classData)
+    protected virtual void ClassInit(nint cls, nint _)
     {
         IntPtr finalizePtr = Marshal.GetFunctionPointerForDelegate(SubClassInst<THandle>.finalizeDelegate);
-        Marshal.WriteIntPtr(gClass, 6 * IntPtr.Size, finalizePtr);
+        Marshal.WriteIntPtr(cls, 6 * IntPtr.Size, finalizePtr);
     }
 
-    protected virtual void InstanceInit(nint gClass, nint classData)
-    {
-        constructor(gClass);
-    }
+    protected virtual void InstanceInit(nint obj, nint _)
+        => constructor(obj);
 
-    protected void InitTemplateFromResource(nint gClass, string name)
-    {
-        Klasse = gClass;
-        gClass.ClassSetTemplateFromDotNetResource("custombox");
-
-        // var offset = gClass.g_type_class_get_instance_private_offset();
-        // gClass.gtk_widget_class_bind_template_child_full("label", true, offset);
-    }
-
-   public static IntPtr Klasse; 
- 
-
-
-
-    Func<nint, SubClassInst<THandle>> constructor;
+    readonly Func<nint, SubClassInst<THandle>> constructor;
 }
 
 
@@ -95,18 +79,3 @@ public abstract class SubClass<THandle>
 delegate void DisposeCallback(IntPtr obj);
 delegate void SubClassInitDelegate(IntPtr gClass, IntPtr classData);
 delegate void SubClassInstanceInitDelegate(IntPtr gClass, IntPtr classData);
-
-static class Affe
-{
-    [DllImport("libgobject-2.0.so.0")]
-    public static extern int g_type_class_get_instance_private_offset(this IntPtr gtypeClass);
-
-
-
-[DllImport("libgtk-4.so.1")]
-public static extern void gtk_widget_class_bind_template_child_full(
-    this IntPtr widgetClass,
-    string name,
-    bool internalChild,
-    int structOffset);
-} 

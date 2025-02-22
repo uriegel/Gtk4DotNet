@@ -1,6 +1,5 @@
 using System.Buffers;
 using System.Runtime.InteropServices;
-using CsTools.Extensions;
 using GtkDotNet;
 using GtkDotNet.SafeHandles;
 using GtkDotNet.SubClassing;
@@ -32,46 +31,36 @@ static class SubClassing
     }
     static void RunGObject()
     {
-        var typ = TypeFromName("TDouble");
+        var typeDouble = "TDouble".TypeFromName();
         var tDoubleClass = new TDoubleClass(GTypeEnum.GObject, "TDouble", p => new TDouble(p));
-        typ = TypeFromName("TDouble");
-        var typeHandle = new GTypeHandle(typ);
+        var customButtonClass = new CustomButtonClass(GTypeEnum.Button, "CustomButton", p => new CustomButton(p));
+        typeDouble = "TDouble".TypeFromName();
+        var typeCustomButton = "CustomButton".TypeFromName();
 
-        var obj = GObject.New(typeHandle, 0);
-        var refcount = Marshal.ReadInt32(obj, IntPtr.Size);
-        Unref(obj);
-        refcount = Marshal.ReadInt32(obj, IntPtr.Size);
-
-
-        var d1 = tDoubleClass.New();
-        var d2 = tDoubleClass.New();
-
-        var refcount2 = Marshal.ReadInt32(d2.Handle.GetInternalHandle(), IntPtr.Size);
-        d2.Dispose();
-        refcount2 = Marshal.ReadInt32(d2.Handle.GetInternalHandle(), IntPtr.Size);
-        d1.Dispose();
+        var obj = GObject.New<ObjectHandle>(typeDouble);
+        var obj2 = GObject.New<ObjectHandle>(typeDouble);
+        var refcount = Marshal.ReadInt32(obj.GetInternalHandle(), IntPtr.Size);
+        obj2.Dispose();
+        obj.Dispose();
+        refcount = Marshal.ReadInt32(obj.GetInternalHandle(), IntPtr.Size);
     }
-    [DllImport("libgtk-4.so.1", EntryPoint="g_type_from_name", CallingConvention = CallingConvention.Cdecl)]
-    public extern static nint TypeFromName(string objectName);
-    [DllImport("libgtk-4.so.1", EntryPoint = "g_object_unref", CallingConvention = CallingConvention.Cdecl)]
-    extern static void Unref(IntPtr obj);
 
     static void RunButton()
         => Application
            .New("org.gtk.example")
            .OnActivate(app =>
                app
-                   .SideEffect(_ => customButtonClass = new CustomButtonClass(GTypeEnum.Button, "CustomButton", p => new CustomButton(p)))
+                   .SubClass(new CustomButtonClass(GTypeEnum.Button, "CustomButton", p => new CustomButton(p)))
                    .NewWindow()
                        .Title("Hello Gtk👍")
                        .DefaultSize(600, 200)
                        .Child(
                             Box
                                 .New(Orientation.Vertical)
-                                .Append(customButtonClass!.New()
-                                    .Handle.Label("Button 1"))
-                                .Append(customButtonClass!.New()
-                                    .Handle.Label("Button 2"))
+                                .Append(GObject.New<ButtonHandle>("CustomButton".TypeFromName())
+                                    .Label("Button 1"))
+                                .Append(GObject.New<ButtonHandle>("CustomButton".TypeFromName())
+                                    .Label("Button 2"))
                        )
                        .Show())
             .Run(0, IntPtr.Zero);
@@ -81,27 +70,17 @@ static class SubClassing
            .New("org.gtk.example")
            .OnActivate(app =>
                app
-                   .SideEffect(_ => customBoxClass = new CustomBoxClass(GTypeEnum.Box, "CustomBox", p => new CustomBox(p)))
+//                   .SideEffect(_ => customBoxClass = new CustomBoxClass(GTypeEnum.Box, "CustomBox", p => new CustomBox(p)))
                    .NewWindow()
                        .Title("Hello Gtk👍")
                        .DefaultSize(600, 200)
-                       .Child(customBoxClass!.New())
+  //                     .Child(customBoxClass!.New())
                        .Show())
             .Run(0, IntPtr.Zero);
 
-    static CustomButtonClass? customButtonClass;
-    static CustomBoxClass? customBoxClass;
 }
 
-// TODO OK there are no static class factories (perhaps in a dictionary)
-// TODO OK  There is no constructor when building with g_object_new!!!
-
-// TODO Template GObject New for creating sub classes
 // TODO Access C# Subclassed object via dictionary function and handle
-// TODO Check Disposing of sub class resources
-
-// TODO In OnActivate build subclasses with an app builder function, set them in an list
-// TODO CustomButton example
 
 // TODO new Example: load ui builder template with a CustomButton
 // TODO Remove all templates in widgets
@@ -190,12 +169,5 @@ class CustomBox(nint obj) : SubClassInst<BoxHandle>(obj)
     public static extern IntPtr gtk_builder_get_objects(IntPtr builder, out IntPtr n_objects);
 
     [DllImport("libgtk-4.so.1")]
-    public static extern IntPtr gtk_widget_get_template_child(nint widget, IntPtr widgetClass, string name);
-
-    [DllImport("libgtk-4.so.1")]
     public static extern void gtk_widget_set_parent(IntPtr widget, IntPtr parent);
-    [DllImport("libgtk-4.so.1")]
-    static extern IntPtr gtk_widget_lookup(IntPtr widget, string name);
-    
-
 }
