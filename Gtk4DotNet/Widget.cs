@@ -103,24 +103,15 @@ public static class Widget
     public extern static void InitTemplate(this WidgetHandle widget);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_class_set_template", CallingConvention = CallingConvention.Cdecl)]
-    internal extern static void ClassSetTemplate(this nint widgetClass, BytesHandle gbytes);
+    public extern static void ClassSetTemplate(this nint widgetClass, BytesHandle gbytes);
 
-    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_template_child", CallingConvention = CallingConvention.Cdecl)]
-    public extern static nint GetTemplateChild(this WidgetHandle widget, GTypeHandle widgetType, string name);
-
-    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_class_bind_template_child_full", CallingConvention = CallingConvention.Cdecl)]
-    internal extern static nint ClassBindTemplateChildFull(this nint widgetClass, string name, bool internalChild, int offset);
-    
-    public static LabelHandle GetTemplateLabelChild(this WidgetHandle widget, SubClassing.GTypeEnum widgetType, string name)
-        => new(widget.GetTemplateChild(GType.Get(widgetType), name));
-
-    internal static void ClassSetTemplate(this nint widgetClass, string template)
+    public static void ClassSetTemplate(this nint widgetClass, string template)
     {
         using var bytes = GBytes.New(template);
         widgetClass.ClassSetTemplate(bytes);
     }
 
-    internal static void ClassSetTemplateFromDotNetResource(this nint widgetClass, string templatePath)
+    public static void ClassSetTemplateFromDotNetResource(this nint widgetClass, string templatePath)
         => widgetClass.ClassSetTemplate(new StreamReader(Resources.Get(templatePath)!).ReadToEnd());
 
     public static THandle HExpand<THandle>(this THandle widget, bool expand)
@@ -135,16 +126,16 @@ public static class Widget
         where THandle : WidgetHandle
         => widget.SideEffect(w => w.SetTooltipText(text));
 
-    public static THandle? GetFirstChild<THandle>(this THandle widget)
+    public static WidgetHandle? GetFirstChild<THandle>(this THandle widget)
         where THandle : WidgetHandle
-        => _GetFirstChild(widget) as THandle;
+        => _GetFirstChild(widget);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_style_context", CallingConvention = CallingConvention.Cdecl)]
     public extern static IntPtr GetStyleContext(this WidgetHandle widget);
 
-    public static THandle? GetParent<THandle>(this THandle widget)
+    public static WidgetHandle? GetParent<THandle>(this THandle widget)
         where THandle : WidgetHandle
-        => _GetParent(widget) as THandle;
+        => _GetParent(widget);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_sensitive", CallingConvention = CallingConvention.Cdecl)]
     public extern static bool GetSensitive(this WidgetHandle widget);
@@ -188,9 +179,20 @@ public static class Widget
     public static string? GetName(this WidgetHandle widget)
         => widget._GetName().PtrToString(false);
 
-    public static IEnumerable<WidgetHandle> GetChildren(this WidgetHandle widget)
+    // public static WidgetHandle FindChildByName<WidgetHandle>(this WidgetHandle widget, string name)
+    // {
+    //     if (!parent.IsInvalid)
+    //     {
+    //     }
+    //     else
+    //     {
+    //         return 0;
+    //     }
+    // }
+
+    public static IEnumerable<WidgetHandle> GetChildren(this WidgetHandle parent)
     {
-        var first = widget._GetFirstChild();
+        var first = parent._GetFirstChild();
         if (first?.IsInvalid == true)
             yield break;
         else

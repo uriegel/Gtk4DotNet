@@ -80,7 +80,15 @@ static class SubClassing
     static CustomBoxClass? customBoxClass;
 }
 
+// TODO there are no static class factories (perhaps in a dictionary)
+// TODO There is no constructor when building with g_object_new!!!
+// TODO Remove all templates in widgets
+// TODO Downcast operator : widgetHandle to WindowHandle,  BoxHandle ... generic
+
 // TODO Template initialization in Gtk4DotNet library not working!!!
+// TODO Manually parsing ui template:
+// TODO menu in AdwHeaderbar
+// TODO custom widgets in ui template
 // TODO Custom properties
 // TODO gtk_combo_box_get_type
 
@@ -118,21 +126,54 @@ class CustomButton(nint obj) : SubClassInst<ButtonHandle>(obj)
 class CustomBoxClass(GTypeEnum parent, string name, Func<nint, CustomBox> constructor)
     : SubClass<BoxHandle>(parent, name, constructor)
 {
-    protected override void ClassInit(nint gClass, nint classData)
-    {
-        base.ClassInit(gClass, classData);
-        InitTemplateFromResource(gClass, "custombox");
-    }
+    // protected override void ClassInit(nint gClass, nint classData)
+    // {
+    //     base.ClassInit(gClass, classData);
+    //     //InitTemplateFromResource(gClass, "custombox");
+    // }
 }
 
 class CustomBox(nint obj) : SubClassInst<BoxHandle>(obj)
 {
     protected override void OnCreate()
     {
-        Handle.InitTemplate();
-        var label = Handle.GetTemplateLabelChild(GTypeEnum.Widget, "label");
-    }
+        var bülder = Builder.FromDotNetResource("custombox");
+
+
+
+        gtk_builder_get_objects(bülder.GetInternalHandle(), out var objekte);
+        int count = objekte.ToInt32();
+        IntPtr[] objects = new IntPtr[count];
+        Marshal.Copy(objekte, objects, 0, count);
+
         
+        var instance = bülder.GetWidget("instance");
+        gtk_widget_set_parent(instance.GetInternalHandle(), 0);
+        // Handle.InitTemplate();
+
+
+
+        // var pointer = gtk_widget_get_template_child(Handle.GetInternalHandle(), CustomBoxClass.Klasse, "label");
+
+
+        // var affe = gtk_widget_lookup(Handle.GetInternalHandle(), "label");
+
+        var alls = Handle.GetAllChildren().Select(n => n.GetName()).ToArray();
+    }
+
     protected override void OnFinalize() => WriteLine("Box finalized");
     protected override BoxHandle CreateHandle(nint obj) => new(obj);
+
+[DllImport("libgtk-4.so.1")]
+public static extern IntPtr gtk_builder_get_objects(IntPtr builder, out IntPtr n_objects);
+
+    [DllImport("libgtk-4.so.1")]
+    public static extern IntPtr gtk_widget_get_template_child(nint widget, IntPtr widgetClass, string name);
+
+
+[DllImport("libgtk-4.so.1")]
+public static extern void gtk_widget_set_parent(IntPtr widget, IntPtr parent);
+    [DllImport("libgtk-4.so.1")]
+    static extern IntPtr gtk_widget_lookup(IntPtr widget, string name);
+
 }
