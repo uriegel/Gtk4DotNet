@@ -15,7 +15,7 @@ static class SubClassing
         WriteLine("1 - GObject");
         WriteLine("2 - Custom Buttom");
         WriteLine("3 - Custom Buttom in template");
-        WriteLine("4 - Custom Box");
+        WriteLine("4 - Custom Window");
 
         var input = ReadLine();
         switch (input)
@@ -30,7 +30,7 @@ static class SubClassing
                 RunBuilder();
                 break;
             case "4":
-                RunWidget();
+                RunCustomWindow();
                 break;
         }
         return 0;
@@ -76,37 +76,40 @@ static class SubClassing
         => Application
             .New("org.gtk.example")
             .OnActivate(app => app
-            .SubClass(new CustomButtonClass(GTypeEnum.Button, "CustomButton", p => new CustomButton(p)))
-            .SideEffect(app =>
-                Builder.FromDotNetResource("buildersubclass").Use(
-                    builder => builder
-                        .GetObject<WindowHandle>("window", w => w
-                            .SetApplication(app)
-                            .SideEffect(w => 
-                                builder
-                                    .SideEffect(b => b.GetObject<ButtonHandle>("button1", b => b
-                                        .OnClicked(() => WriteLine("Button1 clicked"))))
-                                    .SideEffect(b => b.GetObject<ButtonHandle>("button2", b => b
-                                        .OnClicked(() => WriteLine("Button2 clicked"))))
-                                    .SideEffect(b => b.GetObject<ButtonHandle>("quit", b => b
-                                        .OnClicked(() => w.CloseWindow()))))
-                            .Show()))))
+                .SubClass(new CustomButtonClass(GTypeEnum.Button, "CustomButton", p => new CustomButton(p)))
+                .SideEffect(app =>
+                    Builder.FromDotNetResource("buildersubclass").Use(
+                        builder => builder
+                            .GetObject<WindowHandle>("window", w => w
+                                .SetApplication(app)
+                                .SideEffect(w => 
+                                    builder
+                                        .SideEffect(b => b.GetObject<ButtonHandle>("button1", b => b
+                                            .OnClicked(() => WriteLine("Button1 clicked"))))
+                                        .SideEffect(b => b.GetObject<ButtonHandle>("button2", b => b
+                                            .OnClicked(() => WriteLine("Button2 clicked"))))
+                                        .SideEffect(b => b.GetObject<ButtonHandle>("quit", b => b
+                                            .OnClicked(() => w.CloseWindow()))))
+                                .Show()))))
             .Run(0, IntPtr.Zero);
 
-    static void RunWidget()
+    static void RunCustomWindow()
         => Application
-           .New("org.gtk.example")
-           .OnActivate(app =>
-               app
-                   //                   .SideEffect(_ => customBoxClass = new CustomBoxClass(GTypeEnum.Box, "CustomBox", p => new CustomBox(p)))
-                   .NewWindow()
-                       .Title("Hello Gtk👍")
-                       .DefaultSize(600, 200)
-                       //                     .Child(customBoxClass!.New())
-                       .Show())
+            .New("org.gtk.example")
+            .OnActivate(app => app
+                .SubClass(new CustomWindowClass(GTypeEnum.Window, "CustomWindow", p => new CustomWindow(p)))
+                .SubClass(new CustomButtonClass(GTypeEnum.Button, "CustomButton", p => new CustomButton(p)))
+                .SideEffect(a =>
+                    GObject.New<WindowHandle>("CustomWindow".TypeFromName())
+                        .SetApplication(app)
+                        .Show()))
             .Run(0, IntPtr.Zero);
-
 }
+
+// TODO connect id's by examining and comparing window.ui and widget hierarchy
+// TODO parallel to window a menu
+// TODO Connect actions
+// TODO Access menu items
 
 // TODO Remove all templates in widgets
 // TODO Downcast operator : widgetHandle to WindowHandle,  BoxHandle ... generic
@@ -151,6 +154,28 @@ class CustomButton(nint obj) : SubClassInst<ButtonHandle>(obj)
     int count;
 }
 
+// Custom Window ========================================================================================================================
+
+class CustomWindowClass(GTypeEnum parent, string name, Func<nint, CustomWindow> constructor)
+    : SubClass<WindowHandle>(parent, name, constructor)
+{
+    protected override void ClassInit(nint cls, nint _)
+    {
+        base.ClassInit(cls, _);
+        InitTemplateFromResource(cls, "windowsubclass");
+    }
+}
+
+class CustomWindow(nint obj) : SubClassInst<WindowHandle>(obj)
+{
+    protected override void OnCreate()
+    {
+        Handle.InitTemplate();
+    }
+    protected override void OnFinalize() => WriteLine("Window finalized");
+    protected override WindowHandle CreateHandle(nint obj) => new(obj);
+}
+
 // Custom Box ========================================================================================================================
 
 class CustomBoxClass(GTypeEnum parent, string name, Func<nint, CustomBox> constructor)
@@ -167,7 +192,7 @@ class CustomBox(nint obj) : SubClassInst<BoxHandle>(obj)
 {
     protected override void OnCreate()
     {
-        var bülder = Builder.FromDotNetResource("custombox");
+        var bülder = Builder.FromDotNetResource("windowsubclass");
 
 
 

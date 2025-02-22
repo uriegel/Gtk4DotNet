@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <object class="GtkWindow" id="window">
-    <property name="title">Builder</property>
+  <template class="CustomWindow" parent="GtkWindow">
+    <property name="title">Builder from Template</property>
     <child>
       <object class="GtkGrid" id="grid">
         <child>
@@ -14,7 +14,7 @@
           </object>
         </child>
         <child>
-          <object class="GtkButton" id="button2">
+          <object class="CustomButton" id="button2">
             <property name="label">Button 2</property>
             <layout>
               <property name="column">1</property>
@@ -34,5 +34,5 @@
         </child>
       </object>
     </child>
-  </object>
+  </template>
 </interface>

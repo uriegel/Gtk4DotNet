@@ -32,6 +32,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="./resources/windowsubclass.ui">
+      <LogicalName>windowsubclass</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="./resources/headerbar.ui">
       <LogicalName>headerbar</LogicalName>
     </EmbeddedResource>

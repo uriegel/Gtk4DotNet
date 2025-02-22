@@ -71,6 +71,9 @@ public abstract class SubClass<THandle>
     protected virtual void InstanceInit(nint obj, nint _)
         => constructor(obj);
 
+    protected void InitTemplateFromResource(nint cls, string name)
+        => cls.ClassSetTemplateFromDotNetResource(name);
+
     readonly Func<nint, SubClassInst<THandle>> constructor;
 }
 
