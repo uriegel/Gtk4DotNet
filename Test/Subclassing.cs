@@ -1,5 +1,7 @@
 using System.Buffers;
 using System.Runtime.InteropServices;
+using CsTools.Extensions;
+using CsTools.Functional;
 using GtkDotNet;
 using GtkDotNet.SafeHandles;
 using GtkDotNet.SubClassing;
@@ -25,7 +27,7 @@ static class SubClassing
                 RunButton();
                 break;
             case "3":
-                RunButton();
+                RunBuilder();
                 break;
             case "4":
                 RunWidget();
@@ -68,6 +70,26 @@ static class SubClassing
                                     .Label("Button 2"))
                        )
                        .Show())
+            .Run(0, IntPtr.Zero);
+
+    public static int RunBuilder()
+        => Application
+            .New("org.gtk.example")
+            .OnActivate(app => app
+            .SideEffect(app =>
+                Builder.FromDotNetResource("builder").Use(
+                    builder => builder
+                        .GetObject<WindowHandle>("window", w => w
+                            .SetApplication(app)
+                            .SideEffect(w => 
+                                builder
+                                    .SideEffect(b => b.GetObject<ButtonHandle>("button1", b => b
+                                        .OnClicked(() => WriteLine("Button1 clicked"))))
+                                    .SideEffect(b => b.GetObject<ButtonHandle>("button2", b => b
+                                        .OnClicked(() => WriteLine("Button2 clicked"))))
+                                    .SideEffect(b => b.GetObject<ButtonHandle>("quit", b => b
+                                        .OnClicked(() => w.CloseWindow()))))
+                            .Show()))))
             .Run(0, IntPtr.Zero);
 
     static void RunWidget()
