@@ -5,9 +5,9 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<Version>6.8.1</Version>
-	<FileVersion>6.8.1.0</FileVersion>
-	<AssemblyVersion>6.8.1.0</AssemblyVersion>
+	<Version>7.0.0-beta-0</Version>
+	<FileVersion>7.0.0.0</FileVersion>
+	<AssemblyVersion>7.0.0.0</AssemblyVersion>
 	<AssemblyName>Gtk4DotNet</AssemblyName>
 	<Authors>Uwe Riegel</Authors>
 	<Company>Uwe Riegel</Company>		
@@ -17,7 +17,7 @@
 	<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 	<PackageLicenseFile>LICENSE</PackageLicenseFile>
 	<PackageTags>DotNet;.NET;C#;CSharp;Gtk4;Gtk;P/Invoke</PackageTags>
-	<PackageReleaseNotes>Builder from .Net Resource</PackageReleaseNotes>
+	<PackageReleaseNotes>Subclassing for GTK4 objects</PackageReleaseNotes>
 	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
