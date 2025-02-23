@@ -109,13 +109,7 @@ static class SubClassing
 // TODO Connect actions
 // TODO Access menu items
 
-// TODO Remove all templates in widgets
-// TODO Downcast operator : widgetHandle to WindowHandle,  BoxHandle ... generic
-
-// TODO menu in AdwHeaderbar
-// TODO custom widgets in ui template
 // TODO Custom properties
-// TODO gtk_combo_box_get_type
 
 // Custom GObject ========================================================================================================================
 class TDoubleClass(GTypeEnum parent, string name, Func<nint, TDouble> constructor)

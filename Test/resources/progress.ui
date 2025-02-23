@@ -13,7 +13,7 @@
           </object>
         </child >
         <child type="end">
-          <object class="GtkRevealer" id="revealer">
+          <object class="ProgressDisplay" id="revealer">
             <property name="reveal-child" bind-source="starter" bind-property="active"></property>
             <property name="transition-type">slide-left</property>
             <child>

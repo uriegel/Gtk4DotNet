@@ -13,6 +13,7 @@ static class ProgressSubclass
             .OnActivate(app =>
                 app
                     .SubClass(new ProgressWindowClass(GTypeEnum.Window, "ProgressWindow", p => new ProgressWindow(p)))
+                    .SubClass(new ProgressDisplayClass(GTypeEnum.Revealer, "ProgressDisplay", p => new ProgressDisplay(p)))
                     .SideEffect(a =>
                         GObject.New<WindowHandle>("ProgressWindow".TypeFromName())
                         .SetApplication(app)
@@ -98,4 +99,20 @@ class ProgressWindow(nint obj) : SubClassInst<WindowHandle>(obj)
     }
     protected override void OnFinalize() => WriteLine("Window finalized");
     protected override WindowHandle CreateHandle(nint obj) => new(obj);
+}
+
+class ProgressDisplayClass(GTypeEnum parent, string name, Func<nint, ProgressDisplay> constructor)
+    : SubClass<RevealerHandle>(parent, name, constructor) {}
+
+class ProgressDisplay(nint obj) : SubClassInst<RevealerHandle>(obj)
+{
+    protected override void OnCreate()
+    {
+
+    }
+
+    protected override void OnFinalize() => WriteLine("Revealer finalized");
+    protected override RevealerHandle CreateHandle(nint obj) => new(obj);
+
+    int count;
 }
