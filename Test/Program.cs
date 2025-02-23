@@ -1,6 +1,4 @@
 ﻿using static System.Console;
-ProgressSubclass.Run();
-return;
 WriteLine(
     """
     Choose to run:

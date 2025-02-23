@@ -109,8 +109,6 @@ static class SubClassing
 // TODO Connect actions
 // TODO Access menu items
 
-// TODO Custom properties
-
 // Custom GObject ========================================================================================================================
 class TDoubleClass(GTypeEnum parent, string name, Func<nint, TDouble> constructor)
     : SubClass<GObjectHandle>(parent, name, constructor) { }

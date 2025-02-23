@@ -18,6 +18,15 @@
             <property name="transition-type">slide-left</property>
             <child>
               <object class="GtkMenuButton">
+                <property name="popover">
+                  <object class="GtkPopover">
+                    <child>
+                      <object class="GtkProgressBar" id="progress_bar">
+                        <property name="show-text">True</property>
+                      </object>
+                    </child>
+                  </object>
+                </property>
                 <child>
                   <object class="GtkDrawingArea" id="progress_area"/>
                 </child>
