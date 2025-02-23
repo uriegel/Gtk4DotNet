@@ -1,6 +1,6 @@
 ﻿using static System.Console;
-// MenuSubclass.Run();
-// return;
+ProgressSubclass.Run();
+return;
 WriteLine(
     """
     Choose to run:

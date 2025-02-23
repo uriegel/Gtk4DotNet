@@ -16,10 +16,8 @@ static class ProgressSubclass
                     .SideEffect(a =>
                         GObject.New<WindowHandle>("ProgressWindow".TypeFromName())
                         .SetApplication(app)
-                        .Show()))                    
+                        .Show()))   
             .Run(0, IntPtr.Zero);
-
-
 
                     //         .PackEnd(
                     //             Revealer.New()
@@ -72,7 +70,6 @@ static class ProgressSubclass
 
     static float progress = 0.0f;
 
-    static readonly ObjectRef<ToggleButtonHandle> progressStarter = new();
     static readonly ObjectRef<DrawingAreaHandle> drawingArea = new();
     static readonly ObjectRef<ProgressBarHandle> progressBar = new();
 }

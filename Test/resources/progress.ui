@@ -10,7 +10,19 @@
         <child type="end">
           <object class="GtkToggleButton" id="starter">
             <property name="icon-name">open-menu-symbolic</property>
-            <property name="action-name">app.showpreview</property>
+          </object>
+        </child >
+        <child type="end">
+          <object class="GtkRevealer" id="revealer">
+            <property name="reveal-child" bind-source="starter" bind-property="active"></property>
+            <property name="transition-type">slide-left</property>
+            <child>
+              <object class="GtkMenuButton">
+                <child>
+                  <object class="GtkDrawingArea" id="progress_area"/>
+                </child>
+              </object>              
+            </child>
           </object>
         </child>      
       </object>
