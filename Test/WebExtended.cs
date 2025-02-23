@@ -19,7 +19,7 @@ static class WebExtended
                     .Titlebar(
                         Builder
                             .FromDotNetResource("headerbar")
-                            .GetHeaderBar("header")
+                            .GetWidget<HeaderBarHandle>("header")
                     )
                     .DefaultSize(800, 600)
                     .SideEffect(_ => WebKitWebContext
