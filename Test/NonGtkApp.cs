@@ -25,7 +25,7 @@ static class NonGtkApp
 
         await Gtk.Dispatch(() => WriteLine(Gtk.GuessContentType(".pdf")));
 
-        SaveThumbnail("/daten/Bilder/Fotos/1995/1/Bild017.jpg");
+        SaveThumbnail("./resources/image.jpg");
 
         const string testDirectory = "TestDirectory";
         Directory.CreateDirectory(testDirectory);

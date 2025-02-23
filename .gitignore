@@ -11,3 +11,5 @@ Test/TestDirectory/linqasync.dll
 Test/resources/resources.gresource
 C/first
 C/gobject
+Test/resources/image.jpg.thumbnail.jpg
+Test/TestDirectory/First.cs
