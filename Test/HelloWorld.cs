@@ -7,12 +7,14 @@ static class HelloWorld
     public static int Run()
         => Application
             .NewAdwaita("org.gtk.example")
-            .OnActivate(app => 
+            .OnActivate(app =>
                 app
                     .SideEffect(_ => WriteLine($"Gkt theme: {GtkSettings.GetDefault().ThemeName}"))
                     .NewWindow()
                     .Title("Hello Gtk👍")
                     .DefaultSize(200, 200)
+                    .SideEffect(w => w.AddActions(
+                        [new GtkAction("quit", () => w.SideEffect(_ => WriteLine("Close window from action")).CloseWindow(), "F4")]))
                     .OnClose(_ => false.SideEffect(_ => WriteLine("Window is closing")))
                     .SideEffect(w => w
                         .Child(
@@ -27,6 +29,7 @@ static class HelloWorld
                                         .Tooltip("This is a sample Button\tCtrl-H"))))
 
                     .Show())
+            .AddActions([new GtkAction("appaction", () => WriteLine("appaction"), "F5")])
             .Run(0, IntPtr.Zero);
 }
 

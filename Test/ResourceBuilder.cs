@@ -12,7 +12,7 @@ static class ResourceBuilderProgram
             .New("org.gtk.example")
             .OnActivate(app => app
             .SideEffect(app =>
-                Builder.FromDotNetResource("ui").Use(
+                Builder.FromDotNetResource("builder").Use(
                     builder => builder
                         .GetObject<WindowHandle>("window", w => w
                             .SetApplication(app)

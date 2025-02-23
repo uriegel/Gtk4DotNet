@@ -1,5 +1,6 @@
 ﻿using static System.Console;
-
+// MenuSubclass.Run();
+// return;
 WriteLine(
     """
     Choose to run:
@@ -14,19 +15,21 @@ WriteLine(
     9:  Web View extended
     10: CSS
     11: Progress
-    12: NotDecorated
-    13: Threading
-    14: Cleanup
-    15: Non GTK
-    16: Sub Classing
-    17: Example 1
-    18: Example 2
-    19: Example 3
-    20: Example 4
-    21: Example 5
-    22: Example 6
-    23: Example 7
-    24: Example 8
+    12: Object subclass
+    13: Headerbar with menu (subclassed)
+    14: Progress (subclassed)
+    15: NotDecorated
+    16: Threading
+    17: Cleanup
+    18: Non GTK
+    19: Example 1
+    20: Example 2
+    21: Example 3
+    22: Example 4
+    23: Example 5
+    24: Example 6
+    25: Example 7
+    26: Example 8
     <any>: Quit
     """);
 WriteLine($"Return value: {ReadLine() switch 
@@ -42,18 +45,20 @@ WriteLine($"Return value: {ReadLine() switch
     "9" => WebExtended.Run(),
     "10" => Css.Run(),
     "11" => Progress.Run(),
-    "12"=> NotDecorated.Run(),
-    "13"=> Threading.Run(),
-    "14"=> Cleanup.Run(),
-    "15"=> NonGtkApp.Run(),
-    "16" => SubClassing.Run(),
-    "17" => Example1.Run(),
-    "18" => Example2.Run(),
-    "19" => Example3.Run(),
-    "20" => Example4.Run(),
-    "21" => Example5.Run(),
-    "22" => Example6.Run(),
-    "23" => Example7.Run(),
-    "24" => Example8.Run(),
+    "12" => SubClassing.Run(),
+    "13" => MenuSubclass.Run(),
+    "14" => ProgressSubclass.Run(),
+    "15" => NotDecorated.Run(),
+    "16" => Threading.Run(),
+    "17" => Cleanup.Run(),
+    "18" => NonGtkApp.Run(),
+    "19" => Example1.Run(),
+    "20" => Example2.Run(),
+    "21" => Example3.Run(),
+    "22" => Example4.Run(),
+    "23" => Example5.Run(),
+    "24" => Example6.Run(),
+    "25" => Example7.Run(),
+    "26" => Example8.Run(),
     _ => 0
 }}");

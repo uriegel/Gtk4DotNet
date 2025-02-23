@@ -123,13 +123,16 @@ public static class Gtk
     [DllImport(Libs.LibGtk, EntryPoint="g_signal_connect_object", CallingConvention = CallingConvention.Cdecl)]
     internal extern static long SignalConnectAction(IntPtr action, string name, IntPtr callback, IntPtr obj, int n3);
 
+    [DllImport(Libs.LibGtk, EntryPoint="g_signal_connect_object", CallingConvention = CallingConvention.Cdecl)]
+    internal extern static long SignalConnectAction(ActionHandle action, string name, IntPtr callback, IntPtr obj, int n3);
+
     // [DllImport(Libs.LibGtk, EntryPoint="gtk_main", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void Main();
 
     // [DllImport(Libs.LibGtk, EntryPoint="gtk_main_quit", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void MainQuit();
 
-    [DllImport(Libs.LibGtk, EntryPoint="g_content_type_guess", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(Libs.LibGtk, EntryPoint = "g_content_type_guess", CallingConvention = CallingConvention.Cdecl)]
     extern static IntPtr GuessContentType(string filename, IntPtr nil1,  IntPtr nil2, IntPtr nil3);
 
     // [DllImport(Libs.LibGtk, EntryPoint="gtk_init", CallingConvention = CallingConvention.Cdecl)]

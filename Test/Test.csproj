@@ -37,6 +37,16 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="./resources/progress.ui">
+      <LogicalName>progress</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="./resources/menu.ui">
+      <LogicalName>menu</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="./resources/headerbar.ui">
       <LogicalName>headerbar</LogicalName>
     </EmbeddedResource>
@@ -52,7 +62,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="../resources/image.jpg">
+    <EmbeddedResource Include="./resources/image.jpg">
       <LogicalName>image</LogicalName>
     </EmbeddedResource>
   </ItemGroup>

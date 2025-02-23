@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.6"/>
+  <template class="MenuWindow" parent="GtkWindow">
+    <property name="title">Hello Menu Subclass</property>
+    <property name="default-width">800</property>
+    <property name="default-height">600</property>    
+    <property name="titlebar">
+      <object class="AdwHeaderBar">
+        <child type="end">
+          <object class="GtkMenuButton" id="menu_button">
+            <property name="icon-name">open-menu-symbolic</property>
+            <property name="menu-model">main-menu</property>
+          </object>
+        </child>      
+      </object>
+    </property>
+  </template>
+  <menu id="main-menu">
+    <section>
+      <item>
+        <attribute name="label">Menu _1</attribute>
+        <attribute name="action">app.menu1</attribute>
+      </item>
+      <item>
+        <attribute name="label">_Quit</attribute>
+        <attribute name="action">app.quit</attribute>
+      </item>
+    </section>
+    <section>
+      <submenu>
+        <attribute name="label">_SubMenu 1</attribute>
+        <section>
+          <item>
+            <attribute name="label">Item 1</attribute>
+            <attribute name="action">app.item1</attribute>
+          </item>
+          <item>
+            <attribute name="label">Item 2</attribute>
+            <attribute name="action">app.item2</attribute>
+          </item>    
+        </section>
+      </submenu>
+      <submenu>
+        <attribute name="label">_SubMenu 2</attribute>
+        <section>
+          <item>
+            <attribute name="label">Item 3</attribute>
+            <attribute name="action">app.item3</attribute>
+          </item>
+          <item>
+            <attribute name="label">Item 4</attribute>
+            <attribute name="action">app.item4</attribute>
+          </item>    
+        </section>
+      </submenu>
+    </section>          
+  </menu>
+</interface>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.6"/>
+  <template class="ProgressWindow" parent="GtkWindow">
+    <property name="title">Hello Progress Subclass</property>
+    <property name="default-width">800</property>
+    <property name="default-height">600</property>    
+    <property name="titlebar">
+      <object class="AdwHeaderBar">
+        <child type="end">
+          <object class="GtkToggleButton" id="starter">
+            <property name="icon-name">open-menu-symbolic</property>
+            <property name="action-name">app.showpreview</property>
+          </object>
+        </child>      
+      </object>
+    </property>
+  </template>
+</interface>
