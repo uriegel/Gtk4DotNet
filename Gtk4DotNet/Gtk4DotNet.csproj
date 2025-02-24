@@ -16,7 +16,7 @@
 	<PackageProjectUrl>https://github.com/uriegel/Gtk4DotNet</PackageProjectUrl>
 	<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 	<PackageLicenseFile>LICENSE</PackageLicenseFile>
-	<PackageTags>DotNet;.NET;C#;CSharp;Gtk4;Gtk;P/Invoke</PackageTags>
+	<PackageTags>DotNet;.NET;C#;CSharp;Gtk4;Gtk;Linux;P/Invoke</PackageTags>
 	<PackageReleaseNotes>Subclassing for GTK4 objects</PackageReleaseNotes>
 	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
