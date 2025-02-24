@@ -9,7 +9,6 @@ public static class ApplicationWindow
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_window_new", CallingConvention = CallingConvention.Cdecl)]
     public extern static ApplicationWindowHandle New(ApplicationHandle application);
 
-    // TODO use THandle everywhere
     // TODO Transfer this to WebWindowNetCore
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_window_get_type", CallingConvention = CallingConvention.Cdecl)]
     public static extern GTypeHandle Type();
@@ -61,10 +60,10 @@ public static class ApplicationWindow
         => window.SideEffect(w => w._AddAction(action));
 
     [DllImport(Libs.LibGio, EntryPoint = "g_action_map_add_action", CallingConvention = CallingConvention.Cdecl)]
-    extern static void AddAction(this WindowHandle window, nint action);
+    extern static void AddAction(this ApplicationWindowHandle window, nint action);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_action_map_add_action", CallingConvention = CallingConvention.Cdecl)]
-    extern static void _AddAction(this WindowHandle window, ActionHandle action);
+    extern static void _AddAction(this ApplicationWindowHandle window, ActionHandle action);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_simple_action_new", CallingConvention = CallingConvention.Cdecl)]
     extern static nint NewAction(string action, string? p);

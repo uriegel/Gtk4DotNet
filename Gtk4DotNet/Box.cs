@@ -12,10 +12,12 @@ public static class Box
     [DllImport(Libs.LibGtk, EntryPoint="gtk_box_get_type", CallingConvention = CallingConvention.Cdecl)]
     public static extern GTypeHandle Type();        
 
-    public static BoxHandle Append(this BoxHandle box, WidgetHandle widget)
+    public static THandle Append<THandle>(this THandle box, WidgetHandle widget)
+        where THandle : BoxHandle    
         => box.SideEffect(b => b._Append(widget));
 
-    public static BoxHandle Spacing(this BoxHandle box, int spacing)
+    public static THandle Spacing<THandle>(this THandle box, int spacing)
+        where THandle : BoxHandle    
         => box.SideEffect(b => b.SetSpacing(spacing));
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_box_append", CallingConvention = CallingConvention.Cdecl)]

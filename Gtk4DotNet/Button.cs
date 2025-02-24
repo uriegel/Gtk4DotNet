@@ -13,16 +13,19 @@ public static class Button
     [DllImport(Libs.LibGtk, EntryPoint="gtk_button_get_type", CallingConvention = CallingConvention.Cdecl)]
     public static extern GTypeHandle Type();        
 
-    public static ButtonHandle OnClicked(this ButtonHandle button, Action click)
+    public static THandle OnClicked<THandle>(this THandle button, Action click)
+        where THandle : ButtonHandle
         => button.SideEffect(a => Gtk.SignalConnect<TwoPointerDelegate>(a, "clicked", (IntPtr _, IntPtr __) => click()));
 
-    public static ButtonHandle Label(this ButtonHandle button, string label)
+    public static THandle Label<THandle>(this THandle button, string label)
+        where THandle : ButtonHandle
         => button.SideEffect(b => b.SetLabel(label));
 
     public static string GetLabel(this ButtonHandle button)
         => _GetLabel(button).PtrToString(false) ?? "";
 
-    public static ButtonHandle IconName(this ButtonHandle button, string iconName)
+    public static THandle IconName<THandle>(this THandle button, string iconName)
+        where THandle : ButtonHandle    
         => button.SideEffect(b => b.SetIconName(iconName));
 
     public static string? GetIconName(this ButtonHandle button)

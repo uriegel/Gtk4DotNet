@@ -29,15 +29,19 @@ public static class Window
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_get_application", CallingConvention = CallingConvention.Cdecl)]
     public extern static ApplicationHandle GetApplication(this WindowHandle window);
 
-    public static WindowHandle TransientFor(this WindowHandle window, WindowHandle parent)
+    public static THandle TransientFor<THandle>(this THandle window, WindowHandle parent)
+        where THandle : WindowHandle
         => window.SideEffect(w => w.SetTransientFor(parent));
-    public static WindowHandle Modal(this WindowHandle window)
+    public static THandle Modal<THandle>(this THandle window)
+        where THandle : WindowHandle
         => window.SideEffect(w => w.SetModal(true));
 
-    public static WindowHandle Resizable(this WindowHandle window, bool set)
+    public static THandle Resizable<THandle>(this THandle window, bool set)
+        where THandle : WindowHandle
         => window.SideEffect(w => w.SetResizable(set));
 
-    public static WindowHandle NotDecorated(this WindowHandle window)
+    public static THandle NotDecorated<THandle>(this THandle window)
+        where THandle : WindowHandle
         => window.SideEffect(w => w._SetDecorated(false));
 
     [Obsolete("Icon per window is now deprecated in GTK4, especially with Wayland", true)]
@@ -75,13 +79,20 @@ public static class Window
         where THandle : WindowHandle
         => window.SideEffect(w => SetChild(window, child));
 
-    [DllImport("libgtk-4.so.1", CallingConvention = CallingConvention.Cdecl, EntryPoint = "gtk_window_get_child")]
-    public static extern WidgetHandle GetChild(this WindowHandle window);
+    public static THandle GetChild<THandle>(this WindowHandle window)
+        where THandle : WidgetHandle, new()
+    {
+        var res = new THandle();
+        res.SetInternalHandle(_GetChild(window).GetInternalHandle());
+        return res;
+    }
 
-    public static WindowHandle OnRealize(this WindowHandle window, Action<WindowHandle> realized)
+    public static THandle OnRealize<THandle>(this THandle window, Action<WindowHandle> realized)
+        where THandle : WindowHandle
         => window.SideEffect(a => Gtk.SignalConnect<TwoPointerDelegate>(a, "realize", (_, ___) => realized(window)));
 
-    public static WindowHandle OnClose(this WindowHandle window, Func<WindowHandle, bool> preventClosing)
+    public static THandle OnClose<THandle>(this THandle window, Func<WindowHandle, bool> preventClosing)
+        where THandle : WindowHandle
         => window.SideEffect(a => Gtk.SignalConnect<TwoPointerBoolRetDelegate>(a, "close-request", (_, ___) => preventClosing(window)));
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_move", CallingConvention = CallingConvention.Cdecl)]
@@ -138,6 +149,9 @@ public static class Window
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_default_size", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetDefaultSize(this WindowHandle window, int width, int height);
+
+    [DllImport(Libs.LibGtk, CallingConvention = CallingConvention.Cdecl, EntryPoint = "gtk_window_get_child")]
+    static extern WidgetHandle _GetChild(this WindowHandle window);
 
     [Obsolete("Icon per window is now deprecated in GTK4, especially with Wayland", true)]
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_icon_name", CallingConvention = CallingConvention.Cdecl)]
