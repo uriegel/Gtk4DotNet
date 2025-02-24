@@ -27,6 +27,13 @@ public static class Application
     [DllImport(Libs.LibAdw, EntryPoint = "adw_application_window_new", CallingConvention = CallingConvention.Cdecl)]
     public extern static ApplicationWindowHandle NewAdwaitaWindow(this ApplicationHandle app);
 
+    public static ApplicationWindowHandle CustomWindow(this ApplicationHandle app, string customWindow)
+    {
+        var window = GObject.New<ApplicationWindowHandle>(customWindow.TypeFromName());
+        window.SetApplication(app);
+        return window;
+    }
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_add_window", CallingConvention = CallingConvention.Cdecl)]
     public extern static void AddWindow(this ApplicationHandle app, WindowHandle window);
 

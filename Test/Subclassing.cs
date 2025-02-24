@@ -102,16 +102,14 @@ static class SubClassing
             .OnActivate(app => app
                 .SubClass(new CustomWindowClass(GTypeEnum.ApplicationWindow, "CustomWindow", p => new CustomWindow(p)))
                 .SubClass(new CustomButtonClass(GTypeEnum.Button, "CustomButton", p => new CustomButton(p)))
-                .SideEffect(a =>
-                    GObject.New<ApplicationWindowHandle>("CustomWindow".TypeFromName())
-                        .SetApplication(app)
-                        .Pipe(win => win
-                            .AddActions(
-                                [
-                                    new("custom-action", () => WriteLine("Custom Action activated"), "F2"),
-                                    new("quit", () => win.CloseWindow(), "<Ctrl>Q")
-                                ]))
-                        .Show()))
+                .CustomWindow("CustomWindow")
+                    .Pipe(win => win
+                        .AddActions(
+                            [
+                                new("custom-action", () => WriteLine("Custom Action activated"), "F2"),
+                                new("quit", () => win.CloseWindow(), "<Ctrl>Q")
+                            ]))
+                    .Show())
             .Run(0, IntPtr.Zero);
 
     static void RunCustomWindowWithWebView()
@@ -119,13 +117,11 @@ static class SubClassing
             .New("org.gtk.example")
             .OnActivate(app => app
                 .SubClass(new CustomWindowWithWebViewClass(GTypeEnum.ApplicationWindow, "CustomWindowWithWebView", p => new CustomWindowWithWebView(p)))
-                .SideEffect(a =>
-                    GObject.New<ApplicationWindowHandle>("CustomWindowWithWebView".TypeFromName())
-                        .SetApplication(app)
-                        .Pipe(win => win
-                            .AddActions(
-                                [ new("quit", () => win.CloseWindow(), "<Ctrl>Q") ]))
-                        .Show()))
+                .CustomWindow("CustomWindowWithWebView")
+                    .Pipe(win => win
+                        .AddActions(
+                            [ new("quit", () => win.CloseWindow(), "<Ctrl>Q") ]))
+                    .Show())
             .Run(0, IntPtr.Zero);
 }
 

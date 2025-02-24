@@ -1,6 +1,5 @@
 using GtkDotNet;
 using GtkDotNet.SafeHandles;
-using CsTools.Extensions;
 using GtkDotNet.SubClassing;
 
 using static System.Console;
@@ -14,10 +13,8 @@ static class ProgressSubclass
                 app
                     .SubClass(new ProgressWindowClass(GTypeEnum.Window, "ProgressWindow", p => new ProgressWindow(p)))
                     .SubClass(new ProgressDisplayClass(GTypeEnum.Revealer, "ProgressDisplay", p => new ProgressDisplay(p)))
-                    .SideEffect(a =>
-                        GObject.New<WindowHandle>("ProgressWindow".TypeFromName())
-                        .SetApplication(app)
-                        .Show()))
+                    .CustomWindow("ProgressWindow")
+                        .Show())
             .Run(0, IntPtr.Zero);
 }
 
