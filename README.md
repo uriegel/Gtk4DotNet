@@ -37,6 +37,7 @@ return Application
 # Table of contents 
 1. [Prerequisites](#prerequisites)
 2. [Hello World (a minimal GTK4 app)](#helloworld)
+    1. [Fluent syntax](#fluentsyntax)
 
 ## Prerequisites <a name="prerequisites"></a>
 
@@ -67,24 +68,92 @@ sudo apt install libwebkitgtk-6.0-dev
 ```
 ### The necessary Gtk4DotNet Nuget package <a name="nuget"></a>
 
-To use these features there is a nuget package  [Gtk4DotNet](https://www.nuget.org/packages/Gtk4DotNet/), which you have to imclude. 
+To use these features there is a nuget package  [Gtk4DotNet](https://www.nuget.org/packages/Gtk4DotNet/), which you have to include. 
 
 
 ## Hello World (a minimal GTK4 app) <a name="helloworld"></a>
 
-// TODO var app = new Application
-// TODO app.run()
+In a newly created folder create a new console program with .NET (```dotnet new console```). Now add the necessary package: ```dotnet add package Gtk4DotNet```. 
 
-// TODO explain warning
+In the created file ```Program.cs``` replace all code with:
 
-// TODO onActivate
+``` 
+using GtkDotNet;
 
-// TODO create a Window
+static class First
+{
+    public static int Run()
+    {
+        var app = Application.New("de.uriegel.first");
+        return app.Run(0, 0);
+    }
+}
+```
+
+It creates a GTK45 Application object and then runs the message loop. Compile the program and start it. It starts and ends immediately with the warning:
+
+```GLib-GIO-WARNING **: 08:27:42.149: Your application does not implement g_application_activate() and has no handlers connected to the 'activate' signal.  It should do one of these.```  
+
+When the app is being activated, you have to implement the activate method. You can do this with a injected C# callback with the help of ```Application.OnActivate```. Let's do this:
+
+``` 
+    var app = Application.New("de.uriegel.first");  
+    app.OnActivate(app => Console.WriteLine("App is being activated"));
+    return app.Run(0, 0);
+```     
+
+When you debug the program, OnActivate is being called and returns immediately. When app.Run() is being executed, the injected callback is being called and the text is being displayed in the terminal. However, the app also stops immediately.
+Of cource some kind of UI has to be created. 
+
+Let's create a window, this has to be done in the Application.OnActivate callback:
+
+``` 
+app.OnActivate(app =>
+{
+    var windows = app.NewWindow();
+    windows.Show();
+});
+``` 
+Now an empty default window is being shown and the function call ```Applicatio.Run()``` will only return when the window is being closed.
+
+### Fluent syntax <a name="fluentsyntax"></a>
+
+To avoid creating many variables only to set them as parameters in a function, Gtk4DotNet uses a functional builder approach to create a complicated ui with fluent syntax. Many setter function returns the same instance, so that builder functions can be assigned in a row.
+
+The above sample can be written using this approach as:
+
+```
+static class First
+{
+    public static int Run()
+        => Application
+            .New("de.uriegel.first")
+            .OnActivate(app =>
+                app
+                    .NewWindow()
+                        .Show())
+            .Run(0, IntPtr.Zero);
+}
+```
+With this approach the hierarchy of the GTK4 application is being reflected in code.
+
+The Window is very empty. Let's add a title and change the default size:
+
+```
+    .NewWindow()
+        .Title("Hello Gtk👍")
+        .DefaultSize(600, 200)
+        .Show())
+```
+
+// TODO refer to GTK exmples in GTK tutorial and GTK4 Rust
 
 // TODO show image
 
+
 // TODO Now complete Hello World
 
+// TODO explain static classes Object and ObjectHandle
 
 
 ## DEPRECATED Part

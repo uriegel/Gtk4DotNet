@@ -4,7 +4,7 @@ static class First
 {
     public static int Run()
         => Application
-                .New("org.gtk.example")
+            .New("de.uriegel.first")
                 .OnActivate(app =>
                     app
                         .NewWindow()
