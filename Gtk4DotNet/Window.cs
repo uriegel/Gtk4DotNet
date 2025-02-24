@@ -12,19 +12,18 @@ public static class Window
     public extern static WindowHandle New(WindowType windowType);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_get_type", CallingConvention = CallingConvention.Cdecl)]
-    public static extern GTypeHandle Type4();
+    public static extern GTypeHandle Type();
 
-    // TODO together with ActionMap in ApplicationWindow
-    [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_window_get_type", CallingConvention = CallingConvention.Cdecl)]
-    public static extern GTypeHandle Type999999();
-
-    public static WindowHandle Title(this WindowHandle window, string title)
+    public static THandle Title<THandle>(this THandle window, string title)
+        where THandle : WindowHandle
         => window.SideEffect(w => SetTitle(window, title));
 
-    public static WindowHandle Titlebar(this WindowHandle window, WidgetHandle titlebar)
+    public static THandle Titlebar<THandle>(this THandle window, WidgetHandle titlebar)
+        where THandle : WindowHandle
         => window.SideEffect(w => SetTitlebar(window, titlebar));
 
-    public static WindowHandle SetApplication(this WindowHandle window, ApplicationHandle application)
+    public static THandle SetApplication<THandle>(this THandle window, ApplicationHandle application)
+        where THandle : WindowHandle
         => window.SideEffect(w => w._SetApplication(application));
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_get_application", CallingConvention = CallingConvention.Cdecl)]
@@ -68,10 +67,12 @@ public static class Window
         return window;
     }
 
-    public static WindowHandle DefaultSize(this WindowHandle window, int width, int height)
+    public static THandle DefaultSize<THandle>(this THandle window, int width, int height)
+        where THandle : WindowHandle
         => window.SideEffect(w => SetDefaultSize(window, width, height));
 
-    public static WindowHandle Child(this WindowHandle window, WidgetHandle child)
+    public static THandle Child<THandle>(this THandle window, WidgetHandle child)
+        where THandle : WindowHandle
         => window.SideEffect(w => SetChild(window, child));
 
     [DllImport("libgtk-4.so.1", CallingConvention = CallingConvention.Cdecl, EntryPoint = "gtk_window_get_child")]
@@ -120,52 +121,6 @@ public static class Window
         return (x, y);
     }
 
-    public static WindowHandle AddActions(this WindowHandle win, IEnumerable<GtkAction> actions)
-    {
-        var gtkActions = actions.OfType<GtkAction>();
-        foreach (var action in gtkActions)
-        {
-            if (action.Action != null)
-            {
-                // TODO DO actions have to be freed?
-                var simpleAction = NewAction(action.Name, null);
-                action.action = simpleAction;
-                GtkDelegates.Add(action.Action);
-                Gtk.SignalConnectAction(simpleAction, "activate", Marshal.GetFunctionPointerForDelegate(action.Action as Delegate), IntPtr.Zero, 0);
-                AddAction(win, simpleAction);
-            }
-            else
-            {
-                GtkDelegates.Add(action.StateChanged);
-                var state = action.StateParameterType == "s"
-                    ? Application.NewString(action.State as string ?? "")
-                    : Application.NewBool((bool?)action.State == true ? -1 : 0);
-                var simpleAction = NewStatefulAction(action.Name, action.StateParameterType, state);
-                action.action = simpleAction;
-                Gtk.SignalConnectAction(simpleAction, "change-state", Marshal.GetFunctionPointerForDelegate(action.StateChanged), IntPtr.Zero, 0);
-                AddAction(win, simpleAction);
-            }
-        }
-
-        var app = win.GetApplication();
-        if (!app.IsInvalid)
-        {
-            var accelEntries =
-                actions
-                .Where(n => n.Accelerator != null)
-                .Select(n => new { Name = "win." + n.Name, n.Accelerator });
-            foreach (var accelEntry in accelEntries)
-                Application.SetAccelsForAction(app, accelEntry.Name, [accelEntry.Accelerator, null]);
-        }
-        else
-            Console.Error.WriteLine("Could not get application from window, so I could not attach the accelerators");
-
-        return win;
-    }
-
-    public static WindowHandle AddAction(this WindowHandle window, ActionHandle action)
-        => window.SideEffect(w => w._AddAction(action));
-
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_transient_for", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetTransientFor(this WindowHandle window, WindowHandle parent);
 
@@ -197,17 +152,6 @@ public static class Window
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_resizable", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetResizable(this WindowHandle window, bool set);
 
-    [DllImport(Libs.LibGtk, EntryPoint = "g_action_map_add_action", CallingConvention = CallingConvention.Cdecl)]
-    extern static void _AddAction(this WindowHandle window, ActionHandle action);
-
-    [DllImport(Libs.LibGio, EntryPoint = "g_action_map_add_action", CallingConvention = CallingConvention.Cdecl)]
-    extern static void AddAction(this WindowHandle window, nint action);
-
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_decorated", CallingConvention = CallingConvention.Cdecl)]
     extern static void _SetDecorated(this WindowHandle window, bool set);
-    [DllImport(Libs.LibGtk, EntryPoint = "g_simple_action_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static nint NewAction(string action, string? p);
-
-    [DllImport(Libs.LibGtk, EntryPoint = "g_simple_action_new_stateful", CallingConvention = CallingConvention.Cdecl)]
-    extern static nint NewStatefulAction(string action, string? p, nint state);
 }

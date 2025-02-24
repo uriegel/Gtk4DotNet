@@ -22,10 +22,10 @@ public static class Application
         => app.SideEffect(_ => subClasses.Add(subClass));
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_window_new", CallingConvention = CallingConvention.Cdecl)]
-    public extern static WindowHandle NewWindow(this ApplicationHandle app);
+    public extern static ApplicationWindowHandle NewWindow(this ApplicationHandle app);
 
     [DllImport(Libs.LibAdw, EntryPoint = "adw_application_window_new", CallingConvention = CallingConvention.Cdecl)]
-    public extern static WindowHandle NewAdwaitaWindow(this ApplicationHandle app);
+    public extern static ApplicationWindowHandle NewAdwaitaWindow(this ApplicationHandle app);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_add_window", CallingConvention = CallingConvention.Cdecl)]
     public extern static void AddWindow(this ApplicationHandle app, WindowHandle window);

@@ -168,7 +168,7 @@ static class Example6
     } 
 
     static SettingsHandle settings = new();
-    static readonly ObjectRef<WindowHandle> window = new();
+    static readonly ObjectRef<ApplicationWindowHandle> window = new();
     static readonly ObjectRef<StackHandle> stack = new();
     static readonly ObjectRef<ToggleButtonHandle> search = new();
     static readonly ObjectRef<SearchBarHandle> searchBar = new();
