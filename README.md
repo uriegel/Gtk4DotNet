@@ -3,7 +3,7 @@ A C# wrapper for GTK4 (.NET 8). You can create programs using the GTK4 UI system
 
 Gtk4DotNet uses a functional declarative approach to GTK4 similar to REACT or Kotlin Compose:
 
-```
+```cs
 return Application
     .New("org.gtk.example")
     .OnActivate(app => 
@@ -41,7 +41,7 @@ return Application
 
 ## Prerequisites <a name="prerequisites"></a>
 
-### Necessary only depending on the version of Linux
+### Necessary prerequisites only depending on the version of Linux
 
 On modern Linux like Ubuntu 24.04 or Fedora 40 Gtk4DotNet apps will run out of the box (if you create a full contained single file exe), otherwise you have to install the necessary dotnet runtime.
 
@@ -77,7 +77,7 @@ In a newly created folder create a new console program with .NET (```dotnet new 
 
 In the created file ```Program.cs``` replace all code with:
 
-``` 
+```cs 
 using GtkDotNet;
 
 static class First
@@ -96,7 +96,7 @@ It creates a GTK45 Application object and then runs the message loop. Compile th
 
 When the app is being activated, you have to implement the activate method. You can do this with a injected C# callback with the help of ```Application.OnActivate```. Let's do this:
 
-``` 
+```cs 
     var app = Application.New("de.uriegel.first");  
     app.OnActivate(app => Console.WriteLine("App is being activated"));
     return app.Run(0, 0);
@@ -107,7 +107,7 @@ Of cource some kind of UI has to be created.
 
 Let's create a window, this has to be done in the Application.OnActivate callback:
 
-``` 
+```cs 
 app.OnActivate(app =>
 {
     var windows = app.NewWindow();
@@ -122,7 +122,7 @@ To avoid creating many variables only to set them as parameters in a function, G
 
 The above sample can be written using this approach as:
 
-```
+```cs
 static class First
 {
     public static int Run()
@@ -139,7 +139,7 @@ With this approach the hierarchy of the GTK4 application is being reflected in c
 
 The Window is very empty. Let's add a title and change the default size:
 
-```
+```cs
     .NewWindow()
         .Title("Hello Gtk👍")
         .DefaultSize(600, 200)
