@@ -72,6 +72,18 @@ To use these features there is a nuget package  [Gtk4DotNet](https://www.nuget.o
 
 ## Hello World (a minimal GTK4 app) <a name="helloworld"></a>
 
+// TODO var app = new Application
+// TODO app.run()
+
+// TODO explain warning
+
+// TODO onActivate
+
+// TODO create a Window
+
+// TODO show image
+
+// TODO Now complete Hello World
 
 
 
