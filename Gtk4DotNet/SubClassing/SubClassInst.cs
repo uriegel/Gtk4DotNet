@@ -21,6 +21,7 @@ public abstract class SubClassInst<THandle>
     }
 
     protected virtual void OnCreate() { }
+    internal protected virtual void Initialize() { }
     protected virtual void OnFinalize() { }
 
     protected abstract THandle CreateHandle(nint obj);

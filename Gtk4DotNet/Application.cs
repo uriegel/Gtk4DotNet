@@ -31,6 +31,7 @@ public static class Application
     {
         var window = GObject.New<ApplicationWindowHandle>(customWindow.TypeFromName());
         window.SetApplication(app);
+        SubClassInst<ApplicationWindowHandle>.GetInstance(window)?.Initialize();
         return window;
     }
 
