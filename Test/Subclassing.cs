@@ -96,18 +96,20 @@ static class SubClassing
         => Application
             .New("org.gtk.example")
             .OnActivate(app => app
-                .SubClass(new CustomWindowClass(GTypeEnum.Window, "CustomWindow", p => new CustomWindow(p)))
+                .SubClass(new CustomWindowClass(GTypeEnum.ApplicationWindow, "CustomWindow", p => new CustomWindow(p)))
                 .SubClass(new CustomButtonClass(GTypeEnum.Button, "CustomButton", p => new CustomButton(p)))
                 .SideEffect(a =>
-                    GObject.New<WindowHandle>("CustomWindow".TypeFromName())
+                    GObject.New<ApplicationWindowHandle>("CustomWindow".TypeFromName())
                         .SetApplication(app)
+                        .Pipe(win => win
+                            .AddActions(
+                                [
+                                    new("custom-action", () => WriteLine("Custom Action activated"), "F2"),
+                                    new("quit", () => win.CloseWindow(), "<Ctrl>Q")
+                                ]))
                         .Show()))
             .Run(0, IntPtr.Zero);
 }
-
-// TODO parallel to window a menu
-// TODO Connect actions
-// TODO Access menu items
 
 // Custom GObject ========================================================================================================================
 class TDoubleClass(GTypeEnum parent, string name, Func<nint, TDouble> constructor)

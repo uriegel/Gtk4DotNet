@@ -34,6 +34,7 @@ public static class GType
         GTypeEnum.ToggleButton => ToggleButton.Type(),
         GTypeEnum.Widget => Widget.Type(),
         GTypeEnum.Window => Window.Type(),
+        GTypeEnum.ApplicationWindow => ApplicationWindow.Type(),
         _ => GObject.Type(),
     };
 }

@@ -95,11 +95,11 @@ static class Example6
                     .AddAction(settings.CreateAction("show-words"))
                     .SideEffect(_ => UpdateWords())
                     .Show())
-            .AddActions(new GtkAction[]
-            {
+            .AddActions(
+            [
                 new("preferences", () => new Dialog6.PreferenceDialog().Show(window.Ref, settings)),
                 new("quit", () => window.Ref.CloseWindow(), "<Ctrl>Q")
-            })
+            ])
             .Run(0, IntPtr.Zero);
 
     static FileContent[] GetFiles()

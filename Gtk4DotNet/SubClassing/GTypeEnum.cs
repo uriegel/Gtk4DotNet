@@ -18,5 +18,6 @@ public enum GTypeEnum
     TextView,
     ToggleButton,
     Widget,
-    Window
+    Window,
+    ApplicationWindow
 }

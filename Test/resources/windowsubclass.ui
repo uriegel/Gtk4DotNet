@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <template class="CustomWindow" parent="GtkWindow">
+  <template class="CustomWindow" parent="GtkApplicationWindow">
     <property name="title">Builder from Template</property>
     <child>
       <object class="GtkGrid" id="grid">
@@ -9,12 +9,19 @@
             <property name="popover">
               <object class="GtkPopover">
                 <child>
-                  <object class="GtkButton" id="button1">
-                    <property name="label">Button 1</property>
-                    <layout>
-                      <property name="column">0</property>
-                      <property name="row">0</property>
-                    </layout>
+                  <object class="GtkBox" >
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkButton" id="button1">
+                        <property name="label">Button 1</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton">
+                        <property name="label">Custom Action</property>
+                        <property name="action-name">win.custom-action</property>
+                      </object>
+                    </child>
                   </object>
                 </child>
               </object>
