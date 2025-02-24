@@ -13,10 +13,10 @@ static class HelloWorld
                     .NewWindow()
                     .Title("Hello Gtk👍")
                     .DefaultSize(200, 200)
-                    .SideEffect(w => w.AddActions(
+                    .Pipe(w => w.AddActions(
                         [new GtkAction("quit", () => w.SideEffect(_ => WriteLine("Close window from action")).CloseWindow(), "F4")]))
                     .OnClose(_ => false.SideEffect(_ => WriteLine("Window is closing")))
-                    .SideEffect(w => w
+                    .Pipe(w => w
                         .Child(
                             Box
                                 .New(Orientation.Vertical)
