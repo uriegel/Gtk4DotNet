@@ -12,7 +12,11 @@ public static class Window
     public extern static WindowHandle New(WindowType windowType);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_get_type", CallingConvention = CallingConvention.Cdecl)]
-    public static extern GTypeHandle Type();
+    public static extern GTypeHandle Type4();
+
+    // TODO together with ActionMap in ApplicationWindow
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_window_get_type", CallingConvention = CallingConvention.Cdecl)]
+    public static extern GTypeHandle Type999999();
 
     public static WindowHandle Title(this WindowHandle window, string title)
         => window.SideEffect(w => SetTitle(window, title));

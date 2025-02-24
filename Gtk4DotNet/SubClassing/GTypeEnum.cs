@@ -1,5 +1,6 @@
 namespace GtkDotNet.SubClassing;
 
+// TODO ParentType for subclassing!!! 
 public enum GTypeEnum
 {
     Box,
