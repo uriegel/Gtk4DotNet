@@ -15,6 +15,9 @@ public static class GType
     [DllImport(Libs.LibGLib, EntryPoint = "g_type_class_ref", CallingConvention = CallingConvention.Cdecl)]
     public static extern GTypeHandle RefClass(GTypeHandle gtype);
 
+    [DllImport(Libs.LibGtk, EntryPoint = "g_type_ensure")]
+    public static extern void Ensure(GTypeHandle gtype);
+
     public static GTypeHandle Get(GTypeEnum type)
     => type switch
     {
@@ -35,6 +38,7 @@ public static class GType
         GTypeEnum.Widget => Widget.Type(),
         GTypeEnum.Window => Window.Type(),
         GTypeEnum.ApplicationWindow => ApplicationWindow.Type(),
+        GTypeEnum.WebKitWebView => WebKit.Type(),
         _ => GObject.Type(),
     };
 }

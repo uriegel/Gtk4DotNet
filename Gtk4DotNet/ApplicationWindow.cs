@@ -9,7 +9,6 @@ public static class ApplicationWindow
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_window_new", CallingConvention = CallingConvention.Cdecl)]
     public extern static ApplicationWindowHandle New(ApplicationHandle application);
 
-    // TODO Custom Window with template and webview in examples subclassing
     // TODO use THandle everywhere
     // TODO Transfer this to WebWindowNetCore
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_window_get_type", CallingConvention = CallingConvention.Cdecl)]

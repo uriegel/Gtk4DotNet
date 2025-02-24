@@ -13,6 +13,9 @@ public static class WebKit
     [DllImport(Libs.LibWebKit, EntryPoint = "webkit_web_view_new_with_context", CallingConvention = CallingConvention.Cdecl)]
     public extern static WebViewHandle New(WebKitWebContextHandle c);
 
+    [DllImport(Libs.LibWebKit, EntryPoint = "webkit_web_view_get_type", CallingConvention = CallingConvention.Cdecl)]
+    public static extern GTypeHandle Type();        
+    
     public static WebViewHandle LoadUri(this WebViewHandle webView, string uri)
         => webView.SideEffect(w => w._LoadUri(uri));
 

@@ -19,5 +19,6 @@ public enum GTypeEnum
     ToggleButton,
     Widget,
     Window,
-    ApplicationWindow
+    ApplicationWindow,
+    WebKitWebView
 }

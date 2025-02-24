@@ -15,6 +15,7 @@ static class SubClassing
         WriteLine("2 - Custom Buttom");
         WriteLine("3 - Custom Buttom in template");
         WriteLine("4 - Custom Window");
+        WriteLine("5 - Custom Window with WebView");        
 
         var input = ReadLine();
         switch (input)
@@ -30,6 +31,9 @@ static class SubClassing
                 break;
             case "4":
                 RunCustomWindow();
+                break;
+            case "5":
+                RunCustomWindowWithWebView();
                 break;
         }
         return 0;
@@ -81,7 +85,7 @@ static class SubClassing
                         builder => builder
                             .GetObject<WindowHandle>("window", w => w
                                 .SetApplication(app)
-                                .SideEffect(w => 
+                                .SideEffect(w =>
                                     builder
                                         .SideEffect(b => b.GetObject<ButtonHandle>("button1", b => b
                                             .OnClicked(() => WriteLine("Button1 clicked"))))
@@ -107,6 +111,20 @@ static class SubClassing
                                     new("custom-action", () => WriteLine("Custom Action activated"), "F2"),
                                     new("quit", () => win.CloseWindow(), "<Ctrl>Q")
                                 ]))
+                        .Show()))
+            .Run(0, IntPtr.Zero);
+
+    static void RunCustomWindowWithWebView()
+        => Application
+            .New("org.gtk.example")
+            .OnActivate(app => app
+                .SubClass(new CustomWindowWithWebViewClass(GTypeEnum.ApplicationWindow, "CustomWindowWithWebView", p => new CustomWindowWithWebView(p)))
+                .SideEffect(a =>
+                    GObject.New<ApplicationWindowHandle>("CustomWindowWithWebView".TypeFromName())
+                        .SetApplication(app)
+                        .Pipe(win => win
+                            .AddActions(
+                                [ new("quit", () => win.CloseWindow(), "<Ctrl>Q") ]))
                         .Show()))
             .Run(0, IntPtr.Zero);
 }
@@ -141,7 +159,7 @@ class CustomButton(nint obj) : SubClassInst<ButtonHandle>(obj)
 // Custom Window ========================================================================================================================
 
 class CustomWindowClass(GTypeEnum parent, string name, Func<nint, CustomWindow> constructor)
-    : SubClass<WindowHandle>(parent, name, constructor)
+    : SubClass<ApplicationWindowHandle>(parent, name, constructor)
 {
     protected override void ClassInit(nint cls, nint _)
     {
@@ -150,19 +168,47 @@ class CustomWindowClass(GTypeEnum parent, string name, Func<nint, CustomWindow> 
     }
 }
 
-class CustomWindow(nint obj) : SubClassInst<WindowHandle>(obj)
+class CustomWindow(nint obj) : SubClassInst<ApplicationWindowHandle>(obj)
 {
     protected override void OnCreate()
     {
         Handle.InitTemplate();
         Handle
-            .GetTemplateChild<ButtonHandle, WindowHandle>("button1")
+            .GetTemplateChild<ButtonHandle, ApplicationWindowHandle>("button1")
             ?.OnClicked(() => WriteLine("Button1 clicked"));
         Handle
-            .GetTemplateChild<ButtonHandle, WindowHandle>("quit")
+            .GetTemplateChild<ButtonHandle, ApplicationWindowHandle>("quit")
             ?.OnClicked(() => Handle.CloseWindow());
     }
     protected override void OnFinalize() => WriteLine("Window finalized");
-    protected override WindowHandle CreateHandle(nint obj) => new(obj);
+    protected override ApplicationWindowHandle CreateHandle(nint obj) => new(obj);
+}
+
+// Custom Window with WebView========================================================================================================================
+
+class CustomWindowWithWebViewClass(GTypeEnum parent, string name, Func<nint, CustomWindowWithWebView> constructor)
+    : SubClass<ApplicationWindowHandle>(parent, name, constructor)
+{
+    protected override void ClassInit(nint cls, nint _)
+    {
+        var webkitType = GType.Get(GTypeEnum.WebKitWebView);
+        GType.Ensure(webkitType);
+        var type = "WebKitWebView".TypeFromName();
+        base.ClassInit(cls, _);
+        InitTemplateFromResource(cls, "windowwebviewsubclass");
+    }
+}
+
+class CustomWindowWithWebView(nint obj) : SubClassInst<ApplicationWindowHandle>(obj)
+{
+    protected override void OnCreate()
+    {
+        Handle.InitTemplate();
+        Handle  
+            .GetTemplateChild<WebViewHandle, ApplicationWindowHandle>("webview")
+            ?.LoadUri("https://github.com/uriegel/Gtk4DotNet");
+    }
+    protected override void OnFinalize() => WriteLine("Window finalized");
+    protected override ApplicationWindowHandle CreateHandle(nint obj) => new(obj);
 }
 

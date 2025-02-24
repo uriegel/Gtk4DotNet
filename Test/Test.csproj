@@ -37,6 +37,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="./resources/windowwebviewsubclass.ui">
+      <LogicalName>windowwebviewsubclass</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="./resources/progress.ui">
       <LogicalName>progress</LogicalName>
     </EmbeddedResource>
