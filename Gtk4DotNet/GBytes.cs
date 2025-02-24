@@ -9,7 +9,16 @@ public static class GBytes
     public extern static BytesHandle New(IntPtr data, long size);
 
     public static BytesHandle New(string str)
-        => New(str, str.Length);
+    {
+        var utf8Bytes = System.Text.Encoding.UTF8.GetBytes(str);
+
+        var unmanagedPtr = Marshal.AllocHGlobal(utf8Bytes.Length);
+        Marshal.Copy(utf8Bytes, 0, unmanagedPtr, utf8Bytes.Length);
+        var gBytes = New(unmanagedPtr, utf8Bytes.Length);
+        Marshal.FreeHGlobal(unmanagedPtr);
+        return gBytes;
+    }
+
 
     public static BytesHandle New(byte[] data)
         => New(data, data.Length);
