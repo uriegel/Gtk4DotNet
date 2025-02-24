@@ -153,6 +153,10 @@ The Window is very empty. Let's add a title and change the default size:
 
 // TODO Now complete Hello World
 
+// TODO Adwaita e.g. color schemes..
+// TODO Pipe SideEffect
+// TODO Lambdas in callbacks
+
 // TODO explain static classes Object and ObjectHandle
 
 
