@@ -1,5 +1,5 @@
 # Gtk4DotNet
-.Net 8 bindings for GTK 4
+A C# wrapper for GTK4 (.NET 8). You can create programs using the GTK4 UI system as a .NET 8.
 
 Gtk4DotNet uses a functional declarative approach to GTK4 similar to REACT or Kotlin Compose:
 
@@ -17,37 +17,71 @@ return Application
                     .Attach(                                
                         Button
                             .NewWithLabel("Button 1")
-                            .OnClicked(() => WriteLine("Button1 clicked")), 0, 0, 1, 1)
+                            .OnClicked(() => WriteLine("Button1 clicked")), 
+                        0, 0, 1, 1)
                     .Attach(                                
                         Button
                             .NewWithLabel("Button 2")
-                            .OnClicked(() => WriteLine("Button2 clicked")), 1, 0, 1, 1)
+                            .OnClicked(() => WriteLine("Button2 clicked")), 
+                        1, 0, 1, 1)
                     .Attach(                                
                         Button
                             .NewWithLabel("Quit")
-                            .OnClicked(() => win.CloseWindow()), 0, 1, 2, 1)))
+                            .OnClicked(() => win.CloseWindow()), 
+                        0, 1, 2, 1)))
             .Show())
-    .Run(0, IntPtr.Zero);
+    .Run(0, 0);
 }
+
 ```
-You don't have to use window.ui XML files for describing the UI, instead declare the UI declarative with C#. 
+# Table of contents 
+1. [Prerequisites](#prerequisites)
+2. [Hello World (a minimal GTK4 app)](#helloworld)
 
-Contained in this Repo are samples how to use Gtk4DotNet. All examples of the official GTK4 are transformed to C# with Gtk4DotNet.
-
-## Prerequisites
+## Prerequisites <a name="prerequisites"></a>
 
 ### Necessary only depending on the version of Linux
 
-if you want to use WebView (WebKitGTK) on Ubuntu 22.04:
+On modern Linux like Ubuntu 24.04 or Fedora 40 Gtk4DotNet apps will run out of the box (if you create a full contained single file exe), otherwise you have to install the necessary dotnet runtime.
 
-* sudo apt install libwebkitgtk-6.0-dev
+libadwaita is only necessary if you want to create Adwaita apps, and webkitgtk6 you only need when integrating a webview.
 
-With LibAdwaita
+On older/other Linux systems perhaps you have to install one of the following packages in order to make the app runnable. 
 
-* sudo apt install libadwaita-1-dev
+``` 
+sudo apt install libgtk-4-dev
+sudo apt install libadwaita-1-dev
+sudo apt install libwebkitgtk-6.0-dev
+```
 
-Gtk4
-* sudo apt install libgtk-4-dev
+For example on Linux Mint 22 you only have to install 
+
+``` 
+sudo apt install libwebkitgtk-6.0-dev
+```
+if you want to use webkit webview whereas for KDE neon 6.0 you have to install 
+
+``` 
+sudo apt install libadwaita-1-dev
+sudo apt install libwebkitgtk-6.0-dev
+```
+### The necessary Gtk4DotNet Nuget package <a name="nuget"></a>
+
+To use these features there is a nuget package  [Gtk4DotNet](https://www.nuget.org/packages/Gtk4DotNet/), which you have to imclude. 
+
+
+## Hello World (a minimal GTK4 app) <a name="helloworld"></a>
+
+
+
+
+## DEPRECATED Part
+
+
+
+
+Contained in this Repo are samples how to use Gtk4DotNet. All examples of the official GTK4 are transformed to C# with Gtk4DotNet.
+
 
 ### If you want to use GTK resources
 
