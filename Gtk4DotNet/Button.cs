@@ -15,7 +15,7 @@ public static class Button
 
     public static THandle OnClicked<THandle>(this THandle button, Action click)
         where THandle : ButtonHandle
-        => button.SideEffect(a => Gtk.SignalConnect<TwoPointerDelegate>(a, "clicked", (IntPtr _, IntPtr __) => click()));
+        => button.SideEffect(a => Gtk.SignalConnect<TwoPointerDelegate>(a, "clicked", (_, __) => click()));
 
     public static THandle Label<THandle>(this THandle button, string label)
         where THandle : ButtonHandle

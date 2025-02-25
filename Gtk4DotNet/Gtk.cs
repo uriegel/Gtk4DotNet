@@ -101,13 +101,7 @@ public static class Gtk
     public static string? GuessContentType(string filename)
         => GuessContentType(filename, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero).PtrToString(true);
 
-
-    internal static void Init() => 
-        SynchronizationContext.SetSynchronizationContext(
-            new GtkSynchronizationContext()
-                .SideEffect(_ => mainThreadId = Environment.CurrentManagedThreadId));
-
-    internal static long SignalConnect<TDelegate>(this ObjectHandle obj, string name, TDelegate callback)
+    public static long SignalConnect<TDelegate>(this ObjectHandle obj, string name, TDelegate callback)
         where TDelegate : Delegate
     {
         // TODO Signal disconnect
@@ -117,7 +111,12 @@ public static class Gtk
         return SignalConnect(obj, name, Marshal.GetFunctionPointerForDelegate((Delegate)callback), IntPtr.Zero, 0);
     }
 
-    [DllImport(Libs.LibGtk, EntryPoint="g_signal_connect_object", CallingConvention = CallingConvention.Cdecl)]
+    internal static void Init() => 
+        SynchronizationContext.SetSynchronizationContext(
+            new GtkSynchronizationContext()
+                .SideEffect(_ => mainThreadId = Environment.CurrentManagedThreadId));
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_signal_connect_object", CallingConvention = CallingConvention.Cdecl)]
     extern static long SignalConnect(this ObjectHandle widget, string name, IntPtr callback, IntPtr obj, int n3);
 
     [DllImport(Libs.LibGtk, EntryPoint="g_signal_connect_object", CallingConvention = CallingConvention.Cdecl)]

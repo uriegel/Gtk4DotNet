@@ -76,6 +76,9 @@ public abstract class SubClass<THandle>
             null,
             defaultValue, ParamFlags.ReadWrite));
 
+    protected uint NewSignal(GTypeHandle type, string name, SignalFlags flags, GTypes returnType, GTypes[] param)
+        => GType.SignalNew(type, name, flags, returnType, param);
+
     protected virtual void InstanceInit(nint obj, nint _)
         => constructor(obj);
 

@@ -68,7 +68,8 @@ static class SubClassing
                             Box
                                 .New(Orientation.Vertical)
                                 .Append(GObject.New<ButtonHandle>("CustomButton".TypeFromName())
-                                    .Label("Button 1"))
+                                    .Label("Button 1")
+                                    .OnSlowClicked(p => WriteLine($"slow click event received: {p}")))
                                 .Append(GObject.New<ButtonHandle>("CustomButton".TypeFromName())
                                     .Label("Button 2"))
                        )
@@ -142,24 +143,32 @@ class TDouble(nint obj) : SubClassInst<GObjectHandle>(obj)
 class CustomButtonClass(GTypeEnum parent, string name, Func<nint, CustomButton> constructor)
     : SubClass<ButtonHandle>(parent, name, constructor)
 {
-    const int PROP_TITLE = 1;
+    public static uint SlowClick;
+
+    public const int PROP_TESTTITLE = 1;
 
     protected override void ClassInit(nint cls, nint _)
     {
         base.ClassInit(cls, _);
-        RegisterProperty(cls, 1, "testtitle");
+        RegisterProperty(cls, PROP_TESTTITLE, "testtitle");
+        SlowClick = NewSignal(Type, "slow_click", SignalFlags.RunLast, GTypes.None, [ GTypes.String ]);
     }
 }
 
 class CustomButton(nint obj) : SubClassInst<ButtonHandle>(obj)
 {
     protected override void OnCreate() =>
-        Handle.OnClicked(() =>
+        Handle.OnClicked(async () =>
         {
             WriteLine($"testtitle: {testTitle}");
             Handle.Label($"{++count} times clicked");
             testTitle = Handle.GetLabel();
-            GObject.Notify(Handle, "testtitle");
+            Handle.Notify("testtitle");
+
+            IntPtr args = Marshal.StringToHGlobalAuto("Slow click emitted");
+            await Task.Delay(1000);
+            Handle.EmitSignal(CustomButtonClass.SlowClick, 0, args);
+            Marshal.FreeHGlobal(args);
         });
 
     protected override void OnFinalize() => WriteLine("Button finalized");
@@ -167,19 +176,30 @@ class CustomButton(nint obj) : SubClassInst<ButtonHandle>(obj)
 
     protected override void OnSetProperty(uint propId, nint value)
     {
-        if (propId == 1)
+        if (propId == CustomButtonClass.PROP_TESTTITLE)
             testTitle = GValue.GetString(value);
     }
 
     protected override void OnGetProperty(uint propId, nint value)
     {
-        if (propId == 1)
+        if (propId == CustomButtonClass.PROP_TESTTITLE)
             GValue.SetString(value, testTitle);
     }
 
     string? testTitle;
 
     int count;
+}
+
+static class CustomButtonExtensions
+{
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    delegate void SlowClickDelegate(nint _, string p, nint __);
+    public static ButtonHandle OnSlowClicked(this ButtonHandle handle, Action<string> click)
+    {
+        Gtk.SignalConnect<SlowClickDelegate>(handle, "slow_click", (_, p, __) => click(p));
+        return handle;
+    }
 }
 
 // Custom Window ========================================================================================================================

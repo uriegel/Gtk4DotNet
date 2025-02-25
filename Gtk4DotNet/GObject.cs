@@ -97,7 +97,18 @@ public static class GObject
     public extern static GTypeHandle TypeFromName(this string objectName);
 
     [DllImport(Libs.LibGtk, EntryPoint="g_object_notify", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void Notify(ObjectHandle obj, string propertyName);
+    public extern static void Notify(this ObjectHandle obj, string propertyName);
+
+    [DllImport(Libs.LibGtk, EntryPoint="g_signal_emit", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void EmitSignal(this ObjectHandle obj, uint signalId, uint detail);
+    [DllImport(Libs.LibGtk, EntryPoint = "g_signal_emit", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void EmitSignal(this ObjectHandle obj, uint signalId, uint detail, nint param1);
+    [DllImport(Libs.LibGtk, EntryPoint = "g_signal_emit", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void EmitSignal(this ObjectHandle obj, uint signalId, uint detail, nint param1, nint param2);
+    [DllImport(Libs.LibGtk, EntryPoint = "g_signal_emit", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void EmitSignal(this ObjectHandle obj, uint signalId, uint detail, nint param1, nint param2, nint param3);
+    [DllImport(Libs.LibGtk, EntryPoint = "g_signal_emit", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void gEmitSignal(ObjectHandle obj, uint signalId, uint detail, nint param1, nint param2, nint param3, nint param4);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_ref", CallingConvention = CallingConvention.Cdecl)]
     internal extern static void Ref(this ObjectHandle obj);

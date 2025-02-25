@@ -41,4 +41,30 @@ public static class GType
         GTypeEnum.WebKitWebView => WebKit.Type(),
         _ => GObject.Type(),
     };
+
+    public static uint SignalNew(GTypeHandle gtype, string name, SignalFlags signalFlags, GTypes returnType, GTypes[] types)
+        => types.Length switch
+        {
+            0 => SignalNew0(name, gtype, signalFlags, 0, 0, 0, 0, returnType, 0),
+            1 => SignalNew1(name, gtype, signalFlags, 0, 0, 0, 0, returnType, 1, types[0]),
+            2 => SignalNew2(name, gtype, signalFlags, 0, 0, 0, 0, returnType, 2, types[0], types[1]),
+            3 => SignalNew3(name, gtype, signalFlags, 0, 0, 0, 0, returnType, 2, types[0], types[1], types[2]),
+            _ => throw new Exception("Too many GType arguments")
+        };
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_signal_new", CallingConvention = CallingConvention.Cdecl)]
+    extern static uint SignalNew0(string name, GTypeHandle gtype, SignalFlags signalFlags, nint classClosure, nint accumulator, nint accuData, nint cMarshaller,
+        GTypes returnType, int nParams);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_signal_new", CallingConvention = CallingConvention.Cdecl)]
+    extern static uint SignalNew1(string name, GTypeHandle gtype, SignalFlags signalFlags, nint classClosure, nint accumulator, nint accuData, nint cMarshaller,
+        GTypes returnType, int nParams, GTypes paramType1);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_signal_new", CallingConvention = CallingConvention.Cdecl)]
+    extern static uint SignalNew2(string name, GTypeHandle gtype, SignalFlags signalFlags, nint classClosure, nint accumulator, nint accuData, nint cMarshaller,
+        GTypes returnType, int nParams, GTypes paramType1, GTypes paramType2);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_signal_new", CallingConvention = CallingConvention.Cdecl)]
+    extern static uint SignalNew3(string name, GTypeHandle gtype, SignalFlags signalFlags, nint classClosure, nint accumulator, nint accuData, nint cMarshaller,
+        GTypes returnType, int nParams, GTypes paramType1, GTypes paramType2, GTypes paramType3);
 }
