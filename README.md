@@ -188,15 +188,21 @@ static class HelloWorld
 }
 
 ``` 
-Detailed descriptions of the individual steps follow later.
+Detailed descriptions of the individual steps will follow in later sections.
 
 ### Using Adwaita  <a name="adwaita"></a>
 
-In the above HelloWorld example
+The above HelloWorld example has another difference to the first ewample:
 
-![custom titlebar](readme/helloworld.png) 
+``` Application.NewAdwaita("de.uriegel.example")``` 
+instead of ``` Application.New("de.uriegel.example")```. Here a new Adwaita window is being created. Adwaita is the design language of the GNOME desktop environment. It exists as the default theme and icon set of the GNOME Shell. When Adwaita is used, you can see a slightly different and more modern look and feel. 
 
-// TODO e.g. color schemes, widget looks..
+![light version](readme/helloworld.png) ![dark version](readme/helloworlddark.png) 
+
+One differnce is a big one: as you can see in the images above, the window theme is adapted from the installed and selected Gnome theme. When a dark theme is selected, the window content uses a dark theme as well. This is not the case with a normal GTK Window.
+
+* Application.NewAdwaita creates a new Adw.Window
+* This is especially useful with AdwHeaderBar, see later section
 
 ## Using Layouts and widgets
 ### Lambdas in callbacks
