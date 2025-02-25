@@ -64,9 +64,17 @@ public abstract class SubClass<THandle>
 
     protected virtual void ClassInit(nint cls, nint _)
     {
-        IntPtr finalizePtr = Marshal.GetFunctionPointerForDelegate(SubClassInst<THandle>.finalizeDelegate);
-        Marshal.WriteIntPtr(cls, 6 * IntPtr.Size, finalizePtr);
+        Marshal.WriteIntPtr(cls, 3 * nint.Size, Marshal.GetFunctionPointerForDelegate(SubClassInst<THandle>.setPropertyDelegate));
+        Marshal.WriteIntPtr(cls, 4 * nint.Size, Marshal.GetFunctionPointerForDelegate(SubClassInst<THandle>.getPropertyDelegate));
+        Marshal.WriteIntPtr(cls, 6 * nint.Size, Marshal.GetFunctionPointerForDelegate(SubClassInst<THandle>.finalizeDelegate));
     }
+
+    protected void RegisterProperty(nint cls, uint id, string name, string? defaultValue = null)
+        => GObject.ClassInstallProperty(cls, id, GObject.ParamSpecString(
+            name,
+            null,
+            null,
+            defaultValue, ParamFlags.ReadWrite));
 
     protected virtual void InstanceInit(nint obj, nint _)
         => constructor(obj);
@@ -79,6 +87,13 @@ public abstract class SubClass<THandle>
 
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-delegate void DisposeCallback(IntPtr obj);
-delegate void SubClassInitDelegate(IntPtr gClass, IntPtr classData);
-delegate void SubClassInstanceInitDelegate(IntPtr gClass, IntPtr classData);
+delegate void DisposeDelegate(nint obj);
+[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+delegate void SubClassInitDelegate(nint gClass, nint classData);
+[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+delegate void SubClassInstanceInitDelegate(nint gClass, nint classData);
+[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+delegate void SetPropertyDelegate(nint obj, uint propId, nint value, nint pspec);
+[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+delegate void GetPropertyDelegate(nint obj, uint propId, nint value, nint pspec);
+

@@ -31,6 +31,7 @@
         <child>
           <object class="CustomButton" id="button2">
             <property name="label">Button 2</property>
+            <property name="testtitle">Button 2 Test Title</property>
             <layout>
               <property name="column">1</property>
               <property name="row">0</property>
@@ -44,6 +45,16 @@
               <property name="column">0</property>
               <property name="column-span">2</property>
               <property name="row">1</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label">
+            <property name="label" bind-source="button2" bind-property="testtitle" bind-flags="sync-create"/>
+            <layout>
+              <property name="column">0</property>
+              <property name="column-span">2</property>
+              <property name="row">2</property>
             </layout>
           </object>
         </child>

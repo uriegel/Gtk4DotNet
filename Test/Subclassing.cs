@@ -140,14 +140,44 @@ class TDouble(nint obj) : SubClassInst<GObjectHandle>(obj)
 // Custom Button ========================================================================================================================
 
 class CustomButtonClass(GTypeEnum parent, string name, Func<nint, CustomButton> constructor)
-    : SubClass<ButtonHandle>(parent, name, constructor) {}
+    : SubClass<ButtonHandle>(parent, name, constructor)
+{
+    const int PROP_TITLE = 1;
+
+    protected override void ClassInit(nint cls, nint _)
+    {
+        base.ClassInit(cls, _);
+        RegisterProperty(cls, 1, "testtitle");
+    }
+}
 
 class CustomButton(nint obj) : SubClassInst<ButtonHandle>(obj)
 {
-    protected override void OnCreate() => Handle.OnClicked(() => Handle.Label($"{++count} times clicked"));
+    protected override void OnCreate() =>
+        Handle.OnClicked(() =>
+        {
+            WriteLine($"testtitle: {testTitle}");
+            Handle.Label($"{++count} times clicked");
+            testTitle = Handle.GetLabel();
+            GObject.Notify(Handle, "testtitle");
+        });
 
     protected override void OnFinalize() => WriteLine("Button finalized");
     protected override ButtonHandle CreateHandle(nint obj) => new(obj);
+
+    protected override void OnSetProperty(uint propId, nint value)
+    {
+        if (propId == 1)
+            testTitle = GValue.GetString(value);
+    }
+
+    protected override void OnGetProperty(uint propId, nint value)
+    {
+        if (propId == 1)
+            GValue.SetString(value, testTitle);
+    }
+
+    string? testTitle;
 
     int count;
 }

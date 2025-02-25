@@ -7,15 +7,15 @@ namespace GtkDotNet.SubClassing;
     {
         /* interface types, classed types, instantiated types */
         public ushort classSize;
-        public IntPtr baseInit;
-        public IntPtr baseFinalize;
-        public IntPtr classInit;
-        public IntPtr classFinalize;
-        public IntPtr classData;
+        public nint baseInit;
+        public nint baseFinalize;
+        public nint classInit;
+        public nint classFinalize;
+        public nint classData;
         /* instantiated types */
         public ushort instanceSize;
         public ushort nPreallocs;
-        public IntPtr instanceInit;
+        public nint instanceInit;
         /* value handling */
-        public IntPtr valueTable;
+        public nint valueTable;
     }

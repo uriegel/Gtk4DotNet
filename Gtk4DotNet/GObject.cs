@@ -96,6 +96,9 @@ public static class GObject
     [DllImport(Libs.LibGtk, EntryPoint="g_type_from_name", CallingConvention = CallingConvention.Cdecl)]
     public extern static GTypeHandle TypeFromName(this string objectName);
 
+    [DllImport(Libs.LibGtk, EntryPoint="g_object_notify", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void Notify(ObjectHandle obj, string propertyName);
+
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_ref", CallingConvention = CallingConvention.Cdecl)]
     internal extern static void Ref(this ObjectHandle obj);
 
@@ -114,6 +117,12 @@ public static class GObject
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_unref", CallingConvention = CallingConvention.Cdecl)]
     internal extern static void Unref(IntPtr obj);
 
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_class_install_property", CallingConvention = CallingConvention.Cdecl)]
+    internal extern static void ClassInstallProperty(nint cls, uint propertyId, IntPtr pspec);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_param_spec_string", CallingConvention = CallingConvention.Cdecl)]
+    internal extern static nint ParamSpecString(string name, string? nick, string? blurb, string? defaultValue, ParamFlags flags);
+
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_set", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetString(this ObjectHandle obj, string name, string value, IntPtr end);
 
@@ -125,7 +134,6 @@ public static class GObject
 
     [DllImport(Libs.LibGtk, EntryPoint="g_object_get", CallingConvention = CallingConvention.Cdecl)]
     extern static bool GetBool(this ObjectHandle GtkHandle, string name, out bool value, IntPtr end);
-
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_bind_property", CallingConvention = CallingConvention.Cdecl)]
     extern static void _BindProperty(this ObjectHandle source, string sourceProperty, ObjectHandle target, string targetProperty, BindingFlags bindingFlags);
