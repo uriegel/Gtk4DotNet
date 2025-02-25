@@ -1,5 +1,7 @@
 # Gtk4DotNet
-A C# wrapper for GTK4 (.NET 8). You can create programs using the GTK4 UI system as a .NET 8.
+C# .NET 8 bindings for GTK4. You can create programs using the GTK4 UI system as a .NET 8 app.
+
+In the following tutorial are (almost) all examples from the original [GTK4 documentation](https://docs.gtk.org/gtk4/getting_started.html) as well as from the [GUI development with Rust and GTK 4](https://gtk-rs.org/gtk4-rs/git/book/), all ported to C#. There is a Test project. In the terminal window, you can choose a certain example to run.
 
 Gtk4DotNet uses a functional declarative approach to GTK4 similar to REACT or Kotlin Compose:
 
@@ -34,10 +36,13 @@ return Application
 }
 
 ```
+
+
 # Table of contents 
 1. [Prerequisites](#prerequisites)
 2. [Hello World (a minimal GTK4 app)](#helloworld)
     1. [Fluent syntax](#fluentsyntax)
+    2. [Using Adwaita](#adwaita)
 
 ## Prerequisites <a name="prerequisites"></a>
 
@@ -116,6 +121,8 @@ app.OnActivate(app =>
 ``` 
 Now an empty default window is being shown and the function call ```Applicatio.Run()``` will only return when the window is being closed.
 
+![custom titlebar](readme/first.png) 
+
 ### Fluent syntax <a name="fluentsyntax"></a>
 
 To avoid creating many variables only to set them as parameters in a function, Gtk4DotNet uses a functional builder approach to create a complicated ui with fluent syntax. Many setter function returns the same instance, so that builder functions can be assigned in a row.
@@ -146,16 +153,67 @@ The Window is very empty. Let's add a title and change the default size:
         .Show())
 ```
 
-// TODO refer to GTK exmples in GTK tutorial and GTK4 Rust
+Now let's complete our Hello World program with a button and a click handler to maximize the window:
 
-// TODO show image
+``` 
+static class HelloWorld
+{
+    public static int Run()
+        => Application
+            .NewAdwaita("org.gtk.example")
+            .OnActivate(app =>
+                app
+                    .SideEffect(_ => WriteLine($"Gkt theme: {GtkSettings.GetDefault().ThemeName}"))
+                    .NewWindow()
+                    .Title("Hello Gtk👍")
+                    .DefaultSize(200, 200)
+                    .Pipe(w => w.AddActions(
+                        [new GtkAction("quit", () => w.SideEffect(_ => WriteLine("Close window from action")).CloseWindow(), "F4")]))
+                    .OnClose(_ => false.SideEffect(_ => WriteLine("Window is closing")))
+                    .Pipe(w => w
+                        .Child(
+                            Box
+                                .New(Orientation.Vertical)
+                                .HAlign(Align.Center)
+                                .VAlign(Align.Center)
+                                .Append(
+                                    Button
+                                        .NewWithLabel("Maximize Window")
+                                        .OnClicked(() => w.Maximize())
+                                        .Tooltip("This is a sample Button\tCtrl-H"))))
+
+                    .Show())
+            .AddActions([new GtkAction("appaction", () => WriteLine("appaction"), "F5")])
+            .Run(0, IntPtr.Zero);
+}
+
+``` 
+Detailed descriptions of the individual steps follow later.
+
+### Using Adwaita  <a name="adwaita"></a>
+
+In the above HelloWorld example
+
+![custom titlebar](readme/helloworld.png) 
+
+// TODO e.g. color schemes, widget looks..
+
+## Using Layouts and widgets
+### Lambdas in callbacks
+
+ Two convenience functions for extending the fluent syntax are used:
+* SideEffect
+* Pipe
+
+These functions are from the contained nuget package  [CsTools](https://www.nuget.org/packages/CsTools/).
+
+SideEffect is used to return the input parameter but as it is called, it calls a sideeffect function so that you can do soemthing with the object, e.g. log the object state.
+
+Pipe is similar, but it returns the result of the selector function which is being called on function invocation. This is necessary if you need a variable of the object chained though the function calls. In this example Window.Child is beeing called, but not directly but through the Pipe function so that you get an instance of the window object. It is needed in the following lambda that is used as action callback. A GTK Action is defined and on action the window should be closed so a window instance is needed.
+
+// TODO short explanation of the single steps, especially the callback lambdas
 
 
-// TODO Now complete Hello World
-
-// TODO Adwaita e.g. color schemes..
-// TODO Pipe SideEffect
-// TODO Lambdas in callbacks
 
 // TODO explain static classes Object and ObjectHandle
 
