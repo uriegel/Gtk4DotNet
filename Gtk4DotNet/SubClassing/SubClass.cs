@@ -9,18 +9,26 @@ public abstract class SubClass<THandle>
 {
     public GTypeHandle Type { get; }
 
+    static internal ushort MemoryOffset { get; private set; }
+
     public SubClass(GTypeEnum parent, string name, Func<nint, SubClassInst<THandle>> constructor)
     {
         this.constructor = constructor;
         GTypeHandle parentType = GType.Get(parent);
+        
+        MemoryOffset = GetParentInstanceSize();
+        GTypeQuery query = new();
+        parentType.Query(ref query);
+        Console.WriteLine($"{name}: {MemoryOffset} {typeof(THandle).FullName})]");
 
         var typeInfo = new GTypeInfo()
         {
-            classSize = GetParentClassSize(),
-            instanceSize = GetParentInstanceSize(),
+            classSize = query.classSize,
+            instanceSize = (ushort)(MemoryOffset + nint.Size),
             classInit = Marshal.GetFunctionPointerForDelegate<SubClassInitDelegate>(ClassInit),
             instanceInit = Marshal.GetFunctionPointerForDelegate<SubClassInstanceInitDelegate>(InstanceInit)
         };
+        
         Type = GType.RegisterStatic(parentType, name, ref typeInfo);
         if (Type.IsInvalid)
             throw new Exception("Custom sub class could not be registered");
@@ -29,37 +37,8 @@ public abstract class SubClass<THandle>
             => parent switch
             {
                 GTypeEnum.GObject => (ushort)Marshal.SizeOf<GObjectType>(),
-                _ => RetrieveParentInstanceSize()
+                _ => 500 // TODO smaller sizes
             };
-
-        ushort GetParentClassSize()
-            => parent switch
-            {
-                GTypeEnum.GObject => (ushort)Marshal.SizeOf<GObjectClass>(),
-                _ => RetrieveParentClassSize()
-            };
-
-        ushort RetrieveParentClassSize()
-        {
-            var classType = GType.PeekClass(parentType).Pipe(n => n.IsInvalid ? GType.RefClass(parentType) : n);
-            if (classType.IsInvalid)
-                throw new Exception("Failed to get parent class size");
-            return (ushort)Marshal.ReadInt32(classType.GetInternalHandle()); // Read size from the first field of class struct
-        }
-
-        ushort RetrieveParentInstanceSize()
-        {
-            var classType = GType.PeekClass(parentType).Pipe(n => n.IsInvalid ? GType.RefClass(parentType) : n);
-            if (classType.IsInvalid)
-                throw new Exception("Failed to get parent instance size");
-            return (ushort)Marshal.ReadInt32(classType.GetInternalHandle(), IntPtr.Size); // Read size from the second field of class struct
-        }
-    }
-
-    public SubClassInst<THandle> New()
-    {
-        var ptr = GObject.New(Type, 0);
-        return constructor(ptr);
     }
 
     protected virtual void ClassInit(nint cls, nint _)
@@ -67,6 +46,14 @@ public abstract class SubClass<THandle>
         Marshal.WriteIntPtr(cls, 3 * nint.Size, Marshal.GetFunctionPointerForDelegate(SubClassInst<THandle>.setPropertyDelegate));
         Marshal.WriteIntPtr(cls, 4 * nint.Size, Marshal.GetFunctionPointerForDelegate(SubClassInst<THandle>.getPropertyDelegate));
         Marshal.WriteIntPtr(cls, 6 * nint.Size, Marshal.GetFunctionPointerForDelegate(SubClassInst<THandle>.finalizeDelegate));
+    }
+
+    protected virtual void InstanceInit(nint obj, nint _)
+    {
+        var inst = constructor(obj);
+        var gchandle = GCHandle.Alloc(inst, GCHandleType.Normal);
+        Marshal.WriteIntPtr(obj, MemoryOffset, GCHandle.ToIntPtr(gchandle));
+        inst.OnCreate();
     }
 
     protected void RegisterProperty(nint cls, uint id, string name, string? defaultValue = null)
@@ -78,9 +65,6 @@ public abstract class SubClass<THandle>
 
     protected uint NewSignal(GTypeHandle type, string name, SignalFlags flags, GTypes returnType, GTypes[] param)
         => GType.SignalNew(type, name, flags, returnType, param);
-
-    protected virtual void InstanceInit(nint obj, nint _)
-        => constructor(obj);
 
     protected void InitTemplateFromResource(nint cls, string name)
         => cls.ClassSetTemplateFromDotNetResource(name);

@@ -19,7 +19,7 @@ static class ProgressSubclass
 }
 
 class ProgressWindowClass(GTypeEnum parent, string name, Func<nint, ProgressWindow> constructor)
-    : SubClass<WindowHandle>(parent, name, constructor)
+    : SubClass<ApplicationWindowHandle>(parent, name, constructor)
 {
     protected override void ClassInit(nint cls, nint _)
     {
@@ -28,11 +28,11 @@ class ProgressWindowClass(GTypeEnum parent, string name, Func<nint, ProgressWind
     }
 }
 
-class ProgressWindow(nint obj) : SubClassInst<WindowHandle>(obj)
+class ProgressWindow(nint obj) : SubClassInst<ApplicationWindowHandle>(obj)
 {
     protected override void OnCreate() => Handle.InitTemplate();
     protected override void OnFinalize() => WriteLine("Window finalized");
-    protected override WindowHandle CreateHandle(nint obj) => new(obj);
+    protected override ApplicationWindowHandle CreateHandle(nint obj) => new(obj);
 }
 
 class ProgressDisplayClass(GTypeEnum parent, string name, Func<nint, ProgressDisplay> constructor)

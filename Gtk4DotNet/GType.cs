@@ -18,6 +18,10 @@ public static class GType
     [DllImport(Libs.LibGtk, EntryPoint = "g_type_ensure")]
     public static extern void Ensure(GTypeHandle gtype);
 
+    [DllImport(Libs.LibGtk, EntryPoint = "g_type_query")]
+    public static extern void Query(this GTypeHandle gtype, ref GTypeQuery query);
+
+
     public static GTypeHandle Get(GTypeEnum type)
     => type switch
     {

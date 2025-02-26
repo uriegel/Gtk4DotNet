@@ -1,6 +1,5 @@
 using System.Runtime.InteropServices;
 using CsTools.Extensions;
-using CsTools.Functional;
 using GtkDotNet;
 using GtkDotNet.SafeHandles;
 using GtkDotNet.SubClassing;
@@ -13,9 +12,8 @@ static class SubClassing
     {
         WriteLine("1 - GObject");
         WriteLine("2 - Custom Buttom");
-        WriteLine("3 - Custom Buttom in template");
-        WriteLine("4 - Custom Window");
-        WriteLine("5 - Custom Window with WebView");        
+        WriteLine("3 - Custom Window");
+        WriteLine("4 - Custom Window with WebView");        
 
         var input = ReadLine();
         switch (input)
@@ -27,12 +25,9 @@ static class SubClassing
                 RunButton();
                 break;
             case "3":
-                RunBuilder();
-                break;
-            case "4":
                 RunCustomWindow();
                 break;
-            case "5":
+            case "4":
                 RunCustomWindowWithWebView();
                 break;
         }
@@ -42,9 +37,9 @@ static class SubClassing
     {
         var typeDouble = "TDouble".TypeFromName();
         var tDoubleClass = new TDoubleClass(GTypeEnum.GObject, "TDouble", p => new TDouble(p));
-        var customButtonClass = new CustomButtonClass(GTypeEnum.Button, "CustomButton", p => new CustomButton(p));
+        //var customButtonClass = new CustomButtonClass(GTypeEnum.Button, "CustomButton", p => new CustomButton(p));
         typeDouble = "TDouble".TypeFromName();
-        var typeCustomButton = "CustomButton".TypeFromName();
+        //var typeCustomButton = "CustomButton".TypeFromName();
 
         var obj = GObject.New<GObjectHandle>(typeDouble);
         var obj2 = GObject.New<GObjectHandle>(typeDouble);
@@ -60,7 +55,7 @@ static class SubClassing
            .OnActivate(app =>
                app
                    .SubClass(new CustomButtonClass(GTypeEnum.Button, "CustomButton", p => new CustomButton(p)))
-                   .SubClass(new TDoubleClass(GTypeEnum.Button, "TDouble", p => new TDouble(p)))
+                   .SubClass(new TDoubleClass(GTypeEnum.GObject, "TDouble", p => new TDouble(p)))
                    .NewWindow()
                        .Title("Hello Gtk👍")
                        .DefaultSize(600, 200)
@@ -74,27 +69,6 @@ static class SubClassing
                                     .Label("Button 2"))
                        )
                        .Show())
-            .Run(0, IntPtr.Zero);
-
-    public static int RunBuilder()
-        => Application
-            .New("org.gtk.example")
-            .OnActivate(app => app
-                .SubClass(new CustomButtonClass(GTypeEnum.Button, "CustomButton", p => new CustomButton(p)))
-                .SideEffect(app =>
-                    Builder.FromDotNetResource("buildersubclass").Use(
-                        builder => builder
-                            .GetObject<WindowHandle>("window", w => w
-                                .SetApplication(app)
-                                .SideEffect(w =>
-                                    builder
-                                        .SideEffect(b => b.GetObject<ButtonHandle>("button1", b => b
-                                            .OnClicked(() => WriteLine("Button1 clicked"))))
-                                        .SideEffect(b => b.GetObject<ButtonHandle>("button2", b => b
-                                            .OnClicked(() => WriteLine("Button2 clicked"))))
-                                        .SideEffect(b => b.GetObject<ButtonHandle>("quit", b => b
-                                            .OnClicked(() => w.CloseWindow()))))
-                                .Show()))))
             .Run(0, IntPtr.Zero);
 
     static void RunCustomWindow()
