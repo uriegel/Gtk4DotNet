@@ -37,13 +37,15 @@ static class SubClassing
     {
         var typeDouble = "TDouble".TypeFromName();
         var tDoubleClass = new TDoubleClass(GTypeEnum.GObject, "TDouble", p => new TDouble(p));
-        //var customButtonClass = new CustomButtonClass(GTypeEnum.Button, "CustomButton", p => new CustomButton(p));
+        var customButtonClass = new CustomButtonClass(GTypeEnum.Button, "CustomButton", p => new CustomButton(p));
         typeDouble = "TDouble".TypeFromName();
-        //var typeCustomButton = "CustomButton".TypeFromName();
+        var typeCustomButton = "CustomButton".TypeFromName();
 
         var obj = GObject.New<GObjectHandle>(typeDouble);
         var obj2 = GObject.New<GObjectHandle>(typeDouble);
         var refcount = Marshal.ReadInt32(obj.GetInternalHandle(), IntPtr.Size);
+        (obj2.GetInstance() as TDouble)!.Value = 12.9f;
+        var val = (obj2.GetInstance() as TDouble)!.Value;
         obj2.Dispose();
         obj.Dispose();
         refcount = Marshal.ReadInt32(obj.GetInternalHandle(), IntPtr.Size);
@@ -106,6 +108,7 @@ class TDoubleClass(GTypeEnum parent, string name, Func<nint, TDouble> constructo
 
 class TDouble(nint obj) : SubClassInst<GObjectHandle>(obj)
 {
+    public float Value { get; set; }
     protected override void OnCreate() => WriteLine("TDouble created");
     protected override void OnFinalize() => WriteLine("TDouble finalized");
 
