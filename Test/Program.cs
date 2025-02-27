@@ -64,8 +64,7 @@ WriteLine($"Return value: {ReadLine() switch
     _ => 0
 }}");
 
-// TODO css selection style
+// TODO gtk_list_view_scroll_to for Ins
 // TODO CustomObject as listitemmodel
-// TODO Unref Application
 // TODO Perhaps Unref ApplicationWindow
 // TODO ObjectFloatingWin remove, set as child swt floating in ObjectHandle

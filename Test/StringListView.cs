@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using CsTools.Extensions;
 using GtkDotNet;
 using GtkDotNet.SafeHandles;
 
@@ -29,6 +30,10 @@ static class StringListView
                         .Policy(PolicyType.Never, PolicyType.Automatic)
                         .Child(ListView
                             .New(selectionModel, itemFactory)
+                            .SideEffect(w => StyleContext
+                                .AddProviderForDisplay(Display.GetDefault(), 
+                                    CssProvider.New()
+                                        .FromResource("listviewstyle"), StyleProviderPriority.Application))                            
                             .AddController(EventControllerKey
                                 .New()
                                 .OnKeyPressed((k, Kc, m) =>
@@ -38,10 +43,16 @@ static class StringListView
                                         if (Kc == 115)
                                             return true;
                                         else
-                                                return false;
-                                        }
-                                        else
                                             return false;
+                                    }
+                                    else if (Kc == 118)
+                                    {
+                                        var pos = selectionModel.GetSelected();
+                                        selectionModel.SetSelected(pos+1);
+                                        return true;
+                                    }
+                                    else
+                                        return false;
                                 }))))
                     .Show())
             .Run(0, IntPtr.Zero);

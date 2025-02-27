@@ -70,6 +70,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="./resources/listviewstyle.css">
+      <LogicalName>listviewstyle</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="./resources/image.jpg">
       <LogicalName>image</LogicalName>
     </EmbeddedResource>
