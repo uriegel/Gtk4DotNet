@@ -6,7 +6,8 @@ namespace GtkDotNet;
 
 public static class ScrolledWindow
 {
-    public static ScrolledWindowHandle New() => New(IntPtr.Zero, IntPtr.Zero);
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_scrolled_window_new", CallingConvention = CallingConvention.Cdecl)]
+    public extern static ScrolledWindowHandle New();
 
     public static ScrolledWindowHandle Child(this ScrolledWindowHandle scrolledWindow, WidgetHandle widget)
         => scrolledWindow.SideEffect(s => s.SetChild(widget));
@@ -23,8 +24,6 @@ public static class ScrolledWindow
     // [DllImport(Libs.LibGtk, EntryPoint="gtk_scrolled_window_get_child", CallingConvention = CallingConvention.Cdecl)]
     // public extern static IntPtr GetChild(IntPtr scrolledWindow);
 
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_scrolled_window_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static ScrolledWindowHandle New(IntPtr zero, IntPtr zero2);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_scrolled_window_set_policy", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetPolicy(this ScrolledWindowHandle scrolledWindow, PolicyType horizontal, PolicyType vertical);

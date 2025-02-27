@@ -1,6 +1,5 @@
 using GtkDotNet;
 using CsTools.Extensions;
-using static System.Console;
 
 static class HelloWorld
 {

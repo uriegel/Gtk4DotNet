@@ -21,14 +21,15 @@ WriteLine(
     16: Threading
     17: Cleanup
     18: Non GTK
-    19: Example 1
-    20: Example 2
-    21: Example 3
-    22: Example 4
-    23: Example 5
-    24: Example 6
-    25: Example 7
-    26: Example 8
+    19: ListView (String List)
+    20: Example 1
+    21: Example 2
+    22: Example 3
+    23: Example 4
+    24: Example 5
+    25: Example 6
+    26: Example 7
+    27: Example 8
     <any>: Quit
     """);
 WriteLine($"Return value: {ReadLine() switch 
@@ -51,13 +52,17 @@ WriteLine($"Return value: {ReadLine() switch
     "16" => Threading.Run(),
     "17" => Cleanup.Run(),
     "18" => NonGtkApp.Run(),
-    "19" => Example1.Run(),
-    "20" => Example2.Run(),
-    "21" => Example3.Run(),
-    "22" => Example4.Run(),
-    "23" => Example5.Run(),
-    "24" => Example6.Run(),
-    "25" => Example7.Run(),
-    "26" => Example8.Run(),
+    "19" => StringListView.Run(),
+    "20" => Example1.Run(),
+    "21" => Example2.Run(),
+    "22" => Example3.Run(),
+    "23" => Example4.Run(),
+    "24" => Example5.Run(),
+    "25" => Example6.Run(),
+    "26" => Example7.Run(),
+    "27" => Example8.Run(),
     _ => 0
 }}");
+
+// TODO Unref Application
+// TODO Perhaps Unref ApplicationWindow
