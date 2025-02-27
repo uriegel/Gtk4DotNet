@@ -66,3 +66,7 @@ WriteLine($"Return value: {ReadLine() switch
 
 // TODO Unref Application
 // TODO Perhaps Unref ApplicationWindow
+// TODO ObjectFloatingWin remove, set as child swt floating in ObjectHandle
+// TODO css aselection style
+// TODO keyboard events to make own selections
+// TODO CustomObject as listitemmodel

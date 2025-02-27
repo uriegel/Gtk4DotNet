@@ -12,5 +12,4 @@ public static class GValue
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_value_get_string", CallingConvention = CallingConvention.Cdecl)]
     extern static nint _GetString(nint gvalue);
-
 }

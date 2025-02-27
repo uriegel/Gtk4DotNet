@@ -8,9 +8,10 @@ public static class StringList
 {
     public static ListModelHandle New(string[] strings)
     {
-        var unmanagedStrings = new nint[strings.Length];
+        var unmanagedStrings = new nint[strings.Length + 1];
         for (int i = 0; i < strings.Length; i++)
-            unmanagedStrings[i] = strings[i] != null ? Marshal.StringToHGlobalAnsi(strings[i]) : IntPtr.Zero;
+            unmanagedStrings[i] = Marshal.StringToHGlobalAnsi(strings[i]);
+        unmanagedStrings[strings.Length] = 0;
 
         // Allocate unmanaged memory for the array itself
         var unmanagedStringsPtr = Marshal.AllocHGlobal(nint.Size * unmanagedStrings.Length);
