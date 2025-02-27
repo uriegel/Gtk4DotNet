@@ -64,9 +64,8 @@ WriteLine($"Return value: {ReadLine() switch
     _ => 0
 }}");
 
+// TODO css selection style
+// TODO CustomObject as listitemmodel
 // TODO Unref Application
 // TODO Perhaps Unref ApplicationWindow
 // TODO ObjectFloatingWin remove, set as child swt floating in ObjectHandle
-// TODO css aselection style
-// TODO keyboard events to make own selections
-// TODO CustomObject as listitemmodel

@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using GtkDotNet;
 using GtkDotNet.SafeHandles;
 
@@ -27,7 +28,21 @@ static class StringListView
                         .New()
                         .Policy(PolicyType.Never, PolicyType.Automatic)
                         .Child(ListView
-                            .New(selectionModel, itemFactory)))
+                            .New(selectionModel, itemFactory)
+                            .AddController(EventControllerKey
+                                .New()
+                                .OnKeyPressed((k, Kc, m) =>
+                                {
+                                    if ((m & KeyModifiers.Control) == KeyModifiers.Control)
+                                    {
+                                        if (Kc == 115)
+                                            return true;
+                                        else
+                                                return false;
+                                        }
+                                        else
+                                            return false;
+                                }))))
                     .Show())
             .Run(0, IntPtr.Zero);
     }
