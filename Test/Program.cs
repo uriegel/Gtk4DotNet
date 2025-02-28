@@ -66,12 +66,14 @@ WriteLine($"Return value: {ReadLine() switch
     _ => 0
 }}");
 
-// TODO ListStore splice with unref
 // TODO gtk_list_view_scroll_to for Ins
+// TODO ColumnView
+// TODO Selected Item with red Border
+// TODO Dark theme, light theme: https://github.com/jbenner-radham/rust-gtk4-css-styling
 // TODO NoSelection, MultiSelection
-// TODO ObjectFloatingWin remove, set as child swt floating in ObjectHandle
 // TODO Handles implement Interfaces which are partial implemented
+
+// TODO ObjectFloatingWin remove, set as child swt floating in ObjectHandle
 
 // TODO Subclassing with attributes??
 
-// TODO Dark theme, light theme: https://github.com/jbenner-radham/rust-gtk4-css-styling

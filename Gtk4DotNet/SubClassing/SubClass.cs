@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices;
-using CsTools.Extensions;
 using GtkDotNet.SafeHandles;
 
 namespace GtkDotNet.SubClassing;
@@ -20,13 +19,15 @@ public abstract class SubClass<THandle>
         GTypeQuery query = new();
         parentType.Query(ref query);
         Console.WriteLine($"{name}: {MemoryOffset} {typeof(THandle).FullName})]");
+        initDelegate = ClassInit;
+        instanceInitDelegate = InstanceInit;
 
         var typeInfo = new GTypeInfo()
         {
             classSize = query.classSize,
             instanceSize = (ushort)(MemoryOffset + nint.Size),
-            classInit = Marshal.GetFunctionPointerForDelegate<SubClassInitDelegate>(ClassInit),
-            instanceInit = Marshal.GetFunctionPointerForDelegate<SubClassInstanceInitDelegate>(InstanceInit)
+            classInit = Marshal.GetFunctionPointerForDelegate(initDelegate),
+            instanceInit = Marshal.GetFunctionPointerForDelegate(instanceInitDelegate)
         };
         
         Type = GType.RegisterStatic(parentType, name, ref typeInfo);
@@ -69,6 +70,8 @@ public abstract class SubClass<THandle>
     protected void InitTemplateFromResource(nint cls, string name)
         => cls.ClassSetTemplateFromDotNetResource(name);
 
+    static SubClassInitDelegate? initDelegate;
+    static SubClassInstanceInitDelegate? instanceInitDelegate;
     readonly Func<nint, SubClassInst<THandle>> constructor;
 }
 

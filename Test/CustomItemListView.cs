@@ -1,4 +1,5 @@
 using CsTools.Extensions;
+using CsTools.Functional;
 using GtkDotNet;
 using GtkDotNet.SafeHandles;
 using GtkDotNet.SubClassing;
@@ -7,19 +8,22 @@ static class CustomItemListView
 {
     public static int Run()
     {
-
-        void InitStore(ApplicationHandle _)
+        async void InitStore(ApplicationHandle _)
         {
             var model = ListStore
                             .New(GContact.GType)
                             .Append(GContact.New(new("Uwe Riegel", "uriegel@hotmail.de")))
                             .Append(GContact.New(new("Jim Doe", "jdoe@hotmail.de")))
-                            .Append(GContact.New(new("Jane Doe", "jadoe@hotmail.de")));
+                            .Append(GContact.New(new("Jane Doe", "jadoe@hotmail.de")))
+                            .Splice(3, [.. Enumerable.Range(1, 10_000_000).Select(n => GContact.New(new($"Item no {n}", "uriegel@hotmail.de")).Handle)]);
             itemFactory = SignalListItemFactory
                 .New()
                 .Setup(OnListItemSetup)
                 .Bind(OnListItemBind);
             selectionModel = SingleSelection.New(model);
+
+            await Task.Delay(10000);
+            model.RemoveItems(10, 100);
         }
 
         return Application
@@ -36,30 +40,31 @@ static class CustomItemListView
                         .Policy(PolicyType.Never, PolicyType.Automatic)
                         .Child(ListView
                             .New(selectionModel!, itemFactory!)
-                            .SideEffect(w => StyleContext
-                                .AddProviderForDisplay(Display.GetDefault(),
-                                    CssProvider.New()
-                                        .FromResource("listviewstyle"), StyleProviderPriority.Application))
-                            .AddController(EventControllerKey
-                                .New()
-                                .OnKeyPressed((k, Kc, m) =>
-                                {
-                                    if ((m & KeyModifiers.Control) == KeyModifiers.Control)
-                                    {
-                                        if (Kc == 115)
-                                            return true;
-                                        else
-                                            return false;
-                                    }
-                                    else if (Kc == 118)
-                                    {
-                                        var pos = selectionModel!.GetSelected();
-                                        selectionModel!.SetSelected(pos + 1);
-                                        return true;
-                                    }
-                                    else
-                                        return false;
-                                }))))
+                            // .SideEffect(w => StyleContext
+                            //     .AddProviderForDisplay(Display.GetDefault(),
+                            //         CssProvider.New()
+                            //             .FromResource("listviewstyle"), StyleProviderPriority.Application))
+                            // .AddController(EventControllerKey
+                            //     .New()
+                            //     .OnKeyPressed((k, Kc, m) =>
+                            //     {
+                            //         if ((m & KeyModifiers.Control) == KeyModifiers.Control)
+                            //         {
+                            //             if (Kc == 115)
+                            //                 return true;
+                            //             else
+                            //                 return false;
+                            //         }
+                            //         else if (Kc == 118)
+                            //         {
+                            //             var pos = selectionModel!.GetSelected();
+                            //             selectionModel!.SetSelected(pos + 1);
+                            //             return true;
+                            //         }
+                            //         else
+                            //             return false;
+                            //     }))
+                            ))
                     .Show())
             .Run(0, IntPtr.Zero);
     }
@@ -72,6 +77,7 @@ static class CustomItemListView
     {
         var label = listItem.GetChild<LabelHandle>();
         var oh = listItem.GetItem<GObjectHandle>();
+        oh.IsFloating = true;
         var item = oh.GetInstance() as GContact;
         label.Set(item?.Contact?.Name);
     }
@@ -90,7 +96,8 @@ class GContact(nint obj) : SubClassInst<GObjectHandle>(obj)
 
     public static GContact New(Contact contact)
     {
-        var handle = GObject.New<GObjectHandle>(GType);
+        using var handle = GObject.New<GObjectHandle>(GType);
+        handle.IsFloating = true;
         var res = handle.GetInstance() as GContact;
         if (res != null)
             res.Contact = contact;
@@ -100,7 +107,7 @@ class GContact(nint obj) : SubClassInst<GObjectHandle>(obj)
 
     protected override GObjectHandle CreateHandle(nint obj) => new(obj);
 
-    protected override void OnFinalize() => Console.WriteLine("Contact finalized");
+    //protected override void OnFinalize() => Console.WriteLine("Contact finalized");
 }
 /*
 public static class THandleExtensions

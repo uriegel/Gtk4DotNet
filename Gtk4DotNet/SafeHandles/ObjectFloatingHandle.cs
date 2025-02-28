@@ -1,16 +1,8 @@
-using CsTools.Extensions;
-
 namespace GtkDotNet.SafeHandles;
 
 public abstract class ObjectFloatingHandle : ObjectHandle
 {
-    public ObjectFloatingHandle() : base() {}
+    public ObjectFloatingHandle() : base() => IsFloating = true;
 
-    internal void RefSink() => floating = false;
-
-    protected override bool ReleaseHandle() => 
-        floating 
-        || true.SideEffect(_ => GObject.Unref(handle));
-
-    bool floating = true;
+    internal void RefSink() => IsFloating = false;
 }
