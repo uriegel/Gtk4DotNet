@@ -66,12 +66,15 @@ WriteLine($"Return value: {ReadLine() switch
     _ => 0
 }}");
 
-// TODO gtk_list_view_scroll_to for Ins
-// TODO ColumnView
 // TODO Selected Item with red Border
 // TODO Dark theme, light theme: https://github.com/jbenner-radham/rust-gtk4-css-styling
 // TODO NoSelection, MultiSelection
 // TODO Handles implement Interfaces which are partial implemented
+// TODO Sorter
+// TODO Filter
+
+// TODO ColumnView: https://discourse.gnome.org/t/tips-to-initialize-gtk4s-columnview-python/19028
+// https://toshiocp.github.io/Gtk4-tutorial/sec32.html
 
 // TODO ObjectFloatingWin remove, set as child swt floating in ObjectHandle
 

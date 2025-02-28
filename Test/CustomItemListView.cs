@@ -40,7 +40,8 @@ static class CustomItemListView
                         .Policy(PolicyType.Never, PolicyType.Automatic)
                         .Child(ListView
                             .New(selectionModel!, itemFactory!)
-                            .SideEffect(w => StyleContext
+                            .Ref(listViewRef)
+                            .SideEffect(_ => StyleContext
                                 .AddProviderForDisplay(Display.GetDefault(),
                                     CssProvider.New()
                                         .FromResource("listviewstyle"), StyleProviderPriority.Application))
@@ -58,7 +59,7 @@ static class CustomItemListView
                                                 else if (Kc == 118)
                                                 {
                                                     var pos = selectionModel!.GetSelected();
-                                                    selectionModel!.SetSelected(pos + 1);
+                                                    listViewRef?.Ref.ScrollTo(pos + 1, ListScrollFlags.ScrollFocus | ListScrollFlags.ScrollSelect, 0);
                                                     return true;
                                                 }
                                                 else
@@ -68,6 +69,7 @@ static class CustomItemListView
             .Run(0, IntPtr.Zero);
     }
 
+    static readonly ObjectRef<ListViewHandle> listViewRef = new();
     static SignalListItemFactoryHandle? itemFactory;
     static SingleSelectionHandle? selectionModel; 
     static void OnListItemSetup(ListItemHandle listItem) => listItem.SetChild(Label.New(""));
