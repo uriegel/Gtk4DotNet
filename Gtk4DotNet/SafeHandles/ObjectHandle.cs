@@ -10,17 +10,6 @@ public abstract class ObjectHandle : BaseHandle
     public bool IsFloating { get; set; }
 
     protected override bool ReleaseHandle()
-    // => IsFloating
-    //     || true.SideEffectIf(!IsFloating, _ => GObject.Unref(handle));
-
-    {
-        if (!IsFloating)
-        {
-            Console.WriteLine($"Mache was kauptt!!! {this.GetType()}");
-            GObject.Unref(handle);
-        }
-
-        return true;
-            }
-
+        => IsFloating
+            || true.SideEffectIf(!IsFloating, _ => GObject.Unref(handle));
 }

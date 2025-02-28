@@ -79,7 +79,7 @@ public static class Widget
 
     public static THandle AddController<THandle>(this THandle widget, EventControllerHandle eventController)
         where THandle : WidgetHandle
-        => widget.SideEffect(w => w._AddController(eventController));
+        => widget.SideEffect(w => w._AddController(eventController.SideEffect(n => n.IsFloating = true)));
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_destroy", CallingConvention = CallingConvention.Cdecl)]
     public extern static void Destroy(this WidgetHandle widget);

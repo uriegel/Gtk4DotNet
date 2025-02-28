@@ -40,31 +40,30 @@ static class CustomItemListView
                         .Policy(PolicyType.Never, PolicyType.Automatic)
                         .Child(ListView
                             .New(selectionModel!, itemFactory!)
-                            // .SideEffect(w => StyleContext
-                            //     .AddProviderForDisplay(Display.GetDefault(),
-                            //         CssProvider.New()
-                            //             .FromResource("listviewstyle"), StyleProviderPriority.Application))
-                            // .AddController(EventControllerKey
-                            //     .New()
-                            //     .OnKeyPressed((k, Kc, m) =>
-                            //     {
-                            //         if ((m & KeyModifiers.Control) == KeyModifiers.Control)
-                            //         {
-                            //             if (Kc == 115)
-                            //                 return true;
-                            //             else
-                            //                 return false;
-                            //         }
-                            //         else if (Kc == 118)
-                            //         {
-                            //             var pos = selectionModel!.GetSelected();
-                            //             selectionModel!.SetSelected(pos + 1);
-                            //             return true;
-                            //         }
-                            //         else
-                            //             return false;
-                            //     }))
-                            ))
+                            .SideEffect(w => StyleContext
+                                .AddProviderForDisplay(Display.GetDefault(),
+                                    CssProvider.New()
+                                        .FromResource("listviewstyle"), StyleProviderPriority.Application))
+                                        .AddController(EventControllerKey
+                                            .New()
+                                            .OnKeyPressed((k, Kc, m) =>
+                                            {
+                                                if ((m & KeyModifiers.Control) == KeyModifiers.Control)
+                                                {
+                                                    if (Kc == 115)
+                                                        return true;
+                                                    else
+                                                        return false;
+                                                }
+                                                else if (Kc == 118)
+                                                {
+                                                    var pos = selectionModel!.GetSelected();
+                                                    selectionModel!.SetSelected(pos + 1);
+                                                    return true;
+                                                }
+                                                else
+                                                    return false;
+                                            }))))
                     .Show())
             .Run(0, IntPtr.Zero);
     }
@@ -107,7 +106,7 @@ class GContact(nint obj) : SubClassInst<GObjectHandle>(obj)
 
     protected override GObjectHandle CreateHandle(nint obj) => new(obj);
 
-    //protected override void OnFinalize() => Console.WriteLine("Contact finalized");
+    protected override void OnFinalize() => Console.WriteLine("Contact finalized");
 }
 /*
 public static class THandleExtensions
