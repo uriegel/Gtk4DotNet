@@ -8,10 +8,9 @@ static class StringListView
     public static int Run()
     {
         var model = StringList.New(
-                        Enumerable
-                            .Range(1, 100_000)
-                            .Select(n => $"Item no {n}")
-                            .ToArray());
+                        [.. Enumerable
+                            .Range(1, 1_000_000)
+                            .Select(n => $"Item no {n}")]);
         var itemFactory = SignalListItemFactory
             .New()
             .Setup(OnListItemSetup)
@@ -29,31 +28,7 @@ static class StringListView
                         .New()
                         .Policy(PolicyType.Never, PolicyType.Automatic)
                         .Child(ListView
-                            .New(selectionModel, itemFactory)
-                            .SideEffect(w => StyleContext
-                                .AddProviderForDisplay(Display.GetDefault(), 
-                                    CssProvider.New()
-                                        .FromResource("listviewstyle"), StyleProviderPriority.Application))                            
-                            .AddController(EventControllerKey
-                                .New()
-                                .OnKeyPressed((k, Kc, m) =>
-                                {
-                                    if ((m & KeyModifiers.Control) == KeyModifiers.Control)
-                                    {
-                                        if (Kc == 115)
-                                            return true;
-                                        else
-                                            return false;
-                                    }
-                                    else if (Kc == 118)
-                                    {
-                                        var pos = selectionModel.GetSelected();
-                                        selectionModel.SetSelected(pos+1);
-                                        return true;
-                                    }
-                                    else
-                                        return false;
-                                }))))
+                            .New(selectionModel, itemFactory)))
                     .Show())
             .Run(0, IntPtr.Zero);
     }

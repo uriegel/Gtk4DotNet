@@ -22,14 +22,15 @@ WriteLine(
     17: Cleanup
     18: Non GTK
     19: ListView (String List)
-    20: Example 1
-    21: Example 2
-    22: Example 3
-    23: Example 4
-    24: Example 5
-    25: Example 6
-    26: Example 7
-    27: Example 8
+    20: ListView (Custom Objects)
+    21: Example 1
+    22: Example 2
+    23: Example 3
+    24: Example 4
+    25: Example 5
+    26: Example 6
+    27: Example 7
+    28: Example 8
     <any>: Quit
     """);
 WriteLine($"Return value: {ReadLine() switch 
@@ -53,18 +54,25 @@ WriteLine($"Return value: {ReadLine() switch
     "17" => Cleanup.Run(),
     "18" => NonGtkApp.Run(),
     "19" => StringListView.Run(),
-    "20" => Example1.Run(),
-    "21" => Example2.Run(),
-    "22" => Example3.Run(),
-    "23" => Example4.Run(),
-    "24" => Example5.Run(),
-    "25" => Example6.Run(),
-    "26" => Example7.Run(),
-    "27" => Example8.Run(),
+    "20" => CustomItemListView.Run(),
+    "21" => Example1.Run(),
+    "22" => Example2.Run(),
+    "23" => Example3.Run(),
+    "24" => Example4.Run(),
+    "25" => Example5.Run(),
+    "26" => Example6.Run(),
+    "27" => Example7.Run(),
+    "28" => Example8.Run(),
     _ => 0
 }}");
 
+// TODO Custom List Items not finalized
 // TODO gtk_list_view_scroll_to for Ins
-// TODO CustomObject as listitemmodel
+// TODO NoSelection, MultiSelection
 // TODO Perhaps Unref ApplicationWindow
 // TODO ObjectFloatingWin remove, set as child swt floating in ObjectHandle
+// TODO Handles implement Interfaces which are partial implemented
+
+// TODO Subclassing with attributes??
+
+// TODO Dark theme, light theme: https://github.com/jbenner-radham/rust-gtk4-css-styling

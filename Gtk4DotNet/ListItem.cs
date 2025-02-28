@@ -6,7 +6,7 @@ namespace GtkDotNet;
 public static class ListItem
 {
     public static THandle GetItem<THandle>(this ListItemHandle listItem)
-        where THandle : ObjectFloatingHandle, new()
+        where THandle : ObjectHandle, new()
     {
         var res = new THandle();
         res.SetInternalHandle(_GetItem(listItem));
