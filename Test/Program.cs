@@ -66,10 +66,9 @@ WriteLine($"Return value: {ReadLine() switch
     _ => 0
 }}");
 
-// TODO Custom List Items not finalized
+// TODO ListStore splice with unref
 // TODO gtk_list_view_scroll_to for Ins
 // TODO NoSelection, MultiSelection
-// TODO Perhaps Unref ApplicationWindow
 // TODO ObjectFloatingWin remove, set as child swt floating in ObjectHandle
 // TODO Handles implement Interfaces which are partial implemented
 
