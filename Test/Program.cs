@@ -23,14 +23,15 @@ WriteLine(
     18: Non GTK
     19: ListView (String List)
     20: ListView (Custom Objects)
-    21: Example 1
-    22: Example 2
-    23: Example 3
-    24: Example 4
-    25: Example 5
-    26: Example 6
-    27: Example 7
-    28: Example 8
+    21: ColumnView
+    22: Example 1
+    23: Example 2
+    24: Example 3
+    25: Example 4
+    26: Example 5
+    27: Example 6
+    28: Example 7
+    29: Example 8
     <any>: Quit
     """);
 WriteLine($"Return value: {ReadLine() switch 
@@ -55,14 +56,15 @@ WriteLine($"Return value: {ReadLine() switch
     "18" => NonGtkApp.Run(),
     "19" => StringListView.Run(),
     "20" => CustomItemListView.Run(),
-    "21" => Example1.Run(),
-    "22" => Example2.Run(),
-    "23" => Example3.Run(),
-    "24" => Example4.Run(),
-    "25" => Example5.Run(),
-    "26" => Example6.Run(),
-    "27" => Example7.Run(),
-    "28" => Example8.Run(),
+    "21" => ColumnViewApp.Run(),
+    "22" => Example1.Run(),
+    "23" => Example2.Run(),
+    "24" => Example3.Run(),
+    "25" => Example4.Run(),
+    "26" => Example5.Run(),
+    "27" => Example6.Run(),
+    "28" => Example7.Run(),
+    "29" => Example8.Run(),
     _ => 0
 }}");
 
