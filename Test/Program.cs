@@ -68,6 +68,9 @@ WriteLine($"Return value: {ReadLine() switch
     _ => 0
 }}");
 
+// TODO ShortcutController
+// TODO two Column Views
+// TODO style columns
 // TODO Selected Item with red Border
 // TODO Dark theme, light theme: https://github.com/jbenner-radham/rust-gtk4-css-styling
 // TODO NoSelection, MultiSelection

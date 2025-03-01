@@ -49,27 +49,21 @@ static class ColumnViewApp
                                 .AddProviderForDisplay(Display.GetDefault(),
                                     CssProvider.New()
                                         .FromResource("listviewstyle"), StyleProviderPriority.Application))
-                                        .AddController(EventControllerKey
-                                            .New()
-                                            .OnKeyPressed((k, Kc, m) =>
-                                            {
-                                                if ((m & KeyModifiers.Control) == KeyModifiers.Shift)
-                                                {
-                                                    if (Kc == 115)
-                                                        return true;
-                                                    else
-                                                        return false;
-                                                }
-                                                else if (Kc == 118)
-                                                {
-                                                    var pos = selectionModel!.GetSelected();
-                                                    listViewRef?.Ref.ScrollTo(pos + 1, 0, ListScrollFlags.ScrollFocus | ListScrollFlags.ScrollSelect, 0);
-                                                    return true;
-                                                }
-                                                else
-                                                    return false;
-                                            }))))
+                            .AddController(EventControllerKey
+                                .New()
+                                .OnKeyPressed((k, kc, m) =>
+                                {
+                                    if (kc == 118)
+                                    {
+                                        var pos = selectionModel!.GetSelected();
+                                        listViewRef?.Ref.ScrollTo(pos + 1, 0, ListScrollFlags.ScrollFocus | ListScrollFlags.ScrollSelect, 0);
+                                        return true;
+                                    }
+                                    else
+                                        return false;
+                                }))))
                     .Show())
+            .AddActions([new GtkAction("selend", () => Console.WriteLine("Selection till end"), "<Shift>End")])                    
             .Run(0, IntPtr.Zero);
     }
 

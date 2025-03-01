@@ -20,6 +20,7 @@ delegate void TwoLongAndPtrCallback(long current, long total, IntPtr zero);
 delegate bool BoolRetDelegate();
 delegate bool OnePointerBoolRetDelegate(IntPtr p);
 delegate bool TwoPointerBoolRetDelegate(IntPtr p, IntPtr pp);
+delegate bool ThreePointerBoolRetDelegate(IntPtr p, IntPtr pp, IntPtr ppp);
 delegate void PointerBoolDelegate(nint _, bool b);
 delegate void PointerIntDelegate(nint _, int i);
 
