@@ -28,11 +28,11 @@ static class TestApp
                 .Bind(OnEMailBind);
 
             selectionModel1 = SingleSelection.New(model1);
-            selectionModel2 = MultiSelection.New(model2);
+            selectionModel2 = MultiSelection.New(SortListModel.New(model2, sorter));
         }
 
         return Application
-            .New("de.uriegel.first")
+            .NewAdwaita("de.uriegel.first")
                 .OnActivate(app =>
                     app
                         .SubClass(new GContactClass(GTypeEnum.GObject, "Contact", p => new GContact(p)))
@@ -54,10 +54,18 @@ static class TestApp
                                     .Policy(PolicyType.Never, PolicyType.Automatic)
                                     .Child(ColumnView
                                         .New(selectionModel2!)
-                                        .AppendColumn(ColumnViewColumn.New("Name", itemNameFactory!))
+                                        .AppendColumn(ColumnViewColumn.New("Name", itemNameFactory!)
+                                            .SetSorter(sorter))
                                         .AppendColumn(ColumnViewColumn.New("E mail", itemEMailFactory!))), true, true))
                             .Show())
                 .Run(0, IntPtr.Zero);
+    }
+
+    static int NameCompare(GObjectHandle data1, GObjectHandle data2)
+    {
+        var c1 = data1.GetInstance() as GContact;
+        var c2 = data2.GetInstance() as GContact;
+        return - string.Compare(c1?.Contact?.Name, c2?.Contact?.Name);
     }
 
     static void OnListItemSetup(ListItemHandle listItem) => listItem.SetChild(Label.New(""));
@@ -72,10 +80,12 @@ static class TestApp
     }
 
     static readonly ObjectRef<ColumnViewHandle> listViewRef = new();
+
+    static CustomSorterHandle sorter = CustomSorter.New<GObjectHandle>(NameCompare);
     static SignalListItemFactoryHandle? itemNameFactory;
     static SignalListItemFactoryHandle? itemEMailFactory;
     static SingleSelectionHandle? selectionModel1; 
-    static MultiSelectionHandle? selectionModel2; 
+    static IListModel? selectionModel2; 
 
     static void OnEMailBind(ListItemHandle listItem)
     {

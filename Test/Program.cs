@@ -70,13 +70,8 @@ WriteLine($"Return value: {ReadLine() switch
     _ => 0
 }}");
 
-// TODO Sorter 
-// GtkCustomSorter*
-// gtk_custom_sorter_new (
-//   GCompareDataFunc sort_func,
-//   gpointer user_data,
-//   GDestroyNotify user_destroy
-// )
+// TODO Sorter, but header click does not trigger sorting
+//  g_signal_connect(column.Handle, "notify::sorter", sorterChangedHandler, IntPtr.Zero, IntPtr.Zero, 0);
 // TODO Filter
 // GtkCustomFilter*
 // gtk_custom_filter_new (
