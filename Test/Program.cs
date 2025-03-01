@@ -32,6 +32,7 @@ WriteLine(
     27: Example 6
     28: Example 7
     29: Example 8
+    30: Test
     <any>: Quit
     """);
 WriteLine($"Return value: {ReadLine() switch 
@@ -65,17 +66,17 @@ WriteLine($"Return value: {ReadLine() switch
     "27" => Example6.Run(),
     "28" => Example7.Run(),
     "29" => Example8.Run(),
+    "30" => TestApp.Run(),
     _ => 0
 }}");
 
-// TODO ShortcutController
-// TODO two Column Views
-// TODO style columns
-// TODO Selected Item with red Border
-// TODO Dark theme, light theme: https://github.com/jbenner-radham/rust-gtk4-css-styling
 // TODO NoSelection, MultiSelection
 // TODO Sorter
 // TODO Filter
+
+// TODO style columns
+// TODO Selected Item with red Border
+// TODO Dark theme, light theme: https://github.com/jbenner-radham/rust-gtk4-css-styling
 
 // TODO ColumnView: https://discourse.gnome.org/t/tips-to-initialize-gtk4s-columnview-python/19028
 // https://toshiocp.github.io/Gtk4-tutorial/sec32.html
