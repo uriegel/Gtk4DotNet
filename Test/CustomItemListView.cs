@@ -12,10 +12,10 @@ static class CustomItemListView
         {
             var model = ListStore
                             .New(GContact.GType)
-                            .Append(GContact.New(new("Uwe Riegel", "uriegel@hotmail.de")))
-                            .Append(GContact.New(new("Jim Doe", "jdoe@hotmail.de")))
-                            .Append(GContact.New(new("Jane Doe", "jadoe@hotmail.de")))
-                            .Splice(3, [.. Enumerable.Range(1, 10_000_000).Select(n => GContact.New(new($"Item no {n}", "uriegel@hotmail.de")).Handle)]);
+                            .Append(GContact.New(new("Uwe Riegel", "uriegel@hotmail.de", 1965)))
+                            .Append(GContact.New(new("Jim Doe", "jdoe@hotmail.de", 888)))
+                            .Append(GContact.New(new("Jane Doe", "jadoe@hotmail.de", 87)))
+                            .Splice(3, [.. Enumerable.Range(1, 10_000_000).Select(n => GContact.New(new($"Item no {n}", "uriegel@hotmail.de", n)).Handle)]);
             itemFactory = SignalListItemFactory
                 .New()
                 .Setup(OnListItemSetup)
@@ -84,7 +84,7 @@ static class CustomItemListView
     }
 }
 
-record Contact(string Name, string EMail);
+record Contact(string Name, string EMail, int Number);
 
 class GContactClass(GTypeEnum parent, string name, Func<nint, GContact> constructor)
     : SubClass<GObjectHandle>(parent, name, constructor)

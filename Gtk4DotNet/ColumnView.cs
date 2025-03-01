@@ -8,9 +8,17 @@ public static class ColumnView
 {
     public static ColumnViewHandle New(IListModel selectionModel)
         => New(selectionModel.GetInternalHandle());
+    public static ColumnViewHandle New()
+        => New(0);
+
+    public static ColumnViewHandle SetModel(this ColumnViewHandle columnView, IListModel selectionModel)
+        => columnView.SideEffect(c => c.SetModel(selectionModel.GetInternalHandle()));
 
     public static ColumnViewHandle AppendColumn(this ColumnViewHandle columnView, ColumnViewColumnHandle column)
         => columnView.SideEffect(c => c._AppendColumn(column));
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_get_sorter", CallingConvention = CallingConvention.Cdecl)]
+    public extern static CustomSorterHandle GetSorter(this ColumnViewHandle columnView);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_scroll_to", CallingConvention = CallingConvention.Cdecl)]
     public extern static void ScrollTo(this ColumnViewHandle columnView, uint pos, nint nil, ListScrollFlags flags, nint nil2);
@@ -23,5 +31,8 @@ public static class ColumnView
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_append_column", CallingConvention = CallingConvention.Cdecl)]
     extern static void _AppendColumn(this ColumnViewHandle columnView, ColumnViewColumnHandle column);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_set_model", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetModel(this ColumnViewHandle columnView, nint selectionModel);
 }
 

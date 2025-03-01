@@ -12,10 +12,10 @@ static class ColumnViewApp
         {
             var model = ListStore
                             .New(GContact.GType)
-                            .Append(GContact.New(new("Uwe Riegel", "uriegel@hotmail.de")))
-                            .Append(GContact.New(new("Jim Doe", "jdoe@hotmail.de")))
-                            .Append(GContact.New(new("Jane Doe", "jadoe@hotmail.de")))
-                            .Splice(3, [.. Enumerable.Range(1, 1000).Select(n => GContact.New(new($"Item no {n}", $"person{n}@hotmail.de")).Handle)]);
+                            .Append(GContact.New(new("Uwe Riegel", "uriegel@hotmail.de", 1965)))
+                            .Append(GContact.New(new("Jim Doe", "jdoe@hotmail.de", 222)))
+                            .Append(GContact.New(new("Jane Doe", "jadoe@hotmail.de", 9999)))
+                            .Splice(3, [.. Enumerable.Range(1, 1000).Select(n => GContact.New(new($"Item no {n}", $"person{n}@hotmail.de", n)).Handle)]);
             itemNameFactory = SignalListItemFactory
                 .New()
                 .Setup(OnListItemSetup)
