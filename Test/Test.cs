@@ -28,7 +28,7 @@ static class TestApp
                 .Bind(OnEMailBind);
 
             selectionModel1 = SingleSelection.New(model1);
-            selectionModel2 = SingleSelection.New(model2);
+            selectionModel2 = MultiSelection.New(model2);
         }
 
         return Application
@@ -39,7 +39,7 @@ static class TestApp
                         .SideEffect(InitStore)
                         .NewWindow()
                             .Title("Hello Gtk👍")
-                            .DefaultSize(600, 200)
+                            .DefaultSize(600, 800)
                             .Child(Paned
                                 .New(Orientation.Horizontal)
                                 .StartChild(ScrolledWindow
@@ -75,7 +75,7 @@ static class TestApp
     static SignalListItemFactoryHandle? itemNameFactory;
     static SignalListItemFactoryHandle? itemEMailFactory;
     static SingleSelectionHandle? selectionModel1; 
-    static SingleSelectionHandle? selectionModel2; 
+    static MultiSelectionHandle? selectionModel2; 
 
     static void OnEMailBind(ListItemHandle listItem)
     {

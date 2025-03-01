@@ -70,11 +70,23 @@ WriteLine($"Return value: {ReadLine() switch
     _ => 0
 }}");
 
-// TODO NoSelection, MultiSelection
-// TODO Sorter
+// TODO Sorter 
+// GtkCustomSorter*
+// gtk_custom_sorter_new (
+//   GCompareDataFunc sort_func,
+//   gpointer user_data,
+//   GDestroyNotify user_destroy
+// )
 // TODO Filter
+// GtkCustomFilter*
+// gtk_custom_filter_new (
+//   GtkCustomFilterFunc match_func,
+//   gpointer user_data,
+//   GDestroyNotify user_destroy
+// )
 
-// TODO style columns
+// TODO style columns, fill, left right
+
 // TODO Selected Item with red Border
 // TODO Dark theme, light theme: https://github.com/jbenner-radham/rust-gtk4-css-styling
 

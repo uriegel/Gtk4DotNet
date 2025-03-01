@@ -1,6 +1,6 @@
 namespace GtkDotNet.SafeHandles;
 
-public class SingleSelectionHandle : ObjectFloatingHandle
+public class SingleSelectionHandle : ObjectFloatingHandle, IListModel
 {
     public SingleSelectionHandle() : base() {}
 }

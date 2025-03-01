@@ -6,8 +6,8 @@ namespace GtkDotNet;
 
 public static class ColumnView
 {
-    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_new", CallingConvention = CallingConvention.Cdecl)]
-    public extern static ColumnViewHandle New(SingleSelectionHandle selectionModel);
+    public static ColumnViewHandle New(IListModel selectionModel)
+        => New(selectionModel.GetInternalHandle());
 
     public static ColumnViewHandle AppendColumn(this ColumnViewHandle columnView, ColumnViewColumnHandle column)
         => columnView.SideEffect(c => c._AppendColumn(column));
@@ -17,6 +17,9 @@ public static class ColumnView
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_get_type", CallingConvention = CallingConvention.Cdecl)]
     public static extern GTypeHandle Type();
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_new", CallingConvention = CallingConvention.Cdecl)]
+    extern static ColumnViewHandle New(nint selectionModel);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_append_column", CallingConvention = CallingConvention.Cdecl)]
     extern static void _AppendColumn(this ColumnViewHandle columnView, ColumnViewColumnHandle column);

@@ -1,6 +1,5 @@
 using System.Runtime.InteropServices;
 using GtkDotNet.SafeHandles;
-using Microsoft.VisualBasic;
 
 namespace GtkDotNet;
 
