@@ -62,8 +62,11 @@ public static class Widget
     
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_visible", CallingConvention = CallingConvention.Cdecl)]
     public extern static bool GetVisible(this WidgetHandle widget);
-
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_width", CallingConvention = CallingConvention.Cdecl)]
+    
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_root", CallingConvention = CallingConvention.Cdecl)]
+    public extern static WidgetHandle GetRoot(this WidgetHandle widget);
+    
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_width", CallingConvention = CallingConvention.Cdecl)]
     public extern static int GetWidth(this WidgetHandle widget);
     
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_height", CallingConvention = CallingConvention.Cdecl)]
