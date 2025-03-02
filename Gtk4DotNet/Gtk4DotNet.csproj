@@ -5,9 +5,9 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<Version>7.0.6-beta-6</Version>
-	<FileVersion>7.0.6.0</FileVersion>
-	<AssemblyVersion>7.0.6.0</AssemblyVersion>
+	<Version>7.0.7-beta-7</Version>
+	<FileVersion>7.0.7.0</FileVersion>
+	<AssemblyVersion>7.0.7.0</AssemblyVersion>
 	<AssemblyName>Gtk4DotNet</AssemblyName>
 	<Authors>Uwe Riegel</Authors>
 	<Company>Uwe Riegel</Company>		
@@ -17,7 +17,7 @@
 	<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 	<PackageLicenseFile>LICENSE</PackageLicenseFile>
 	<PackageTags>DotNet;.NET;C#;CSharp;Gtk4;Gtk;Linux;P/Invoke</PackageTags>
-	<PackageReleaseNotes>Subclassing for GTK4 objects</PackageReleaseNotes>
+	<PackageReleaseNotes>ListView, ColumnView</PackageReleaseNotes>
 	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
