@@ -3,7 +3,7 @@ using GtkDotNet;
 using GtkDotNet.SafeHandles;
 using GtkDotNet.SubClassing;
 
-static class TestApp
+static class TwoColumnViews
 {
     public static int Run()
     {
@@ -47,7 +47,7 @@ static class TestApp
                                     .Label("Filter")
                                     .OnToggled(FilterToggled)))
                             .Title("Hello Gtk👍")
-                            .DefaultSize(0, 800)
+                            .DefaultSize(800, 800)
                             .Child(Paned
                                 .New(Orientation.Horizontal)
                                 .StartChild(ScrolledWindow
@@ -55,7 +55,7 @@ static class TestApp
                                     .Policy(PolicyType.Never, PolicyType.Automatic)
                                     .Child(ColumnView
                                         .New(selectionModel1!)
-                                        .AppendColumn(ColumnViewColumn.New("Name", itemNameFactory!))
+                                        .AppendColumn(ColumnViewColumn.New("Name", itemNameFactory!).Expand())
                                         .AppendColumn(ColumnViewColumn.New("E mail", itemEMailFactory!))), true, true)
 
                                 .EndChild(ScrolledWindow
@@ -64,9 +64,13 @@ static class TestApp
                                     .Child(ColumnView
                                         .New()
                                         .AppendColumn(ColumnViewColumn.New("Name", itemNameFactory!)
+                                            .Expand()
+                                            .Resizeable()
                                             .SetSorter(sorter))
-                                        .AppendColumn(ColumnViewColumn.New("E mail", itemEMailFactory!))
+                                        .AppendColumn(ColumnViewColumn.New("E mail", itemEMailFactory!)
+                                            .Resizeable())
                                         .AppendColumn(ColumnViewColumn.New("Number", itemNumberFactory!)
+                                            .Resizeable()
                                             .SetSorter(numberSorter))
                                         .SideEffect(cv =>
                                             {
@@ -111,7 +115,7 @@ static class TestApp
             return true;
     }
     
-    static void OnListItemSetup(ListItemHandle listItem) => listItem.SetChild(Label.New(""));
+    static void OnListItemSetup(ListItemHandle listItem) => listItem.SetChild(Label.New("").HAlign(Align.Start));
 
     static void OnListItemBind(ListItemHandle listItem)
     {

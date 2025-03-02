@@ -24,15 +24,15 @@ WriteLine(
     19: ListView (String List)
     20: ListView (Custom Objects)
     21: ColumnView
-    22: Example 1
-    23: Example 2
-    24: Example 3
-    25: Example 4
-    26: Example 5
-    27: Example 6
-    28: Example 7
-    29: Example 8
-    30: Test
+    22: 2 ColumnView 
+    23: Example 1
+    24: Example 2
+    25: Example 3
+    26  Example 4
+    27: Example 5
+    28: Example 6
+    29: Example 7
+    30: Example 8
     <any>: Quit
     """);
 WriteLine($"Return value: {ReadLine() switch 
@@ -58,19 +58,17 @@ WriteLine($"Return value: {ReadLine() switch
     "19" => StringListView.Run(),
     "20" => CustomItemListView.Run(),
     "21" => ColumnViewApp.Run(),
-    "22" => Example1.Run(),
-    "23" => Example2.Run(),
-    "24" => Example3.Run(),
-    "25" => Example4.Run(),
-    "26" => Example5.Run(),
-    "27" => Example6.Run(),
-    "28" => Example7.Run(),
-    "29" => Example8.Run(),
-    "30" => TestApp.Run(),
+    "22" => TwoColumnViews.Run(),
+    "23" => Example1.Run(),
+    "24" => Example2.Run(),
+    "25" => Example3.Run(),
+    "26" => Example4.Run(),
+    "27" => Example5.Run(),
+    "28" => Example6.Run(),
+    "29" => Example7.Run(),
+    "30" => Example8.Run(),
     _ => 0
 }}");
-
-// TODO style columns, fill, left right
 
 // TODO Selected Item with red Border
 // TODO Dark theme, light theme: https://github.com/jbenner-radham/rust-gtk4-css-styling
