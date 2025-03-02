@@ -41,6 +41,11 @@ static class TestApp
                         .SubClass(new GContactClass(GTypeEnum.GObject, "Contact", p => new GContact(p)))
                         .SideEffect(InitStore)
                         .NewWindow()
+                            .Titlebar(HeaderBar
+                                .New()
+                                .PackEnd(ToggleButton.New()
+                                    .Label("Filter")
+                                    .OnToggled(FilterToggled)))
                             .Title("Hello Gtk👍")
                             .DefaultSize(0, 800)
                             .Child(Paned
@@ -66,7 +71,7 @@ static class TestApp
                                         .SideEffect(cv =>
                                             {
                                                 var sorter = cv.GetSorter();
-                                                var model = MultiSelection.New(SortListModel.New(model2!, sorter));
+                                                var model = MultiSelection.New(SortListModel.New(FilterListModel.New(model2!, filter), sorter));
                                                 cv.SetModel(model);
                                             })
                                         ), true, true))
@@ -87,6 +92,24 @@ static class TestApp
         var c2 = data2.GetInstance() as GContact;
         return (c1?.Contact?.Number ?? 0) > (c2?.Contact?.Number ?? 0) ? 1 : -1;
     }
+
+    static void FilterToggled(ToggleButtonHandle toggleButton)
+    {
+        isFiltering = toggleButton.Active();
+        filter.Changed(isFiltering ? FilterChange.MoreStrict : FilterChange.LessStrict);
+    }
+
+    static bool isFiltering;
+    static bool FilterContact(GObjectHandle data)
+    {
+        if (isFiltering)
+        {
+            var c = data.GetInstance() as GContact;
+            return c?.Contact?.Number > 1000;
+        }
+        else
+            return true;
+    }
     
     static void OnListItemSetup(ListItemHandle listItem) => listItem.SetChild(Label.New(""));
 
@@ -103,6 +126,7 @@ static class TestApp
 
     static ListModelHandle? model2;
     static CustomSorterHandle sorter = CustomSorter.New<GObjectHandle>(NameCompare);
+    static CustomFilterHandle filter = CustomFilter.New<GObjectHandle>(FilterContact);
     static CustomSorterHandle numberSorter = CustomSorter.New<GObjectHandle>(NumberCompare);
     static SignalListItemFactoryHandle? itemNameFactory;
     static SignalListItemFactoryHandle? itemEMailFactory;

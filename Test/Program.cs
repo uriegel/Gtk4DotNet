@@ -70,14 +70,6 @@ WriteLine($"Return value: {ReadLine() switch
     _ => 0
 }}");
 
-// TODO Filter
-// GtkCustomFilter*
-// gtk_custom_filter_new (
-//   GtkCustomFilterFunc match_func,
-//   gpointer user_data,
-//   GDestroyNotify user_destroy
-// )
-
 // TODO style columns, fill, left right
 
 // TODO Selected Item with red Border

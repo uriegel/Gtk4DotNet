@@ -18,6 +18,7 @@ public static class CustomSorter
             data2.IsFloating = true;
             return compareFunc(data1, data2);
         }
+        // TODO addweakref
         CompareDataDelegate compareDataDelegate = RawCompare;
         GtkDelegates.Add(compareDataDelegate);
         return New(compareDataDelegate, 0, 0);

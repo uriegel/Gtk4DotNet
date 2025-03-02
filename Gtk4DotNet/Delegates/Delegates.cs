@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using CsTools.Extensions;
 using GtkDotNet;
-using GtkDotNet.SafeHandles;
 
 public delegate void ProgressCallback(long current, long total);
 public delegate void CustomSchemeRequestDelegate(nint request);

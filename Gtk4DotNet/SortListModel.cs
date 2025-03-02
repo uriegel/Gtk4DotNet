@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices;
-using CsTools.Extensions;
 using GtkDotNet.SafeHandles;
 
 namespace GtkDotNet;
