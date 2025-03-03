@@ -26,14 +26,15 @@ public static class ColumnView
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_get_type", CallingConvention = CallingConvention.Cdecl)]
     public static extern GTypeHandle Type();
 
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_remove_column", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void RemoveColumn(this ColumnViewHandle columnView, ColumnViewColumnHandle column);
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_new", CallingConvention = CallingConvention.Cdecl)]
     extern static ColumnViewHandle New(nint selectionModel);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_append_column", CallingConvention = CallingConvention.Cdecl)]
     extern static void _AppendColumn(this ColumnViewHandle columnView, ColumnViewColumnHandle column);
 
-    // [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_append_column", CallingConvention = CallingConvention.Cdecl)]
-    // extern static void _AppendColumn(this ColumnViewHandle columnView, ColumnViewColumnHandle column);
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_set_model", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetModel(this ColumnViewHandle columnView, nint selectionModel);
 }

@@ -70,8 +70,8 @@ public abstract class SubClass<THandle>
     protected void InitTemplateFromResource(nint cls, string name)
         => cls.ClassSetTemplateFromDotNetResource(name);
 
-    static SubClassInitDelegate? initDelegate;
-    static SubClassInstanceInitDelegate? instanceInitDelegate;
+    SubClassInitDelegate? initDelegate;
+    SubClassInstanceInitDelegate? instanceInitDelegate;
     readonly Func<nint, SubClassInst<THandle>> constructor;
 }
 
