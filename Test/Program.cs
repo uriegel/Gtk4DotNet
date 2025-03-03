@@ -25,14 +25,15 @@ WriteLine(
     20: ListView (Custom Objects)
     21: ColumnView
     22: 2 ColumnView 
-    23: Example 1
-    24: Example 2
-    25: Example 3
-    26  Example 4
-    27: Example 5
-    28: Example 6
-    29: Example 7
-    30: Example 8
+    23: ColumnView changing
+    24: Example 1
+    25: Example 2
+    26: Example 3
+    27  Example 4
+    28: Example 5
+    29: Example 6
+    30: Example 7
+    31: Example 8
     <any>: Quit
     """);
 WriteLine($"Return value: {ReadLine() switch 
@@ -59,17 +60,20 @@ WriteLine($"Return value: {ReadLine() switch
     "20" => CustomItemListView.Run(),
     "21" => ColumnViewApp.Run(),
     "22" => TwoColumnViews.Run(),
-    "23" => Example1.Run(),
-    "24" => Example2.Run(),
-    "25" => Example3.Run(),
-    "26" => Example4.Run(),
-    "27" => Example5.Run(),
-    "28" => Example6.Run(),
-    "29" => Example7.Run(),
-    "30" => Example8.Run(),
+    "23" => ChangingColumnViews.Run(),
+    "24" => Example1.Run(),
+    "25" => Example2.Run(),
+    "26" => Example3.Run(),
+    "27" => Example4.Run(),
+    "28" => Example5.Run(),
+    "29" => Example6.Run(),
+    "30" => Example7.Run(),
+    "31" => Example8.Run(),
     _ => 0
 }}");
 
+// TODO Check if Models are disposed
+// TODO SubClass<GObjectHandle> => GObject<T>
 // TODO Selected Item with red Border
 // TODO Dark theme, light theme: https://github.com/jbenner-radham/rust-gtk4-css-styling
 
