@@ -17,12 +17,12 @@ static class ColumnViewApp
                             .Append(GContact.New(new("Jane Doe", "jadoe@hotmail.de", 9999)))
                             .Splice(3, [.. Enumerable.Range(1, 1000).Select(n => GContact.New(new($"Item no {n}", $"person{n}@hotmail.de", n)).Handle)])
                             .AddWeakRef(() => Console.WriteLine("model disposed"));
-            itemNameFactory = SignalListItemFactory
+            var itemNameFactory = SignalListItemFactory
                 .New()
                 .Setup(OnListItemSetup)
                 .Bind(OnListItemBind)
                 .AddWeakRef(() => Console.WriteLine("itemNameFactory disposed"));
-            itemEMailFactory = SignalListItemFactory
+            var itemEMailFactory = SignalListItemFactory
                 .New()
                 .Setup(OnListItemSetup)
                 .Bind(OnEMailBind)
@@ -92,8 +92,6 @@ static class ColumnViewApp
     static ColumnViewColumnHandle? col2;
 
     static readonly ObjectRef<ColumnViewHandle> listViewRef = new();
-    static SignalListItemFactoryHandle? itemNameFactory;
-    static SignalListItemFactoryHandle? itemEMailFactory;
     static SingleSelectionHandle? selectionModel; 
 
     static void OnEMailBind(ListItemHandle listItem)

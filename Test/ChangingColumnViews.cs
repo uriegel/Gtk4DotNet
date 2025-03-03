@@ -6,10 +6,7 @@ using GtkDotNet.SubClassing;
 static class ChangingColumnViews
 {
 
-    // TODO Subclass Button and check addweakref
-    // TODO addweakref for gtk_column_view_new
     // TODO add to selection_view
-
     // TODO remove from selection_view
 
 
@@ -22,7 +19,7 @@ static class ChangingColumnViews
                             .New(GContact.GType)
                             .Splice([.. Enumerable.Range(1, 1000).Select(n => GContact.New(new($"Left Item no {n}", $"person{n}@hotmail.de", n)).Handle)])
                             .AddWeakRef(() => Console.WriteLine("model disposed"));
-            model2 = ListStore
+            var model2 = ListStore
                             .New(GContact.GType)
                             .Append(GContact.New(new("Uwe Riegel", "uriegel@hotmail.de", 1965)))
                             .Append(GContact.New(new("Jim Doe", "jdoe@hotmail.de", 1955)))
