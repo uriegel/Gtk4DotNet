@@ -15,11 +15,13 @@ static class CustomItemListView
                             .Append(GContact.New(new("Uwe Riegel", "uriegel@hotmail.de", 1965)))
                             .Append(GContact.New(new("Jim Doe", "jdoe@hotmail.de", 888)))
                             .Append(GContact.New(new("Jane Doe", "jadoe@hotmail.de", 87)))
-                            .Splice(3, [.. Enumerable.Range(1, 10_000_000).Select(n => GContact.New(new($"Item no {n}", "uriegel@hotmail.de", n)).Handle)]);
+                            .Splice(3, [.. Enumerable.Range(1, 10_000_000).Select(n => GContact.New(new($"Item no {n}", "uriegel@hotmail.de", n)).Handle)])
+                            .AddWeakRef(() => Console.WriteLine("model disposed"));
             itemFactory = SignalListItemFactory
                 .New()
                 .Setup(OnListItemSetup)
-                .Bind(OnListItemBind);
+                .Bind(OnListItemBind)
+                .AddWeakRef(() => Console.WriteLine("Factory disposed"));
             selectionModel = SingleSelection.New(model);
 
             await Task.Delay(10000);
@@ -108,7 +110,7 @@ class GContact(nint obj) : SubClassInst<GObjectHandle>(obj)
 
     protected override GObjectHandle CreateHandle(nint obj) => new(obj);
 
-    protected override void OnFinalize() => Console.WriteLine("Contact finalized");
+    // protected override void OnFinalize() => Console.WriteLine("Contact finalized");
 }
 /*
 public static class THandleExtensions

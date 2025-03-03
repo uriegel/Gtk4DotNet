@@ -12,7 +12,7 @@ static class ChangingColumnViews
 
     // TODO remove from selection_view
 
-    
+
 
     public static int Run()
     {
@@ -20,7 +20,8 @@ static class ChangingColumnViews
         {
             var model1 = ListStore
                             .New(GContact.GType)
-                            .Splice([.. Enumerable.Range(1, 1000).Select(n => GContact.New(new($"Left Item no {n}", $"person{n}@hotmail.de", n)).Handle)]);
+                            .Splice([.. Enumerable.Range(1, 1000).Select(n => GContact.New(new($"Left Item no {n}", $"person{n}@hotmail.de", n)).Handle)])
+                            .AddWeakRef(() => Console.WriteLine("model disposed"));
             model2 = ListStore
                             .New(GContact.GType)
                             .Append(GContact.New(new("Uwe Riegel", "uriegel@hotmail.de", 1965)))
@@ -29,6 +30,7 @@ static class ChangingColumnViews
                             .Splice(3, [.. Enumerable.Range(1, 1000).Select(n => GContact.New(new($"Right Item no {n}", $"person{n}@hotmail.de", n)).Handle)]);
             itemNameFactory = SignalListItemFactory
                 .New()
+                .AddWeakRef(() => Console.WriteLine("NamensFabrik disposed"))
                 .Setup(OnListItemSetup)
                 .Bind(OnListItemBind);
             itemEMailFactory = SignalListItemFactory
@@ -51,7 +53,7 @@ static class ChangingColumnViews
             selectionModel1 = SingleSelection.New(model1);
         }
 
-        return Application
+        Application
             .NewAdwaita("de.uriegel.first")
                 .OnActivate(app =>
                     app
@@ -75,14 +77,21 @@ static class ChangingColumnViews
                                     .SetModel1()))
                             .Show())
                 .Run(0, IntPtr.Zero);
+
+        columne?.Dispose();
+
+        return 0;
     }
 
+    static ColumnViewColumnHandle? columne;
     static readonly ObjectRef<ColumnViewHandle> columnViewRef = new();
 
     static ColumnViewHandle SetModel1(this ColumnViewHandle columnView)
         => columnView
             .AppendColumn(ColumnViewColumn.New("Name", itemNameFactory!)
                 .Expand()
+                .SideEffect(c => { c.IsFloating = false; columne = c; })
+                .AddWeakRef(() => Console.WriteLine("ColumnViewColumn finalized"))
                 .Resizeable()
                 .SetSorter(sorter))
             .AppendColumn(ColumnViewColumn.New("E mail", itemEMailFactory!)

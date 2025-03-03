@@ -14,7 +14,8 @@ static class StringListView
         var itemFactory = SignalListItemFactory
             .New()
             .Setup(OnListItemSetup)
-            .Bind(OnListItemBind);
+            .Bind(OnListItemBind)
+            .AddWeakRef(() => Console.WriteLine("Factory disposed"));
         var selectionModel = SingleSelection.New(model);
 
         return Application
