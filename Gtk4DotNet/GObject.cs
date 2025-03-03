@@ -23,10 +23,10 @@ public static class GObject
     /// Note that the weak references created by this method are not thread-safe: they cannot safely be used in one thread if the object’s last g_object_unref() might happen in another thread. Use GWeakRef if thread-safety is required.
     /// </summary>
     /// <param name="obj"></param>
-    /// <param name="dispose"></param>
-    public static THandle AddWeakRef<THandle>(this THandle obj, Action dispose)
+    /// <param name="onDisposing">Is called, when the obeject is disposed</param>
+    public static THandle AddWeakRef<THandle>(this THandle obj, Action onDisposing)
         where THandle : ObjectHandle, new()
-        => obj.SideEffect(o => o.AddWeakRefRaw(dispose));
+        => obj.SideEffect(o => o.AddWeakRefRaw(onDisposing));
 
     /// <summary>
     /// Increase the reference count of object, and possibly remove the [floating][floating-ref] reference, 
