@@ -26,14 +26,15 @@ WriteLine(
     21: ColumnView
     22: 2 ColumnView 
     23: ColumnView changing
-    24: Example 1
-    25: Example 2
-    26: Example 3
-    27  Example 4
-    28: Example 5
-    29: Example 6
-    30: Example 7
-    31: Example 8
+    24: ColumnViewControl
+    25: Example 1
+    26: Example 2
+    27: Example 3
+    28: Example 4
+    29: Example 5
+    30: Example 6
+    31: Example 7
+    32: Example 8
     <any>: Quit
     """);
 WriteLine($"Return value: {ReadLine() switch 
@@ -61,14 +62,15 @@ WriteLine($"Return value: {ReadLine() switch
     "21" => ColumnViewApp.Run(),
     "22" => TwoColumnViews.Run(),
     "23" => ChangingColumnViews.Run(),
-    "24" => Example1.Run(),
-    "25" => Example2.Run(),
-    "26" => Example3.Run(),
-    "27" => Example4.Run(),
-    "28" => Example5.Run(),
-    "29" => Example6.Run(),
-    "30" => Example7.Run(),
-    "31" => Example8.Run(),
+    "24" => ColumnViewControlApp.Run(),
+    "25" => Example1.Run(),
+    "26" => Example2.Run(),
+    "27" => Example3.Run(),
+    "28" => Example4.Run(),
+    "29" => Example5.Run(),
+    "30" => Example6.Run(),
+    "31" => Example7.Run(),
+    "32" => Example8.Run(),
     _ => 0
 }}");
 
