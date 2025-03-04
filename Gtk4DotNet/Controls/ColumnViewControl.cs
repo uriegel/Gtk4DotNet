@@ -9,7 +9,13 @@ public class ColumnViewControl
     public ScrolledWindowHandle CreateView(Action<ColumnViewControl> onCreated)
     {
         handle = ColumnView.New();
-        handle.AddWeakRef(() => columns.ForEach(h => h.Dispose()));
+        handle.AddWeakRef(() =>
+            {
+                columns.ForEach(h => h.Dispose());
+                if (listModelHandle?.IsFloating != null)
+                    listModelHandle.IsFloating = false;
+                listModelHandle?.Dispose();
+            });
 
         onCreated(this);
 
@@ -27,6 +33,8 @@ public class ColumnViewControl
             handle?.RemoveColumn(h);
         });
         this.columns.Clear();
+
+        listModelHandle?.Dispose();
 
         var type = typeof(T);
         var objectName = "GManagedObjectClass" + type.Name;
@@ -80,6 +88,7 @@ public class ColumnViewControl
             // TODO single or multi
             var selModel = MultiSelection.New(model);
             handle.SetModel(selModel);
+            listModelHandle = selModel;
         }
 
 
@@ -102,6 +111,7 @@ public class ColumnViewControl
 
     static Dictionary<string, object> registeredObjects = new();
     List<ColumnViewColumnHandle> columns = new();
+    ObjectHandle? listModelHandle;
     ColumnViewHandle? handle;
 }
 

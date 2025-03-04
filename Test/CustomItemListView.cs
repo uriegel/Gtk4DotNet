@@ -110,7 +110,7 @@ class GContact(nint obj) : SubClassInst<GObjectHandle>(obj)
 
     protected override GObjectHandle CreateHandle(nint obj) => new(obj);
 
-    // protected override void OnFinalize() => Console.WriteLine("Contact finalized");
+    protected override void OnFinalize() => Console.WriteLine("Contact finalized");
 }
 /*
 public static class THandleExtensions

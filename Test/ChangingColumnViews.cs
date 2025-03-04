@@ -99,6 +99,7 @@ static class ChangingColumnViews
                 {
                     var sorter = cv.GetSorter();
                     var selModel = MultiSelection.New(SortListModel.New(model, sorter));
+                    // TODO selModel has to be disposed!
                     cv.SetModel(selModel);
                 });
     }
