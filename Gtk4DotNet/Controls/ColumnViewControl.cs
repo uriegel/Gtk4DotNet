@@ -25,15 +25,16 @@ public class ColumnViewControl
             .Child(handle);
     }
 
-    public void SetColumns<T>(ColumnViewControlColumn<T>[] columns, ObservableCollection<T> items)
+    public void SetColumns<T>(ColumnViewControlColumn<T>[] columns, ObservableModel<T> items)
     {
         this.columns.ForEach(h =>
         {
-            h.Dispose();
             handle?.RemoveColumn(h);
+            h.Dispose();
         });
         this.columns.Clear();
-
+        if (listModelHandle?.IsFloating != null)
+            listModelHandle.IsFloating = false;
         listModelHandle?.Dispose();
 
         var type = typeof(T);
@@ -79,7 +80,7 @@ public class ColumnViewControl
 
         var model = ListStore
             .New(GManagedObject<T>.GType)
-            .Splice([.. items.Select(n => GManagedObject<T>.New(n).Handle)]);
+            .Splice([.. items.Items.Select(n => GManagedObject<T>.New(n).Handle)]);
 
         if (handle != null)
         {
