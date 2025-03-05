@@ -25,6 +25,12 @@ public class ColumnViewControl
             .Child(handle);
     }
 
+    public ColumnViewControl MultiSelection()
+    {
+        multiSelection = true;
+        return this;
+    }
+
     public void SetColumns<T>(ColumnViewControlColumn<T>[] columns, ObservableModel<T> items)
     {
         this.columns.ForEach(h =>
@@ -48,8 +54,8 @@ public class ColumnViewControl
                 .New()
                 .AddWeakRef(() => Console.WriteLine("itemFactory disposed"))
                 .Setup(listItem => listItem.SetChild(Label.New("").HAlign(Align.Start)))
-            // TODO custom setup
-            //TODO.Bind(OnListItemBind);
+            // TODO custom setup  // Image instead of label
+            //TODO.Bind(OnListItemBind); // set image when true or false
                 .Bind(listItem =>
                     {
                         var oh = listItem.GetItem<GObjectHandle>();
@@ -84,12 +90,10 @@ public class ColumnViewControl
 
         if (handle != null)
         {
-            // var sorter = handle.GetSorter();
-            // var selModel = MultiSelection.New(SortListModel.New(model, sorter));
-            // TODO single or multi
-            var selModel = MultiSelection.New(model);
+            // TODO Sorter: var sorter = handle.GetSorter();
+            IListModel selModel = multiSelection ? GtkDotNet.MultiSelection.New(model) : SingleSelection.New(model);
             handle.SetModel(selModel);
-            listModelHandle = selModel;
+            listModelHandle = selModel as ObjectFloatingHandle;
         }
 
 
@@ -114,6 +118,7 @@ public class ColumnViewControl
     List<ColumnViewColumnHandle> columns = new();
     ObjectHandle? listModelHandle;
     ColumnViewHandle? handle;
+    bool multiSelection;
 }
 
 

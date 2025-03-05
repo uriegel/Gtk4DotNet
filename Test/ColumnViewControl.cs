@@ -15,10 +15,16 @@ static class ColumnViewControlApp
                                 .New()
                                 .PackEnd(ToggleButton.New()
                                     .Label("Alternative Model")
+                                    .BindProperty("active", changeItems, "sensitive", BindingFlags.InvertBoolean|BindingFlags.SyncCreate)
+                                    .OnToggled(ModelToggled))
+                                .PackEnd(ToggleButton.New()
+                                    .Ref(changeItems)
+                                    .Label("Change Items")
                                     .OnToggled(ModelToggled)))
                             .DefaultSize(600, 800)
-                            .Child(columnView.CreateView(cv =>
-                                cv.SetColumns(GetColumns1(), GetModel1())))
+                            .Child(columnView.CreateView(cv => cv
+                                .MultiSelection()
+                                .SetColumns(GetColumns1(), GetModel1())))
                             .Show())
                 .Run(0, IntPtr.Zero);
 
@@ -63,6 +69,7 @@ static class ColumnViewControlApp
     }
 
     static readonly ColumnViewControl columnView = new();
+    static readonly ObjectRef<ToggleButtonHandle> changeItems = new();
 }
 
 record Type1(string Name, int Number);
