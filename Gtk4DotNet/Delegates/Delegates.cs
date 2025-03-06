@@ -50,6 +50,6 @@ public static class GtkDelegates
     }
 
     static long delegateKey;
-    static readonly ConcurrentDictionary<long, Delegate> delegates = new();
+    static readonly ConcurrentDictionary<long, Delegate> delegates = [];
 }
 

@@ -5,7 +5,7 @@ using GtkDotNet.SubClassing;
 
 static class ChangingColumnViews
 {
-    //Memory leak in sort model: delegates
+    // TODO only the last list view items are disposed on close
     // TODO add to selection_view
     // TODO remove from selection_view
     public static int Run()
@@ -34,6 +34,10 @@ static class ChangingColumnViews
                             .Show())
                 .Run(0, IntPtr.Zero);
 
+        sorter?.Dispose();
+        numberSorter?.Dispose();
+        textSorter?.Dispose();
+        idSorter?.Dispose();
         colName?.Dispose();
         colEMail?.Dispose();
         colNumber?.Dispose();
@@ -55,6 +59,8 @@ static class ChangingColumnViews
 
     static ColumnViewHandle SetModel1(this ColumnViewHandle columnView)
     {
+        textSorter?.Dispose();
+        idSorter?.Dispose();
         if (colText != null)
             columnView.RemoveColumn(colText);
         colText?.Dispose();
@@ -84,6 +90,8 @@ static class ChangingColumnViews
             .Bind(OnNumberBind);
 
 
+        sorter = CustomSorter.New<GObjectHandle>(NameCompare);
+        numberSorter = CustomSorter.New<GObjectHandle>(NumberCompare);
         colName = ColumnViewColumn.New("Name", itemNameFactory)
                 .Expand()
                 .AddWeakRef(() => Console.WriteLine("ColumnViewColumn Name finalized"))
@@ -92,6 +100,7 @@ static class ChangingColumnViews
         colEMail = ColumnViewColumn.New("E mail", itemEMailFactory)
                 .AddWeakRef(() => Console.WriteLine("ColumnViewColumn EMail finalized"))
                 .Resizeable();
+
         colNumber = ColumnViewColumn.New("Number", itemNumberFactory)
                 .Resizeable()
                 .AddWeakRef(() => Console.WriteLine("ColumnViewColumn Number finalized"))
@@ -104,13 +113,15 @@ static class ChangingColumnViews
                 {
                     var sorter = cv.GetSorter();
                     var selModel = MultiSelection.New(SortListModel.New(model, sorter));
-                    listModelHandle = selModel as ObjectFloatingHandle;
+                    listModelHandle = selModel;
                     cv.SetModel(selModel);
                 });
     }
 
     static void SetModel2(this ColumnViewHandle columnView)
     {
+        numberSorter?.Dispose();
+        sorter?.Dispose();
         if (colName != null)
             columnView.RemoveColumn(colName);
         colName?.Dispose();
@@ -134,6 +145,8 @@ static class ChangingColumnViews
             .New(GItem2.GType)
             .Splice([.. Enumerable.Range(1, 1000).Select(n => GItem2.New(new(n, $"Item {n}")).Handle)]);
 
+        textSorter = CustomSorter.New<GObjectHandle>(TextCompare);
+        idSorter = CustomSorter.New<GObjectHandle>(IDCompare);
         colID = ColumnViewColumn.New("ID", itemIDFactory)
                 .Expand()
                 .Resizeable()
@@ -151,7 +164,7 @@ static class ChangingColumnViews
                 {
                     var sorter = cv.GetSorter();
                     var selModel = MultiSelection.New(SortListModel.New(modelItem2, sorter));
-                    listModelHandle = selModel as ObjectFloatingHandle;
+                    listModelHandle = selModel;
                     cv.SetModel(selModel);
                 });
     }
@@ -205,10 +218,10 @@ static class ChangingColumnViews
 
     static readonly ObjectRef<ColumnViewHandle> listViewRef = new();
 
-    static CustomSorterHandle sorter = CustomSorter.New<GObjectHandle>(NameCompare);
-    static CustomSorterHandle numberSorter = CustomSorter.New<GObjectHandle>(NumberCompare);
-    static CustomSorterHandle textSorter = CustomSorter.New<GObjectHandle>(TextCompare);
-    static CustomSorterHandle idSorter = CustomSorter.New<GObjectHandle>(IDCompare);
+    static CustomSorterHandle? sorter;
+    static CustomSorterHandle? numberSorter;
+    static CustomSorterHandle? textSorter;
+    static CustomSorterHandle? idSorter;
     static ObjectHandle? listModelHandle;
 
     static void OnEMailBind(ListItemHandle listItem)

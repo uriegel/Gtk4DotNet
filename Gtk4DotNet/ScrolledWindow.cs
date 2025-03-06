@@ -12,6 +12,9 @@ public static class ScrolledWindow
     public static ScrolledWindowHandle Child(this ScrolledWindowHandle scrolledWindow, WidgetHandle widget)
         => scrolledWindow.SideEffect(s => s.SetChild(widget));
         
+    public static void RemoveChild(this ScrolledWindowHandle scrolledWindow)
+        => scrolledWindow._SetChild(0);
+
     public static ScrolledWindowHandle Policy(this ScrolledWindowHandle scrolledWindow, PolicyType horizontal, PolicyType vertical)
         => scrolledWindow.SideEffect(s => s.SetPolicy(horizontal, vertical));
 
@@ -21,11 +24,14 @@ public static class ScrolledWindow
     [DllImport(Libs.LibGtk, EntryPoint="gtk_scrolled_window_set_child", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetChild(this ScrolledWindowHandle scrolledWindow, WidgetHandle widget);
     
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_scrolled_window_set_child", CallingConvention = CallingConvention.Cdecl)]
+    extern static void _SetChild(this ScrolledWindowHandle scrolledWindow, nint nil);
+
     // [DllImport(Libs.LibGtk, EntryPoint="gtk_scrolled_window_get_child", CallingConvention = CallingConvention.Cdecl)]
     // public extern static IntPtr GetChild(IntPtr scrolledWindow);
 
 
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_scrolled_window_set_policy", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_scrolled_window_set_policy", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetPolicy(this ScrolledWindowHandle scrolledWindow, PolicyType horizontal, PolicyType vertical);
 
     // public static StackHandle AddChild(this StackHandle stack, WidgetHandle widget)

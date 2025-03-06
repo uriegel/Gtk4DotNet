@@ -17,14 +17,17 @@ public class ColumnViewControl
                 if (listModelHandle?.IsFloating != null)
                     listModelHandle.IsFloating = false;
                 listModelHandle?.Dispose();
+                listModelHandle = null;
+                columns.Clear();
             });
 
         onCreated(this);
 
-        return ScrolledWindow
+        scrolledWindow = ScrolledWindow
             .New()
             .Policy(PolicyType.Never, PolicyType.Automatic)
             .Child(handle);
+        return scrolledWindow;
     }
 
     public ColumnViewControl MultiSelection()
@@ -35,15 +38,31 @@ public class ColumnViewControl
 
     public void SetColumns<T>(ColumnViewControlColumn<T>[] columns, ObservableModel<T> items)
     {
+        if (scrolledWindow != null)
+        {
+            scrolledWindow.RemoveChild();
+            handle?.Dispose();
+            handle = ColumnView.New();
+            handle.AddWeakRef(() =>
+                {
+                    this.columns.ForEach(h => h.Dispose());
+                    if (listModelHandle?.IsFloating != null)
+                        listModelHandle.IsFloating = false;
+                    listModelHandle?.Dispose();
+                    listModelHandle = null;
+                    this.columns.Clear();
+                });
+            scrolledWindow.Child(handle);
+        }
+
         this.columns.ForEach(h =>
         {
             handle?.RemoveColumn(h);
             h.Dispose();
         });
         this.columns.Clear();
-        if (listModelHandle?.IsFloating != null)
-            listModelHandle.IsFloating = false;
-        listModelHandle?.Dispose();
+        sorters.ForEach(h => h.Dispose());
+        sorters.Clear();
 
         var type = typeof(T);
         var objectName = "GManagedObjectClass" + type.Name;
@@ -79,8 +98,15 @@ public class ColumnViewControl
                 colHandle.Expand();
             if (col.Resizeable)
                 colHandle.Resizeable();
-            //                .SetSorter(sorter);
-
+            if (col.OnSort != null)
+            {
+                var sorter = CustomSorter.New<GObjectHandle>((a, b)
+                    => a.GetInstance() is GManagedObject<T> t1 && t1.Value != null && b.GetInstance() is GManagedObject<T> t2 && t2.Value != null
+                        ? col.OnSort(t1.Value, t2.Value)
+                        : 0);
+                colHandle.SetSorter(sorter);
+                sorters.Add(sorter);
+            }
             this.columns.Add(colHandle);
             handle?.AppendColumn(colHandle);
         }
@@ -91,11 +117,11 @@ public class ColumnViewControl
 
         if (handle != null)
         {
-            // TODO Sorter: var sorter = handle.GetSorter();
-            // TODO Sorter: free sort delegate
-            IListModel selModel = multiSelection ? GtkDotNet.MultiSelection.New(model) : SingleSelection.New(model);
+            var sorter = handle.GetSorter();
+            var sortListModel = SortListModel.New(model, sorter);
+            IListModel selModel = multiSelection ? GtkDotNet.MultiSelection.New(sortListModel) : SingleSelection.New(sortListModel);
+            listModelHandle = sortListModel;
             handle.SetModel(selModel);
-            listModelHandle = selModel as ObjectFloatingHandle;
         }
 
 
@@ -118,11 +144,12 @@ public class ColumnViewControl
 
     // TODO Bounds.cs with saving in App.Settings
 
-    static Dictionary<string, object> registeredObjects = new();
-    List<ColumnViewColumnHandle> columns = new();
+    ScrolledWindowHandle? scrolledWindow;
+    static readonly Dictionary<string, object> registeredObjects = [];
+    readonly List<ColumnViewColumnHandle> columns = [];
+    readonly List<CustomSorterHandle> sorters = [];
     ObjectHandle? listModelHandle;
     ColumnViewHandle? handle;
     bool multiSelection;
 }
-
 

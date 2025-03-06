@@ -28,21 +28,37 @@ static class ColumnViewControlApp
                             .Show())
                 .Run(0, IntPtr.Zero);
 
+    static void ModelToggled(ToggleButtonHandle toggleButton)
+    {
+        if (toggleButton.Active())
+            columnView.SetColumns(GetColumns2(), GetModel2());
+        else
+            columnView.SetColumns(GetColumns1(), GetModel1());
+    }
+
     static ColumnViewControlColumn<Type1>[] GetColumns1()
         => [ new()
                 {
-                    Title = "Name", Expanded = true, OnLabelBind = i => i.Name
+                    Title = "Name",
+                    Expanded = true,
+                    OnLabelBind = i => i.Name,
+                    OnSort = (a, b) => string.Compare(a.Name, b.Name)
                 },
             new()
                 {
-                    Title = "Number", OnLabelBind = i => i.Number.ToString()
+                    Title = "Number",
+                    OnLabelBind = i => i.Number.ToString(),
+                    OnSort = (a, b) => a.Number - b.Number
                 },
             ];
 
     static ColumnViewControlColumn<Type2>[] GetColumns2()
         => [ new()
                 {
-                    Title = "E Mail", Expanded = true, OnLabelBind = i => i.EMail
+                    Title = "E Mail",
+                    Expanded = true,
+                    OnLabelBind = i => i.EMail,
+                    OnSort = (a, b) => string.Compare(a.EMail, b.EMail)
                 },
             new()
                 {
@@ -50,7 +66,8 @@ static class ColumnViewControlApp
                 },
             new()
                 {
-                    Title = "Active", OnLabelBind = i => i.Active ? "Yes" : "No"
+                    Title = "Active", OnLabelBind = i => i.Active ? "Yes" : "No",
+                    OnSort = (a, b) => a.Active.CompareTo(b.Active)
                 },
             ];
 
@@ -59,14 +76,6 @@ static class ColumnViewControlApp
 
     static ObservableModel<Type2> GetModel2()
         => new([.. Enumerable.Range(1, 30).Select(n => new Type2($"item{n}@dom.de", $"ID-{n}", n % 3 == 0))]);
-
-    static void ModelToggled(ToggleButtonHandle toggleButton)
-    {
-        if (toggleButton.Active())
-            columnView.SetColumns(GetColumns2(), GetModel2());
-        else
-            columnView.SetColumns(GetColumns1(), GetModel1());
-    }
 
     static readonly ColumnViewControl columnView = new();
     static readonly ObjectRef<ToggleButtonHandle> changeItems = new();

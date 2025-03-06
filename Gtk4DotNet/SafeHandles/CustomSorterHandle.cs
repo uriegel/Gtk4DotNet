@@ -1,6 +1,6 @@
 namespace GtkDotNet.SafeHandles;
 
-public class CustomSorterHandle: ObjectFloatingHandle, IListModel
+public class CustomSorterHandle: ObjectHandle, IListModel
 {
     public CustomSorterHandle() : base() {}
 }

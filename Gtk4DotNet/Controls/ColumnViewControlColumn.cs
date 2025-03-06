@@ -10,9 +10,9 @@ public class ColumnViewControlColumn<T>
     public Func<WidgetHandle> OnItemSetup { get; set; } = () => Label.New("").HAlign(Align.Start);
     //static void OnItemSetup(ListItemHandle listItem) => listItem.SetChild(Label.New("").HAlign(Align.Start));
 
-    public Action<ListItemHandle, T>? OnItemBind { get; set; } 
+    public Action<ListItemHandle, T>? OnItemBind { get; set; }
     public Func<T, string>? OnLabelBind { get; set; } 
-    // TODO Sorter
+    public Func<T, T, int>? OnSort { get; set; } 
 }
 
 
