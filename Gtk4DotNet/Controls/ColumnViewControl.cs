@@ -60,8 +60,7 @@ public class ColumnViewControl
                     {
                         var oh = listItem.GetItem<GObjectHandle>();
                         oh.IsFloating = true;
-                        var item = oh.GetInstance() as GManagedObject<T>;
-                        if (item != null && item.Value != null)
+                        if (oh.GetInstance() is GManagedObject<T> item && item.Value != null)
                         {
                             if (col.OnItemBind != null)
                                 col.OnItemBind.Invoke(listItem, item.Value);
@@ -108,6 +107,7 @@ public class ColumnViewControl
         //     // TODO attach ObservableCollection<T> 
         // TODO save it in control as objectx
         //TODO clear it so that all GObjects can be disposed
+        //TODO Sample(), to ui thread
         //TODO clear it here
         //TODO clear it onweakref from this class
     }
