@@ -113,8 +113,11 @@ static class ChangingColumnViews
                 {
                     var sorter = cv.GetSorter();
                     var selModel = MultiSelection.New(SortListModel.New(model, sorter));
-                    listModelHandle = selModel;
+                    if (listModelHandle?.IsFloating != null)
+                        listModelHandle.IsFloating = false;
                     cv.SetModel(selModel);
+                    listModelHandle?.Dispose();
+                    listModelHandle = model;
                 });
     }
 
@@ -164,8 +167,11 @@ static class ChangingColumnViews
                 {
                     var sorter = cv.GetSorter();
                     var selModel = MultiSelection.New(SortListModel.New(modelItem2, sorter));
-                    listModelHandle = selModel;
+                    if (listModelHandle?.IsFloating != null)
+                        listModelHandle.IsFloating = false;
                     cv.SetModel(selModel);
+                    listModelHandle?.Dispose();
+                    listModelHandle = modelItem2;
                 });
     }
 

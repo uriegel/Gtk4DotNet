@@ -1,7 +1,8 @@
 //[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 using System.Collections.Concurrent;
 using CsTools.Extensions;
-using GtkDotNet;
+
+namespace GtkDotNet;
 
 public delegate void ProgressCallback(long current, long total);
 public delegate void CustomSchemeRequestDelegate(nint request);

@@ -11,15 +11,7 @@ public class ColumnViewControl
     public ScrolledWindowHandle CreateView(Action<ColumnViewControl> onCreated)
     {
         handle = ColumnView.New();
-        handle.AddWeakRef(() =>
-            {
-                columns.ForEach(h => h.Dispose());
-                if (listModelHandle?.IsFloating != null)
-                    listModelHandle.IsFloating = false;
-                listModelHandle?.Dispose();
-                listModelHandle = null;
-                columns.Clear();
-            });
+        handle.AddWeakRef(Release);
 
         onCreated(this);
 
@@ -43,15 +35,7 @@ public class ColumnViewControl
             scrolledWindow.RemoveChild();
             handle?.Dispose();
             handle = ColumnView.New();
-            handle.AddWeakRef(() =>
-                {
-                    this.columns.ForEach(h => h.Dispose());
-                    if (listModelHandle?.IsFloating != null)
-                        listModelHandle.IsFloating = false;
-                    listModelHandle?.Dispose();
-                    listModelHandle = null;
-                    this.columns.Clear();
-                });
+            handle.AddWeakRef(Release);
             scrolledWindow.Child(handle);
         }
 
@@ -61,8 +45,6 @@ public class ColumnViewControl
             h.Dispose();
         });
         this.columns.Clear();
-        sorters.ForEach(h => h.Dispose());
-        sorters.Clear();
 
         var type = typeof(T);
         var objectName = "GManagedObjectClass" + type.Name;
@@ -120,7 +102,7 @@ public class ColumnViewControl
             var sorter = handle.GetSorter();
             var sortListModel = SortListModel.New(model, sorter);
             IListModel selModel = multiSelection ? GtkDotNet.MultiSelection.New(sortListModel) : SingleSelection.New(sortListModel);
-            listModelHandle = sortListModel;
+            listModelHandle = model;
             handle.SetModel(selModel);
         }
 
@@ -142,7 +124,17 @@ public class ColumnViewControl
         //TODO clear it onweakref from this class
     }
 
-    // TODO Bounds.cs with saving in App.Settings
+    void Release()
+    {
+        columns.ForEach(h => h.Dispose());
+        if (listModelHandle?.IsFloating != null)
+            listModelHandle.IsFloating = false;
+        listModelHandle?.Dispose();
+        listModelHandle = null;
+        columns.Clear();
+        sorters.ForEach(h => h.Dispose());
+        sorters.Clear();
+    }        
 
     ScrolledWindowHandle? scrolledWindow;
     static readonly Dictionary<string, object> registeredObjects = [];
