@@ -86,7 +86,7 @@ public static class Gtk
             OnePointerBoolRetDelegate? mainFunction = _ =>
             {
                 action?.Invoke();
-                mainFunction = null;
+                mainFunction = null;    
                 action = null;
                 GtkDelegates.Remove(key);
                 return false;

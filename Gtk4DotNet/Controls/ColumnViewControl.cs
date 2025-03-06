@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using GtkDotNet.SafeHandles;
 using GtkDotNet.SubClassing;
 
@@ -90,6 +89,7 @@ public class ColumnViewControl
         if (handle != null)
         {
             // TODO Sorter: var sorter = handle.GetSorter();
+            // TODO Sorter: free sort delegate
             IListModel selModel = multiSelection ? GtkDotNet.MultiSelection.New(model) : SingleSelection.New(model);
             handle.SetModel(selModel);
             listModelHandle = selModel as ObjectFloatingHandle;
@@ -107,6 +107,7 @@ public class ColumnViewControl
         //     // TODO attach ObservableCollection<T> 
         // TODO save it in control as objectx
         //TODO clear it so that all GObjects can be disposed
+        //TODO Remove eventhandlers
         //TODO Sample(), to ui thread
         //TODO clear it here
         //TODO clear it onweakref from this class
