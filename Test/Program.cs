@@ -10,31 +10,32 @@ WriteLine(
     5:  Builder
     6:  Builder from .NET resource
     7:  Children
-    8:  Web View
-    9:  Web View extended
-    10: CSS
-    11: Progress
-    12: Object subclass
-    13: Headerbar with menu (subclassed)
-    14: Progress (subclassed)
-    15: NotDecorated
-    16: Threading
-    17: Cleanup
-    18: Non GTK
-    19: ListView (String List)
-    20: ListView (Custom Objects)
-    21: ColumnView
-    22: 2 ColumnView 
-    23: ColumnView changing
-    24: ColumnViewControl
-    25: Example 1
-    26: Example 2
-    27: Example 3
-    28: Example 4
-    29: Example 5
-    30: Example 6
-    31: Example 7
-    32: Example 8
+    8:  Image
+    9:  Web View
+    10: Web View extended
+    11: CSS
+    12: Progress
+    13: Object subclass
+    14: Headerbar with menu (subclassed)
+    15: Progress (subclassed)
+    16: NotDecorated
+    17: Threading
+    18: Cleanup
+    19: Non GTK
+    20: ListView (String List)
+    21: ListView (Custom Objects)
+    22: ColumnView
+    23: 2 ColumnView 
+    24: ColumnView changing
+    25: ColumnViewControl
+    26: Example 1
+    27: Example 2
+    28: Example 3
+    29: Example 4
+    30: Example 5
+    31: Example 6
+    32: Example 7
+    33: Example 8
     <any>: Quit
     """);
 WriteLine($"Return value: {ReadLine() switch 
@@ -46,31 +47,32 @@ WriteLine($"Return value: {ReadLine() switch
     "5" => BuilderProgram.Run(),
     "6" => ResourceBuilderProgram.Run(),
     "7" => Children.Run(),
-    "8" => Web.Run(),
-    "9" => WebExtended.Run(),
-    "10" => Css.Run(),
-    "11" => Progress.Run(),
-    "12" => SubClassing.Run(),
-    "13" => MenuSubclass.Run(),
-    "14" => ProgressSubclass.Run(),
-    "15" => NotDecorated.Run(),
-    "16" => Threading.Run(),
-    "17" => Cleanup.Run(),
-    "18" => NonGtkApp.Run(),
-    "19" => StringListView.Run(),
-    "20" => CustomItemListView.Run(),
-    "21" => ColumnViewApp.Run(),
-    "22" => TwoColumnViews.Run(),
-    "23" => ChangingColumnViews.Run(),
-    "24" => ColumnViewControlApp.Run(),
-    "25" => Example1.Run(),
-    "26" => Example2.Run(),
-    "27" => Example3.Run(),
-    "28" => Example4.Run(),
-    "29" => Example5.Run(),
-    "30" => Example6.Run(),
-    "31" => Example7.Run(),
-    "32" => Example8.Run(),
+    "8" => ImageView.Run(), 
+    "9" => Web.Run(),
+    "10" => WebExtended.Run(),
+    "11" => Css.Run(),
+    "12" => Progress.Run(),
+    "13" => SubClassing.Run(),
+    "14" => MenuSubclass.Run(),
+    "15" => ProgressSubclass.Run(),
+    "16" => NotDecorated.Run(),
+    "17" => Threading.Run(),
+    "18" => Cleanup.Run(),
+    "19" => NonGtkApp.Run(),
+    "20" => StringListView.Run(),
+    "21" => CustomItemListView.Run(),
+    "22" => ColumnViewApp.Run(),
+    "23" => TwoColumnViews.Run(),
+    "24" => ChangingColumnViews.Run(),
+    "25" => ColumnViewControlApp.Run(),
+    "26" => Example1.Run(),
+    "27" => Example2.Run(),
+    "28" => Example3.Run(),
+    "29" => Example4.Run(),
+    "30" => Example5.Run(),
+    "31" => Example6.Run(),
+    "32" => Example7.Run(),
+    "33" => Example8.Run(),
     _ => 0
 }}");
 
