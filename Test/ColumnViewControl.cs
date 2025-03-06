@@ -57,7 +57,8 @@ static class ColumnViewControlApp
                 {
                     Title = "E Mail",
                     Expanded = true,
-                    OnLabelBind = i => i.EMail,
+                    OnItemSetup = OnIconName,
+                    OnItemBind = OnIconNameBind,
                     OnSort = (a, b) => string.Compare(a.EMail, b.EMail)
                 },
             new()
@@ -70,6 +71,24 @@ static class ColumnViewControlApp
                     OnSort = (a, b) => a.Active.CompareTo(b.Active)
                 },
             ];
+
+    static BoxHandle OnIconName()
+        => Box
+            .New(Orientation.Horizontal)
+            .Append(Image.NewFromIconName("mail", IconSize.Button))
+            .Append(Label.New("").HAlign(Align.Start).MarginStart(5));
+
+    static void OnIconNameBind(ListItemHandle listItem, Type2 item)
+    {
+        var box = listItem.GetChild<BoxHandle>();
+        var image = box?.GetFirstChild<ImageHandle>();
+        var label = image?.GetNextSibling<LabelHandle>();
+        if (item.Active)
+            image?.SetFromIconName("mail-read", IconSize.LargeToolbar);
+        else
+            image?.SetFromIconName("mail-unread", IconSize.LargeToolbar);
+        label?.Set(item.EMail);
+    }
 
     static ObservableModel<Type1> GetModel1()
         => new([new Type1("Uwe Riegel", 1965), new Type1("Jim Doe", 222), new Type1("Jane Doe", 9999)]);

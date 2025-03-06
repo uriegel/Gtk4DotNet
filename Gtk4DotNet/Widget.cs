@@ -129,11 +129,23 @@ public static class Widget
         where THandle : WidgetHandle
         => widget.SideEffect(w => w.SetTooltipText(text));
 
-    public static WidgetHandle? GetFirstChild<THandle>(this THandle widget)
-        where THandle : WidgetHandle
-        => _GetFirstChild(widget);
+    public static THandle? GetFirstChild<THandle>(this WidgetHandle widget)
+        where THandle : WidgetHandle, new()
+    {
+        var res = new THandle();
+        res.SetInternalHandle(_GetFirstChild(widget));
+        return res;
+    }
 
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_style_context", CallingConvention = CallingConvention.Cdecl)]
+    public static THandle? GetNextSibling<THandle>(this WidgetHandle widget)
+        where THandle : WidgetHandle, new()
+    {
+        var res = new THandle();
+        res.SetInternalHandle(_GetNextSibling(widget));
+        return res;
+    }
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_style_context", CallingConvention = CallingConvention.Cdecl)]
     public extern static IntPtr GetStyleContext(this WidgetHandle widget);
 
     public static WidgetHandle? GetParent<THandle>(this THandle widget)
@@ -213,7 +225,7 @@ public static class Widget
 
     public static IEnumerable<WidgetHandle> GetChildren(this WidgetHandle parent)
     {
-        var first = parent._GetFirstChild();
+        var first = parent.GetFirstWidget();
         if (first?.IsInvalid == true)
             yield break;
         else
@@ -224,7 +236,7 @@ public static class Widget
             var current = first!;
             while (true)
             {
-                var next = current._GetNextSibling();
+                var next = current.GetNextWidgetSibling();
                 if (next.IsInvalid)
                     yield break;
                 yield return next;
@@ -278,10 +290,16 @@ public static class Widget
     extern static void SetMarginBottom(this WidgetHandle widget, int margin);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_first_child", CallingConvention = CallingConvention.Cdecl)]
-    extern static WidgetHandle _GetFirstChild(this WidgetHandle widget);
+    extern static nint _GetFirstChild(this WidgetHandle widget);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_first_child", CallingConvention = CallingConvention.Cdecl)]
+    extern static WidgetHandle GetFirstWidget(this WidgetHandle widget);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_next_sibling", CallingConvention = CallingConvention.Cdecl)]
-    extern static WidgetHandle _GetNextSibling(this WidgetHandle widget);
+    extern static nint _GetNextSibling(this WidgetHandle widget);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_next_sibling", CallingConvention = CallingConvention.Cdecl)]
+    extern static WidgetHandle GetNextWidgetSibling(this WidgetHandle widget);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_parent", CallingConvention = CallingConvention.Cdecl)]
     extern static WidgetHandle _GetParent(this WidgetHandle widget);

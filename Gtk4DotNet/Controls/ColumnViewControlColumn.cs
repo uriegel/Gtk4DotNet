@@ -8,8 +8,6 @@ public class ColumnViewControlColumn<T>
     public bool Expanded { get; set; }
     public bool Resizeable { get; set; }
     public Func<WidgetHandle> OnItemSetup { get; set; } = () => Label.New("").HAlign(Align.Start);
-    //static void OnItemSetup(ListItemHandle listItem) => listItem.SetChild(Label.New("").HAlign(Align.Start));
-
     public Action<ListItemHandle, T>? OnItemBind { get; set; }
     public Func<T, string>? OnLabelBind { get; set; } 
     public Func<T, T, int>? OnSort { get; set; } 

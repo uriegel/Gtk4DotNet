@@ -7,7 +7,7 @@ public class ColumnViewControl
 {
 
     // TODO Filter
-    // TODO Filter: rmove delegate
+    // TODO Filter: remove delegate
     public ScrolledWindowHandle CreateView(Action<ColumnViewControl> onCreated)
     {
         handle = ColumnView.New();
@@ -56,9 +56,7 @@ public class ColumnViewControl
             var itemFactory = SignalListItemFactory
                 .New()
                 .AddWeakRef(() => Console.WriteLine("itemFactory disposed"))
-                .Setup(listItem => listItem.SetChild(Label.New("").HAlign(Align.Start)))
-            // TODO custom setup  // Image instead of label
-            //TODO.Bind(OnListItemBind); // set image when true or false
+                .Setup(listItem => listItem.SetChild(col.OnItemSetup()))
                 .Bind(listItem =>
                     {
                         var oh = listItem.GetItem<GObjectHandle>();
