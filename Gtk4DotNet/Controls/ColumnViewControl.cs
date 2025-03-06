@@ -5,6 +5,9 @@ namespace GtkDotNet.Controls;
 
 public class ColumnViewControl
 {
+
+    // TODO Filter
+    // TODO Filter: rmove delegate
     public ScrolledWindowHandle CreateView(Action<ColumnViewControl> onCreated)
     {
         handle = ColumnView.New();

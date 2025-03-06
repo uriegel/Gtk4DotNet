@@ -5,6 +5,7 @@ using GtkDotNet.SubClassing;
 
 static class ChangingColumnViews
 {
+    //Memory leak in sort model: delegates
     // TODO add to selection_view
     // TODO remove from selection_view
     public static int Run()
@@ -38,6 +39,10 @@ static class ChangingColumnViews
         colNumber?.Dispose();
         colID?.Dispose();
         colText?.Dispose();
+        if (listModelHandle?.IsFloating != null)
+            listModelHandle.IsFloating = false;
+        listModelHandle?.Dispose();
+
         return 0;
     }
 
@@ -99,7 +104,7 @@ static class ChangingColumnViews
                 {
                     var sorter = cv.GetSorter();
                     var selModel = MultiSelection.New(SortListModel.New(model, sorter));
-                    // TODO selModel has to be disposed!
+                    listModelHandle = selModel as ObjectFloatingHandle;
                     cv.SetModel(selModel);
                 });
     }
@@ -146,6 +151,7 @@ static class ChangingColumnViews
                 {
                     var sorter = cv.GetSorter();
                     var selModel = MultiSelection.New(SortListModel.New(modelItem2, sorter));
+                    listModelHandle = selModel as ObjectFloatingHandle;
                     cv.SetModel(selModel);
                 });
     }
@@ -203,6 +209,7 @@ static class ChangingColumnViews
     static CustomSorterHandle numberSorter = CustomSorter.New<GObjectHandle>(NumberCompare);
     static CustomSorterHandle textSorter = CustomSorter.New<GObjectHandle>(TextCompare);
     static CustomSorterHandle idSorter = CustomSorter.New<GObjectHandle>(IDCompare);
+    static ObjectHandle? listModelHandle;
 
     static void OnEMailBind(ListItemHandle listItem)
     {

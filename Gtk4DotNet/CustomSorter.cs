@@ -18,16 +18,15 @@ public static class CustomSorter
             data2.IsFloating = true;
             return compareFunc(data1, data2);
         }
-        // TODO addweakref
         CompareDataDelegate compareDataDelegate = RawCompare;
-        GtkDelegates.Add(compareDataDelegate);
-        return New(compareDataDelegate, 0, 0);
+        var key = GtkDelegates.Add(compareDataDelegate);
+        var res = New(compareDataDelegate, 0, 0);
+        res.AddWeakRefRaw(() => GtkDelegates.Remove(key));
+        return res;
     }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_custom_sorter_new", CallingConvention = CallingConvention.Cdecl)]
     extern static CustomSorterHandle New(CompareDataDelegate compare, nint nil, nint nil2);
 }
-// TODO free delegate: 
-// TODO perhaps subclassing CustomSorter and freeing in finalizer
 
 delegate int CompareDataDelegate(nint data1, nint data2, nint nil);
