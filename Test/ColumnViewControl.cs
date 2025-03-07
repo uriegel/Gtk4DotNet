@@ -38,11 +38,11 @@ static class ColumnViewControlApp
 
     static void ChangeItems(ToggleButtonHandle toggleButton)
     {
-        // TODO 6 Items in first model
-        // TODO First change: add 2 Items at position 2, from original model
-        // TODO First change: add 2 Items at position 2, from original model, different sort order
-        // TODO First change: add 2 Items at position 2, from selection model
-        // TODO First change: add 2 Items at position 2, from selection model, different sort order
+        columnView.InsertItems(2, [
+            new Type1("New Item 1", 2001),
+            new Type1("New Item 2", 2012),
+            new Type1("New Item 3", 2023)]);
+
         // TODO return ObservableModel to insert, replace and remove items
     }
 
@@ -101,7 +101,13 @@ static class ColumnViewControlApp
     }
 
     static ObservableModel<Type1> GetModel1()
-        => new([new Type1("Uwe Riegel", 1965), new Type1("Jim Doe", 222), new Type1("Jane Doe", 9999)]);
+        => new([
+            new Type1("Uwe Riegel", 1965),
+            new Type1("James Bond", 1962),
+            new Type1("Harry Henry", 1982),
+            new Type1("Mike Michels", 1992),
+            new Type1("Jim Doe", 222),
+            new Type1("Jane Doe", 9999)]);
 
     static ObservableModel<Type2> GetModel2()
         => new([.. Enumerable.Range(1, 100_000).Select(n => new Type2($"item{n}@dom.de", $"ID-{n}", n % 3 == 0))]);

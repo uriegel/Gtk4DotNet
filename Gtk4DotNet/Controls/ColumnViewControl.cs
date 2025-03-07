@@ -123,6 +123,11 @@ public class ColumnViewControl
         //TODO clear it onweakref from this class
     }
 
+    public void InsertItems<T>(uint pos, IEnumerable<T> items)
+    {
+        listModelHandle?.Splice(pos, [.. items.Select(n => GManagedObject<T>.New(n).Handle)]);
+    }
+
     public IEnumerable<T> Items<T>()
     {
         if (handle != null)
