@@ -128,7 +128,7 @@ static class TwoColumnViews
 
     static readonly ObjectRef<ColumnViewHandle> listViewRef = new();
 
-    static ListModelHandle? model2;
+    static IListModel? model2;
     static CustomSorterHandle sorter = CustomSorter.New<GObjectHandle>(NameCompare);
     static CustomFilterHandle filter = CustomFilter.New<GObjectHandle>(FilterContact);
     static CustomSorterHandle numberSorter = CustomSorter.New<GObjectHandle>(NumberCompare);

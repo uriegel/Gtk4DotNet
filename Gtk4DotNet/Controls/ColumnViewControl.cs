@@ -99,6 +99,7 @@ public class ColumnViewControl
         {
             var sorter = handle.GetSorter();
             var sortListModel = SortListModel.New(model, sorter);
+
             IListModel selModel = multiSelection ? GtkDotNet.MultiSelection.New(sortListModel) : SingleSelection.New(sortListModel);
             listModelHandle = model;
             handle.SetModel(selModel);
@@ -155,7 +156,7 @@ public class ColumnViewControl
     static readonly Dictionary<string, object> registeredObjects = [];
     readonly List<ColumnViewColumnHandle> columns = [];
     readonly List<CustomSorterHandle> sorters = [];
-    ObjectHandle? listModelHandle;
+    IListModel? listModelHandle;
     ColumnViewHandle? handle;
     bool multiSelection;
 }

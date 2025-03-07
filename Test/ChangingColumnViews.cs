@@ -228,7 +228,7 @@ static class ChangingColumnViews
     static CustomSorterHandle? numberSorter;
     static CustomSorterHandle? textSorter;
     static CustomSorterHandle? idSorter;
-    static ObjectHandle? listModelHandle;
+    static IListModel? listModelHandle;
 
     static void OnEMailBind(ListItemHandle listItem)
     {
