@@ -105,7 +105,7 @@ public class ColumnViewControl
             handle.SetModel(selModel);
         }
 
-        return new Model<T>(listModelHandle);
+        return new Model<T>(this, listModelHandle);
         //  class ObservableModel<T>(): IDisposable
         // {
         //     public ObservableCollection<T> Items 
@@ -122,28 +122,6 @@ public class ColumnViewControl
         //TODO clear it onweakref from this class
     }
 
-    public void InsertItems<T>(uint pos, IEnumerable<T> items)
-    {
-        listModelHandle?.Splice(pos, [.. items.Select(n => GManagedObject<T>.New(n).Handle)]);
-    }
-
-    public IEnumerable<T> Items<T>()
-    {
-        if (handle != null)
-        {
-            uint pos = 0;
-            var model = handle.GetModel<SelectionHandle>();
-            while (true)
-            {
-                var oh = model.GetItem<GObjectHandle>(pos++);
-                if (!oh.IsInvalid && oh.GetInstance() is GManagedObject<T> item && item != null && item.Value != null)
-                    yield return item.Value;
-                else
-                    break;
-            }
-        }
-    }
-
     void Release()
     {
         columns.ForEach(h => h.Dispose());
@@ -156,10 +134,28 @@ public class ColumnViewControl
         sorters.Clear();
     }
 
-    class Model<T>(IListModel? listModelHandle) : IColumnViewModel<T>
+    class Model<T>(ColumnViewControl columnView,  IListModel? listModelHandle) : IColumnViewModel<T>
     {
+        public IEnumerable<T> Items()
+        {
+            if (columnView.handle != null)
+            {
+                uint pos = 0;
+                var model = columnView.handle.GetModel<SelectionHandle>();
+                while (true)
+                {
+                    var oh = model.GetItem<GObjectHandle>(pos++);
+                    if (!oh.IsInvalid && oh.GetInstance() is GManagedObject<T> item && item != null && item.Value != null)
+                        yield return item.Value;
+                    else
+                        break;
+                }
+            }
+        }
         public void Insert(IEnumerable<T> items)
             => listModelHandle?.Splice([.. items.Select(n => GManagedObject<T>.New(n).Handle)]);
+        public void Insert(uint pos, IEnumerable<T> items)
+            => listModelHandle?.Splice(pos, [.. items.Select(n => GManagedObject<T>.New(n).Handle)]);
     }
 
     ScrolledWindowHandle? scrolledWindow;

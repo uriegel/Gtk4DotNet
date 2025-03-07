@@ -1,3 +1,4 @@
+using CsTools.Extensions;
 using GtkDotNet;
 using GtkDotNet.Controls;
 using GtkDotNet.SafeHandles;
@@ -25,6 +26,7 @@ static class ColumnViewControlApp
                             .Child(columnView.CreateView(cv => cv
                                 .MultiSelection()
                                 .SetColumns(GetColumns1())
+                                    .SideEffect(m => model1 = m)
                                     .Insert(GetItems1())))
                             .Show())
                 .Run(0, IntPtr.Zero);
@@ -34,18 +36,16 @@ static class ColumnViewControlApp
         if (toggleButton.Active())
             columnView.SetColumns(GetColumns2()).Insert(GetItems2());
         else
-            columnView.SetColumns(GetColumns1()).Insert(GetItems1());
+            columnView.SetColumns(GetColumns1())
+                .SideEffect(m => model1 = m)
+                .Insert(GetItems1());
     }
 
     static void ChangeItems(ToggleButtonHandle toggleButton)
-    {
-        columnView.InsertItems(2, [
+        => model1?.Insert(2, [
             new Type1("New Item 1", 2001),
             new Type1("New Item 2", 2012),
             new Type1("New Item 3", 2023)]);
-
-        // TODO return ObservableModel to insert, replace and remove items
-    }
 
     static ColumnViewControlColumn<Type1>[] GetColumns1()
         => [ new()
@@ -115,6 +115,7 @@ static class ColumnViewControlApp
 
     static readonly ColumnViewControl columnView = new();
     static readonly ObjectRef<ToggleButtonHandle> changeItems = new();
+    static IColumnViewModel<Type1>? model1;
 }
 
 record Type1(string Name, int Number);
