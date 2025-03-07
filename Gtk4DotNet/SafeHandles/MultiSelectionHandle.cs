@@ -1,6 +1,6 @@
 namespace GtkDotNet.SafeHandles;
 
-public class MultiSelectionHandle : ObjectFloatingHandle, IListModel
+public class MultiSelectionHandle : SelectionHandle
 {
     public MultiSelectionHandle() : base() {}
 }

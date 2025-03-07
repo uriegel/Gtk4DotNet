@@ -122,6 +122,23 @@ public class ColumnViewControl
         //TODO clear it onweakref from this class
     }
 
+    public IEnumerable<T> Items<T>()
+    {
+        if (handle != null)
+        {
+            uint pos = 0;
+            var model = handle.GetModel<SelectionHandle>();
+            while (true)
+            {
+                var oh = model.GetItem<GObjectHandle>(pos++);
+                if (!oh.IsInvalid && oh.GetInstance() is GManagedObject<T> item && item != null && item.Value != null)
+                    yield return item.Value;
+                else
+                    break;
+            }
+        }
+    }
+
     void Release()
     {
         columns.ForEach(h => h.Dispose());

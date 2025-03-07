@@ -20,13 +20,18 @@ static class ColumnViewControlApp
                                 .PackEnd(ToggleButton.New()
                                     .Ref(changeItems)
                                     .Label("Change Items")
-                                    .OnToggled(ModelToggled)))
+                                    .OnToggled(Test)))
                             .DefaultSize(600, 800)
                             .Child(columnView.CreateView(cv => cv
                                 .MultiSelection()
                                 .SetColumns(GetColumns1(), GetModel1())))
                             .Show())
                 .Run(0, IntPtr.Zero);
+
+    static void Test(ToggleButtonHandle _)
+    {
+        var items = columnView.Items<Type1>().ToArray();
+    }
 
     static void ModelToggled(ToggleButtonHandle toggleButton)
     {
@@ -94,7 +99,7 @@ static class ColumnViewControlApp
         => new([new Type1("Uwe Riegel", 1965), new Type1("Jim Doe", 222), new Type1("Jane Doe", 9999)]);
 
     static ObservableModel<Type2> GetModel2()
-        => new([.. Enumerable.Range(1, 30).Select(n => new Type2($"item{n}@dom.de", $"ID-{n}", n % 3 == 0))]);
+        => new([.. Enumerable.Range(1, 100_000).Select(n => new Type2($"item{n}@dom.de", $"ID-{n}", n % 3 == 0))]);
 
     static readonly ColumnViewControl columnView = new();
     static readonly ObjectRef<ToggleButtonHandle> changeItems = new();

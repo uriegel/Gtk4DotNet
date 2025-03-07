@@ -6,8 +6,8 @@ namespace GtkDotNet.Controls;
 
 class GManagedObjectClass<T>(string name, Func<nint, GManagedObject<T>> constructor)
     : SubClass<GObjectHandle>(GTypeEnum.GObject, name, constructor)
-{ 
-    Dictionary<string, object> registeredObjects = new();
+{
+    readonly Dictionary<string, object> registeredObjects = [];
 }
 
 class GManagedObject<T>(nint obj) : SubClassInst<GObjectHandle>(obj)

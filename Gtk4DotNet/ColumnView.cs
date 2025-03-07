@@ -14,6 +14,14 @@ public static class ColumnView
     public static ColumnViewHandle SetModel(this ColumnViewHandle columnView, IListModel selectionModel)
         => columnView.SideEffect(c => c.SetModel(selectionModel.GetInternalHandle()));
 
+    public static THandle GetModel<THandle>(this ColumnViewHandle columnView)
+        where THandle : SelectionHandle, new()
+    {
+        var res = new THandle();
+        res.SetInternalHandle(GetModel(columnView));
+        return res;
+    }
+
     public static ColumnViewHandle AppendColumn(this ColumnViewHandle columnView, ColumnViewColumnHandle column)
         => columnView.SideEffect(c => c._AppendColumn(column));
 
@@ -37,5 +45,8 @@ public static class ColumnView
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_set_model", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetModel(this ColumnViewHandle columnView, nint selectionModel);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_get_model", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint GetModel(this ColumnViewHandle columnView);
 }
 
