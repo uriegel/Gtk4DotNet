@@ -35,6 +35,9 @@ public static class Application
         return window;
     }
 
+    public static ApplicationWindowHandle ManagedApplicationWindow(this ApplicationHandle app)
+        => CustomWindow(app, "ManagedApplicationWindow");
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_add_window", CallingConvention = CallingConvention.Cdecl)]
     public extern static void AddWindow(this ApplicationHandle app, WindowHandle window);
 

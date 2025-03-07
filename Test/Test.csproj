@@ -40,6 +40,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="./resources/customcolumnview.ui">
+      <LogicalName>customcolumnview</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="./resources/windowwebviewsubclass.ui">
       <LogicalName>windowwebviewsubclass</LogicalName>
     </EmbeddedResource>
