@@ -20,7 +20,7 @@ static class ColumnViewControlApp
                                 .PackEnd(ToggleButton.New()
                                     .Ref(changeItems)
                                     .Label("Change Items")
-                                    .OnToggled(Test)))
+                                    .OnToggled(ChangeItems)))
                             .DefaultSize(600, 800)
                             .Child(columnView.CreateView(cv => cv
                                 .MultiSelection()
@@ -28,17 +28,17 @@ static class ColumnViewControlApp
                             .Show())
                 .Run(0, IntPtr.Zero);
 
-    static void Test(ToggleButtonHandle _)
-    {
-        var items = columnView.Items<Type1>().ToArray();
-    }
-
     static void ModelToggled(ToggleButtonHandle toggleButton)
     {
         if (toggleButton.Active())
             columnView.SetColumns(GetColumns2(), GetModel2());
         else
             columnView.SetColumns(GetColumns1(), GetModel1());
+    }
+
+    static void ChangeItems(ToggleButtonHandle toggleButton)
+    {
+
     }
 
     static ColumnViewControlColumn<Type1>[] GetColumns1()
