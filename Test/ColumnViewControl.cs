@@ -38,7 +38,12 @@ static class ColumnViewControlApp
 
     static void ChangeItems(ToggleButtonHandle toggleButton)
     {
-
+        // TODO 6 Items in first model
+        // TODO First change: add 2 Items at position 2, from original model
+        // TODO First change: add 2 Items at position 2, from original model, different sort order
+        // TODO First change: add 2 Items at position 2, from selection model
+        // TODO First change: add 2 Items at position 2, from selection model, different sort order
+        // TODO return ObservableModel to insert, replace and remove items
     }
 
     static ColumnViewControlColumn<Type1>[] GetColumns1()
