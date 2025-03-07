@@ -28,7 +28,7 @@ public class ColumnViewControl
         return this;
     }
 
-    public void SetColumns<T>(ColumnViewControlColumn<T>[] columns, ObservableModel<T> items)
+    public IModel<T> SetColumns<T>(ColumnViewControlColumn<T>[] columns)
     {
         if (scrolledWindow != null)
         {
@@ -92,8 +92,8 @@ public class ColumnViewControl
         }
 
         var model = ListStore
-            .New(GManagedObject<T>.GType)
-            .Splice([.. items.Items.Select(n => GManagedObject<T>.New(n).Handle)]);
+            .New(GManagedObject<T>.GType);
+//            .Splice([.. items.Items.Select(n => GManagedObject<T>.New(n).Handle)]);
 
         if (handle != null)
         {
@@ -105,8 +105,7 @@ public class ColumnViewControl
             handle.SetModel(selModel);
         }
 
-
-
+        return new Model<T>(listModelHandle);
         //  class ObservableModel<T>(): IDisposable
         // {
         //     public ObservableCollection<T> Items 
@@ -155,7 +154,13 @@ public class ColumnViewControl
         columns.Clear();
         sorters.ForEach(h => h.Dispose());
         sorters.Clear();
-    }        
+    }
+
+    class Model<T>(IListModel? listModelHandle) : IModel<T>
+    {
+        public void Insert(IEnumerable<T> items)
+            => listModelHandle?.Splice([.. items.Select(n => GManagedObject<T>.New(n).Handle)]);
+    }
 
     ScrolledWindowHandle? scrolledWindow;
     static readonly Dictionary<string, object> registeredObjects = [];
