@@ -28,7 +28,7 @@ public class ColumnViewControl
         return this;
     }
 
-    public IModel<T> SetColumns<T>(ColumnViewControlColumn<T>[] columns)
+    public IColumnViewModel<T> SetColumns<T>(ColumnViewControlColumn<T>[] columns)
     {
         if (scrolledWindow != null)
         {
@@ -156,7 +156,7 @@ public class ColumnViewControl
         sorters.Clear();
     }
 
-    class Model<T>(IListModel? listModelHandle) : IModel<T>
+    class Model<T>(IListModel? listModelHandle) : IColumnViewModel<T>
     {
         public void Insert(IEnumerable<T> items)
             => listModelHandle?.Splice([.. items.Select(n => GManagedObject<T>.New(n).Handle)]);
