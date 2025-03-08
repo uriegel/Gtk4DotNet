@@ -78,13 +78,22 @@ WriteLine($"Return value: {ReadLine() switch
     _ => 0
 }}");
 
-// TODO Check if Models are disposed
-// TODO SubClass<GObjectHandle> => GObject<T>
-// TODO Selected Item with red Border
+// TODO Focused Item with gray Border: css
+// TODO Inherit MultiSelectionModel to adapt in another custom inheritance:
+// TODO The abstract multiselection is suplied with keyboard and mouse events from ColumnView
+// TODO The abstract multiselection translates C style selections to C# comfort selections
+// TODO Single Selection via arrow up/down
+// TODO Switch to multi selection when more than two items are selected
+// TODO Focus Border always:
+// row:focus {
+//     /*outline: 1px solid red; */ /* Force a visible focus outline */
+// 	border-width: 1px;
+// 	border-style: solid;
+// 
+// 
+// }
+
 // TODO Dark theme, light theme: https://github.com/jbenner-radham/rust-gtk4-css-styling
 
 // TODO ColumnView: https://discourse.gnome.org/t/tips-to-initialize-gtk4s-columnview-python/19028
 // https://toshiocp.github.io/Gtk4-tutorial/sec32.html
-
-// TODO Subclassing with attributes??
-

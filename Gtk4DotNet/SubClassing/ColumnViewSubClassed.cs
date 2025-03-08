@@ -13,9 +13,6 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
     // TODO Filter: remove delegate
     public bool MultiSelection { get; set; }
 
-    // TODO name from ..Class
-    // TODO to base class
-
     public ColumnViewSubClassed(nint obj) : base(obj)
     {
         columnView = ColumnView.New();

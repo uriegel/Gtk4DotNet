@@ -5,6 +5,7 @@ using GtkDotNet.SubClassing;
 
 static class ChangingColumnViews
 {
+    // TODO remove this example!
     // TODO only the last list view items are disposed on close
     // TODO add to selection_view
     // TODO remove from selection_view
