@@ -14,7 +14,7 @@ static class MenuSubclass
                 app
                     .SubClass(new MenuWindowClass(GTypeEnum.Window, "MenuWindow", p => new MenuWindow(p)))
                     .SideEffect(a =>
-                        GObject.New<WindowHandle>("MenuWindow".TypeFromName())
+                        MenuWindow.Create("MenuWindow")
                         .SetApplication(app)
                         .Show()))                    
             .AddActions(

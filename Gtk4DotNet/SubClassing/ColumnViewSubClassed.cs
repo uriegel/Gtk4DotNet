@@ -1,47 +1,40 @@
+using GtkDotNet.Controls;
 using GtkDotNet.SafeHandles;
-using GtkDotNet.SubClassing;
 
-namespace GtkDotNet.Controls;
+namespace GtkDotNet.SubClassing;
 
-public class ColumnViewControl
+public class ColumnViewSubClassedClass(string name, Func<nint, ColumnViewSubClassed> constructor)
+    : SubClass<CustomColumnViewHandle>(GTypeEnum.ScrolledWindow, name, constructor)
+{ }
+
+public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle>
 {
-
     // TODO Filter
     // TODO Filter: remove delegate
-    public ScrolledWindowHandle CreateView(Action<ColumnViewControl> onCreated)
+    public bool MultiSelection { get; set; }
+
+    // TODO name from ..Class
+    // TODO to base class
+
+    public ColumnViewSubClassed(nint obj) : base(obj)
     {
-        handle = ColumnView.New();
-        handle.AddWeakRef(Release);
-
-        onCreated(this);
-
-        scrolledWindow = ScrolledWindow
-            .New()
-            .Policy(PolicyType.Never, PolicyType.Automatic)
-            .Child(handle);
-        return scrolledWindow;
+        columnView = ColumnView.New();
+        Handle.Policy(PolicyType.Never, PolicyType.Automatic);
+        Handle.Child(columnView);
+        columnView.AddWeakRef(Release);
     }
 
-    public ColumnViewControl MultiSelection()
+    public IColumnViewModel<T> SetColumns<T>(Column<T>[] columns)
     {
-        multiSelection = true;
-        return this;
-    }
-
-    public IColumnViewModel<T> SetColumns<T>(ColumnViewControlColumn<T>[] columns)
-    {
-        if (scrolledWindow != null)
-        {
-            scrolledWindow.RemoveChild();
-            handle?.Dispose();
-            handle = ColumnView.New();
-            handle.AddWeakRef(Release);
-            scrolledWindow.Child(handle);
-        }
+        Handle.RemoveChild();
+        columnView.Dispose();
+        columnView = ColumnView.New();
+        columnView.AddWeakRef(Release);
+        Handle.Child(columnView);
 
         this.columns.ForEach(h =>
         {
-            handle?.RemoveColumn(h);
+            columnView.RemoveColumn(h);
             h.Dispose();
         });
         this.columns.Clear();
@@ -88,24 +81,20 @@ public class ColumnViewControl
                 sorters.Add(sorter);
             }
             this.columns.Add(colHandle);
-            handle?.AppendColumn(colHandle);
+            columnView.AppendColumn(colHandle);
         }
 
         var model = ListStore
             .New(GManagedObject<T>.GType);
-//            .Splice([.. items.Items.Select(n => GManagedObject<T>.New(n).Handle)]);
+        //            .Splice([.. items.Items.Select(n => GManagedObject<T>.New(n).Handle)]);
 
-        if (handle != null)
-        {
-            var sorter = handle.GetSorter();
-            var sortListModel = SortListModel.New(model, sorter);
+        var sortListModel = SortListModel.New(model, columnView.GetSorter());
 
-            IListModel selModel = multiSelection ? GtkDotNet.MultiSelection.New(sortListModel) : SingleSelection.New(sortListModel);
-            listModelHandle = model;
-            handle.SetModel(selModel);
-        }
+        IListModel selModel = MultiSelection ? GtkDotNet.MultiSelection.New(sortListModel) : SingleSelection.New(sortListModel);
+        listModelHandle = model;
+        columnView.SetModel(selModel);
 
-        return new Model<T>(this, listModelHandle);
+        return new Model<T>(columnView, listModelHandle);
         //  class ObservableModel<T>(): IDisposable
         // {
         //     public ObservableCollection<T> Items 
@@ -133,23 +122,31 @@ public class ColumnViewControl
         sorters.ForEach(h => h.Dispose());
         sorters.Clear();
     }
+    
+    public class Column<TObj>
+    {
+        public string Title { get; set; } = string.Empty;
+        public bool Expanded { get; set; }
+        public bool Resizeable { get; set; }
+        public Func<WidgetHandle> OnItemSetup { get; set; } = () => Label.New("").HAlign(Align.Start);
+        public Action<ListItemHandle, TObj>? OnItemBind { get; set; }
+        public Func<TObj, string>? OnLabelBind { get; set; } 
+        public Func<TObj, TObj, int>? OnSort { get; set; } 
+    }
 
-    class Model<T>(ColumnViewControl columnView,  IListModel? listModelHandle) : IColumnViewModel<T>
+    class Model<T>(ColumnViewHandle columnView, IListModel? listModelHandle) : IColumnViewModel<T>
     {
         public IEnumerable<T> Items()
         {
-            if (columnView.handle != null)
+            uint pos = 0;
+            var model = columnView.GetModel<SelectionHandle>();
+            while (true)
             {
-                uint pos = 0;
-                var model = columnView.handle.GetModel<SelectionHandle>();
-                while (true)
-                {
-                    var oh = model.GetItem<GObjectHandle>(pos++);
-                    if (!oh.IsInvalid && oh.GetInstance() is GManagedObject<T> item && item != null && item.Value != null)
-                        yield return item.Value;
-                    else
-                        break;
-                }
+                var oh = model.GetItem<GObjectHandle>(pos++);
+                if (!oh.IsInvalid && oh.GetInstance() is GManagedObject<T> item && item != null && item.Value != null)
+                    yield return item.Value;
+                else
+                    break;
             }
         }
         public void Insert(IEnumerable<T> items)
@@ -158,12 +155,9 @@ public class ColumnViewControl
             => listModelHandle?.Splice(pos, [.. items.Select(n => GManagedObject<T>.New(n).Handle)]);
     }
 
-    ScrolledWindowHandle? scrolledWindow;
     static readonly Dictionary<string, object> registeredObjects = [];
     readonly List<ColumnViewColumnHandle> columns = [];
     readonly List<CustomSorterHandle> sorters = [];
     IListModel? listModelHandle;
-    ColumnViewHandle? handle;
-    bool multiSelection;
+    ColumnViewHandle columnView = new(0);
 }
-

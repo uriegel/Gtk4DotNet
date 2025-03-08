@@ -64,10 +64,10 @@ static class SubClassing
                        .Child(
                             Box
                                 .New(Orientation.Vertical)
-                                .Append(GObject.New<ButtonHandle>("CustomButton".TypeFromName())
+                                .Append(CustomButton.Create("CustomButton")
                                     .Label("Button 1")
                                     .OnSlowClicked(p => WriteLine($"slow click event received: {p}")))
-                                .Append(GObject.New<ButtonHandle>("CustomButton".TypeFromName())
+                                .Append(CustomButton.Create("CustomButton")
                                     .Label("Button 2"))
                        )
                        .Show())

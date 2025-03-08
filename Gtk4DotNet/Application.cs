@@ -18,7 +18,7 @@ public static class Application
                 .SideEffect(_ => Gtk.Init());
 
     public static ApplicationHandle SubClass<THandle>(this ApplicationHandle app, SubClass<THandle> subClass)
-            where THandle : ObjectHandle
+            where THandle : ObjectHandle, new()
         => app.SideEffect(_ => subClasses.Add(subClass));
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_window_new", CallingConvention = CallingConvention.Cdecl)]
@@ -31,7 +31,6 @@ public static class Application
     {
         var window = GObject.New<ApplicationWindowHandle>(customWindow.TypeFromName());
         window.SetApplication(app);
-        window.GetInstance()?.Initialize();
         return window;
     }
 

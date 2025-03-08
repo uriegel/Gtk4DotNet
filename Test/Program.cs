@@ -66,7 +66,7 @@ WriteLine($"Return value: {ReadLine() switch
     "23" => TwoColumnViews.Run(),
     "24" => ChangingColumnViews.Run(),
     "25" => ColumnViewControlApp.Run(),
-    "26" => CustomColumnView.Run(),
+    "26" => CustomColumnViewApp.Run(),
     "27" => Example1.Run(),
     "28" => Example2.Run(),
     "29" => Example3.Run(),

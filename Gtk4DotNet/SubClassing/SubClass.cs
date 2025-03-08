@@ -4,7 +4,7 @@ using GtkDotNet.SafeHandles;
 namespace GtkDotNet.SubClassing;
 
 public abstract class SubClass<THandle>
-    where THandle : ObjectHandle
+    where THandle : ObjectHandle, new()
 {
     public GTypeHandle Type { get; }
 

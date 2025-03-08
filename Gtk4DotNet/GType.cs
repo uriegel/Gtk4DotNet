@@ -43,6 +43,8 @@ public static class GType
         GTypeEnum.Window => Window.Type(),
         GTypeEnum.ApplicationWindow => ApplicationWindow.Type(),
         GTypeEnum.WebKitWebView => WebKit.Type(),
+        GTypeEnum.ColumnView => ColumnView.Type(),
+        GTypeEnum.ScrolledWindow => ScrolledWindow.Type(),
         _ => GObject.Type(),
     };
 

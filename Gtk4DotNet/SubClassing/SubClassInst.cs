@@ -4,15 +4,17 @@ using GtkDotNet.SafeHandles;
 namespace GtkDotNet.SubClassing;
 
 public abstract class SubClassInst<THandle>
-    where THandle : ObjectHandle
+    where THandle : ObjectHandle, new()
 {
     public static implicit operator THandle(SubClassInst<THandle> obj) => obj.Handle;
+
+    public static THandle Create(string name)
+        => GObject.New<THandle>(name.TypeFromName());
 
     public THandle Handle { get; }
 
     protected SubClassInst(nint obj) => Handle = CreateHandle(obj);
     protected internal virtual void OnCreate() { }
-    internal protected virtual void Initialize() { }
     protected virtual void OnFinalize() { }
     protected virtual void OnSetProperty(uint propId, nint value) { }
     protected virtual void OnGetProperty(uint propId, nint value) { }
@@ -50,7 +52,7 @@ public abstract class SubClassInst<THandle>
 public static class THandleExtensions
 {
     public static SubClassInst<THandle>? GetInstance<THandle>(this THandle handle)
-        where THandle : ObjectHandle
+        where THandle : ObjectHandle, new()
         => SubClassInst<THandle>.GetInstance(handle.GetInternalHandle());
     
 }

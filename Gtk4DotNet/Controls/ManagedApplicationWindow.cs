@@ -17,7 +17,7 @@ public class ManagedApplicationWindowClass : SubClass<ApplicationWindowHandle>
         : base(GTypeEnum.ApplicationWindow, "ManagedApplicationWindow", constructor)
             => this.template = template;
 
-    string? template;
+    readonly string? template;
 }
 
 public class ManagedApplicationWindow(nint obj) : SubClassInst<ApplicationWindowHandle>(obj)
