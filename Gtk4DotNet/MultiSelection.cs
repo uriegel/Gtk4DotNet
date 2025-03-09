@@ -5,7 +5,9 @@ namespace GtkDotNet;
 
 public static class MultiSelection
 {
+    public static MultiSelectionHandle New(IListModel model) => New(model.GetInternalHandle());
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_multi_selection_new", CallingConvention = CallingConvention.Cdecl)]
-    public extern static MultiSelectionHandle New(ListModelHandle model);
+    extern static MultiSelectionHandle New(nint model);
 }
 
