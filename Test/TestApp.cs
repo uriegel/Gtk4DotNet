@@ -78,6 +78,9 @@ static class TestApp
                                                 var model = MultiSelection.New(SortListModel.New(model2!, sorter));
                                                 cv.SetModel(model);
                                             })
+                                        .AddController(EventControllerFocus.New()
+                                            .OnEnter(() => IActionMap.GetAction("down").SetEnabled(true))
+                                            .OnLeave(() => IActionMap.GetAction("down").SetEnabled(false)))
                                         ), true, true))
                             .Show())
                 .AddActions([new GtkAction("down", () => Console.WriteLine("Down"), "Down")])
