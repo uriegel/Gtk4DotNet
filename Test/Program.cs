@@ -37,6 +37,7 @@ WriteLine(
     32: Example 6
     33: Example 7
     34: Example 8
+    35: Test 
     <any>: Quit
     """);
 WriteLine($"Return value: {ReadLine() switch 
@@ -75,6 +76,7 @@ WriteLine($"Return value: {ReadLine() switch
     "32" => Example6.Run(),
     "33" => Example7.Run(),
     "34" => Example8.Run(),
+    "35" => TestApp.Run(),
     _ => 0
 }}");
 

@@ -1,6 +1,3 @@
-using System.Runtime.InteropServices;
-using CsTools.Extensions;
-
 namespace GtkDotNet.SafeHandles;
 
 public class CairoWeakHandle : CairoHandle

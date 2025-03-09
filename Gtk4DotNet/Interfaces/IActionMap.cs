@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using CsTools.Extensions;
 using GtkDotNet.SafeHandles;
 
 namespace GtkDotNet;
@@ -11,6 +12,9 @@ public interface IActionMap
         _AddAction(GetInternalHandle(), action);
         return this;
     }
+
+    public static nint GetAction(string name)
+        => actions[name];
 
     IActionMap AddActions(IEnumerable<GtkAction> actions)
     {
@@ -25,6 +29,7 @@ public interface IActionMap
                 GtkDelegates.Add(action.Action);
                 Gtk.SignalConnectAction(simpleAction, "activate", Marshal.GetFunctionPointerForDelegate(action.Action as Delegate), IntPtr.Zero, 0);
                 AddAction(GetInternalHandle(), simpleAction);
+                IActionMap.actions.Add(action.Name, simpleAction);
             }
             else
             {
@@ -36,6 +41,7 @@ public interface IActionMap
                 action.action = simpleAction;
                 Gtk.SignalConnectAction(simpleAction, "change-state", Marshal.GetFunctionPointerForDelegate(action.StateChanged), IntPtr.Zero, 0);
                 AddAction(GetInternalHandle(), simpleAction);
+                IActionMap.actions.Add(action.Name, simpleAction);
             }
         }
 
@@ -86,6 +92,8 @@ public interface IActionMap
 
     // [DllImport(Libs.LibGtk, EntryPoint="g_simple_action_set_enabled", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void EnableAction(IntPtr action, int enabled);
+
+    static readonly  Dictionary<string, nint> actions = [];
 }
 
 public static class IActionMapExtensions
@@ -96,12 +104,15 @@ public static class IActionMapExtensions
         actionMap.AddActions(actions);
         return actionMap;
     }
-    
+
     public static THandle AddAction<THandle>(this THandle actionMap, ActionHandle action)
         where THandle : IActionMap
     {
         actionMap.AddAction(action);
         return actionMap;
     }
+    
+    [DllImport(Libs.LibGtk, EntryPoint = "g_simple_action_set_enabled", CallingConvention = CallingConvention.Cdecl)]
+    public extern static nint SetEnabled(this nint action, bool enabled);
 }
 
