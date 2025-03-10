@@ -108,8 +108,13 @@ public static class GObject
     [DllImport(Libs.LibGtk, EntryPoint = "g_signal_emit", CallingConvention = CallingConvention.Cdecl)]
     public extern static void EmitSignal(this ObjectHandle obj, uint signalId, uint detail, nint param1, nint param2, nint param3);
     [DllImport(Libs.LibGtk, EntryPoint = "g_signal_emit", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void gEmitSignal(ObjectHandle obj, uint signalId, uint detail, nint param1, nint param2, nint param3, nint param4);
+    public extern static void EmitSignal(ObjectHandle obj, uint signalId, uint detail, nint param1, nint param2, nint param3, nint param4);
 
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_set_data", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void SetData(this ObjectHandle obj, string key, nint data);
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_get_data", CallingConvention = CallingConvention.Cdecl)]
+    public extern static nint GetData(this ObjectHandle obj, string key);
+    
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_ref", CallingConvention = CallingConvention.Cdecl)]
     internal extern static void Ref(this ObjectHandle obj);
 

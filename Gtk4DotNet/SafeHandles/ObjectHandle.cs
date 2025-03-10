@@ -1,4 +1,3 @@
-using System.Reflection.Metadata.Ecma335;
 using CsTools.Extensions;
 
 namespace GtkDotNet.SafeHandles;

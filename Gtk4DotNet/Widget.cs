@@ -84,7 +84,10 @@ public static class Widget
         where THandle : WidgetHandle
         => widget.SideEffect(w => w._AddController(eventController.SideEffect(n => n.IsFloating = true)));
 
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_destroy", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_remove_controller", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void RemoveController(this WidgetHandle widget, EventControllerHandle eventController);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_destroy", CallingConvention = CallingConvention.Cdecl)]
     public extern static void Destroy(this WidgetHandle widget);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_grab_focus", CallingConvention = CallingConvention.Cdecl)]
@@ -307,7 +310,7 @@ public static class Widget
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_add_controller", CallingConvention = CallingConvention.Cdecl)]
     extern static void _AddController(this WidgetHandle widget, EventControllerHandle eventController);
 
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_set_sensitive", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_set_sensitive", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetSensitive(this WidgetHandle widget, bool sensitive);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_insert_after", CallingConvention = CallingConvention.Cdecl)]

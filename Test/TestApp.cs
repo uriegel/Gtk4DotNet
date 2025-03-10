@@ -3,6 +3,12 @@ using GtkDotNet;
 using GtkDotNet.SafeHandles;
 using GtkDotNet.SubClassing;
 
+
+// TODO GtkColumnView::activate instead of bind unbind and EventControllerFocus
+// TODO arraw down to focus the next item 
+// TODO Ins to select the current item and focus the next
+// TODO CSS Provider for focused element
+// TODO get focused item
 static class TestApp
 {
     public static int Run()
@@ -21,7 +27,8 @@ static class TestApp
             itemNameFactory = SignalListItemFactory
                 .New()
                 .Setup(OnListItemSetup)
-                .Bind(OnListItemBind);
+                .Bind(OnListItemBind)
+                .Unbind(OnListItemUnbind);
             itemEMailFactory = SignalListItemFactory
                 .New()
                 .Setup(OnListItemSetup)
@@ -47,7 +54,7 @@ static class TestApp
                                     .Label("Action")
                                     .OnToggled(ActionEnabled)))
                             .Title("Hello Gtk👍")
-                            .DefaultSize(800, 800)
+                            .DefaultSize(800, 300)
                             .Child(Paned
                                 .New(Orientation.Horizontal)
                                 .StartChild(ScrolledWindow
@@ -63,6 +70,7 @@ static class TestApp
                                     .Policy(PolicyType.Never, PolicyType.Automatic)
                                     .Child(ColumnView
                                         .New()
+                                        .Ref(columnView)
                                         .AppendColumn(ColumnViewColumn.New("Name", itemNameFactory!)
                                             .Expand()
                                             .Resizeable()
@@ -83,10 +91,21 @@ static class TestApp
                                             .OnLeave(() => IActionMap.GetAction("down").SetEnabled(false)))
                                         ), true, true))
                             .Show())
-                .AddActions([new GtkAction("down", () => Console.WriteLine("Down"), "Down")])
+                .AddActions([new GtkAction("down", () =>
+                {
+                    Console.WriteLine("Down");
+                    Mach();
+                }, "Down")])
                 .AddActions([new GtkAction("tab", () => Console.WriteLine("Tab"), "Tab")])
                 .SideEffect(a => IActionMap.GetAction("down").SetEnabled(false))
                 .Run(0, IntPtr.Zero);
+    }
+
+    static readonly ObjectRef<ColumnViewHandle> columnView = new();
+
+    static void Mach()
+    {
+        //var listView = columnView.Ref.GetListView();
     }
 
     static int NameCompare(GObjectHandle data1, GObjectHandle data2)
@@ -106,22 +125,45 @@ static class TestApp
     static void ActionEnabled(ToggleButtonHandle toggleButton)
         => IActionMap.GetAction("down").SetEnabled(toggleButton.Active());
 
-    static void OnListItemSetup(ListItemHandle listItem) => listItem.SetChild(Label.New("").HAlign(Align.Start));
+    static void OnListItemSetup(ListItemHandle listItem)
+        => listItem.SetChild(Label.New("").HAlign(Align.Start));
+
+    static void OnListItemTearDown(ListItemHandle listItem)
+    {
+        Console.WriteLine("On tear down");
+    }
 
     static void OnListItemBind(ListItemHandle listItem)
     {
         var label = listItem.GetChild<LabelHandle>();
+
+        var controller = EventControllerFocus.New()
+            .OnEnter(() => Console.WriteLine($"Aktiv: {label.GetLabel()}"));
+
+        label.GetParent()?.GetParent()?.AddController(controller);
+        label.SetData("controller", controller.GetInternalHandle());
+
         var oh = listItem.GetItem<GObjectHandle>();
         oh.IsFloating = true;
+        label.SetData("item", oh.GetInternalHandle());// TODO or ListItemHandle
         var item = oh.GetInstance() as GContact;
         label.Set(item?.Contact?.Name);
+    }
+
+    static void OnListItemUnbind(ListItemHandle listItem)
+    {
+        var label = listItem.GetChild<LabelHandle>();
+        var controller = new EventControllerFocusHandle();
+        controller.IsFloating = false;
+        controller.SetInternalHandle(label.GetData("controller"));
+        label.GetParent()?.GetParent()?.RemoveController(controller);
     }
 
     static readonly ObjectRef<ColumnViewHandle> listViewRef = new();
 
     static IListModel? model2;
     static CustomSorterHandle sorter = CustomSorter.New<GObjectHandle>(NameCompare);
-        static CustomSorterHandle numberSorter = CustomSorter.New<GObjectHandle>(NumberCompare);
+    static CustomSorterHandle numberSorter = CustomSorter.New<GObjectHandle>(NumberCompare);
     static SignalListItemFactoryHandle? itemNameFactory;
     static SignalListItemFactoryHandle? itemEMailFactory;
     static SignalListItemFactoryHandle? itemNumberFactory;
@@ -135,7 +177,7 @@ static class TestApp
         var item = oh.GetInstance() as GContact;
         label.Set(item?.Contact?.EMail);
     }
-    
+
     static void OnNumberBind(ListItemHandle listItem)
     {
         var label = listItem.GetChild<LabelHandle>();

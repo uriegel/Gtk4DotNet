@@ -31,10 +31,16 @@ public static class Label
     public  static LabelHandle XAlign(this LabelHandle label, float xalign)
         => label.SideEffect(l => l.SetXAlign(xalign));
 
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_label_set_label", CallingConvention = CallingConvention.Cdecl)]
+    public static string? GetLabel(this LabelHandle label)
+        => Marshal.PtrToStringUTF8(_GetLabel(label));
+    
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_label_get_label", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint _GetLabel(this LabelHandle label);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_label_set_label", CallingConvention = CallingConvention.Cdecl)]
     extern static void _Set(this LabelHandle label, string? text);
     
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_label_set_selectable", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_label_set_selectable", CallingConvention = CallingConvention.Cdecl)]
     extern static void _SetSelectable(this LabelHandle label, bool selectable);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_label_set_use_underline", CallingConvention = CallingConvention.Cdecl)]

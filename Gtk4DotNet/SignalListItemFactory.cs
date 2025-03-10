@@ -24,6 +24,22 @@ public static class SignalListItemFactory
                 li.SetInternalHandle(o);
                 onBind(li);
             }));
+
+    public static SignalListItemFactoryHandle Unbind(this SignalListItemFactoryHandle factory, Action<ListItemHandle> onUnbind)
+        => factory.SideEffect(a => Gtk.SignalConnect<ThreePointerDelegate>(a, "unbind", (_, o, ___) =>
+            {
+                var li = new ListItemHandle();
+                li.SetInternalHandle(o);
+                onUnbind(li);
+            }));
+
+    public static SignalListItemFactoryHandle TearDown(this SignalListItemFactoryHandle factory, Action<ListItemHandle> onTearDown)
+        => factory.SideEffect(a => Gtk.SignalConnect<ThreePointerDelegate>(a, "teardown", (_, o, ___) =>
+            {
+                var li = new ListItemHandle();
+                li.SetInternalHandle(o);
+                onTearDown(li);
+            }));
 }
 
 
