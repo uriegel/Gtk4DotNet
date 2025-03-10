@@ -3,7 +3,7 @@ using GtkDotNet;
 using GtkDotNet.SafeHandles;
 using GtkDotNet.SubClassing;
 
-// TODO arraw down to focus the next item 
+// TODO arraw down to focus the next item : GetItems().First(n => ...)
 // TODO Ins to select the current item and focus the next
 // TODO CSS Provider for focused element
 // TODO get focused item
