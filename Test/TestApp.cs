@@ -3,8 +3,6 @@ using GtkDotNet;
 using GtkDotNet.SafeHandles;
 using GtkDotNet.SubClassing;
 
-
-// TODO GtkColumnView::activate instead of bind unbind and EventControllerFocus
 // TODO arraw down to focus the next item 
 // TODO Ins to select the current item and focus the next
 // TODO CSS Provider for focused element
@@ -62,6 +60,7 @@ static class TestApp
                                     .Policy(PolicyType.Never, PolicyType.Automatic)
                                     .Child(ColumnView
                                         .New(selectionModel1!)
+                                        .OnActivate(pos => Console.WriteLine($"       Position {pos}"))
                                         .AppendColumn(ColumnViewColumn.New("Name", itemNameFactory!).Expand())
                                         .AppendColumn(ColumnViewColumn.New("E mail", itemEMailFactory!))), true, true)
 
@@ -70,6 +69,7 @@ static class TestApp
                                     .Policy(PolicyType.Never, PolicyType.Automatic)
                                     .Child(ColumnView
                                         .New()
+                                        .OnActivate(pos => Console.WriteLine($"       Position {pos}"))
                                         .Ref(columnView)
                                         .AppendColumn(ColumnViewColumn.New("Name", itemNameFactory!)
                                             .Expand()

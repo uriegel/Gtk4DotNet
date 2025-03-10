@@ -22,6 +22,9 @@ public static class ColumnView
         return res;
     }
 
+    public static ColumnViewHandle OnActivate(this ColumnViewHandle columnView, Action<uint> onActivate)
+        => columnView.SideEffect(cv => Gtk.SignalConnect<ActivateDelegate>(cv, "activate", (_, pos, __) => onActivate(pos)));
+
     public static ColumnViewHandle AppendColumn(this ColumnViewHandle columnView, ColumnViewColumnHandle column)
         => columnView.SideEffect(c => c._AppendColumn(column));
 
@@ -50,3 +53,4 @@ public static class ColumnView
     extern static nint GetModel(this ColumnViewHandle columnView);
 }
 
+delegate void ActivateDelegate(IntPtr p, uint pos, IntPtr pp);
