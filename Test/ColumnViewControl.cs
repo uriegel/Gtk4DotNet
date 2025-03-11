@@ -37,23 +37,23 @@ static class ColumnViewControlApp
 
     static void ModelToggled(ToggleButtonHandle toggleButton)
     {
-        // if (toggleButton.Active())
-        //     columnView?.SetColumns(ColumnViewControl.GetColumns2()).Insert(ColumnViewControl.GetItems2());
-        // else
-        //     columnView?.SetColumns(ColumnViewControl.GetColumns1())
-        //         .SideEffect(m => ColumnViewControl.model1 = m)
-        //         .Insert(ColumnViewControl.GetItems1());
+        if (toggleButton.Active())
+        {
+            columnView?.SetController(controller2);
+            controller2.Fill();
+        }
+        else
+        {
+            columnView?.SetController(controller1);
+            controller1.Fill();
+        }
     }
 
     static void ChangeItems(ToggleButtonHandle toggleButton)
-    {
-        
-    }
-    // => ColumnViewControl.model1?.Insert(2, [
-    //         new Type1("New Item 1", 2001),
-    //         new Type1("New Item 2", 2012),
-    //         new Type1("New Item 3", 2023)]);
-
+        => controller1.Insert(2, [
+            new Type1("New Item 1", 2001),
+            new Type1("New Item 2", 2012),
+            new Type1("New Item 3", 2023)]);        
 
     static readonly Controller1 controller1 = new();
     static readonly Controller2 controller2 = new();
@@ -114,6 +114,9 @@ class Controller2 : Controller<Type2>
                 },
             ];
 
+    public void Fill() => Insert([
+        .. Enumerable.Range(1, 100_000).Select(n => new Type2($"item{n}@dom.de", $"ID-{n}", n % 3 == 0))]);
+
     static BoxHandle OnIconName()
         => Box
             .New(Orientation.Horizontal)
@@ -135,18 +138,7 @@ class Controller2 : Controller<Type2>
 
 class ColumnViewControl(nint obj) : ColumnViewSubClassed(obj)
 {
-    // TODO create 2 controller classes with columns and items
-
-
-    public static IEnumerable<Type2> GetItems2()
-        => [.. Enumerable.Range(1, 100_000).Select(n => new Type2($"item{n}@dom.de", $"ID-{n}", n % 3 == 0))];
-
-    protected override void OnCreate()
-    {
-        MultiSelection = true;
-        SetController(new Controller1());
-        //model1.Insert(GetItems1());
-    }
+    protected override void OnCreate() => MultiSelection = true;
     protected override void OnFinalize() => Console.WriteLine("ColumnView finalized");
     protected override CustomColumnViewHandle CreateHandle(nint obj) => new(obj);
 }
