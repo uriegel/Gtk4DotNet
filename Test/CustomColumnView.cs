@@ -31,24 +31,12 @@ class CustomColumnView(nint obj) : ColumnViewSubClassed(obj)
 {
     protected override void OnCreate()
     {
-        
+        SetController(controller);
+        controller.Fill();
+
     }
     protected override void OnFinalize() => Console.WriteLine("ColumnView finalized");
     protected override CustomColumnViewHandle CreateHandle(nint obj) => new(obj);
-    
-    static Column<Type1>[] GetColumns()
-        => [ new()
-                {
-                    Title = "Name",
-                    Expanded = true,
-                    OnLabelBind = i => i.Name,
-                    OnSort = (a, b) => string.Compare(a.Name, b.Name)
-                },
-            new()
-                {
-                    Title = "Number",
-                    OnLabelBind = i => i.Number.ToString(),
-                    OnSort = (a, b) => a.Number - b.Number
-                },
-            ];
+            
+    static readonly Controller2 controller = new();
 }
