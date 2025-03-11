@@ -20,7 +20,7 @@ public static class Selection
         uint pos = 0;
         while (true)
         {
-            var res = sel.GetItem<THandle>(pos);
+            var res = sel.GetItem<THandle>(pos++);
             if (res.IsInvalid)
                 break;
             yield return res;

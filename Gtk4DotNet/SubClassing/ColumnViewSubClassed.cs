@@ -1,3 +1,4 @@
+using CsTools;
 using GtkDotNet.Controls;
 using GtkDotNet.SafeHandles;
 
@@ -21,7 +22,13 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         columnView.AddWeakRef(Release);
     }
 
-    public IColumnViewModel<T> SetColumns<T>(Column<T>[] columns)
+    public void SetController<T>(Controller<T> controller)
+    {
+        var model = SetColumns(controller.GetColumns());
+        controller.SetModel(model);
+    }
+
+    IColumnViewModel<T> SetColumns<T>(Column<T>[] columns)
     {
         Handle.RemoveChild();
         columnView.Dispose();
@@ -129,6 +136,23 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         public Action<ListItemHandle, TObj>? OnItemBind { get; set; }
         public Func<TObj, string>? OnLabelBind { get; set; } 
         public Func<TObj, TObj, int>? OnSort { get; set; } 
+    }
+
+    public abstract class Controller<T>
+    {
+        public abstract Column<T>[] GetColumns();
+        public void Insert(IEnumerable<T> items) => model?.Insert(items);
+        public void Insert(uint pos, IEnumerable<T> items) => model?.Insert(pos, items);
+
+        internal void SetModel(IColumnViewModel<T> model)
+            => this.model = model;
+
+        IColumnViewModel<T>? model;
+    }
+
+    class EmptyController : Controller<Unit>
+    {
+        public override Column<Unit>[] GetColumns() => [];
     }
 
     class Model<T>(ColumnViewHandle columnView, IListModel? listModelHandle) : IColumnViewModel<T>

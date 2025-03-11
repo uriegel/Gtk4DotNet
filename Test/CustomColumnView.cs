@@ -31,7 +31,7 @@ class CustomColumnView(nint obj) : ColumnViewSubClassed(obj)
 {
     protected override void OnCreate()
     {
-        SetColumns(GetColumns());
+        
     }
     protected override void OnFinalize() => Console.WriteLine("ColumnView finalized");
     protected override CustomColumnViewHandle CreateHandle(nint obj) => new(obj);

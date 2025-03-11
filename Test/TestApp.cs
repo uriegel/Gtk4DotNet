@@ -15,13 +15,13 @@ static class TestApp
         {
             var model1 = ListStore
                             .New(GContact.GType)
-                            .Splice([.. Enumerable.Range(1, 1000).Select(n => GContact.New(new($"Left Item no {n}", $"person{n}@hotmail.de", n)).Handle)]);
+                            .Splice([.. Enumerable.Range(1, 10).Select(n => GContact.New(new($"Left Item no {n}", $"person{n}@hotmail.de", n)).Handle)]);
             model2 = ListStore
                             .New(GContact.GType)
                             .Append(GContact.New(new("Uwe Riegel", "uriegel@hotmail.de", 1965)))
                             .Append(GContact.New(new("Jim Doe", "jdoe@hotmail.de", 1955)))
                             .Append(GContact.New(new("Jane Doe", "jadoe@hotmail.de", 2001)))
-                            .Splice(3, [.. Enumerable.Range(1, 1000).Select(n => GContact.New(new($"Right Item no {n}", $"person{n}@hotmail.de", n)).Handle)]);
+                            .Splice(3, [.. Enumerable.Range(1, 5000).Select(n => GContact.New(new($"Right Item no {n}", $"person{n}@hotmail.de", n)).Handle)]);
             itemNameFactory = SignalListItemFactory
                 .New()
                 .Setup(OnListItemSetup)
@@ -136,9 +136,17 @@ static class TestApp
     static void OnListItemBind(ListItemHandle listItem)
     {
         var label = listItem.GetChild<LabelHandle>();
-
         var controller = EventControllerFocus.New()
-            .OnEnter(() => Console.WriteLine($"Aktiv: {label.GetLabel()}"));
+            .OnEnter(() =>
+            {
+            //     var data = label.GetData("item");
+            //     var model = columnView.Ref?.GetModel<MultiSelectionHandle>();
+            //     if (model != null)
+            //         model.IsFloating = true;
+            //     var items = model?.GetItems<GObjectHandle>();
+            //     var pos = items?.TakeWhile(n => n.GetInternalHandle() != data).Count() ?? -1;
+            //    Console.WriteLine($"Aktiv: {pos}");
+            });
 
         label.GetParent()?.GetParent()?.AddController(controller);
         label.SetData("controller", controller.GetInternalHandle());
@@ -153,8 +161,10 @@ static class TestApp
     static void OnListItemUnbind(ListItemHandle listItem)
     {
         var label = listItem.GetChild<LabelHandle>();
-        var controller = new EventControllerFocusHandle();
-        controller.IsFloating = false;
+        var controller = new EventControllerFocusHandle
+        {
+            IsFloating = false
+        };
         controller.SetInternalHandle(label.GetData("controller"));
         label.GetParent()?.GetParent()?.RemoveController(controller);
     }
