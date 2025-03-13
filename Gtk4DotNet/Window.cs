@@ -26,8 +26,8 @@ public static class Window
         where THandle : WindowHandle
         => window.SideEffect(w => w._SetApplication(application));
 
-    [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_get_application", CallingConvention = CallingConvention.Cdecl)]
-    public extern static ApplicationHandle GetApplication(this WindowHandle window);
+    public static ApplicationHandle GetApplication(this WindowHandle window)
+        => window._GetApplication().SideEffect(a => a.IsFloating = true);
 
     public static THandle TransientFor<THandle>(this THandle window, WindowHandle parent)
         where THandle : WindowHandle
@@ -94,6 +94,17 @@ public static class Window
     public static THandle OnClose<THandle>(this THandle window, Func<WindowHandle, bool> preventClosing)
         where THandle : WindowHandle
         => window.SideEffect(a => Gtk.SignalConnect<TwoPointerBoolRetDelegate>(a, "close-request", (_, ___) => preventClosing(window)));
+
+    public static THandle GetFocus<THandle>(this WindowHandle window)
+        where THandle : WidgetHandle, new()
+    {
+        var res = new THandle();
+        res.SetInternalHandle(window.GetFocus());
+        return res;
+    }
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_get_focus", CallingConvention = CallingConvention.Cdecl)]
+    public extern static nint GetFocus(this WindowHandle window);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_move", CallingConvention = CallingConvention.Cdecl)]
     public extern static void Move(this WindowHandle window, int x, int y);
@@ -168,4 +179,7 @@ public static class Window
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_decorated", CallingConvention = CallingConvention.Cdecl)]
     extern static void _SetDecorated(this WindowHandle window, bool set);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_get_application", CallingConvention = CallingConvention.Cdecl)]
+    extern static ApplicationHandle _GetApplication(this WindowHandle window);
 }

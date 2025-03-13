@@ -132,7 +132,7 @@ public static class Widget
         where THandle : WidgetHandle
         => widget.SideEffect(w => w.SetTooltipText(text));
 
-    public static THandle? GetFirstChild<THandle>(this WidgetHandle widget)
+    public static THandle GetFirstChild<THandle>(this WidgetHandle widget)
         where THandle : WidgetHandle, new()
     {
         var res = new THandle();
@@ -140,7 +140,7 @@ public static class Widget
         return res;
     }
 
-    public static THandle? GetNextSibling<THandle>(this WidgetHandle widget)
+    public static THandle GetNextSibling<THandle>(this WidgetHandle widget)
         where THandle : WidgetHandle, new()
     {
         var res = new THandle();
@@ -151,7 +151,7 @@ public static class Widget
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_style_context", CallingConvention = CallingConvention.Cdecl)]
     public extern static IntPtr GetStyleContext(this WidgetHandle widget);
 
-    public static WidgetHandle? GetParent<THandle>(this THandle widget)
+    public static WidgetHandle GetParent<THandle>(this THandle widget)
         where THandle : WidgetHandle
         => _GetParent(widget);
 
