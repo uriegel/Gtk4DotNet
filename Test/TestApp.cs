@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-using CsTools.Extensions;
 using GtkDotNet;
 using GtkDotNet.SafeHandles;
 using GtkDotNet.SubClassing;
@@ -31,6 +29,8 @@ static class TestApp
         protected override async void OnCreate()
         {
             Handle.InitTemplate();
+            var cv = Handle.GetTemplateChild<ColumnViewHandle, WindowHandle>("columnview");
+            var columnView = CustomColumnView.GetInstance(cv?.GetInternalHandle() ?? 0) as CustomColumnView;
             await Task.Delay(1);
             Handle.AddActions([new GtkAction("down", () =>
                 {
@@ -59,6 +59,9 @@ static class TestApp
                         var name2 = listItem.GetName();
                         var typ = listItem.GetManagedObjectData<Type2>("data");
                         Console.WriteLine($"Item: {typ?.EMail}");
+                        var data = listItem.GetData("data");
+                        var pos = columnView?.FindPos(data);
+                        Console.WriteLine($"Pos : {pos}");
 
                         var next = widget.GetNextSibling<WidgetHandle>();
                         if (!next.IsInvalid && next.GetName() == "GtkColumnViewRowWidget")
@@ -76,6 +79,13 @@ static class TestApp
 
     class CustomColumnView(nint obj) : ColumnViewSubClassed(obj)
     {
+        public int FindPos(nint item)
+        {
+            var model = columnView.GetModel<SelectionHandle>();
+            var items = model.GetItems<GObjectHandle>();
+            return items?.TakeWhile(n => n.GetInternalHandle() != item).Count() ?? -1;
+        }
+
         protected override void OnCreate()
         {
             MultiSelection = true;
@@ -124,7 +134,7 @@ class Controller : Controller<Type2>
             .Append(Image.NewFromIconName("mail", IconSize.Button))
             .Append(Label.New("").HAlign(Align.Start).MarginStart(5));
 
-    void OnIconNameBind(ListItemHandle listItem, Type2 item)
+    static void OnIconNameBind(ListItemHandle listItem, Type2 item)
     {
         var box = listItem.GetChild<BoxHandle>();
         var image = box.GetFirstChild<ImageHandle>();

@@ -113,6 +113,9 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         //TODO clear it onweakref from this class
     }
 
+    static SubClassInst<CustomColumnViewHandle>? GetInstance(ColumnViewHandle handle)
+        => GetInstance(handle.GetInternalHandle());
+
     void Release()
     {
         columns.ForEach(h => h.Dispose());
@@ -175,8 +178,9 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
     }
 
     static readonly Dictionary<string, object> registeredObjects = [];
+    protected ColumnViewHandle columnView = new(0);
+
     readonly List<ColumnViewColumnHandle> columns = [];
     readonly List<CustomSorterHandle> sorters = [];
     IListModel? listModelHandle;
-    ColumnViewHandle columnView = new(0);
 }

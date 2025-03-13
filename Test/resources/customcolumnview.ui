@@ -6,7 +6,7 @@
     <property name="default-width">800</property>
     <property name="default-height">600</property>    
     <child>
-        <object class="ColumnView" />
+        <object class="ColumnView" id="columnview"/>
     </child>    
   </template>
 </interface>

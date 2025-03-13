@@ -32,7 +32,7 @@ public abstract class SubClassInst<THandle>
         inst?.OnFinalize();
         retrievedHandle.Free();
     }
-    internal static SubClassInst<THandle>? GetInstance(IntPtr handle)
+    internal protected static SubClassInst<THandle>? GetInstance(IntPtr handle)
         => GetInstanceGCHandle(handle).Target as SubClassInst<THandle>;
 
     static void SetProperty(nint obj, uint propId, nint value, nint pspec)
