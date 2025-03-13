@@ -1,6 +1,8 @@
 using System.Runtime.InteropServices;
 using GtkDotNet.SafeHandles;
 using CsTools.Extensions;
+using GtkDotNet.SubClassing;
+using GtkDotNet.Controls;
 
 namespace GtkDotNet;
 
@@ -114,6 +116,23 @@ public static class GObject
     public extern static void SetData(this ObjectHandle obj, string key, nint data);
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_get_data", CallingConvention = CallingConvention.Cdecl)]
     public extern static nint GetData(this ObjectHandle obj, string key);
+
+    public static T? GetManagedObjectData<T>(this ObjectHandle obj, string key)
+    {
+        var gh = new GObjectHandle { IsFloating = true };
+        gh.SetInternalHandle(obj.GetData(key));
+        var t = gh.GetInstance() as GManagedObject<T>;
+        return t != null ? t.Value : default;
+    }
+
+    public static T? GetObjectData<T>(this ObjectHandle obj, string key)
+        where T : SubClassInst<GObjectHandle>
+    {
+        var gh = new GObjectHandle { IsFloating = true };
+        gh.SetInternalHandle(obj.GetData(key));
+
+        return gh.GetInstance() as T;
+    }
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_ref", CallingConvention = CallingConvention.Cdecl)]
     internal extern static void Ref(this ObjectHandle obj);

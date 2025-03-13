@@ -57,8 +57,8 @@ static class TestApp
                         var listItem = item.GetFirstChild<WidgetHandle>();
                                                 
                         var name2 = listItem.GetName();
-                        
-
+                        var typ = listItem.GetManagedObjectData<Type2>("data");
+                        Console.WriteLine($"Item: {typ?.EMail}");
 
                         var next = widget.GetNextSibling<WidgetHandle>();
                         if (!next.IsInvalid && next.GetName() == "GtkColumnViewRowWidget")
