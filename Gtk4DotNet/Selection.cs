@@ -27,6 +27,9 @@ public static class Selection
         }
     }
 
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_selection_model_select_item", CallingConvention = CallingConvention.Cdecl)]
+    public extern static bool SelectItem(this SelectionHandle sel, uint pos, bool unselectRest);
+
     /// <summary>
     /// Gets the number of items in list.
     /// Depending on the model implementation, calling this function may be less efficient than iterating the list with GetItems().

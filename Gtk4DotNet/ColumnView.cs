@@ -40,6 +40,12 @@ public static class ColumnView
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_remove_column", CallingConvention = CallingConvention.Cdecl)]
     public extern static void RemoveColumn(this ColumnViewHandle columnView, ColumnViewColumnHandle column);
 
+    public static void EnableRubberband(this ColumnViewHandle columnView)
+        => EnableRubberband(columnView, true);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_set_enable_rubberband", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void EnableRubberband(this ColumnViewHandle columnView, bool enable);
+    
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_new", CallingConvention = CallingConvention.Cdecl)]
     extern static ColumnViewHandle New(nint selectionModel);
 

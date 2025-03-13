@@ -13,6 +13,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
     // TODO Filter
     // TODO Filter: remove delegate
     public bool MultiSelection { get; set; }
+    public bool EnableRubberband { get; set; }
 
     public ColumnViewSubClassed(nint obj) : base(obj)
     {
@@ -26,6 +27,8 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
     {
         var model = SetColumns(controller.GetColumns());
         controller.SetModel(model);
+        if (EnableRubberband)
+            columnView.EnableRubberband();
     }
 
     IColumnViewModel<T> SetColumns<T>(Column<T>[] columns)
@@ -112,6 +115,9 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         //TODO clear it here
         //TODO clear it onweakref from this class
     }
+
+    public void SelectItem(uint pos, bool unselectRest)
+        => columnView.GetModel<SelectionHandle>().SelectItem(pos, unselectRest);
 
     static SubClassInst<CustomColumnViewHandle>? GetInstance(ColumnViewHandle handle)
         => GetInstance(handle.GetInternalHandle());

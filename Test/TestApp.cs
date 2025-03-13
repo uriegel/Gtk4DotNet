@@ -62,6 +62,8 @@ static class TestApp
                         var data = listItem.GetData("data");
                         var pos = columnView?.FindPos(data);
                         Console.WriteLine($"Pos : {pos}");
+                        if (pos.HasValue)
+                            columnView?.SelectItem(pos.Value, false);
 
                         var next = widget.GetNextSibling<WidgetHandle>();
                         if (!next.IsInvalid && next.GetName() == "GtkColumnViewRowWidget")
@@ -79,16 +81,17 @@ static class TestApp
 
     class CustomColumnView(nint obj) : ColumnViewSubClassed(obj)
     {
-        public int FindPos(nint item)
+        public uint FindPos(nint item)
         {
             var model = columnView.GetModel<SelectionHandle>();
             var items = model.GetItems<GObjectHandle>();
-            return items?.TakeWhile(n => n.GetInternalHandle() != item).Count() ?? -1;
+            return (uint)(items?.TakeWhile(n => n.GetInternalHandle() != item).Count() ?? -1);
         }
 
         protected override void OnCreate()
         {
             MultiSelection = true;
+            EnableRubberband = true;
             SetController(controller);
             controller.Fill();
         }
