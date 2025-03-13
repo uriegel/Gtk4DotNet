@@ -56,9 +56,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
                 .Setup(listItem => listItem.SetChild(col.OnItemSetup()))
                 .Bind(listItem =>
                     {
-                        var oh = listItem.GetItem<GObjectHandle>();
-                        oh.IsFloating = true;
-                        if (oh.GetInstance() is GManagedObject<T> item && item.Value != null)
+                        if (listItem.GetObject<GManagedObject<T>>() is GManagedObject<T> item && item.Value != null)
                         {
                             if (col.OnItemBind != null)
                                 col.OnItemBind.Invoke(listItem, item.Value);

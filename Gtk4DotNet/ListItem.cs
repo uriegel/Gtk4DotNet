@@ -1,16 +1,22 @@
 using System.Runtime.InteropServices;
 using GtkDotNet.SafeHandles;
+using GtkDotNet.SubClassing;
 
 namespace GtkDotNet;
 
 public static class ListItem
 {
+    public static T? GetObject<T>(this ListItemHandle listItem)
+        where T : SubClassInst<GObjectHandle>
+        => listItem.GetItem<GObjectHandle>().GetInstance() as T;
+
     public static THandle GetItem<THandle>(this ListItemHandle listItem)
         where THandle : ObjectHandle, new()
     {
         var res = new THandle();
+        res.IsFloating = true;
         res.SetInternalHandle(_GetItem(listItem));
-        return res;        
+        return res;
     }
     
     public static THandle GetChild<THandle>(this ListItemHandle listItem)

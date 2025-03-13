@@ -217,9 +217,7 @@ static class ChangingColumnViews
     static void OnListItemBind(ListItemHandle listItem)
     {
         var label = listItem.GetChild<LabelHandle>();
-        var oh = listItem.GetItem<GObjectHandle>();
-        oh.IsFloating = true;
-        var item = oh.GetInstance() as GContact;
+        var item = listItem.GetObject<GContact>();
         label.Set(item?.Contact?.Name);
     }
 
@@ -234,36 +232,28 @@ static class ChangingColumnViews
     static void OnEMailBind(ListItemHandle listItem)
     {
         var label = listItem.GetChild<LabelHandle>();
-        var oh = listItem.GetItem<GObjectHandle>();
-        oh.IsFloating = true;
-        var item = oh.GetInstance() as GContact;
+        var item = listItem.GetObject<GContact>();
         label.Set(item?.Contact?.EMail);
     }
 
     static void OnNumberBind(ListItemHandle listItem)
     {
         var label = listItem.GetChild<LabelHandle>();
-        var oh = listItem.GetItem<GObjectHandle>();
-        oh.IsFloating = true;
-        var item = oh.GetInstance() as GContact;
+        var item = listItem.GetObject<GContact>();
         label.Set($"{item?.Contact?.Number}");
     }
 
     static void OnIDBind(ListItemHandle listItem)
     {
         var label = listItem.GetChild<LabelHandle>();
-        var oh = listItem.GetItem<GObjectHandle>();
-        oh.IsFloating = true;
-        var item = oh.GetInstance() as GItem2;
+        var item = listItem.GetObject<GItem2>();
         label.Set($"{item?.Item2?.ID}");
     }
 
     static void OnTextBind(ListItemHandle listItem)
     {
         var label = listItem.GetChild<LabelHandle>();
-        var oh = listItem.GetItem<GObjectHandle>();
-        oh.IsFloating = true;
-        var item = oh.GetInstance() as GItem2;
+        var item = listItem.GetObject<GItem2>();
         label.Set(item?.Item2?.Text);
     }
 }

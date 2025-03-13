@@ -120,9 +120,7 @@ static class TwoColumnViews
     static void OnListItemBind(ListItemHandle listItem)
     {
         var label = listItem.GetChild<LabelHandle>();
-        var oh = listItem.GetItem<GObjectHandle>();
-        oh.IsFloating = true;
-        var item = oh.GetInstance() as GContact;
+        var item = listItem.GetObject<GContact>();
         label.Set(item?.Contact?.Name);
     }
 
@@ -140,18 +138,14 @@ static class TwoColumnViews
     static void OnEMailBind(ListItemHandle listItem)
     {
         var label = listItem.GetChild<LabelHandle>();
-        var oh = listItem.GetItem<GObjectHandle>();
-        oh.IsFloating = true;
-        var item = oh.GetInstance() as GContact;
+        var item = listItem.GetObject<GContact>();
         label.Set(item?.Contact?.EMail);
     }
     
     static void OnNumberBind(ListItemHandle listItem)
     {
         var label = listItem.GetChild<LabelHandle>();
-        var oh = listItem.GetItem<GObjectHandle>();
-        oh.IsFloating = true;
-        var item = oh.GetInstance() as GContact;
+        var item = listItem.GetObject<GContact>();
         label.Set($"{item?.Contact?.Number}");
     }
 }

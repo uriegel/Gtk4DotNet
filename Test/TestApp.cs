@@ -45,6 +45,26 @@ static class TestApp
                             widget?.GetNextSibling<WidgetHandle>()?.GrabFocus();
                     }
                 }, "Down")]);
+            Handle.AddActions([new GtkAction("Ins", () =>
+                {
+                    Console.WriteLine("Ins");
+                    var widget = Handle.GetFocus<WidgetHandle>();
+                    if (!widget.IsInvalid && widget.GetName() == "GtkColumnViewRowWidget")
+                    {
+
+                        var item = widget.GetFirstChild<WidgetHandle>();
+                        var name1 = item.GetName();
+                        var listItem = item.GetFirstChild<WidgetHandle>();
+                                                
+                        var name2 = listItem.GetName();
+                        
+
+
+                        var next = widget.GetNextSibling<WidgetHandle>();
+                        if (!next.IsInvalid && next.GetName() == "GtkColumnViewRowWidget")
+                            widget?.GetNextSibling<WidgetHandle>()?.GrabFocus();
+                    }
+                }, "Insert")]);
             Handle.AddController(EventControllerFocus.New().OnEnter(() => Console.WriteLine("Bin eingetreten")));
         }
 
@@ -107,13 +127,15 @@ class Controller : Controller<Type2>
     void OnIconNameBind(ListItemHandle listItem, Type2 item)
     {
         var box = listItem.GetChild<BoxHandle>();
-        var image = box?.GetFirstChild<ImageHandle>();
-        var label = image?.GetNextSibling<LabelHandle>();
+        var image = box.GetFirstChild<ImageHandle>();
+        var label = image.GetNextSibling<LabelHandle>();
         if (item.Active)
-            image?.SetFromIconName("mail-read", IconSize.LargeToolbar);
+            image.SetFromIconName("mail-read", IconSize.LargeToolbar);
         else
-            image?.SetFromIconName("mail-unread", IconSize.LargeToolbar);
-        label?.Set(item.EMail);
+            image.SetFromIconName("mail-unread", IconSize.LargeToolbar);
+        label.Set(item.EMail);
+        var itemHandle = listItem.GetItem<GObjectHandle>();
+        box.SetData("data", itemHandle.GetInternalHandle());
     }
 }
 

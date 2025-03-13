@@ -82,10 +82,7 @@ static class ColumnViewApp
     static void OnListItemBind(ListItemHandle listItem)
     {
         var label = listItem.GetChild<LabelHandle>();
-        var oh = listItem.GetItem<GObjectHandle>();
-        oh.IsFloating = true;
-        var item = oh.GetInstance() as GContact;
-        label.Set(item?.Contact?.Name);
+        label.Set(listItem.GetObject<GContact>()?.Contact?.Name);
     }
 
     static ColumnViewColumnHandle? col1;
@@ -97,9 +94,7 @@ static class ColumnViewApp
     static void OnEMailBind(ListItemHandle listItem)
     {
         var label = listItem.GetChild<LabelHandle>();
-        var oh = listItem.GetItem<GObjectHandle>();
-        oh.IsFloating = true;
-        var item = oh.GetInstance() as GContact;
+        var item = listItem.GetObject<GContact>();
         label.Set(item?.Contact?.EMail);
     }
 }

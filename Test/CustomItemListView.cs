@@ -79,9 +79,7 @@ static class CustomItemListView
     static void OnListItemBind(ListItemHandle listItem)
     {
         var label = listItem.GetChild<LabelHandle>();
-        var oh = listItem.GetItem<GObjectHandle>();
-        oh.IsFloating = true;
-        var item = oh.GetInstance() as GContact;
+        var item = listItem.GetObject<GContact>();
         label.Set(item?.Contact?.Name);
     }
 }
