@@ -12,9 +12,6 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
 {
     // TODO Filter
     // TODO Filter: remove delegate
-    public bool MultiSelection { get; set; }
-    public bool EnableRubberband { get; set; }
-
     public ColumnViewSubClassed(nint obj) : base(obj)
     {
         columnView = ColumnView.New();
@@ -25,9 +22,10 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
 
     public void SetController<T>(Controller<T> controller)
     {
+        MultiSelection = controller.MultiSelection;
         var model = SetColumns(controller.GetColumns());
         controller.SetModel(model);
-        if (EnableRubberband)
+        if (controller.EnableRubberband)
             columnView.EnableRubberband();
     }
 
@@ -147,6 +145,9 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
 
     public abstract class Controller<T>
     {
+        public bool MultiSelection { get; set; }
+        public bool EnableRubberband { get; set; }
+
         public abstract Column<T>[] GetColumns();
         public void Insert(IEnumerable<T> items) => model?.Insert(items);
         public void Insert(uint pos, IEnumerable<T> items) => model?.Insert(pos, items);
@@ -183,10 +184,10 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
             => listModelHandle?.Splice(pos, [.. items.Select(n => GManagedObject<T>.New(n).Handle)]);
     }
 
-    static readonly Dictionary<string, object> registeredObjects = [];
     protected ColumnViewHandle columnView = new(0);
-
+    static readonly Dictionary<string, object> registeredObjects = [];
     readonly List<ColumnViewColumnHandle> columns = [];
     readonly List<CustomSorterHandle> sorters = [];
+    bool MultiSelection { get; set; }
     IListModel? listModelHandle;
 }

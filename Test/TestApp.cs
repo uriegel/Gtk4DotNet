@@ -3,10 +3,10 @@ using GtkDotNet.SafeHandles;
 using GtkDotNet.SubClassing;
 using static GtkDotNet.SubClassing.ColumnViewSubClassed;
 
-// TODO arraw down to focus the next item : GetItems().First(n => ...)
-// TODO Ins to select the current item and focus the next
-// TODO CSS Provider for focused element
-// TODO get focused item
+// TODO Filtering in ColumnViewControl
+// TODO CSS Provider for focused element: unselect or gray unfocused columnview
+// TODO remove test app TwoColumnViews, but not before filtering is in another testapp
+
 static class TestApp
 {
     public static int Run()
@@ -42,7 +42,12 @@ static class TestApp
                     {
                         var next = widget.GetNextSibling<WidgetHandle>();
                         if (!next.IsInvalid && next.GetName() == "GtkColumnViewRowWidget")
-                            widget?.GetNextSibling<WidgetHandle>()?.GrabFocus();
+                        {
+                            var sibling = widget.GetNextSibling<WidgetHandle>();
+                            if (!sibling.IsInvalid)
+                                sibling.GrabFocus();
+                        }
+                            
                     }
                 }, "Down")]);
             Handle.AddActions([new GtkAction("Ins", () =>
@@ -55,7 +60,7 @@ static class TestApp
                         var item = widget.GetFirstChild<WidgetHandle>();
                         var name1 = item.GetName();
                         var listItem = item.GetFirstChild<WidgetHandle>();
-                                                
+
                         var name2 = listItem.GetName();
                         var typ = listItem.GetManagedObjectData<Type2>("data");
                         Console.WriteLine($"Item: {typ?.EMail}");
@@ -77,7 +82,8 @@ static class TestApp
     }
 
     class CustomColumnViewClass()
-        : ColumnViewSubClassedClass("ColumnView", p => new CustomColumnView(p)) { }
+        : ColumnViewSubClassedClass("ColumnView", p => new CustomColumnView(p))
+    { }
 
     class CustomColumnView(nint obj) : ColumnViewSubClassed(obj)
     {
@@ -90,24 +96,28 @@ static class TestApp
 
         protected override void OnCreate()
         {
-            MultiSelection = true;
-            EnableRubberband = true;
             SetController(controller);
             controller.Fill();
         }
 
         protected override void OnFinalize()
         {
-            Console.WriteLine("ColumnView finalized");  
-        } 
+            Console.WriteLine("ColumnView finalized");
+        }
         protected override CustomColumnViewHandle CreateHandle(nint obj) => new(obj);
-                
+
         static readonly Controller controller = new();
     }
 }
 
 class Controller : Controller<Type2>
 {
+    public Controller()
+    {
+        MultiSelection = true;
+        EnableRubberband = true;
+    }
+
     public override Column<Type2>[] GetColumns()
         => [ new()
                 {

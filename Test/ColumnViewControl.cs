@@ -67,6 +67,12 @@ class ColumnViewControlClass()
 
 class Controller1 : Controller<Type1>
 {
+    public Controller1()
+    {
+        MultiSelection = true;
+        EnableRubberband = true;
+    } 
+
     public override Column<Type1>[] GetColumns()
         => [ new()
                 {
@@ -138,7 +144,7 @@ class Controller2 : Controller<Type2>
 
 class ColumnViewControl(nint obj) : ColumnViewSubClassed(obj)
 {
-    protected override void OnCreate() => MultiSelection = true;
+    protected override void OnCreate()  {}
     protected override void OnFinalize() => Console.WriteLine("ColumnView finalized");
     protected override CustomColumnViewHandle CreateHandle(nint obj) => new(obj);
 }

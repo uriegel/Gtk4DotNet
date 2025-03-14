@@ -26,18 +26,17 @@ WriteLine(
     21: ListView (Custom Objects)
     22: ColumnView
     23: 2 ColumnView 
-    24: ColumnView changing
-    25: ColumnViewControl
-    26: CustomColumnView
-    27: Example 1
-    28: Example 2
-    29: Example 3
-    30: Example 4
-    31: Example 5
-    32: Example 6
-    33: Example 7
-    34: Example 8
-    35: Test 
+    24: ColumnViewControl
+    25: CustomColumnView
+    26: Example 1
+    27: Example 2
+    28: Example 3
+    29: Example 4
+    30: Example 5
+    31: Example 6
+    32: Example 7
+    33: Example 8
+    34: Test 
     <any>: Quit
     """);
 WriteLine($"Return value: {ReadLine() switch 
@@ -65,18 +64,17 @@ WriteLine($"Return value: {ReadLine() switch
     "21" => CustomItemListView.Run(),
     "22" => ColumnViewApp.Run(),
     "23" => TwoColumnViews.Run(),
-    "24" => ChangingColumnViews.Run(),
-    "25" => ColumnViewControlApp.Run(),
-    "26" => CustomColumnViewApp.Run(),
-    "27" => Example1.Run(),
-    "28" => Example2.Run(),
-    "29" => Example3.Run(),
-    "30" => Example4.Run(),
-    "31" => Example5.Run(),
-    "32" => Example6.Run(),
-    "33" => Example7.Run(),
-    "34" => Example8.Run(),
-    "35" => TestApp.Run(),
+    "24" => ColumnViewControlApp.Run(),
+    "25" => CustomColumnViewApp.Run(),
+    "26" => Example1.Run(),
+    "27" => Example2.Run(),
+    "28" => Example3.Run(),
+    "29" => Example4.Run(),
+    "30" => Example5.Run(),
+    "31" => Example6.Run(),
+    "32" => Example7.Run(),
+    "33" => Example8.Run(),
+    "34" => TestApp.Run(),
     _ => 0
 }}");
 
