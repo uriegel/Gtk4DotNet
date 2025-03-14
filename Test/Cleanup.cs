@@ -24,11 +24,9 @@ static class Cleanup
         return 0;
     }
 
-    // TODO 0 items, then 1_000_000 items then dispoal of StringListView and new begin
-
     static void Check0()
     {
-        var count = 1_000_000;
+        var count = 1_000;
 
         var model = StringList.New([]);
         // [.. Enumerable
@@ -38,10 +36,10 @@ static class Cleanup
             .New()
             .Setup(OnListItemSetup)
             .Bind(OnListItemBind)
-            .AddWeakRef(() => Console.WriteLine("Factory disposed"));
-        var selectionModel = SingleSelection.New(model);
+            .AddWeakRef(() => WriteLine("Factory disposed"));
+        var selectionModel = SingleSelection.New(model).AddWeakRef(() => WriteLine("SelectionModel disposed"));
 
-        bool fill = false;
+        int schritt = 0;
 
         Application
             .NewAdwaita("org.gtk.example")
@@ -53,11 +51,13 @@ static class Cleanup
                     .DefaultSize(400, 600)
                     .Child(ScrolledWindow
                         .New()
+                        .Ref(scrolledWindow)
                         .Policy(PolicyType.Never, PolicyType.Automatic)
                         .Child(ListView
-                            .New(selectionModel, itemFactory)))
+                            .New(selectionModel, itemFactory).AddWeakRef(() => WriteLine("ListView disposed"))))
                     .Show())
             .Run(0, IntPtr.Zero);
+
 
         static void OnListItemSetup(ListItemHandle listItem) => listItem.SetChild(Label.New(""));
 
@@ -73,19 +73,39 @@ static class Cleanup
             w.SetTimer(300, TimeSpan.FromSeconds(5), () =>
             {
                 PrintMemory();
-                if (fill)
+                if (schritt == 1 || schritt == 3 || schritt == 5)
                     model?.Splice(0, 0, [.. Enumerable
                             .Range(1, count)
                             .Select(n => $"Item no {n}")]);
-                else
+                if (schritt == 2 || schritt == 4 || schritt == 6)
                     model?.Splice(0, (uint)count);
-                fill = !fill;
+                if (schritt == 7)
+                    scrolledWindow.Ref.Child(Label.New("nil"));
+                if (schritt == 8)
+                {
+                    model = StringList.New([]);
+                    // [.. Enumerable
+                    //     .Range(1, count)
+                    //     .Select(n => $"Item no {n}")]);
+                    itemFactory = SignalListItemFactory
+                        .New()
+                        .Setup(OnListItemSetup)
+                        .Bind(OnListItemBind)
+                        .AddWeakRef(() => WriteLine("Factory disposed"));
+                    selectionModel = SingleSelection.New(model).AddWeakRef(() => WriteLine("SelectionModel disposed"));
+                    scrolledWindow.Ref.Child(ListView
+                            .New(selectionModel, itemFactory).AddWeakRef(() => WriteLine("ListView disposed")));
+                    schritt = -1;
+                }
+                schritt++;
                 GC.Collect();
                 GC.Collect();
                 PrintMemory();
             });
         }
     }
+
+    static ObjectRef<ScrolledWindowHandle> scrolledWindow = new();
 
     static void PrintMemory() => WriteLine($"Total memory: {Process.GetCurrentProcess().WorkingSet64:N0}, managed: {GC.GetTotalMemory(true):N0}");
 
