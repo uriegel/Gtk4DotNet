@@ -63,7 +63,8 @@ static class ColumnViewControlApp
 
     static void FilterItems(ToggleButtonHandle toggleButton)
     {
-        
+        Controller2.IsFiltering = toggleButton.Active();
+        columnView?.FilterChanged(Controller2.IsFiltering ? FilterChange.MoreStrict : FilterChange.LessStrict);
     }
 
     static readonly Controller1 controller1 = new();
@@ -83,7 +84,7 @@ class Controller1 : Controller<Type1>
     {
         MultiSelection = true;
         EnableRubberband = true;
-    } 
+    }
 
     public override Column<Type1>[] GetColumns()
         => [ new()
@@ -112,6 +113,8 @@ class Controller1 : Controller<Type1>
 
 class Controller2 : Controller<Type2>
 {
+    public static bool IsFiltering { get; set; }
+    public Controller2() => OnFilter = Filter;
     public override Column<Type2>[] GetColumns()
         => [ new()
                 {
@@ -135,11 +138,16 @@ class Controller2 : Controller<Type2>
     public void Fill() => Insert([
         .. Enumerable.Range(1, 100_000).Select(n => new Type2($"item{n}@dom.de", $"ID-{n}", n % 3 == 0))]);
 
+    static bool Filter(Type2 item)
+        => IsFiltering
+            ? item.Active
+            : true;
+
     static BoxHandle OnIconName()
-        => Box
-            .New(Orientation.Horizontal)
-            .Append(Image.NewFromIconName("mail", IconSize.Button))
-            .Append(Label.New("").HAlign(Align.Start).MarginStart(5));
+            => Box
+                .New(Orientation.Horizontal)
+                .Append(Image.NewFromIconName("mail", IconSize.Button))
+                .Append(Label.New("").HAlign(Align.Start).MarginStart(5));
 
     static void OnIconNameBind(ListItemHandle listItem, Type2 item)
     {

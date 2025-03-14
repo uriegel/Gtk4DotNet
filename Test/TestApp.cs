@@ -3,7 +3,6 @@ using GtkDotNet.SafeHandles;
 using GtkDotNet.Controls;
 using static GtkDotNet.Controls.ColumnViewSubClassed;
 
-// TODO Filtering in ColumnViewControl
 // TODO CSS Provider for focused element: unselect or gray unfocused columnview
 // TODO remove test app TwoColumnViews, but not before filtering is in another testapp
 
