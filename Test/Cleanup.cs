@@ -24,14 +24,16 @@ static class Cleanup
         return 0;
     }
 
+    // TODO 0 items, then 1_000_000 items then dispoal of StringListView and new begin
+
     static void Check0()
     {
         var count = 1_000_000;
 
         var model = StringList.New([]);
-                        // [.. Enumerable
-                        //     .Range(1, count)
-                        //     .Select(n => $"Item no {n}")]);
+        // [.. Enumerable
+        //     .Range(1, count)
+        //     .Select(n => $"Item no {n}")]);
         var itemFactory = SignalListItemFactory
             .New()
             .Setup(OnListItemSetup)
