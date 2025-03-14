@@ -1,6 +1,8 @@
 using GtkDotNet.SafeHandles;
 using GtkDotNet.SubClassing;
 
+namespace GtkDotNet.Controls;
+
 public class ManagedApplicationWindowClass : SubClass<ApplicationWindowHandle>
 {
     public static ManagedApplicationWindowClass Register(Func<nint, ManagedApplicationWindow> constructor, string? template = null)

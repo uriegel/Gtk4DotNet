@@ -1,8 +1,8 @@
 using CsTools;
-using GtkDotNet.Controls;
 using GtkDotNet.SafeHandles;
+using GtkDotNet.SubClassing;
 
-namespace GtkDotNet.SubClassing;
+namespace GtkDotNet.Controls;
 
 public class ColumnViewSubClassedClass(string name, Func<nint, ColumnViewSubClassed> constructor)
     : SubClass<CustomColumnViewHandle>(GTypeEnum.ScrolledWindow, name, constructor)
@@ -87,10 +87,10 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
             columnView.AppendColumn(colHandle);
         }
 
-        var model = ListStore
-            .New(GManagedObject<T>.GType);
-        //            .Splice([.. items.Items.Select(n => GManagedObject<T>.New(n).Handle)]);
-
+        var model = ListStore.New(GManagedObject<T>.GType);
+        // TODO when filter exists:
+        // var sortListModel = SortListModel.New(FilterListModel.New(model, filter), columnView.GetSorter());
+        // TODO when filter dows not exists:
         var sortListModel = SortListModel.New(model, columnView.GetSorter());
 
         IListModel selModel = MultiSelection ? GtkDotNet.MultiSelection.New(sortListModel) : SingleSelection.New(sortListModel);

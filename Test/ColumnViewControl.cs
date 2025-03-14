@@ -1,8 +1,9 @@
 using CsTools.Extensions;
 using GtkDotNet;
+using GtkDotNet.Controls;
 using GtkDotNet.SafeHandles;
 using GtkDotNet.SubClassing;
-using static GtkDotNet.SubClassing.ColumnViewSubClassed;
+using static GtkDotNet.Controls.ColumnViewSubClassed;
 
 static class ColumnViewControlApp
 {
@@ -19,12 +20,17 @@ static class ColumnViewControlApp
                                 .PackEnd(ToggleButton.New()
                                     .Label("Alternative Model")
                                     .BindProperty("active", changeItems, "sensitive", BindingFlags.InvertBoolean | BindingFlags.SyncCreate)
+                                    .BindProperty("active", filterItems, "sensitive", BindingFlags.SyncCreate)
                                     .OnToggled(ModelToggled))
                                 .PackEnd(ToggleButton.New()
                                     .Ref(changeItems)
                                     .Label("Change Items")
-                                    .OnToggled(ChangeItems)))
-                            .DefaultSize(600, 800)
+                                    .OnToggled(ChangeItems))
+                                .PackEnd(ToggleButton.New()
+                                    .Ref(filterItems)
+                                    .Label("Filter")
+                                    .OnToggled(FilterItems)))
+                            .DefaultSize(800, 800)
                             .Child(ColumnViewControl.Create("ColumnView")
                                 .SideEffect(cv =>
                                 {
@@ -53,12 +59,18 @@ static class ColumnViewControlApp
         => controller1.Insert(2, [
             new Type1("New Item 1", 2001),
             new Type1("New Item 2", 2012),
-            new Type1("New Item 3", 2023)]);        
+            new Type1("New Item 3", 2023)]);
+
+    static void FilterItems(ToggleButtonHandle toggleButton)
+    {
+        
+    }
 
     static readonly Controller1 controller1 = new();
     static readonly Controller2 controller2 = new();
     static readonly ObjectRef<ToggleButtonHandle> changeItems = new();
-
+    static readonly ObjectRef<ToggleButtonHandle> filterItems = new();
+    
     static ColumnViewControl? columnView;
 }
 

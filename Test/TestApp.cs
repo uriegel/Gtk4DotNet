@@ -1,7 +1,7 @@
 using GtkDotNet;
 using GtkDotNet.SafeHandles;
-using GtkDotNet.SubClassing;
-using static GtkDotNet.SubClassing.ColumnViewSubClassed;
+using GtkDotNet.Controls;
+using static GtkDotNet.Controls.ColumnViewSubClassed;
 
 // TODO Filtering in ColumnViewControl
 // TODO CSS Provider for focused element: unselect or gray unfocused columnview

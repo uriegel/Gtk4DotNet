@@ -1,4 +1,5 @@
 using GtkDotNet;
+using GtkDotNet.Controls;
 using GtkDotNet.SafeHandles;
 using GtkDotNet.SubClassing;
 
