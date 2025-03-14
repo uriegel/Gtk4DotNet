@@ -23,13 +23,13 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
     public void SetController<T>(Controller<T> controller)
     {
         MultiSelection = controller.MultiSelection;
-        var model = SetColumns(controller.GetColumns());
+        var model = SetColumns(controller.GetColumns(), controller);
         controller.SetModel(model);
         if (controller.EnableRubberband)
             columnView.EnableRubberband();
     }
 
-    IColumnViewModel<T> SetColumns<T>(Column<T>[] columns)
+    IColumnViewModel<T> SetColumns<T>(Column<T>[] columns, Controller<T> controller)
     {
         Handle.RemoveChild();
         columnView.Dispose();
@@ -88,14 +88,17 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         }
 
         var model = ListStore.New(GManagedObject<T>.GType);
-        // TODO when filter exists:
-        // var sortListModel = SortListModel.New(FilterListModel.New(model, filter), columnView.GetSorter());
-        // TODO when filter dows not exists:
-        var sortListModel = SortListModel.New(model, columnView.GetSorter());
+        var sortListModel =
+            controller.OnFilter != null
+            ? SortListModel.New(FilterListModel.New(model, GetFilter()), columnView.GetSorter())
+            : SortListModel.New(model, columnView.GetSorter());
 
         IListModel selModel = MultiSelection ? GtkDotNet.MultiSelection.New(sortListModel) : SingleSelection.New(sortListModel);
         listModelHandle = model;
         columnView.SetModel(selModel);
+
+        CustomFilterHandle GetFilter()
+            => CustomFilter.New<GObjectHandle>(item => item.GetInstance() is GManagedObject<T> t && t.Value != null && controller.OnFilter!(t.Value));
 
         return new Model<T>(columnView, listModelHandle);
         //  class ObservableModel<T>(): IDisposable
@@ -131,7 +134,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         sorters.ForEach(h => h.Dispose());
         sorters.Clear();
     }
-    
+
     public class Column<TObj>
     {
         public string Title { get; set; } = string.Empty;
@@ -139,7 +142,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         public bool Resizeable { get; set; }
         public Func<WidgetHandle> OnItemSetup { get; set; } = () => Label.New("").HAlign(Align.Start);
         public Action<ListItemHandle, TObj>? OnItemBind { get; set; }
-        public Func<TObj, string>? OnLabelBind { get; set; } 
+        public Func<TObj, string>? OnLabelBind { get; set; }
         public Func<TObj, TObj, int>? OnSort { get; set; } 
     }
 
@@ -147,6 +150,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
     {
         public bool MultiSelection { get; set; }
         public bool EnableRubberband { get; set; }
+        public Func<T, bool>? OnFilter { get; set; } 
 
         public abstract Column<T>[] GetColumns();
         public void Insert(IEnumerable<T> items) => model?.Insert(items);
