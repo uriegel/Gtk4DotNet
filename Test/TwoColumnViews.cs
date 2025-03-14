@@ -48,8 +48,14 @@ static class TwoColumnViews
                                     .OnToggled(FilterToggled)))
                             .Title("Hello Gtk👍")
                             .DefaultSize(800, 800)
+                            .OnRealize(win =>
+                                {
+                                    var w = win.GetWidth();
+                                    paned.Ref.SetPosition(w / 2);
+                                })
                             .Child(Paned
                                 .New(Orientation.Horizontal)
+                                .Ref(paned)
                                 .StartChild(ScrolledWindow
                                     .New()
                                     .Policy(PolicyType.Never, PolicyType.Automatic)
@@ -82,6 +88,8 @@ static class TwoColumnViews
                             .Show())
                 .Run(0, IntPtr.Zero);
     }
+
+    static ObjectRef<PanedHandle> paned = new();
 
     static int NameCompare(GObjectHandle data1, GObjectHandle data2)
     {

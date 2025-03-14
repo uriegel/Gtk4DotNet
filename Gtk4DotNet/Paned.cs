@@ -15,6 +15,9 @@ public static class Paned
     public static PanedHandle EndChild(this PanedHandle paned, WidgetHandle widget, bool resize, bool shrink)
         => paned.SideEffect(p => p.SetEndChild(widget, resize, shrink));
 
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_paned_set_position", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void SetPosition(this PanedHandle paned, int position);
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_paned_set_start_child", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetStartChild(this PanedHandle paned, WidgetHandle widget, bool resize, bool shrink);
 
