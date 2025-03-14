@@ -31,6 +31,8 @@ public static class Application
     {
         var window = GObject.New<ApplicationWindowHandle>(customWindow.TypeFromName());
         window.SetApplication(app);
+        var mw = Controls.ManagedApplicationWindow.GetInstance(window.GetInternalHandle()) as Controls.ManagedApplicationWindow;
+        mw?.Initialize();
         return window;
     }
 

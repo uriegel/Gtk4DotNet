@@ -25,4 +25,5 @@ public class ManagedApplicationWindowClass : SubClass<ApplicationWindowHandle>
 public class ManagedApplicationWindow(nint obj) : SubClassInst<ApplicationWindowHandle>(obj)
 {
     protected override ApplicationWindowHandle CreateHandle(nint obj) => new(obj);
+    protected internal virtual void Initialize() {}
 }

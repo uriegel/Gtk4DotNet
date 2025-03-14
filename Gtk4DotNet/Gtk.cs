@@ -98,6 +98,41 @@ public static class Gtk
         }
     }
 
+    public static void IdleAdd(int priority, Action action)
+    {
+        var key = GtkDelegates.GetKey();
+        OnePointerBoolRetDelegate? mainFunction = _ =>
+        {
+            action.Invoke();
+            // mainFunction = null;    
+            // GtkDelegates.Remove(key);
+            return true;
+        };
+        GtkDelegates.Add(key, mainFunction);
+        var delegat = mainFunction as Delegate;
+        var funcPtr = Marshal.GetFunctionPointerForDelegate(delegat);
+        IdleAddFull(priority, funcPtr, IntPtr.Zero, IntPtr.Zero);
+    }
+
+    public static void SetTimer(int priority, TimeSpan timeout, Func<bool> action)
+    {
+        var key = GtkDelegates.GetKey();
+        OnePointerBoolRetDelegate? mainFunction = _ =>
+        {
+            var ret = action.Invoke();
+            if (!ret)
+            {
+                mainFunction = null;
+                GtkDelegates.Remove(key);
+            }
+            return !ret;
+        };
+        GtkDelegates.Add(key, mainFunction);
+        var delegat = mainFunction as Delegate;
+        var funcPtr = Marshal.GetFunctionPointerForDelegate(delegat);
+        SetTimer(priority, (uint)timeout.TotalMilliseconds, funcPtr, IntPtr.Zero, IntPtr.Zero);
+    }
+
     public static string? GuessContentType(string filename)
         => GuessContentType(filename, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero).PtrToString(true);
 
@@ -142,6 +177,9 @@ public static class Gtk
 
     [DllImport(Libs.LibGtk, EntryPoint="g_idle_add_full", CallingConvention = CallingConvention.Cdecl)]
     extern static void IdleAddFull(int priority, IntPtr func, IntPtr nil, IntPtr nil2);
+
+    [DllImport(Libs.LibGtk, EntryPoint="g_timeout_add_full", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetTimer(int priority, uint intervalInMillis, nint func, nint nil, nint nil2);
 
     /// <summary>
     /// For usage in a non GTK app

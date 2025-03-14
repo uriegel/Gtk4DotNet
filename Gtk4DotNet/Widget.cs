@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 using GtkDotNet.Extensions;
 using GtkDotNet.SafeHandles;
 using CsTools.Extensions;
+using CsTools.Functional;
 
 namespace GtkDotNet;
 
@@ -53,8 +54,38 @@ public static class Widget
         where THandle : WidgetHandle
         => widget.SideEffect(w => w.SetMarginBottom(margin));
 
+    public static THandle OnSizeChanged<THandle>(this THandle widget, Action<int, int> onSizeChanged)
+        where THandle : WidgetHandle
+    {
+        var width = -1;
+        var height = -1;
+        widget.SetTimer(300, TimeSpan.FromMilliseconds(100), () =>
+            {
+                var w = widget.GetWidth();
+                var h = widget.GetHeight();
+                if (w != width || h != height)
+                {
+                    width = w;
+                    height = h;
+                    onSizeChanged(w, h);
+                }
+            });
+        return widget;
+    }
 
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_hide", CallingConvention = CallingConvention.Cdecl)]
+    public static void SetTimer(this WidgetHandle widget, int priority, TimeSpan timeout, Action action)
+    {
+        RefCell<bool> disposed = new(false);
+        widget.AddWeakRef(() => disposed.Value = true);
+        Gtk.SetTimer(priority, timeout, () =>
+            {
+                if (!disposed.Value)
+                    action();
+                return disposed.Value;
+            });
+    }
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_hide", CallingConvention = CallingConvention.Cdecl)]
     public extern static void Hide(this WidgetHandle widget);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_set_visible", CallingConvention = CallingConvention.Cdecl)]

@@ -25,12 +25,15 @@ static class TestApp
 
     class AppWindow(nint obj) : ManagedApplicationWindow(obj)
     {
-        protected override async void OnCreate()
+        int width;
+        protected override void OnCreate()
+            => Handle.InitTemplate();
+
+        protected override void Initialize()
         {
-            Handle.InitTemplate();
+            Handle.OnSizeChanged((w, h) => Console.WriteLine($"On Size {w}, {h}"));
             var cv = Handle.GetTemplateChild<ColumnViewHandle, WindowHandle>("columnview");
             var columnView = CustomColumnView.GetInstance(cv?.GetInternalHandle() ?? 0) as CustomColumnView;
-            await Task.Delay(1);
             Handle.AddActions([new GtkAction("down", () =>
                 {
                     Console.WriteLine("Down");
@@ -46,7 +49,7 @@ static class TestApp
                             if (!sibling.IsInvalid)
                                 sibling.GrabFocus();
                         }
-                            
+
                     }
                 }, "Down")]);
             Handle.AddActions([new GtkAction("Ins", () =>
@@ -138,7 +141,7 @@ class Controller : Controller<Type2>
             ];
 
     public void Fill() => Insert([
-        .. Enumerable.Range(1, 100_000).Select(n => new Type2($"item{n}@dom.de", $"ID-{n}", n % 3 == 0))]);
+        .. Enumerable.Range(1, 100).Select(n => new Type2($"item{n}@dom.de", $"ID-{n}", n % 3 == 0))]);
 
     static BoxHandle OnIconName()
         => Box
