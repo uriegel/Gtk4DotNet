@@ -25,7 +25,6 @@ static class TestApp
 
     class AppWindow(nint obj) : ManagedApplicationWindow(obj)
     {
-        int width;
         protected override void OnCreate()
             => Handle.InitTemplate();
 

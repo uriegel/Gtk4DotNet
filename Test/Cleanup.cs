@@ -1,12 +1,16 @@
 using GtkDotNet;
 using GtkDotNet.SafeHandles;
 using CsTools.Extensions;
+
 using static System.Console;
+using System.Diagnostics;
+using System.Data;
 
 static class Cleanup
 {
     public static int Run()
     {
+        Test(Check0, "Finished 0");
         Test(Check1, "Finished 1");
         Test(Check2, "Finished 2");
         Test(Check3, "Finished 3");
@@ -19,6 +23,69 @@ static class Cleanup
         Test(Check7, "Finished 7");
         return 0;
     }
+
+    static void Check0()
+    {
+        var count = 1_000_000;
+
+        var model = StringList.New([]);
+                        // [.. Enumerable
+                        //     .Range(1, count)
+                        //     .Select(n => $"Item no {n}")]);
+        var itemFactory = SignalListItemFactory
+            .New()
+            .Setup(OnListItemSetup)
+            .Bind(OnListItemBind)
+            .AddWeakRef(() => Console.WriteLine("Factory disposed"));
+        var selectionModel = SingleSelection.New(model);
+
+        bool fill = false;
+
+        Application
+            .NewAdwaita("org.gtk.example")
+            .OnActivate(app =>
+                app
+                    .NewWindow()
+                    .SideEffect(MemoryChecker)
+                    .Title("Hello Gtk Check👍")
+                    .DefaultSize(400, 600)
+                    .Child(ScrolledWindow
+                        .New()
+                        .Policy(PolicyType.Never, PolicyType.Automatic)
+                        .Child(ListView
+                            .New(selectionModel, itemFactory)))
+                    .Show())
+            .Run(0, IntPtr.Zero);
+
+        static void OnListItemSetup(ListItemHandle listItem) => listItem.SetChild(Label.New(""));
+
+        static void OnListItemBind(ListItemHandle listItem)
+        {
+            var label = listItem.GetChild<LabelHandle>();
+            var item = listItem.GetItem<StringObjectHandle>();
+            label.Set(item.Get());
+        }
+
+        void MemoryChecker(WindowHandle w)
+        {
+            w.SetTimer(300, TimeSpan.FromSeconds(5), () =>
+            {
+                PrintMemory();
+                if (fill)
+                    model?.Splice(0, 0, [.. Enumerable
+                            .Range(1, count)
+                            .Select(n => $"Item no {n}")]);
+                else
+                    model?.Splice(0, (uint)count);
+                fill = !fill;
+                GC.Collect();
+                GC.Collect();
+                PrintMemory();
+            });
+        }
+    }
+
+    static void PrintMemory() => WriteLine($"Total memory: {Process.GetCurrentProcess().WorkingSet64:N0}, managed: {GC.GetTotalMemory(true):N0}");
 
     static void Check1()
     {

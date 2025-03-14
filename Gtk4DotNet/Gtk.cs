@@ -125,10 +125,10 @@ public static class Gtk
                 mainFunction = null;
                 GtkDelegates.Remove(key);
             }
-            return !ret;
+            return ret;
         };
-        GtkDelegates.Add(key, mainFunction);
         var delegat = mainFunction as Delegate;
+        GtkDelegates.Add(key, delegat);
         var funcPtr = Marshal.GetFunctionPointerForDelegate(delegat);
         SetTimer(priority, (uint)timeout.TotalMilliseconds, funcPtr, IntPtr.Zero, IntPtr.Zero);
     }

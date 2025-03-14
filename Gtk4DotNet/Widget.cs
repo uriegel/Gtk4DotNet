@@ -81,7 +81,7 @@ public static class Widget
             {
                 if (!disposed.Value)
                     action();
-                return disposed.Value;
+                return !disposed.Value;
             });
     }
 
