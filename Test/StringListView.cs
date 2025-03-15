@@ -8,9 +8,9 @@ static class StringListView
     public static int Run()
     {
         var model = StringList.New(
-                        [.. Enumerable
+                        Enumerable
                             .Range(1, 1_000_000)
-                            .Select(n => $"Item no {n}")]);
+                            .Select(n => $"Item no {n}"));
         var itemFactory = SignalListItemFactory
             .New()
             .Setup(OnListItemSetup)

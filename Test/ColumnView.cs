@@ -99,3 +99,27 @@ static class ColumnViewApp
     }
 }
 
+class GContactClass(GTypeEnum parent, string name, Func<nint, GContact> constructor)
+    : SubClass<GObjectHandle>(parent, name, constructor)
+{ }
+
+class GContact(nint obj) : SubClassInst<GObjectHandle>(obj)
+{
+    public static GTypeHandle GType { get => _GType ?? "Contact".TypeFromName().SideEffect(n => _GType = n); }
+    static GTypeHandle? _GType;
+
+    public static GContact New(Contact contact)
+    {
+        using var handle = GObject.New<GObjectHandle>(GType);
+        handle.IsFloating = true;
+        var res = handle.GetInstance() as GContact;
+        if (res != null)
+            res.Contact = contact;
+        return res!;
+    }
+    public Contact? Contact { get; set; }
+
+    protected override GObjectHandle CreateHandle(nint obj) => new(obj);
+
+    protected override void OnFinalize() => Console.WriteLine("Contact finalized");
+}

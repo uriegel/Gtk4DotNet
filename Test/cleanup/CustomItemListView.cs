@@ -10,7 +10,6 @@ using static System.Console;
 
 static class CustomItemListViewCleanup
 {
-    record Rekord(string name);
     public static void Check()
     {
         var count = 1000_000;

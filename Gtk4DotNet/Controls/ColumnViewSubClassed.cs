@@ -188,7 +188,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         public void Insert(IEnumerable<T> items)
             => listModelHandle?.Splice([.. items.Select(n => GManagedObject<T>.New(n).Handle)]);
         public void Insert(uint pos, IEnumerable<T> items)
-            => listModelHandle?.Splice(pos, [.. items.Select(n => GManagedObject<T>.New(n).Handle)]);
+            => listModelHandle?.Splice2(pos, [.. items.Select(n => GManagedObject<T>.New(n).Handle)]);
     }
 
     protected ColumnViewHandle columnView = new(0);

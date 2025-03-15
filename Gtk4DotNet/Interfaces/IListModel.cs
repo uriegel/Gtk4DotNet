@@ -14,13 +14,31 @@ public interface IListModel
         return this;
     }
 
+    public IListModel Append<T>(T t)
+    {
+        var obj = GObject.New<GObjectHandle>(GObject.Type());
+        obj.IsFloating = true;
+        var gchandle = GCHandle.Alloc(t, GCHandleType.Normal);
+        var ptr = GCHandle.ToIntPtr(gchandle);
+        obj.SetData("managedObject", ptr);
+        AddWeakRef(obj);
+        _Append(GetInternalHandle(), obj);
+        return this;
+    }
+
     public IListModel Splice(ObjectHandle[] objs)
     {
         Splice(0, 0, objs);
         return this;
     }
 
-    public IListModel Splice(uint pos, ObjectHandle[] objs)
+    public IListModel Splice2(uint pos, ObjectHandle[] objs)
+    {
+        Splice(pos, 0, objs);
+        return this;
+    }
+
+    public IListModel Splice<T>(uint pos, IEnumerable<T> objs)
     {
         Splice(pos, 0, objs);
         return this;
@@ -33,6 +51,7 @@ public interface IListModel
             objs.Select(o =>
                 {
                     var obj = GObject.New<GObjectHandle>(GObject.Type());
+                    obj.IsFloating = true;
                     var gchandle = GCHandle.Alloc(o, GCHandleType.Normal);
                     var ptr = GCHandle.ToIntPtr(gchandle);
                     obj.SetData("managedObject", ptr);
