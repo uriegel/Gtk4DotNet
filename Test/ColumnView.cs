@@ -2,7 +2,6 @@ using CsTools.Extensions;
 using CsTools.Functional;
 using GtkDotNet;
 using GtkDotNet.SafeHandles;
-using GtkDotNet.SubClassing;
 
 static class ColumnViewApp
 {
@@ -11,11 +10,11 @@ static class ColumnViewApp
         static void InitStore(ApplicationHandle _)
         {
             var model = ListStore
-                            .New(GContact.GType)
-                            .Append(GContact.New(new("Uwe Riegel", "uriegel@hotmail.de", 1965)))
-                            .Append(GContact.New(new("Jim Doe", "jdoe@hotmail.de", 222)))
-                            .Append(GContact.New(new("Jane Doe", "jadoe@hotmail.de", 9999)))
-                            .Splice(3, [.. Enumerable.Range(1, 1000).Select(n => GContact.New(new($"Item no {n}", $"person{n}@hotmail.de", n)).Handle)])
+                            .New()
+                            .Append(new Contact("Uwe Riegel", "uriegel@hotmail.de", 1965))
+                            .Append(new Contact("Jim Doe", "jdoe@hotmail.de", 222))
+                            .Append(new Contact("Jane Doe", "jadoe@hotmail.de", 9999))
+                            .Splice(3, Enumerable.Range(1, 1000).Select(n => new Contact($"Item no {n}", $"person{n}@hotmail.de", n)))
                             .AddWeakRef(() => Console.WriteLine("model disposed"));
             var itemNameFactory = SignalListItemFactory
                 .New()
@@ -38,7 +37,6 @@ static class ColumnViewApp
             .NewAdwaita("org.gtk.example")
             .OnActivate(app =>
                 app
-                    .SubClass(new GContactClass(GTypeEnum.GObject, "Contact", p => new GContact(p)))
                     .SideEffect(InitStore)
                     .NewWindow()
                     .Title("Hello Column View👍")
@@ -82,7 +80,7 @@ static class ColumnViewApp
     static void OnListItemBind(ListItemHandle listItem)
     {
         var label = listItem.GetChild<LabelHandle>();
-        label.Set(listItem.GetObject<GContact>()?.Contact?.Name);
+        label.Set($"{listItem.GetObject2<Contact>()?.Name}");
     }
 
     static ColumnViewColumnHandle? col1;
@@ -94,32 +92,7 @@ static class ColumnViewApp
     static void OnEMailBind(ListItemHandle listItem)
     {
         var label = listItem.GetChild<LabelHandle>();
-        var item = listItem.GetObject<GContact>();
-        label.Set(item?.Contact?.EMail);
+        label.Set($"{listItem.GetObject2<Contact>()?.EMail}");
     }
 }
 
-class GContactClass(GTypeEnum parent, string name, Func<nint, GContact> constructor)
-    : SubClass<GObjectHandle>(parent, name, constructor)
-{ }
-
-class GContact(nint obj) : SubClassInst<GObjectHandle>(obj)
-{
-    public static GTypeHandle GType { get => _GType ?? "Contact".TypeFromName().SideEffect(n => _GType = n); }
-    static GTypeHandle? _GType;
-
-    public static GContact New(Contact contact)
-    {
-        using var handle = GObject.New<GObjectHandle>(GType);
-        handle.IsFloating = true;
-        var res = handle.GetInstance() as GContact;
-        if (res != null)
-            res.Contact = contact;
-        return res!;
-    }
-    public Contact? Contact { get; set; }
-
-    protected override GObjectHandle CreateHandle(nint obj) => new(obj);
-
-    protected override void OnFinalize() => Console.WriteLine("Contact finalized");
-}
