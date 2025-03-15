@@ -1,16 +1,17 @@
 using GtkDotNet;
 using GtkDotNet.SafeHandles;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+
 using CsTools.Extensions;
 
 using static System.Console;
-using System.Diagnostics;
-using System.Data;
 
 static class Cleanup
 {
     public static int Run()
     {
-        Test(Check0, "Finished 0");
+        Test(StringListViewCleanup.Check, "Finished StringListViewCleanup.Check");
         Test(Check1, "Finished 1");
         Test(Check2, "Finished 2");
         Test(Check3, "Finished 3");
@@ -23,91 +24,6 @@ static class Cleanup
         Test(Check7, "Finished 7");
         return 0;
     }
-
-    static void Check0()
-    {
-        var count = 1_000;
-
-        var model = StringList.New([]);
-        // [.. Enumerable
-        //     .Range(1, count)
-        //     .Select(n => $"Item no {n}")]);
-        var itemFactory = SignalListItemFactory
-            .New()
-            .Setup(OnListItemSetup)
-            .Bind(OnListItemBind)
-            .AddWeakRef(() => WriteLine("Factory disposed"));
-        var selectionModel = SingleSelection.New(model).AddWeakRef(() => WriteLine("SelectionModel disposed"));
-
-        int schritt = 0;
-
-        Application
-            .NewAdwaita("org.gtk.example")
-            .OnActivate(app =>
-                app
-                    .NewWindow()
-                    .SideEffect(MemoryChecker)
-                    .Title("Hello Gtk Check👍")
-                    .DefaultSize(400, 600)
-                    .Child(ScrolledWindow
-                        .New()
-                        .Ref(scrolledWindow)
-                        .Policy(PolicyType.Never, PolicyType.Automatic)
-                        .Child(ListView
-                            .New(selectionModel, itemFactory).AddWeakRef(() => WriteLine("ListView disposed"))))
-                    .Show())
-            .Run(0, IntPtr.Zero);
-
-
-        static void OnListItemSetup(ListItemHandle listItem) => listItem.SetChild(Label.New(""));
-
-        static void OnListItemBind(ListItemHandle listItem)
-        {
-            var label = listItem.GetChild<LabelHandle>();
-            var item = listItem.GetItem<StringObjectHandle>();
-            label.Set(item.Get());
-        }
-
-        void MemoryChecker(WindowHandle w)
-        {
-            w.SetTimer(300, TimeSpan.FromSeconds(5), () =>
-            {
-                PrintMemory();
-                if (schritt == 1 || schritt == 3 || schritt == 5)
-                    model?.Splice(0, 0, [.. Enumerable
-                            .Range(1, count)
-                            .Select(n => $"Item no {n}")]);
-                if (schritt == 2 || schritt == 4 || schritt == 6)
-                    model?.Splice(0, (uint)count);
-                if (schritt == 7)
-                    scrolledWindow.Ref.Child(Label.New("nil"));
-                if (schritt == 8)
-                {
-                    model = StringList.New([]);
-                    // [.. Enumerable
-                    //     .Range(1, count)
-                    //     .Select(n => $"Item no {n}")]);
-                    itemFactory = SignalListItemFactory
-                        .New()
-                        .Setup(OnListItemSetup)
-                        .Bind(OnListItemBind)
-                        .AddWeakRef(() => WriteLine("Factory disposed"));
-                    selectionModel = SingleSelection.New(model).AddWeakRef(() => WriteLine("SelectionModel disposed"));
-                    scrolledWindow.Ref.Child(ListView
-                            .New(selectionModel, itemFactory).AddWeakRef(() => WriteLine("ListView disposed")));
-                    schritt = -1;
-                }
-                schritt++;
-                GC.Collect();
-                GC.Collect();
-                PrintMemory();
-            });
-        }
-    }
-
-    static ObjectRef<ScrolledWindowHandle> scrolledWindow = new();
-
-    static void PrintMemory() => WriteLine($"Total memory: {Process.GetCurrentProcess().WorkingSet64:N0}, managed: {GC.GetTotalMemory(true):N0}");
 
     static void Check1()
     {
@@ -136,7 +52,7 @@ static class Cleanup
             .AddWeakRef(() => WriteLine("Application Check3 disposed"))
             .AddWeakRef(() => WriteLine("Application Check3 disposed"))
             .AddWeakRef(() => WriteLine("Application Check3 disposed"))
-            .OnActivate(app => 
+            .OnActivate(app =>
             {
                 var test1 = new Test1();
             })
@@ -145,7 +61,7 @@ static class Cleanup
     static void Check4()
         => Application
             .New("de.urigel.test")
-            .OnActivate(app => 
+            .OnActivate(app =>
             {
                 var test1 = new Test1();
                 app
@@ -180,7 +96,7 @@ static class Cleanup
         => Application
             .New("de.urigel.test")
             .AddWeakRef(() => WriteLine("Application Check6 disposed"))
-            .OnActivate(app => 
+            .OnActivate(app =>
             {
                 var test1 = new Test1();
                 app
@@ -199,7 +115,7 @@ static class Cleanup
         => Application
             .New("de.urigel.test")
             .AddWeakRef(() => WriteLine("Application Check7 disposed"))
-            .OnActivate(app => 
+            .OnActivate(app =>
             {
                 var test1 = new Test1();
                 app
@@ -237,6 +153,11 @@ static class Cleanup
     }
 
     static ObjectRef<WindowHandle> window = new();
+
+    [DllImport("libgio-2.0.so.0", EntryPoint = "g_malloc_trim", CallingConvention = CallingConvention.Cdecl)]
+    extern static void MallokTrim(nint ninte);
+
+
 }
 
 class Test1

@@ -44,8 +44,8 @@ app_activate (GApplication *application) {
   GtkStringList *sl =  gtk_string_list_new ((const char * const *) array);
   //GtkNoSelection *ns =  gtk_single_selection_new (G_LIST_MODEL (sl));
   //GtkSingleSelection *ns =  gtk_single_selection_new (G_LIST_MODEL (sl));
-  //GtkMultiSelection *ns =  gtk_multi_selection_new (G_LIST_MODEL (sl));
-  GtkMultiSelection *ns =  gtk_multi_selection_new (G_LIST_MODEL (NULL));
+  GtkMultiSelection *ns =  gtk_multi_selection_new (G_LIST_MODEL (sl));
+  //GtkMultiSelection *ns =  gtk_multi_selection_new (G_LIST_MODEL (NULL));
 
   GtkListItemFactory *factory = gtk_signal_list_item_factory_new ();
   g_signal_connect (factory, "setup", G_CALLBACK (setup_cb), NULL);
@@ -75,3 +75,5 @@ main (int argc, char **argv) {
   g_object_unref (app);
   return stat;
 }
+
+// gcc $(pkg-config --cflags gtk4) -o listview listview.c $(pkg-config --libs gtk4)
