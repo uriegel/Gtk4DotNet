@@ -63,8 +63,9 @@ static class TestApp
                         var listItem = item.GetFirstChild<WidgetHandle>();
 
                         var name2 = listItem.GetName();
-                        var typ = listItem.GetManagedObjectData<Type2>("data");
-                        Console.WriteLine($"Item: {typ?.EMail}");
+                        // var typ = listItem.GetManagedObjectData<Type2>("data");
+                        // Console.WriteLine($"Item: {typ?.EMail}");
+
                         var data = listItem.GetData("data");
                         var pos = columnView?.FindPos(data);
                         Console.WriteLine($"Pos : {pos}");

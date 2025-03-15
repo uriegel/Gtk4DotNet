@@ -5,23 +5,26 @@ namespace GtkDotNet;
 
 public static class Selection
 {
-    public static THandle GetItem<THandle>(this SelectionHandle sel, uint pos)
-        where THandle : ObjectHandle, new()
+    public static T? GetItem<T>(this SelectionHandle sel, uint pos)
+        where T : class
     {
-        var res = new THandle();
-        res.SetInternalHandle(sel.GetItem(pos));
+        var item = sel.GetItem(pos);
+        var res = new GObjectHandle();
         res.IsFloating = true;
-        return res;
+        res.SetInternalHandle(item);
+        var ptr = res.GetData("managedObject");
+        var gcHandle = GCHandle.FromIntPtr(ptr);
+        return gcHandle.Target as T;
     }
 
-    public static IEnumerable<THandle> GetItems<THandle>(this SelectionHandle sel)
-        where THandle : ObjectHandle, new()
+    public static IEnumerable<T> GetItems<T>(this SelectionHandle sel)
+        where T: class
     {
         uint pos = 0;
         while (true)
         {
-            var res = sel.GetItem<THandle>(pos++);
-            if (res.IsInvalid)
+            var res = sel.GetItem<T>(pos++);
+            if (res == null)
                 break;
             yield return res;
         }

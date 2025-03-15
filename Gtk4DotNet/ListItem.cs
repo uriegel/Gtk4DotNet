@@ -6,10 +6,6 @@ namespace GtkDotNet;
 
 public static class ListItem
 {
-    public static T? GetObject<T>(this ListItemHandle listItem)
-        where T : SubClassInst<GObjectHandle>
-        => listItem.GetItem<GObjectHandle>().GetInstance() as T;
-
     public static THandle GetItem<THandle>(this ListItemHandle listItem)
         where THandle : ObjectHandle, new()
     {
@@ -19,7 +15,7 @@ public static class ListItem
         return res;
     }
     
-    public static T? GetObject2<T>(this ListItemHandle listItem)
+    public static T? GetObject<T>(this ListItemHandle listItem)
         where T: class
     {
         var item = listItem.GetItem<GObjectHandle>();

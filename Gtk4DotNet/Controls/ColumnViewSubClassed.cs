@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using CsTools;
 using GtkDotNet.SafeHandles;
 using GtkDotNet.SubClassing;
@@ -20,6 +21,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
     }
 
     public void SetController<T>(Controller<T> controller)
+        where T : class
     {
         MultiSelection = controller.MultiSelection;
         var model = SetColumns(controller.GetColumns(), controller);
@@ -29,6 +31,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
     }
 
     IColumnViewModel<T> SetColumns<T>(Column<T>[] columns, Controller<T> controller)
+        where T : class
     {
         Handle.RemoveChild();
         columnView.Dispose();
@@ -43,11 +46,6 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         });
         this.columns.Clear();
 
-        var type = typeof(T);
-        var objectName = "GManagedObjectClass" + type.Name;
-        if (!registeredObjects.ContainsKey(objectName))
-            registeredObjects.Add(objectName, new GManagedObjectClass<T>(objectName, p => new GManagedObject<T>(p)));
-
         foreach (var col in columns)
         {
             var itemFactory = SignalListItemFactory
@@ -56,14 +54,15 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
                 .Setup(listItem => listItem.SetChild(col.OnItemSetup()))
                 .Bind(listItem =>
                     {
-                        if (listItem.GetObject<GManagedObject<T>>() is GManagedObject<T> item && item.Value != null)
+                        var item = listItem.GetObject<T>();
+                        if (item != null)
                         {
                             if (col.OnItemBind != null)
-                                col.OnItemBind.Invoke(listItem, item.Value);
+                                col.OnItemBind.Invoke(listItem, item);
                             else if (col.OnLabelBind != null)
                             {
                                 var label = listItem.GetChild<LabelHandle>();
-                                label.Set(col.OnLabelBind.Invoke(item.Value));
+                                label.Set(col.OnLabelBind.Invoke(item));
                             }
                         }
                     });
@@ -75,10 +74,15 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
                 colHandle.Resizeable();
             if (col.OnSort != null)
             {
-                var sorter = CustomSorter.New<GObjectHandle>((a, b)
-                    => a.GetInstance() is GManagedObject<T> t1 && t1.Value != null && b.GetInstance() is GManagedObject<T> t2 && t2.Value != null
-                        ? col.OnSort(t1.Value, t2.Value)
-                        : 0);
+                var sorter = CustomSorter.New<GObjectHandle>((a, b) =>
+                {
+                    var itemA = GetItem(a);
+                    var itemB = GetItem(b);
+                    return itemA != null && itemB != null
+                        ? col.OnSort(itemA, itemB)
+                        : 0;
+                });
+
                 colHandle.SetSorter(sorter);
                 sorters.Add(sorter);
             }
@@ -86,9 +90,9 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
             columnView.AppendColumn(colHandle);
         }
 
-        var model = ListStore.New(GManagedObject<T>.GType);
+        var model = ListStore.New();
         filterHandle = controller.OnFilter != null
-            ? CustomFilter.New<GObjectHandle>(item => item.GetInstance() is GManagedObject<T> t && t.Value != null && controller.OnFilter!(t.Value))
+            ? CustomFilter.New<GObjectHandle>(item => GetItem(item) is T t && t != null && controller.OnFilter!(t))
             : null;
 
         var sortListModel =
@@ -101,6 +105,13 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         columnView.SetModel(selModel);
 
         return new Model<T>(columnView, listModelHandle);
+
+        T? GetItem(ObjectHandle h)
+        {
+            var ptr = h.GetData("managedObject");
+            var gcHandle = GCHandle.FromIntPtr(ptr);
+            return gcHandle.Target as T;
+        }
         //  class ObservableModel<T>(): IDisposable
         // {
         //     public ObservableCollection<T> Items 
@@ -171,6 +182,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
     }
 
     class Model<T>(ColumnViewHandle columnView, IListModel? listModelHandle) : IColumnViewModel<T>
+        where T: class
     {
         public IEnumerable<T> Items()
         {
@@ -178,17 +190,17 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
             var model = columnView.GetModel<SelectionHandle>();
             while (true)
             {
-                var oh = model.GetItem<GObjectHandle>(pos++);
-                if (!oh.IsInvalid && oh.GetInstance() is GManagedObject<T> item && item != null && item.Value != null)
-                    yield return item.Value;
+                var t = model.GetItem<T>(pos++);
+                if (t != null)
+                    yield return t;
                 else
                     break;
             }
         }
         public void Insert(IEnumerable<T> items)
-            => listModelHandle?.Splice([.. items.Select(n => GManagedObject<T>.New(n).Handle)]);
+            => listModelHandle?.Splice(items);
         public void Insert(uint pos, IEnumerable<T> items)
-            => listModelHandle?.Splice2(pos, [.. items.Select(n => GManagedObject<T>.New(n).Handle)]);
+            => listModelHandle?.Splice(pos, items);
     }
 
     protected ColumnViewHandle columnView = new(0);

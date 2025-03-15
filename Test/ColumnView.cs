@@ -80,7 +80,7 @@ static class ColumnViewApp
     static void OnListItemBind(ListItemHandle listItem)
     {
         var label = listItem.GetChild<LabelHandle>();
-        label.Set($"{listItem.GetObject2<Contact>()?.Name}");
+        label.Set($"{listItem.GetObject<Contact>()?.Name}");
     }
 
     static ColumnViewColumnHandle? col1;
@@ -92,7 +92,7 @@ static class ColumnViewApp
     static void OnEMailBind(ListItemHandle listItem)
     {
         var label = listItem.GetChild<LabelHandle>();
-        label.Set($"{listItem.GetObject2<Contact>()?.EMail}");
+        label.Set($"{listItem.GetObject<Contact>()?.EMail}");
     }
 }
 

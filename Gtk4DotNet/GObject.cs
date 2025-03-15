@@ -117,14 +117,6 @@ public static class GObject
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_get_data", CallingConvention = CallingConvention.Cdecl)]
     public extern static nint GetData(this ObjectHandle obj, string key);
 
-    public static T? GetManagedObjectData<T>(this ObjectHandle obj, string key)
-    {
-        var gh = new GObjectHandle { IsFloating = true };
-        gh.SetInternalHandle(obj.GetData(key));
-        var t = gh.GetInstance() as GManagedObject<T>;
-        return t != null ? t.Value : default;
-    }
-
     public static T? GetObjectData<T>(this ObjectHandle obj, string key)
         where T : SubClassInst<GObjectHandle>
     {

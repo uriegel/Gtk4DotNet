@@ -6,14 +6,6 @@ namespace GtkDotNet;
 
 public interface IListModel
 {
-    public IListModel Append(ObjectHandle obj)
-    {
-        _Append(GetInternalHandle(), obj);
-        GObject.Unref(obj.GetInternalHandle());
-        obj.IsFloating = true;
-        return this;
-    }
-
     public IListModel Append<T>(T t)
     {
         var obj = GObject.New<GObjectHandle>(GObject.Type());
@@ -26,15 +18,9 @@ public interface IListModel
         return this;
     }
 
-    public IListModel Splice(ObjectHandle[] objs)
+    public IListModel Splice<T>(IEnumerable<T> objs)
     {
         Splice(0, 0, objs);
-        return this;
-    }
-
-    public IListModel Splice2(uint pos, ObjectHandle[] objs)
-    {
-        Splice(pos, 0, objs);
         return this;
     }
 
@@ -64,19 +50,6 @@ public interface IListModel
             idx += (uint)obj.Length;
         }
 
-        return this;
-    }
-
-    public IListModel Splice(uint pos, uint removals, ObjectHandle[] objs)
-    {
-        var unmanagedPtr = MakeObjArray(objs);
-        _Splice(GetInternalHandle(), pos, removals, unmanagedPtr, objs.Length);
-        Marshal.FreeHGlobal(unmanagedPtr);
-        foreach (var obj in objs)
-        {
-            GObject.Unref(obj.GetInternalHandle());
-            obj.IsFloating = true;
-        }
         return this;
     }
 
@@ -124,15 +97,6 @@ public interface IListModel
         var i = 0;
         foreach (var obj in objs)
             Marshal.WriteIntPtr(unmanagedPtr, i++ * IntPtr.Size, obj.GetInternalHandle());
-
-        return unmanagedPtr;
-    }
-
-    static nint MakeObjArray(ObjectHandle[] objs)
-    {
-        var unmanagedPtr = Marshal.AllocHGlobal(nint.Size * objs.Length);
-        for (int i = 0; i < objs.Length; i++)
-            Marshal.WriteIntPtr(unmanagedPtr, i * IntPtr.Size, objs[i].GetInternalHandle());
 
         return unmanagedPtr;
     }
