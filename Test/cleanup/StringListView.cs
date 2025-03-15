@@ -2,6 +2,7 @@ using System.Diagnostics;
 using CsTools.Extensions;
 using GtkDotNet;
 using GtkDotNet.SafeHandles;
+
 using static System.Console;
 
 static class StringListViewCleanup

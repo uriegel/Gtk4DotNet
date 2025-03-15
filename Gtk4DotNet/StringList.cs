@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using CsTools.Extensions;
 using GtkDotNet.SafeHandles;
 
 namespace GtkDotNet;
@@ -20,7 +21,7 @@ public static class StringList
     public static void Splice(this ListModelHandle listModel, uint pos, uint removals, IEnumerable<string> strings)
     {
         uint idx = 0;
-        foreach (var strs in strings.Windowed(50_000).Select(n => n.ToArray()))
+        foreach (var strs in strings.Windowed(9_000).Select(n => n.ToArray()))
         {
             InternalSplice(listModel, pos + idx, idx == 0 ? removals : 0, strs);
             idx += (uint)strs.Length;
@@ -52,43 +53,4 @@ public static class StringList
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_string_list_splice", CallingConvention = CallingConvention.Cdecl)]
     extern static void _Splice(ListModelHandle listModel, uint pos, uint removalCount, nint strings);
-}
-
-static class Test
-{
-    public static IEnumerable<IEnumerable<T>> Windowed<T>(this IEnumerable<T> source, int count)
-    {
-
-        var enumerator = source.GetEnumerator();
-        var consumed = false;
-        IEnumerable<T> getWindowed()
-        {
-            consumed = false;
-            var index = 0;
-            while (true)
-            {
-                if (index++ < count)
-                {
-                    if (!enumerator.MoveNext())
-                    {
-                        consumed = true;
-                        yield break;
-                    }
-                    var current = enumerator.Current;
-                    yield return current;
-                }
-                else
-                    yield break;
-            }
-        }
-
-        while (true)
-        {
-            var res = getWindowed();
-            if (!consumed)
-                yield return res;
-            else
-                yield break;
-        }
-    }
 }

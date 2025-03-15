@@ -19,12 +19,21 @@ public static class ListItem
         return res;
     }
     
+    public static T? GetObject2<T>(this ListItemHandle listItem)
+        where T: class
+    {
+        var item = listItem.GetItem<GObjectHandle>();
+        var ptr = item.GetData("managedObject");
+        var gcHandle = GCHandle.FromIntPtr(ptr);
+        return gcHandle.Target as T;
+    }
+
     public static THandle GetChild<THandle>(this ListItemHandle listItem)
         where THandle : WidgetHandle, new()
     {
         var res = new THandle();
         res.SetInternalHandle(_GetChild(listItem));
-        return res;        
+        return res;
     }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_item_set_child", CallingConvention = CallingConvention.Cdecl)]

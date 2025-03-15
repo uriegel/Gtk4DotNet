@@ -218,7 +218,7 @@ public static class GObject
     /// <param name="finalizer"></param>
     /// <param name="zero"></param>
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_weak_ref", CallingConvention = CallingConvention.Cdecl)]
-    extern static void AddWeakRef(this ObjectHandle obj, IntPtr finalizer, IntPtr zero);
+    extern internal static void AddWeakRef(this ObjectHandle obj, IntPtr finalizer, IntPtr zero);
 }
 
 

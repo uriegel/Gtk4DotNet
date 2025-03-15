@@ -5,6 +5,9 @@ namespace GtkDotNet;
 
 public static class ListStore
 {
+    public static IListModel New()
+        => New(GObject.Type());
+
     public static IListModel New(GTypeHandle type)
         => new ListModelHandle(_New(type));
 

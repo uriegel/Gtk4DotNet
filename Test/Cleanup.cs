@@ -1,6 +1,5 @@
 using GtkDotNet;
 using GtkDotNet.SafeHandles;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 using CsTools.Extensions;
@@ -11,7 +10,8 @@ static class Cleanup
 {
     public static int Run()
     {
-        Test(StringListViewCleanup.Check, "Finished StringListViewCleanup.Check");
+        //Test(StringListViewCleanup.Check, "Finished StringListViewCleanup.Check");
+        Test(CustomItemListViewCleanup.Check, "Finished CustomItemListViewCleanup.Check");
         Test(Check1, "Finished 1");
         Test(Check2, "Finished 2");
         Test(Check3, "Finished 3");
