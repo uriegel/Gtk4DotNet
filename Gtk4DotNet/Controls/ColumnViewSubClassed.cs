@@ -33,18 +33,16 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
     IColumnViewModel<T> SetColumns<T>(Column<T>[] columns, Controller<T> controller)
         where T : class
     {
-        Handle.RemoveChild();
-        columnView.Dispose();
-        columnView = ColumnView.New();
-        columnView.AddWeakRef(Release);
-        Handle.Child(columnView);
-
         this.columns.ForEach(h =>
         {
             columnView.RemoveColumn(h);
             h.Dispose();
         });
         this.columns.Clear();
+        columnView = ColumnView.New();
+        Handle.Policy(PolicyType.Never, PolicyType.Automatic);
+        Handle.Child(columnView);
+        columnView.AddWeakRef(Release);
 
         foreach (var col in columns)
         {

@@ -73,6 +73,9 @@ public static class Widget
         return widget;
     }
 
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_unparent", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void Unparent(this WidgetHandle widget);
+
     public static void SetTimer(this WidgetHandle widget, int priority, TimeSpan timeout, Action action)
     {
         RefCell<bool> disposed = new(false);
@@ -292,8 +295,9 @@ public static class Widget
                                 select m;
         return children.Concat(childrensChildren);
     }
+    
 
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_show", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_show", CallingConvention = CallingConvention.Cdecl)]
     extern static void _Show(this WidgetHandle widget);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_set_halign", CallingConvention = CallingConvention.Cdecl)]
