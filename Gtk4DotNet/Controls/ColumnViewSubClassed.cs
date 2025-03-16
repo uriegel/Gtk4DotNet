@@ -74,7 +74,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
                 colHandle.Resizeable();
             if (col.OnSort != null)
             {
-                var sorter = CustomSorter.New<GObjectHandle>((a, b) =>
+                var sorter = CustomSorter.New((a, b) =>
                 {
                     var itemA = GetItem(a);
                     var itemB = GetItem(b);
@@ -92,7 +92,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
 
         var model = ListStore.New();
         filterHandle = controller.OnFilter != null
-            ? CustomFilter.New<GObjectHandle>(item => GetItem(item) is T t && t != null && controller.OnFilter!(t))
+            ? CustomFilter.New(item => GetItem(item) is T t && t != null && controller.OnFilter!(t))
             : null;
 
         var sortListModel =
@@ -106,9 +106,9 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
 
         return new Model<T>(columnView, listModelHandle);
 
-        T? GetItem(ObjectHandle h)
+        T? GetItem(nint h)
         {
-            var ptr = h.GetData("managedObject");
+            var ptr = h.GetData(ListItem.MANAGED_OBJECT);
             var gcHandle = GCHandle.FromIntPtr(ptr);
             return gcHandle.Target as T;
         }

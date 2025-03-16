@@ -39,7 +39,7 @@ static class StringListView
     static void OnListItemBind(ListItemHandle listItem)
     {
         var label = listItem.GetChild<LabelHandle>();
-        var item = listItem.GetItem<StringObjectHandle>();
-        label.Set(item.Get());
+        var item = listItem.GetStringItem();
+        label.Set(item);
     }
 }

@@ -19,7 +19,7 @@ static class TestApp
                        .ManagedApplicationWindow()
                        .Show())
                .Run(0, IntPtr.Zero);
-        Console.WriteLine("Am Ende");
+        Console.WriteLine("Finished");
         return res;
     }
 
@@ -77,7 +77,7 @@ static class TestApp
                             widget?.GetNextSibling<WidgetHandle>()?.GrabFocus();
                     }
                 }, "Insert")]);
-            Handle.AddController(EventControllerFocus.New().OnEnter(() => Console.WriteLine("Bin eingetreten")));
+            Handle.AddController(EventControllerFocus.New().OnEnter(() => Console.WriteLine("Entering")));
         }
 
         protected override void OnFinalize() => Console.WriteLine("Window finalized");
@@ -92,8 +92,8 @@ static class TestApp
         public uint FindPos(nint item)
         {
             var model = columnView.GetModel<SelectionHandle>();
-            var items = model.GetItems<GObjectHandle>();
-            return (uint)(items?.TakeWhile(n => n.GetInternalHandle() != item).Count() ?? -1);
+            var items = model.GetRawItems();
+            return (uint)items.TakeWhile(n => n != item).Count();
         }
 
         protected override void OnCreate()
@@ -159,8 +159,8 @@ class Controller : Controller<Type2>
         else
             image.SetFromIconName("mail-unread", IconSize.LargeToolbar);
         label.Set(item.EMail);
-        var itemHandle = listItem.GetItem<GObjectHandle>();
-        box.SetData("data", itemHandle.GetInternalHandle());
+        var itemHandle = listItem.GetRawItem();
+        box.SetData("data", itemHandle);
     }
 }
 

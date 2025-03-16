@@ -5,18 +5,11 @@ namespace GtkDotNet;
 
 public static class CustomSorter
 {
-    public static CustomSorterHandle New<THandle>(Func<THandle, THandle, int> compareFunc)
-        where THandle : ObjectHandle, new()
+    public static CustomSorterHandle New(Func<nint, nint, int> compareFunc)
     {
         int RawCompare(nint d1, nint d2, nint _)
         {
-            var data1 = new THandle();
-            data1.SetInternalHandle(d1);
-            data1.IsFloating = true;
-            var data2 = new THandle();
-            data2.SetInternalHandle(d2);
-            data2.IsFloating = true;
-            return compareFunc(data1, data2);
+            return compareFunc(d1, d2);
         }
         CompareDataDelegate compareDataDelegate = RawCompare;
         var key = GtkDelegates.Add(compareDataDelegate);

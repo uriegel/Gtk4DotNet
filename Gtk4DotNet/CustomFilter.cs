@@ -5,16 +5,9 @@ namespace GtkDotNet;
 
 public static class CustomFilter
 {
-    public static CustomFilterHandle New<THandle>(Func<THandle, bool> predicate)
-        where THandle : ObjectHandle, new()
+    public static CustomFilterHandle New(Func<nint, bool> predicate)
     {
-        bool RawCompare(nint d, nint _)
-        {
-            var data = new THandle();
-            data.SetInternalHandle(d);
-            data.IsFloating = true;
-            return predicate(data);
-        }
+        bool RawCompare(nint data, nint _) => predicate(data);
         CustomFilterDelegate customFilterDelegate = RawCompare;
         // TODO addweakref 
         GtkDelegates.Add(customFilterDelegate);

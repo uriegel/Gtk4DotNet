@@ -43,8 +43,8 @@ static class StringListViewCleanup
         static void OnListItemBind(ListItemHandle listItem)
         {
             var label = listItem.GetChild<LabelHandle>();
-            var item = listItem.GetItem<StringObjectHandle>();
-            label.Set(item.Get());
+            var item = listItem.GetStringItem();
+            label.Set(item);
         }
 
         void MemoryChecker(WindowHandle w)
@@ -59,7 +59,7 @@ static class StringListViewCleanup
                                .Select(n => $"Item no {n}"));
 
                 var stamp = DateTime.Now - now;
-                WriteLine($"Dauerte: {stamp}");
+                WriteLine($"Duration: {stamp}");
 
                 if (schritt != 20 && schritt != 21 && schritt > 0 && schritt % 2 == 0)
                     model?.Splice(0, (uint)count);

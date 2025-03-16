@@ -10,54 +10,31 @@ static class SubClassing
 {
     public static int Run()
     {
-        WriteLine("1 - GObject");
-        WriteLine("2 - Custom Buttom");
-        WriteLine("3 - Custom Window");
-        WriteLine("4 - Custom Window with WebView");        
+        WriteLine("1 - Custom Buttom");
+        WriteLine("2 - Custom Window");
+        WriteLine("3 - Custom Window with WebView");        
 
         var input = ReadLine();
         switch (input)
         {
             case "1":
-                RunGObject();
-                break;
-            case "2":
                 RunButton();
                 break;
-            case "3":
+            case "2":
                 RunCustomWindow();
                 break;
-            case "4":
+            case "3":
                 RunCustomWindowWithWebView();
                 break;
         }
         return 0;
     }
-    static void RunGObject()
-    {
-        var typeDouble = "TDouble".TypeFromName();
-        var tDoubleClass = new TDoubleClass(GTypeEnum.GObject, "TDouble", p => new TDouble(p));
-        var customButtonClass = new CustomButtonClass(GTypeEnum.Button, "CustomButton", p => new CustomButton(p));
-        typeDouble = "TDouble".TypeFromName();
-        var typeCustomButton = "CustomButton".TypeFromName();
-
-        var obj = GObject.New<GObjectHandle>(typeDouble);
-        var obj2 = GObject.New<GObjectHandle>(typeDouble);
-        var refcount = Marshal.ReadInt32(obj.GetInternalHandle(), IntPtr.Size);
-        (obj2.GetInstance() as TDouble)!.Value = 12.9f;
-        var val = (obj2.GetInstance() as TDouble)!.Value;
-        obj2.Dispose();
-        obj.Dispose();
-        refcount = Marshal.ReadInt32(obj.GetInternalHandle(), IntPtr.Size);
-    }
-
     static void RunButton()
         => Application
            .New("org.gtk.example")
            .OnActivate(app =>
                app
                    .SubClass(new CustomButtonClass(GTypeEnum.Button, "CustomButton", p => new CustomButton(p)))
-                   .SubClass(new TDoubleClass(GTypeEnum.GObject, "TDouble", p => new TDouble(p)))
                    .NewWindow()
                        .Title("Hello Gtk👍")
                        .DefaultSize(600, 200)
@@ -102,18 +79,6 @@ static class SubClassing
             .Run(0, IntPtr.Zero);
 }
 
-// Custom GObject ========================================================================================================================
-class TDoubleClass(GTypeEnum parent, string name, Func<nint, TDouble> constructor)
-    : SubClass<GObjectHandle>(parent, name, constructor) { }
-
-class TDouble(nint obj) : SubClassInst<GObjectHandle>(obj)
-{
-    public float Value { get; set; }
-    protected override void OnCreate() => WriteLine("TDouble created");
-    protected override void OnFinalize() => WriteLine("TDouble finalized");
-
-    protected override GObjectHandle CreateHandle(nint obj) => new(obj);
-}
 
 // Custom Button ========================================================================================================================
 

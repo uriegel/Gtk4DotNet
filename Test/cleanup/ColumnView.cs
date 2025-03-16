@@ -3,7 +3,6 @@ using CsTools.Extensions;
 using CsTools.Functional;
 using GtkDotNet;
 using GtkDotNet.SafeHandles;
-using GtkDotNet.SubClassing;
 
 using static System.Console;
 
@@ -15,22 +14,22 @@ static class ColumnViewCleanup
 
         static void InitStore(ApplicationHandle _)
         {
-            model = ListStore.New().AddWeakRef(() => Console.WriteLine("model disposed"));
+            model = ListStore.New().AddWeakRef(() => WriteLine("model disposed"));
             itemNameFactory = SignalListItemFactory
                 .New()
                 .Setup(OnListItemSetup)
                 .Bind(OnListItemBind)
-                .AddWeakRef(() => Console.WriteLine("itemNameFactory disposed"));
+                .AddWeakRef(() => WriteLine("itemNameFactory disposed"));
             itemEMailFactory = SignalListItemFactory
                 .New()
                 .Setup(OnListItemSetup)
                 .Bind(OnEMailBind)
-                .AddWeakRef(() => Console.WriteLine("itemEMailFactory disposed"));
+                .AddWeakRef(() => WriteLine("itemEMailFactory disposed"));
 
             selectionModel = SingleSelection.New(model).AddWeakRef(() => WriteLine("SelectionModel disposed"));
 
-            col1 = ColumnViewColumn.New("Name", itemNameFactory!).AddWeakRef(() => Console.WriteLine("col1 disposed"));
-            col2 = ColumnViewColumn.New("E mail", itemEMailFactory!).AddWeakRef(() => Console.WriteLine("col2 disposed"));
+            col1 = ColumnViewColumn.New("Name", itemNameFactory!).AddWeakRef(() => WriteLine("col1 disposed"));
+            col2 = ColumnViewColumn.New("E mail", itemEMailFactory!).AddWeakRef(() => WriteLine("col2 disposed"));
         }
 
 
@@ -68,13 +67,14 @@ static class ColumnViewCleanup
                                .Select(n => new Contact($"Item no {n}", "uriegel@hotmail.de", n)));
 
                 var stamp = DateTime.Now - now;
-                WriteLine($"Dauerte: {stamp}");
+                WriteLine($"Duration: {stamp}");
 
                 if (schritt != 20 && schritt != 21 && schritt > 0 && schritt % 2 == 0)
                     model?.RemoveItems(0, (uint)count);
 
                 if (schritt == 20)
                     scrolledWindow.Ref.Child(Label.New("nil"));
+                    
                 if (schritt == 21)
                 {
                     model = ListStore.New().AddWeakRef(() => WriteLine("model disposed"));
@@ -129,43 +129,6 @@ static class ColumnViewCleanup
     }
 
     record Contact(string Name, string EMail, int Number);
-
-    class GContactClass(GTypeEnum parent, string name, Func<nint, GContact> constructor)
-        : SubClass<GObjectHandle>(parent, name, constructor)
-    { }
-
-    class GContact(nint obj) : SubClassInst<GObjectHandle>(obj)
-    {
-        public static GTypeHandle GType { get => _GType ?? "Contact".TypeFromName().SideEffect(n => _GType = n); }
-        static GTypeHandle? _GType;
-
-        public static GContact New(Contact contact)
-        {
-            using var handle = GObject.New<GObjectHandle>(GType);
-            handle.IsFloating = true;
-            var res = handle.GetInstance() as GContact;
-            if (res != null)
-                res.Contact = contact;
-            return res!;
-        }
-        public Contact? Contact { get; set; }
-
-        protected override GObjectHandle CreateHandle(nint obj) => new(obj);
-
-        protected override void OnFinalize() => WriteLine("Contact finalized");
-    }
-
-    class TDoubleClass(GTypeEnum parent, string name, Func<nint, TDouble> constructor)
-        : SubClass<GObjectHandle>(parent, name, constructor) { }
-
-    class TDouble(nint obj) : SubClassInst<GObjectHandle>(obj)
-    {
-        public float Value { get; set; }
-        protected override void OnCreate() => WriteLine("TDouble created");
-        protected override void OnFinalize() => WriteLine("TDouble finalized");
-
-        protected override GObjectHandle CreateHandle(nint obj) => new(obj);
-    }
 
     static void PrintMemory() => WriteLine($"Total memory: {Process.GetCurrentProcess().WorkingSet64:N0}, managed: {GC.GetTotalMemory(true):N0}");
 }

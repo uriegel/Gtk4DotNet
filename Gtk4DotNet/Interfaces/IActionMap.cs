@@ -60,7 +60,7 @@ public interface IActionMap
             var root = wh.GetRoot();
             if (root is ApplicationWindowHandle aw)
             {
-                Console.Error.WriteLine("Ja, habe die Applikation gefunden");
+                Console.Error.WriteLine("Found window from widget");
             }
             else
                 Console.Error.WriteLine("Could not get window from widget, so I could not attach the accelerators");

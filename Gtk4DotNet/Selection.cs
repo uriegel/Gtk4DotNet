@@ -9,22 +9,34 @@ public static class Selection
         where T : class
     {
         var item = sel.GetItem(pos);
-        var res = new GObjectHandle();
-        res.IsFloating = true;
-        res.SetInternalHandle(item);
-        var ptr = res.GetData("managedObject");
+        var ptr = item.GetData(ListItem.MANAGED_OBJECT);
         var gcHandle = GCHandle.FromIntPtr(ptr);
         return gcHandle.Target as T;
     }
 
+    public static nint GetRawItem(this SelectionHandle sel, uint pos)
+        => sel.GetItem(pos);
+
     public static IEnumerable<T> GetItems<T>(this SelectionHandle sel)
-        where T: class
+        where T : class
     {
         uint pos = 0;
         while (true)
         {
             var res = sel.GetItem<T>(pos++);
             if (res == null)
+                break;
+            yield return res;
+        }
+    }
+
+    public static IEnumerable<nint> GetRawItems(this SelectionHandle sel)
+    {
+        uint pos = 0;
+        while (true)
+        {
+            var res = sel.GetRawItem(pos++);
+            if (res == 0)
                 break;
             yield return res;
         }

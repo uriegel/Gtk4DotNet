@@ -1,6 +1,5 @@
 using System.Runtime.InteropServices;
 using CsTools.Extensions;
-using GtkDotNet.SafeHandles;
 
 namespace GtkDotNet;
 
@@ -8,11 +7,10 @@ public interface IListModel
 {
     public IListModel Append<T>(T t)
     {
-        var obj = GObject.New<GObjectHandle>(GObject.Type());
-        obj.IsFloating = true;
+        var obj = GObject.New(GObject.Type(), 0);
         var gchandle = GCHandle.Alloc(t, GCHandleType.Normal);
         var ptr = GCHandle.ToIntPtr(gchandle);
-        obj.SetData("managedObject", ptr);
+        obj.SetData(ListItem.MANAGED_OBJECT, ptr);
         AddWeakRef(obj);
         _Append(GetInternalHandle(), obj);
         return this;
@@ -36,11 +34,10 @@ public interface IListModel
         foreach (var obj in
             objs.Select(o =>
                 {
-                    var obj = GObject.New<GObjectHandle>(GObject.Type());
-                    obj.IsFloating = true;
+                    var obj = GObject.New(GObject.Type(), 0);
                     var gchandle = GCHandle.Alloc(o, GCHandleType.Normal);
                     var ptr = GCHandle.ToIntPtr(gchandle);
-                    obj.SetData("managedObject", ptr);
+                    obj.SetData(ListItem.MANAGED_OBJECT, ptr);
                     AddWeakRef(obj);
                     return obj;
                 })
@@ -78,37 +75,34 @@ public interface IListModel
 
     public void Dispose();
 
-    void InternalSplice(uint pos, uint removals, ObjectHandle[] objs)
+    void InternalSplice(uint pos, uint removals, nint[] objs)
     {
         var unmanagedPtr = MakeObjArray(objs, objs.Length);
         _Splice(GetInternalHandle(), pos, removals, unmanagedPtr, objs.Length);
         Marshal.FreeHGlobal(unmanagedPtr);
         foreach (var obj in objs)
-        {
-            GObject.Unref(obj.GetInternalHandle());
-            obj.IsFloating = true;
-        }
+            GObject.Unref(obj);
     }
 
-    static nint MakeObjArray(IEnumerable<ObjectHandle> objs, int count)
+    static nint MakeObjArray(IEnumerable<nint> objs, int count)
     {
         var unmanagedPtr = Marshal.AllocHGlobal(nint.Size * count);
 
         var i = 0;
         foreach (var obj in objs)
-            Marshal.WriteIntPtr(unmanagedPtr, i++ * IntPtr.Size, obj.GetInternalHandle());
+            Marshal.WriteIntPtr(unmanagedPtr, i++ * IntPtr.Size, obj);
 
         return unmanagedPtr;
     }
 
     private static readonly TwoPointerDelegate OnDisposeDelegate = OnDispose;
 
-    static void AddWeakRef(ObjectHandle obj)
+    static void AddWeakRef(nint obj)
         => obj.AddWeakRef(Marshal.GetFunctionPointerForDelegate(OnDisposeDelegate), IntPtr.Zero);
 
     static void OnDispose(nint n, nint n2)
     {
-        var ptr = GetData(n2, "managedObject");
+        var ptr = GetData(n2, ListItem.MANAGED_OBJECT);
         var gcHandle = GCHandle.FromIntPtr(ptr);
         gcHandle.Free();
     }
@@ -117,7 +111,7 @@ public interface IListModel
     extern static void _Splice(nint model, uint pos, uint removalCount, nint nullArray, int length);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_list_store_append", CallingConvention = CallingConvention.Cdecl)]
-    extern static void _Append(nint model, ObjectHandle obj);
+    extern static void _Append(nint model, nint obj);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_weak_ref", CallingConvention = CallingConvention.Cdecl)]
     extern static void AddWeakRef(nint obj, nint finalizer, nint zero);

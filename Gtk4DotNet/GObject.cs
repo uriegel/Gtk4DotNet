@@ -1,8 +1,6 @@
 using System.Runtime.InteropServices;
 using GtkDotNet.SafeHandles;
 using CsTools.Extensions;
-using GtkDotNet.SubClassing;
-using GtkDotNet.Controls;
 
 namespace GtkDotNet;
 
@@ -114,20 +112,18 @@ public static class GObject
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_set_data", CallingConvention = CallingConvention.Cdecl)]
     public extern static void SetData(this ObjectHandle obj, string key, nint data);
+
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_get_data", CallingConvention = CallingConvention.Cdecl)]
     public extern static nint GetData(this ObjectHandle obj, string key);
 
-    public static T? GetObjectData<T>(this ObjectHandle obj, string key)
-        where T : SubClassInst<GObjectHandle>
-    {
-        var gh = new GObjectHandle { IsFloating = true };
-        gh.SetInternalHandle(obj.GetData(key));
-
-        return gh.GetInstance() as T;
-    }
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_get_data", CallingConvention = CallingConvention.Cdecl)]
+    public extern static nint GetData(this nint obj, string key);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_ref", CallingConvention = CallingConvention.Cdecl)]
     internal extern static void Ref(this ObjectHandle obj);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_set_data", CallingConvention = CallingConvention.Cdecl)]
+    internal extern static void SetData(this nint obj, string key, nint data);
 
     internal static void AddWeakRefRaw(this ObjectHandle obj, Action dispose)
     {
@@ -209,6 +205,9 @@ public static class GObject
     /// <param name="obj"></param>
     /// <param name="finalizer"></param>
     /// <param name="zero"></param>
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_weak_ref", CallingConvention = CallingConvention.Cdecl)]
+    extern internal static void AddWeakRef(this nint obj, IntPtr finalizer, IntPtr zero);
+
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_weak_ref", CallingConvention = CallingConvention.Cdecl)]
     extern internal static void AddWeakRef(this ObjectHandle obj, IntPtr finalizer, IntPtr zero);
 }
