@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using CsTools;
+using CsTools.Extensions;
 using GtkDotNet.SafeHandles;
 using GtkDotNet.SubClassing;
 
@@ -24,6 +25,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         where T : class
     {
         MultiSelection = controller.MultiSelection;
+        controller.RemoveAll();
         var model = SetColumns(controller.GetColumns(), controller);
         controller.SetModel(model);
         if (controller.EnableRubberband)
@@ -39,17 +41,9 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
             h.Dispose();
         });
         this.columns.Clear();
-        var oldModel = columnView.GetModel();
-        columnView.SetModel(0);
 
-        if (listModelHandle != null)
-            listModelHandle.IsFloating = false;
-        listModelHandle?.Dispose();
-        oldModel.Unref();
-        columnView = ColumnView.New();
-        Handle.Policy(PolicyType.Never, PolicyType.Automatic);
-        Handle.Child(columnView);
-        columnView.AddWeakRef(Release);
+        sorters.ForEach(h => h.Dispose());
+        sorters.Clear();
 
         foreach (var col in columns)
         {
@@ -86,7 +80,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
                     return itemA != null && itemB != null
                         ? col.OnSort(itemA, itemB)
                         : 0;
-                });
+                }).SideEffect(n => n.AddWeakRef(() => Console.WriteLine("Sorter finalized")));
 
                 colHandle.SetSorter(sorter);
                 sorters.Add(sorter);
@@ -95,19 +89,20 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
             columnView.AppendColumn(colHandle);
         }
 
-        var model = ListStore.New();
-        filterHandle = controller.OnFilter != null
-            ? CustomFilter.New(item => GetItem(item) is T t && t != null && controller.OnFilter!(t))
-            : null;
+        if (listModelHandle == null)
+        {
+            var model = ListStore.New();
 
-        var sortListModel =
-            controller.OnFilter != null
-            ? SortListModel.New(FilterListModel.New(model, filterHandle), columnView.GetSorter())
-            : SortListModel.New(model, columnView.GetSorter());
+            filterHandle = CustomFilter.New(OnFilter);
+            var sortListModel =
+                SortListModel.New(FilterListModel.New(model, filterHandle), columnView.GetSorter());
 
-        IListModel selModel = MultiSelection ? GtkDotNet.MultiSelection.New(sortListModel) : SingleSelection.New(sortListModel);
-        listModelHandle = model;
-        columnView.SetModel(selModel);
+            IListModel selModel = MultiSelection ? GtkDotNet.MultiSelection.New(sortListModel) : SingleSelection.New(sortListModel);
+            listModelHandle = model;
+            columnView.SetModel(selModel);
+        }
+
+        onfilter = item => controller.OnFilter == null || GetItem(item) is T t && t != null && controller.OnFilter!(t);
 
         return new Model<T>(columnView, listModelHandle);
 
@@ -216,6 +211,10 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
     static readonly Dictionary<string, object> registeredObjects = [];
     readonly List<ColumnViewColumnHandle> columns = [];
     readonly List<CustomSorterHandle> sorters = [];
+
+    bool OnFilter(nint item) => onfilter(item);
+
+    Func<nint, bool> onfilter = _ => true;
     bool MultiSelection { get; set; }
     IListModel? listModelHandle;
     CustomFilterHandle? filterHandle;
