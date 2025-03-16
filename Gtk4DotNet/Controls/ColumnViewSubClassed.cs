@@ -39,6 +39,13 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
             h.Dispose();
         });
         this.columns.Clear();
+        var oldModel = columnView.GetModel();
+        columnView.SetModel(0);
+
+        if (listModelHandle != null)
+            listModelHandle.IsFloating = false;
+        listModelHandle?.Dispose();
+        oldModel.Unref();
         columnView = ColumnView.New();
         Handle.Policy(PolicyType.Never, PolicyType.Automatic);
         Handle.Child(columnView);

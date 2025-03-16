@@ -45,7 +45,7 @@ public static class ColumnView
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_set_enable_rubberband", CallingConvention = CallingConvention.Cdecl)]
     public extern static void EnableRubberband(this ColumnViewHandle columnView, bool enable);
-    
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_new", CallingConvention = CallingConvention.Cdecl)]
     extern static ColumnViewHandle New(nint selectionModel);
 
@@ -53,10 +53,10 @@ public static class ColumnView
     extern static void _AppendColumn(this ColumnViewHandle columnView, ColumnViewColumnHandle column);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_set_model", CallingConvention = CallingConvention.Cdecl)]
-    extern static void SetModel(this ColumnViewHandle columnView, nint selectionModel);
+    internal extern static void SetModel(this ColumnViewHandle columnView, nint selectionModel);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_get_model", CallingConvention = CallingConvention.Cdecl)]
-    extern static nint GetModel(this ColumnViewHandle columnView);
+    internal extern static nint GetModel(this ColumnViewHandle columnView);
 }
 
 delegate void ActivateDelegate(IntPtr p, uint pos, IntPtr pp);
