@@ -168,6 +168,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
 
         public abstract Column<T>[] GetColumns();
         public void Insert(IEnumerable<T> items) => model?.Insert(items);
+        public void RemoveAll() => model?.RemoveAll();
         public void Insert(uint pos, IEnumerable<T> items) => model?.Insert(pos, items);
 
         internal void SetModel(IColumnViewModel<T> model)
@@ -182,7 +183,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
     }
 
     class Model<T>(ColumnViewHandle columnView, IListModel? listModelHandle) : IColumnViewModel<T>
-        where T: class
+        where T : class
     {
         public IEnumerable<T> Items()
         {
@@ -201,6 +202,9 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
             => listModelHandle?.Splice(items);
         public void Insert(uint pos, IEnumerable<T> items)
             => listModelHandle?.Splice(pos, items);
+
+        public void RemoveAll()
+            => listModelHandle?.RemoveAll();
     }
 
     protected ColumnViewHandle columnView = new(0);

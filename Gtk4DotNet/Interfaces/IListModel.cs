@@ -56,6 +56,8 @@ public interface IListModel
         return this;
     }
 
+    public void RemoveAll() => RemoveAll(GetInternalHandle());
+
     public nint GetInternalHandle();
 
     public bool IsFloating { get; set; }
@@ -118,5 +120,7 @@ public interface IListModel
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_get_data", CallingConvention = CallingConvention.Cdecl)]
     extern static nint GetData(nint obj, string key);
-   
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_list_store_remove_all", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint RemoveAll(nint obj);
 }

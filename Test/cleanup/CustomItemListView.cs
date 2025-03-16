@@ -1,10 +1,8 @@
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using CsTools.Extensions;
 using CsTools.Functional;
 using GtkDotNet;
 using GtkDotNet.SafeHandles;
-using GtkDotNet.SubClassing;
 
 using static System.Console;
 

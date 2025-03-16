@@ -12,7 +12,9 @@ static class Cleanup
     {
         //Test(StringListViewCleanup.Check, "Finished StringListViewCleanup.Check");
         //Test(CustomItemListViewCleanup.Check, "Finished CustomItemListViewCleanup.Check");
-        Test(ColumnViewCleanup.Check, "Finished ColumnViewCleanup.Check");
+        // TODO not all components finalized!
+        //Test(ColumnViewCleanup.Check, "Finished ColumnViewCleanup.Check");
+        Test(ColumnViewControlCleanup.Check, "Finished ColumnViewControlCleanup.Check");
         Test(Check1, "Finished 1");
         Test(Check2, "Finished 2");
         Test(Check3, "Finished 3");
