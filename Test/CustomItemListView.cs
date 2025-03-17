@@ -73,7 +73,7 @@ static class CustomItemListView
     static readonly ObjectRef<ListViewHandle> listViewRef = new();
     static SignalListItemFactoryHandle? itemFactory;
     static SingleSelectionHandle? selectionModel; 
-    static void OnListItemSetup(ListItemHandle listItem) => listItem.SetChild(Label.New(""));
+    static void OnListItemSetup(ListItemHandle listItem) => listItem.SetChild(Label.New());
 
     static void OnListItemBind(ListItemHandle listItem)
     {

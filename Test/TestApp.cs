@@ -3,9 +3,6 @@ using GtkDotNet.SafeHandles;
 using GtkDotNet.Controls;
 using static GtkDotNet.Controls.ColumnViewSubClassed;
 
-// TODO CSS Provider for focused element: unselect or gray unfocused columnview
-// TODO remove test app TwoColumnViews, but not before filtering is in another testapp
-
 static class TestApp
 {
     public static int Run()
@@ -147,7 +144,7 @@ class Controller : Controller<Type2>
         => Box
             .New(Orientation.Horizontal)
             .Append(Image.NewFromIconName("mail", IconSize.Button))
-            .Append(Label.New("").HAlign(Align.Start).MarginStart(5));
+            .Append(Label.New().HAlign(Align.Start).MarginStart(5));
 
     static void OnIconNameBind(ListItemHandle listItem, Type2 item)
     {
@@ -279,7 +276,7 @@ class Controller : Controller<Type2>
 //         => IActionMap.GetAction("down").SetEnabled(toggleButton.Active());
 
 //     static void OnListItemSetup(ListItemHandle listItem)
-//         => listItem.SetChild(Label.New("").HAlign(Align.Start));
+//         => listItem.SetChild(Label.New().HAlign(Align.Start));
 
 //     static void OnListItemTearDown(ListItemHandle listItem)
 //     {

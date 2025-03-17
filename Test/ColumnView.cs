@@ -75,7 +75,7 @@ static class ColumnViewApp
         return 0;
     }
 
-    static void OnListItemSetup(ListItemHandle listItem) => listItem.SetChild(Label.New(""));
+    static void OnListItemSetup(ListItemHandle listItem) => listItem.SetChild(Label.New());
 
     static void OnListItemBind(ListItemHandle listItem)
     {

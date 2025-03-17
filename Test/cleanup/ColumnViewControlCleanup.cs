@@ -186,7 +186,7 @@ static class ColumnViewControlCleanup
                 => Box
                     .New(Orientation.Horizontal)
                     .Append(Image.NewFromIconName("mail", IconSize.Button))
-                    .Append(Label.New("").HAlign(Align.Start).MarginStart(5));
+                    .Append(Label.New().HAlign(Align.Start).MarginStart(5));
 
         static void OnIconNameBind(ListItemHandle listItem, Type2 item)
         {

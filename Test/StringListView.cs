@@ -34,7 +34,7 @@ static class StringListView
             .Run(0, IntPtr.Zero);
     }
 
-    static void OnListItemSetup(ListItemHandle listItem) => listItem.SetChild(Label.New(""));
+    static void OnListItemSetup(ListItemHandle listItem) => listItem.SetChild(Label.New());
 
     static void OnListItemBind(ListItemHandle listItem)
     {

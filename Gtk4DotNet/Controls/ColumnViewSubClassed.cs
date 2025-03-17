@@ -154,7 +154,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         public string Title { get; set; } = string.Empty;
         public bool Expanded { get; set; }
         public bool Resizeable { get; set; }
-        public Func<WidgetHandle> OnItemSetup { get; set; } = () => Label.New("").HAlign(Align.Start);
+        public Func<WidgetHandle> OnItemSetup { get; set; } = () => Label.New().HAlign(Align.Start);
         public Action<ListItemHandle, TObj>? OnItemBind { get; set; }
         public Func<TObj, string>? OnLabelBind { get; set; }
         public Func<TObj, TObj, int>? OnSort { get; set; }

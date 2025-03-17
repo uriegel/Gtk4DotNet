@@ -24,7 +24,7 @@ static class Example8
                                     label
                                     .Visible(false))
                                 .PackStart(
-                                    Label.New("")
+                                    Label.New()
                                     .Ref(lines)
                                     .BindProperty("visible", label, "visible", BindingFlags.Default)
                                     .Visible(false))))
