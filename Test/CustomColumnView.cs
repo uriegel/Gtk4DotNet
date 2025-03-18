@@ -19,7 +19,13 @@ static class CustomColumnViewApp
 class AppWindow(nint obj) : ManagedApplicationWindow(obj)
 {
     protected override void OnCreate()
-        => Handle.InitTemplate();
+    {
+        Handle.InitTemplate();
+        var customColumnViewHandle = Handle.GetTemplateChild<CustomColumnViewHandle, ApplicationWindowHandle>("columnview");
+        var columnView = customColumnViewHandle != null ? CustomColumnView.GetInstance(customColumnViewHandle) : null;
+        columnView?.Fill();
+    }
+        
 
     protected override void OnFinalize() => Console.WriteLine("Window finalized");
 }
@@ -29,12 +35,14 @@ class CustomColumnViewClass()
 
 class CustomColumnView(nint obj) : ColumnViewSubClassed(obj)
 {
-    protected override void OnCreate()
-    {
-        SetController(controller);
-        controller.Fill();
+    public static CustomColumnView? GetInstance(CustomColumnViewHandle handle)
+        => GetInstance(handle.GetInternalHandle()) as CustomColumnView;
 
-    }
+            
+    public void Fill() => controller.Fill();
+
+    protected override void OnCreate() =>  SetController(controller);
+
     protected override void OnFinalize() => Console.WriteLine("ColumnView finalized");
     protected override CustomColumnViewHandle CreateHandle(nint obj) => new(obj);
             
