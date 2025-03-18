@@ -15,7 +15,9 @@ delegate void DrawFunctionDelegate(IntPtr drawingArea, IntPtr cairo, int width, 
 delegate void DrawingAreaResizeDelegate(IntPtr drawingArea, int width, int height, IntPtr data);
 delegate void PressedGestureDelegate(IntPtr _, int pressCount, double x, double y, IntPtr __);
 delegate void DragGestureDelegate(IntPtr _, double x, double y, IntPtr __);
-delegate bool KeyPressedDelegate(IntPtr _, uint key, uint keyCode, KeyModifiers keyModifiers, IntPtr __);
+delegate bool KeyPressedDelegate(nint _, uint key, uint keyCode, KeyModifiers keyModifiers, nint __);
+delegate void KeyReleasedDelegate(nint _, uint key, uint keyCode, KeyModifiers keyModifiers, nint __);
+delegate void OnModifiersDelegate(nint _, KeyModifiers keyModifiers, nint __);
 delegate void TwoLongAndPtrCallback(long current, long total, IntPtr zero);
 delegate bool BoolRetDelegate();
 delegate bool OnePointerBoolRetDelegate(IntPtr p);

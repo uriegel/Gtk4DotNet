@@ -2,6 +2,7 @@ using GtkDotNet;
 using GtkDotNet.SafeHandles;
 using GtkDotNet.Controls;
 using static GtkDotNet.Controls.ColumnViewSubClassed;
+using CsTools.Extensions;
 
 static class TestApp
 {
@@ -75,6 +76,12 @@ static class TestApp
                     }
                 }, "Insert")]);
             Handle.AddController(EventControllerFocus.New().OnEnter(() => Console.WriteLine("Entering")));
+            Handle.AddController(
+                EventControllerKey
+                .New()
+                .OnKeyPressed((i, c, m) => false.SideEffect(_ => Console.WriteLine($"Key pressed {i}, {c}, {m}")))
+                .OnKeyReleased((i, c, m) => Console.WriteLine($"Key released {i}, {c}, {m}"))
+                .OnModifiers((m) => Console.WriteLine($"Modifiers {m} {m.HasFlag(KeyModifiers.Control)}, {m.HasFlag(KeyModifiers.Alt)}, {m.HasFlag(KeyModifiers.Shift)}")));
         }
 
         protected override void OnFinalize() => Console.WriteLine("Window finalized");
