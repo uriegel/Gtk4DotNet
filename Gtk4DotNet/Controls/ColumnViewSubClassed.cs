@@ -12,7 +12,6 @@ public class ColumnViewSubClassedClass(string name, Func<nint, ColumnViewSubClas
 
 public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle>
 {
-    // TODO Filter: remove delegate
     public ColumnViewSubClassed(nint obj) : base(obj)
     {
         columnView = ColumnView.New();
@@ -30,6 +29,13 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         controller.SetModel(model);
         if (controller.EnableRubberband)
             columnView.EnableRubberband();
+    }
+
+    public void OnActivate(Action<uint>? onActivate)
+    {
+        if (onActivate != null)
+            columnView.OnActivate(onActivate);
+        // TODO Signal disconnect when onActivate == null
     }
 
     IColumnViewModel<T> SetColumns<T>(Column<T>[] columns, Controller<T> controller)
@@ -161,6 +167,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
     }
 
     public abstract class Controller<T>
+        where T : class
     {
         public bool MultiSelection { get; set; }
         public bool EnableRubberband { get; set; }
@@ -171,15 +178,17 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         public void RemoveAll() => model?.RemoveAll();
         public void Insert(uint pos, IEnumerable<T> items) => model?.Insert(pos, items);
 
+        public T? GetItem(uint pos) => model?.GetItem(pos);
+
         internal void SetModel(IColumnViewModel<T> model)
             => this.model = model;
 
         IColumnViewModel<T>? model;
     }
 
-    class EmptyController : Controller<Unit>
+    class EmptyController : Controller<object>
     {
-        public override Column<Unit>[] GetColumns() => [];
+        public override Column<object>[] GetColumns() => [];
     }
 
     class Model<T>(ColumnViewHandle columnView, IListModel? listModelHandle) : IColumnViewModel<T>
@@ -202,9 +211,10 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
             => listModelHandle?.Splice(items);
         public void Insert(uint pos, IEnumerable<T> items)
             => listModelHandle?.Splice(pos, items);
-
         public void RemoveAll()
             => listModelHandle?.RemoveAll();
+
+        public T? GetItem(uint pos) => columnView.GetModel<SelectionHandle>().GetItem<T>(pos++);
     }
 
     protected ColumnViewHandle columnView = new(0);

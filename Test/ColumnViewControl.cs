@@ -35,6 +35,7 @@ static class ColumnViewControlApp
                                 .SideEffect(cv =>
                                 {
                                     columnView = cv.GetInstance() as ColumnViewControl;
+                                    columnView?.OnActivate(pos => Console.WriteLine($"Item {pos}, {controller1.GetItem(pos)} activated"));
                                     columnView?.SetController(controller1);
                                     controller1.Fill();
                                 }))

@@ -48,6 +48,7 @@ static class ColumnViewApp
                             .New(selectionModel!)
                             .AppendColumn(col1!)
                             .AppendColumn(col2!)
+                            .OnActivate(pos => Console.WriteLine($"On activate: {pos}"))
                             .Ref(listViewRef)
                             .SideEffect(_ => StyleContext
                                 .AddProviderForDisplay(Display.GetDefault(),
