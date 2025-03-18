@@ -45,6 +45,7 @@ public static class GType
         GTypeEnum.WebKitWebView => WebKit.Type(),
         GTypeEnum.ColumnView => ColumnView.Type(),
         GTypeEnum.ScrolledWindow => ScrolledWindow.Type(),
+        GTypeEnum.Paned => Paned.Type(),
         _ => GObject.Type(),
     };
 

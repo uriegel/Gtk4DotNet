@@ -9,6 +9,9 @@ public static class Paned
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_paned_new", CallingConvention = CallingConvention.Cdecl)]
     public extern static PanedHandle New(Orientation orientation);
 
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_paned_get_type", CallingConvention = CallingConvention.Cdecl)]
+    public static extern GTypeHandle Type();
+
     public static PanedHandle StartChild(this PanedHandle paned, WidgetHandle widget, bool resize, bool shrink)
         => paned.SideEffect(p => p.SetStartChild(widget, resize, shrink));
 

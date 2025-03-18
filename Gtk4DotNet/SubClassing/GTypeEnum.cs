@@ -22,5 +22,6 @@ public enum GTypeEnum
     ApplicationWindow,
     WebKitWebView,
     ColumnView,
-    ScrolledWindow
+    ScrolledWindow,
+    Paned,
 }
