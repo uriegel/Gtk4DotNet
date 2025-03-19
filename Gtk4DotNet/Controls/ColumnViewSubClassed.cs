@@ -12,6 +12,7 @@ public class ColumnViewSubClassedClass(string name, Func<nint, ColumnViewSubClas
 
 public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle>
 {
+    public bool SortDescending { get; private set;  }
     public ColumnViewSubClassed(nint obj) : base(obj)
     {
         columnView = ColumnView.New();
@@ -84,7 +85,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
                     var itemA = GetItem(a);
                     var itemB = GetItem(b);
                     return itemA != null && itemB != null
-                        ? col.OnSort(itemA, itemB)
+                        ? col.OnSort(itemA, itemB, SortDescending)
                         : 0;
                 }).SideEffect(n => n.AddWeakRef(() => Console.WriteLine("Sorter finalized")));
 
@@ -101,7 +102,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
 
             filterHandle = CustomFilter.New(OnFilter);
             var sortListModel =
-                SortListModel.New(FilterListModel.New(model, filterHandle), columnView.GetSorter());
+                SortListModel.New(FilterListModel.New(model, filterHandle), columnView.GetSorter().OnChanged((desc, changed) => SortDescending = desc));
 
             IListModel selModel = MultiSelection ? GtkDotNet.MultiSelection.New(sortListModel) : SingleSelection.New(sortListModel);
             listModelHandle = model;
@@ -163,7 +164,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         public Func<WidgetHandle> OnItemSetup { get; set; } = () => Label.New().HAlign(Align.Start);
         public Action<ListItemHandle, TObj>? OnItemBind { get; set; }
         public Func<TObj, string>? OnLabelBind { get; set; }
-        public Func<TObj, TObj, int>? OnSort { get; set; }
+        public Func<TObj, TObj, bool, int>? OnSort { get; set; }
     }
 
     public abstract class Controller<T>

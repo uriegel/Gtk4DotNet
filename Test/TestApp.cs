@@ -131,7 +131,7 @@ class Controller : Controller<Type2>
                     Expanded = true,
                     OnItemSetup = OnIconName,
                     OnItemBind = OnIconNameBind,
-                    OnSort = (a, b) => string.Compare(a.EMail, b.EMail)
+                    OnSort = (a, b, d) => string.Compare(a.EMail, b.EMail)
                 },
             new()
                 {
@@ -140,7 +140,7 @@ class Controller : Controller<Type2>
             new()
                 {
                     Title = "Active", OnLabelBind = i => i.Active ? "Yes" : "No",
-                    OnSort = (a, b) => a.Active.CompareTo(b.Active)
+                    OnSort = (a, b, d) => a.Active.CompareTo(b.Active)
                 },
             ];
 

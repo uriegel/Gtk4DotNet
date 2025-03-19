@@ -93,13 +93,13 @@ class Controller1 : Controller<Type1>
                     Title = "Name",
                     Expanded = true,
                     OnLabelBind = i => i.Name,
-                    OnSort = (a, b) => string.Compare(a.Name, b.Name)
+                    OnSort = (a, b, d) => string.Compare(a.Name, b.Name)
                 },
             new()
                 {
                     Title = "Number",
                     OnLabelBind = i => i.Number.ToString(),
-                    OnSort = (a, b) => a.Number - b.Number
+                    OnSort = (a, b, d) => a.Number - b.Number
                 },
             ];
 
@@ -123,16 +123,17 @@ class Controller2 : Controller<Type2>
                     Expanded = true,
                     OnItemSetup = OnIconName,
                     OnItemBind = OnIconNameBind,
-                    OnSort = (a, b) => string.Compare(a.EMail, b.EMail)
+                    OnSort = (a, b, d) => string.Compare(a.EMail, b.EMail)
                 },
             new()
                 {
-                    Title = "ID", OnLabelBind = i => i.Id
+                    Title = "ID", OnLabelBind = i => i.Id,
+                    OnSort = (a, b, d) => string.Compare(a.Id, b.Id)
                 },
             new()
                 {
                     Title = "Active", OnLabelBind = i => i.Active ? "Yes" : "No",
-                    OnSort = (a, b) => a.Active.CompareTo(b.Active)
+                    OnSort = (a, b, d) => a.Active.CompareTo(b.Active)
                 },
             ];
 
