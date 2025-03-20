@@ -37,7 +37,6 @@ class CustomColumnView(nint obj) : ColumnViewSubClassed(obj)
 {
     public static CustomColumnView? GetInstance(CustomColumnViewHandle handle)
         => GetInstance(handle.GetInternalHandle()) as CustomColumnView;
-
             
     public void Fill() => controller.Fill();
 
