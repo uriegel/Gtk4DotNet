@@ -114,6 +114,14 @@ public static class Widget
         where THandle : WidgetHandle
         => widget.SideEffect(w => w.AddCssClass(cssClass));
 
+    public static void AddCssClass(this WidgetHandle widget, string cssClass, bool add)
+    {
+        if (add)
+            widget.CssClass(cssClass);
+        else
+            widget.RemoveCssClass(cssClass);
+    }
+
     public static THandle AddController<THandle>(this THandle widget, EventControllerHandle eventController)
         where THandle : WidgetHandle
         => widget.SideEffect(w => w._AddController(eventController.SideEffect(n => n.IsFloating = true)));

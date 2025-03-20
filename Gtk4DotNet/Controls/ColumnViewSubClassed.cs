@@ -179,6 +179,8 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         public void RemoveAll() => model?.RemoveAll();
         public void Insert(uint pos, IEnumerable<T> items) => model?.Insert(pos, items);
 
+        public IEnumerable<T> Items() => model?.Items() ?? [];
+
         public T? GetItem(uint pos) => model?.GetItem(pos);
 
         internal void SetModel(IColumnViewModel<T> model)

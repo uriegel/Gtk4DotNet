@@ -98,6 +98,16 @@ public interface IActionMap
 
 public static class IActionMapExtensions
 {
+    /// <summary>
+    /// Adds actions to this ActionMap.
+    /// </summary>
+    /// <remarks>
+    /// Important: when setting actions with shortcuts, add those with more specific shortcuts like <c>&lt;Ctrl&gt;F3</c>  b e f o r e  those with less specific shortcuts like <c>F3</c>. 
+    /// </remarks>
+    /// <typeparam name="THandle"></typeparam>
+    /// <param name="actionMap"></param>
+    /// <param name="actions"></param>
+    /// <returns></returns>
     public static THandle AddActions<THandle>(this THandle actionMap, params GtkAction[] actions)
         where THandle : IActionMap
     {
