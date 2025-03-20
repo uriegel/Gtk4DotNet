@@ -64,8 +64,12 @@ static class ColumnViewControlApp
 
     static void FilterItems(ToggleButtonHandle toggleButton)
     {
-        Controller2.IsFiltering = toggleButton.Active();
-        columnView?.FilterChanged(Controller2.IsFiltering ? FilterChange.MoreStrict : FilterChange.LessStrict);
+        // TODO eliminate
+        ColumnViewSubClassed.DontUnselect = true;
+        columnView?.SelectItem(3, false);
+        ColumnViewSubClassed.DontUnselect = false;
+        //        Controller2.IsFiltering = toggleButton.Active();
+        //        columnView?.FilterChanged(Controller2.IsFiltering ? FilterChange.MoreStrict : FilterChange.LessStrict);
     }
 
     static readonly Controller1 controller1 = new();
@@ -82,10 +86,7 @@ class ColumnViewControlClass()
 class Controller1 : Controller<Type1>
 {
     public Controller1()
-    {
-        MultiSelection = true;
-        EnableRubberband = true;
-    }
+        => EnableRubberband = true;
 
     public override Column<Type1>[] GetColumns()
         => [ new()
@@ -115,7 +116,7 @@ class Controller1 : Controller<Type1>
 class Controller2 : Controller<Type2>
 {
     public static bool IsFiltering { get; set; }
-    public Controller2() => OnFilter = Filter;
+    public Controller2()=>  OnFilter = Filter;
     public override Column<Type2>[] GetColumns()
         => [ new()
                 {
@@ -166,7 +167,7 @@ class Controller2 : Controller<Type2>
 
 class ColumnViewControl(nint obj) : ColumnViewSubClassed(obj)
 {
-    protected override void OnCreate()  {}
+    protected override void OnCreate() => MultiSelection = true;
     protected override void OnFinalize() => Console.WriteLine("ColumnView finalized");
     protected override CustomColumnViewHandle CreateHandle(nint obj) => new(obj);
 }

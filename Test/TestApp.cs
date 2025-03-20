@@ -119,10 +119,7 @@ static class TestApp
 class Controller : Controller<Type2>
 {
     public Controller()
-    {
-        MultiSelection = true;
-        EnableRubberband = true;
-    }
+        => EnableRubberband = true;
 
     public override Column<Type2>[] GetColumns()
         => [ new()

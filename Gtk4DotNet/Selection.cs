@@ -51,9 +51,9 @@ public static class Selection
     /// When the selection changes, this signal is emitted.
     /// </summary>
     /// <param name="sel">SelectionHandle</param>
-    /// <param name="onSelectionChanged">Callback function: parameters are: position of change, number of changed itrems</param>
-    public static void OnSelectionChanged(this SelectionHandle sel, Action<uint, uint> onSelectionChanged)
-        => Gtk.SignalConnect<OnSelectionChangedDelegate>(sel, "selection-changed", (_, pos, count) => onSelectionChanged(pos, count));
+    /// <param name="onSelectionChanged">Callback function: parameters are: selection model, position of change, number of changed items</param>
+    public static void OnSelectionChanged(this SelectionHandle sel, Action<nint, uint, uint> onSelectionChanged)
+        => Gtk.SignalConnect<OnSelectionChangedDelegate>(sel, "selection-changed", (model, pos, count) => onSelectionChanged(model,pos, count));
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_selection_model_select_all", CallingConvention = CallingConvention.Cdecl)]
     public extern static bool SelectAll(this SelectionHandle sel);
@@ -72,6 +72,9 @@ public static class Selection
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_selection_model_unselect_range", CallingConvention = CallingConvention.Cdecl)]
     public extern static bool UnselectRange(this SelectionHandle sel, uint pos, uint count);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_selection_model_unselect_range", CallingConvention = CallingConvention.Cdecl)]
+    public extern static bool UnselectRange(this nint sel, uint pos, uint count);
 
     /// <summary>
     /// Gets the number of items in list.

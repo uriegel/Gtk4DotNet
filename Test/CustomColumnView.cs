@@ -40,7 +40,11 @@ class CustomColumnView(nint obj) : ColumnViewSubClassed(obj)
             
     public void Fill() => controller.Fill();
 
-    protected override void OnCreate() =>  SetController(controller);
+    protected override void OnCreate()
+    {
+        MultiSelection = true;
+        SetController(controller);
+    } 
 
     protected override void OnFinalize() => Console.WriteLine("ColumnView finalized");
     protected override CustomColumnViewHandle CreateHandle(nint obj) => new(obj);

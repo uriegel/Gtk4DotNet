@@ -116,11 +116,8 @@ static class ColumnViewControlCleanup
 
     class Controller1 : Controller<Type1>
     {
-        public Controller1()
-        {
-            MultiSelection = true;
-            EnableRubberband = true;
-        }
+        public Controller1() 
+            => EnableRubberband = true;
 
         public override Column<Type1>[] GetColumns()
             => [ new()

@@ -13,6 +13,8 @@ public class ColumnViewSubClassedClass(string name, Func<nint, ColumnViewSubClas
 public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle>
 {
     public bool SortDescending { get; private set;  }
+    public bool MultiSelection { get; set; }
+
     public ColumnViewSubClassed(nint obj) : base(obj)
     {
         columnView = ColumnView.New();
@@ -24,12 +26,10 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
     public void SetController<T>(Controller<T> controller)
         where T : class
     {
-        MultiSelection = controller.MultiSelection;
         controller.RemoveAll();
         var model = SetColumns(controller.GetColumns(), controller);
         controller.SetModel(model);
-        if (controller.EnableRubberband)
-            columnView.EnableRubberband();
+        columnView.EnableRubberband(controller.EnableRubberband);
     }
 
     public void OnActivate(Action<uint>? onActivate)
@@ -104,7 +104,19 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
             var sortListModel =
                 SortListModel.New(FilterListModel.New(model, filterHandle), columnView.GetSorter().OnChanged((desc, changed) => SortDescending = desc));
 
-            IListModel selModel = MultiSelection ? GtkDotNet.MultiSelection.New(sortListModel) : SingleSelection.New(sortListModel);
+            SelectionHandle selModelHandle = MultiSelection ? GtkDotNet.MultiSelection.New(sortListModel) : SingleSelection.New(sortListModel);
+            IListModel selModel = selModelHandle;
+
+            // TODO Check Single button-press without ctrl and one selection unselect
+            // TODO manual set selection: will it be detected? Yes!
+
+            // TODO implement 
+            selModelHandle.OnSelectionChanged((n, p, c) =>
+            {
+                if (!DontUnselect)
+                    n.UnselectRange(p, c);
+            });
+                
             listModelHandle = model;
             columnView.SetModel(selModel);
         }
@@ -134,7 +146,8 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         //TODO clear it here
         //TODO clear it onweakref from this class
     }
-
+    // TODO eliminate
+public static bool DontUnselect { get; set; }
     public void SelectItem(uint pos, bool unselectRest)
         => columnView.GetModel<SelectionHandle>().SelectItem(pos, unselectRest);
 
@@ -170,7 +183,6 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
     public abstract class Controller<T>
         where T : class
     {
-        public bool MultiSelection { get; set; }
         public bool EnableRubberband { get; set; }
         public Func<T, bool>? OnFilter { get; set; }
 
@@ -211,9 +223,17 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
             }
         }
         public void Insert(IEnumerable<T> items)
-            => listModelHandle?.Splice(items);
+        {
+            listModelHandle?.RemoveAll();
+            listModelHandle?.Splice(items);
+        }
+
         public void Insert(uint pos, IEnumerable<T> items)
-            => listModelHandle?.Splice(pos, items);
+        {
+            listModelHandle?.RemoveAll();
+            listModelHandle?.Splice(pos, items);
+        }
+
         public void RemoveAll()
             => listModelHandle?.RemoveAll();
 
@@ -228,7 +248,6 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
     bool OnFilter(nint item) => onfilter(item);
 
     Func<nint, bool> onfilter = _ => true;
-    bool MultiSelection { get; set; }
     IListModel? listModelHandle;
     CustomFilterHandle? filterHandle;
 }
