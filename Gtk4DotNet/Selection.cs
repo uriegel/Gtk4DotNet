@@ -9,9 +9,14 @@ public static class Selection
         where T : class
     {
         var item = sel.GetItem(pos);
-        var ptr = item.GetData(ListItem.MANAGED_OBJECT);
-        var gcHandle = GCHandle.FromIntPtr(ptr);
-        return gcHandle.Target as T;
+        if (item != 0)
+        {
+            var ptr = item.GetData(ListItem.MANAGED_OBJECT);
+            var gcHandle = GCHandle.FromIntPtr(ptr);
+            return gcHandle.Target as T;
+        }
+        else
+            return null;
     }
 
     public static nint GetRawItem(this SelectionHandle sel, uint pos)
