@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices;
-using CsTools;
 using CsTools.Extensions;
 using GtkDotNet.SafeHandles;
 using GtkDotNet.SubClassing;
@@ -12,7 +11,7 @@ public class ColumnViewSubClassedClass(string name, Func<nint, ColumnViewSubClas
 
 public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle>
 {
-    public bool SortDescending { get; private set;  }
+    public bool SortDescending { get; private set; }
     public bool MultiSelection { get; set; }
 
     public ColumnViewSubClassed(nint obj) : base(obj)
@@ -116,7 +115,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
                 if (!DontUnselect)
                     n.UnselectRange(p, c);
             });
-                
+
             listModelHandle = model;
             columnView.SetModel(selModel);
         }
@@ -147,7 +146,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         //TODO clear it onweakref from this class
     }
     // TODO eliminate
-public static bool DontUnselect { get; set; }
+    public static bool DontUnselect { get; set; }
     public void SelectItem(uint pos, bool unselectRest)
         => columnView.GetModel<SelectionHandle>().SelectItem(pos, unselectRest);
 

@@ -61,7 +61,7 @@ static class ColumnViewApp
                                     if (kc == 118)
                                     {
                                         var pos = selectionModel!.GetSelected();
-                                        listViewRef?.Ref.ScrollTo(pos + 1, 0, ListScrollFlags.ScrollFocus | ListScrollFlags.ScrollSelect, 0);
+                                        listViewRef?.Ref.ScrollTo(pos + 1, ListScrollFlags.ScrollFocus | ListScrollFlags.ScrollSelect);
                                         return true;
                                     }
                                     else

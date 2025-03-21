@@ -25,14 +25,13 @@ public static class ColumnView
     public static ColumnViewHandle OnActivate(this ColumnViewHandle columnView, Action<uint> onActivate)
         => columnView.SideEffect(cv => Gtk.SignalConnect<ActivateDelegate>(cv, "activate", (_, pos, __) => onActivate(pos)));
 
+    public static void ScrollTo(this ColumnViewHandle columnView, uint pos, ListScrollFlags flags)
+        => ScrollTo(columnView, pos, 0, flags, 0);
     public static ColumnViewHandle AppendColumn(this ColumnViewHandle columnView, ColumnViewColumnHandle column)
         => columnView.SideEffect(c => c._AppendColumn(column));
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_get_sorter", CallingConvention = CallingConvention.Cdecl)]
     public extern static CustomSorterHandle GetSorter(this ColumnViewHandle columnView);
-
-    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_scroll_to", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void ScrollTo(this ColumnViewHandle columnView, uint pos, nint nil, ListScrollFlags flags, nint nil2);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_get_type", CallingConvention = CallingConvention.Cdecl)]
     public static extern GTypeHandle Type();
@@ -57,6 +56,9 @@ public static class ColumnView
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_get_model", CallingConvention = CallingConvention.Cdecl)]
     internal extern static nint GetModel(this ColumnViewHandle columnView);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_scroll_to", CallingConvention = CallingConvention.Cdecl)]
+    extern static void ScrollTo(this ColumnViewHandle columnView, uint pos, nint nilc, ListScrollFlags flags, nint nil);
 }
 
 delegate void ActivateDelegate(IntPtr p, uint pos, IntPtr pp);
