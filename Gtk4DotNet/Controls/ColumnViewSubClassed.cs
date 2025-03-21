@@ -14,6 +14,8 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
     public bool SortDescending { get; private set; }
     public bool MultiSelection { get; set; }
 
+    public Action<nint, uint, uint>? OnSelectionChanged { get; set; }
+
     public ColumnViewSubClassed(nint obj) : base(obj)
     {
         columnView = ColumnView.New();
@@ -106,15 +108,17 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
             SelectionHandle selModelHandle = MultiSelection ? GtkDotNet.MultiSelection.New(sortListModel) : SingleSelection.New(sortListModel);
             IListModel selModel = selModelHandle;
 
-            // TODO Check Single button-press without ctrl and one selection unselect
+            // TODO Check Single button-press without ctrl and one selection unselect: No!!
+            // TODO instead: GtkGestureClick in combination with  Display display = listView.Display; Seat seat = display.DefaultSeat; ModifierType modifiers = seat.Pointer.ModifierState;
             // TODO manual set selection: will it be detected? Yes!
 
             // TODO implement 
-            selModelHandle.OnSelectionChanged((n, p, c) =>
-            {
-                if (!DontUnselect)
-                    n.UnselectRange(p, c);
-            });
+            if (OnSelectionChanged != null)
+                selModelHandle.OnSelectionChanged(OnSelectionChanged);
+                // {
+                //     if (!DontUnselect)
+                //         n.UnselectRange(p, c);
+                // });
 
             listModelHandle = model;
             columnView.SetModel(selModel);
@@ -191,6 +195,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         public void Insert(uint pos, IEnumerable<T> items) => model?.Insert(pos, items);
 
         public IEnumerable<T> Items() => model?.Items() ?? [];
+        public IEnumerable<nint> RawItems() => model?.RawItems() ?? [];
 
         public T? GetItem(uint pos) => model?.GetItem(pos);
 
@@ -221,6 +226,8 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
                     break;
             }
         }
+
+        public IEnumerable<nint> RawItems() => columnView.GetModel<SelectionHandle>().GetRawItems();
         public void Insert(IEnumerable<T> items)
         {
             listModelHandle?.RemoveAll();

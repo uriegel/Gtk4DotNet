@@ -43,11 +43,27 @@ class CustomColumnView(nint obj) : ColumnViewSubClassed(obj)
     protected override void OnCreate()
     {
         MultiSelection = true;
+        columnView?.AddController(GestureClick.New().OnPressed((i, d, b) =>
+        {
+            var display = columnView.GetDisplay();
+            var display2 = Display.GetDefault();
+            var seat = display.GetDefaultSeat();
+            var device = seat.GetKeyboard();
+            var status = device.GetModifierState();
+
+            Console.WriteLine($"Mouse button pressed: {status}");
+        })).AddController(GestureClick.New().OnReleased((i, d, b) =>
+        {
+            Console.WriteLine($"Mouse button released");
+        }));
         SetController(controller);
     } 
 
     protected override void OnFinalize() => Console.WriteLine("ColumnView finalized");
     protected override CustomColumnViewHandle CreateHandle(nint obj) => new(obj);
-            
-    static readonly Controller2 controller = new();
+
+    static readonly Controller2 controller = new()
+    {
+        EnableRubberband = true
+    };
 }
