@@ -97,7 +97,7 @@ static class TestApp
         {
             var model = columnView.GetModel<SelectionHandle>();
             var items = model.GetRawItems();
-            return (uint)items.TakeWhile(n => n != item).Count();
+            return (uint)items.TakeWhile(n => n.GetInternalHandle() != item).Count();
         }
 
         protected override void OnCreate()

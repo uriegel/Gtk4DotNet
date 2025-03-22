@@ -195,7 +195,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         public void Insert(uint pos, IEnumerable<T> items) => model?.Insert(pos, items);
 
         public IEnumerable<T> Items() => model?.Items() ?? [];
-        public IEnumerable<nint> RawItems() => model?.RawItems() ?? [];
+        public IEnumerable<ObjectHandle> RawItems() => model?.RawItems() ?? [];
 
         public T? GetItem(uint pos) => model?.GetItem(pos);
 
@@ -227,7 +227,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
             }
         }
 
-        public IEnumerable<nint> RawItems() => columnView.GetModel<SelectionHandle>().GetRawItems();
+        public IEnumerable<ObjectHandle> RawItems() => columnView.GetModel<SelectionHandle>().GetRawItems();
         public void Insert(IEnumerable<T> items)
         {
             listModelHandle?.RemoveAll();

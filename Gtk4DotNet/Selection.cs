@@ -9,7 +9,7 @@ public static class Selection
         where T : class
     {
         var item = sel.GetItem(pos);
-        if (item != 0)
+        if (!item.IsInvalid)
         {
             var ptr = item.GetData(ListItem.MANAGED_OBJECT);
             var gcHandle = GCHandle.FromIntPtr(ptr);
@@ -19,7 +19,7 @@ public static class Selection
             return null;
     }
 
-    public static nint GetRawItem(this SelectionHandle sel, uint pos)
+    public static ObjectHandle GetRawItem(this SelectionHandle sel, uint pos)
         => sel.GetItem(pos);
 
     public static IEnumerable<T> GetItems<T>(this SelectionHandle sel)
@@ -35,13 +35,13 @@ public static class Selection
         }
     }
 
-    public static IEnumerable<nint> GetRawItems(this SelectionHandle sel)
+    public static IEnumerable<ObjectHandle> GetRawItems(this SelectionHandle sel)
     {
         uint pos = 0;
         while (true)
         {
             var res = sel.GetRawItem(pos++);
-            if (res == 0)
+            if (res.IsInvalid)
                 break;
             yield return res;
         }
@@ -76,6 +76,9 @@ public static class Selection
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_selection_model_unselect_range", CallingConvention = CallingConvention.Cdecl)]
     public extern static bool UnselectRange(this nint sel, uint pos, uint count);
 
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_selection_model_is_selected", CallingConvention = CallingConvention.Cdecl)]
+    public extern static bool IsSelected(this SelectionHandle sel, uint pos);
+    
     /// <summary>
     /// Gets the number of items in list.
     /// Depending on the model implementation, calling this function may be less efficient than iterating the list with GetItems().
@@ -85,8 +88,15 @@ public static class Selection
     [DllImport(Libs.LibGtk, EntryPoint = "g_list_model_get_n_items", CallingConvention = CallingConvention.Cdecl)]
     public extern static uint GetItemCount(this SelectionHandle sel);
 
+    /// <summary>
+    /// The caller of the method takes ownership of the returned data, and is responsible for freeing it.
+    /// The return value can be NULL.
+    /// </summary>
+    /// <param name="sel"></param>
+    /// <param name="pos"></param>
+    /// <returns></returns>
     [DllImport(Libs.LibGtk, EntryPoint = "g_list_model_get_item", CallingConvention = CallingConvention.Cdecl)]
-    extern static nint GetItem(this SelectionHandle sel, uint pos);
+    extern static ObjectHandle GetItem(this SelectionHandle sel, uint pos);
 }
 
 delegate void OnSelectionChangedDelegate(nint nil, uint pos, uint count);

@@ -1,3 +1,5 @@
+using GtkDotNet.SafeHandles;
+
 namespace GtkDotNet;
 
 public interface IColumnViewModel<T>
@@ -6,6 +8,6 @@ public interface IColumnViewModel<T>
     void Insert(uint pos, IEnumerable<T> items);
     void RemoveAll();
     IEnumerable<T> Items();
-    IEnumerable<nint> RawItems();
+    IEnumerable<ObjectHandle> RawItems();
     T? GetItem(uint pos);
 }
