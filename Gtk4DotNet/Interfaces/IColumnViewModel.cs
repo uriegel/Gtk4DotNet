@@ -8,6 +8,6 @@ public interface IColumnViewModel<T>
     void Insert(uint pos, IEnumerable<T> items);
     void RemoveAll();
     IEnumerable<T> Items();
-    IEnumerable<ObjectHandle> RawItems();
+    IEnumerable<nint> RawItems();
     T? GetItem(uint pos);
 }

@@ -19,8 +19,17 @@ public static class Selection
             return null;
     }
 
-    public static ObjectHandle GetRawItem(this SelectionHandle sel, uint pos)
-        => sel.GetItem(pos);
+    /// <summary>
+    /// The raw GTK pointer to the object. It is ony valid until the item is included the model!
+    /// </summary>
+    /// <param name="sel"></param>
+    /// <param name="pos"></param>
+    /// <returns></returns>
+    public static nint GetRawItem(this SelectionHandle sel, uint pos)
+    {
+        using var item = sel.GetItem(pos);
+        return item.GetInternalHandle();
+    }
 
     public static IEnumerable<T> GetItems<T>(this SelectionHandle sel)
         where T : class
@@ -35,13 +44,13 @@ public static class Selection
         }
     }
 
-    public static IEnumerable<ObjectHandle> GetRawItems(this SelectionHandle sel)
+    public static IEnumerable<nint> GetRawItems(this SelectionHandle sel)
     {
         uint pos = 0;
         while (true)
         {
             var res = sel.GetRawItem(pos++);
-            if (res.IsInvalid)
+            if (res == 0)
                 break;
             yield return res;
         }
