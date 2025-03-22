@@ -197,7 +197,34 @@ public static class Widget
         where THandle : WidgetHandle
         => _GetParent(widget);
 
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_widget_get_sensitive", CallingConvention = CallingConvention.Cdecl)]
+    // TODO
+    // public static TResultHandle GetAncestor<THandle, TResultHandle>(this THandle widget)
+    //     where THandle : WidgetHandle
+    //     where TResultHandle : WidgetHandle
+    //         => GetAncestor<THandle, TResultHandle>(widget, ancesterTypeName);
+
+    public static WidgetHandle GetAncestor(this WidgetHandle widget, string ancesterTypeName)
+            => GetAncestor<WidgetHandle>(widget, ancesterTypeName);
+
+    public static TResultHandle GetAncestor<TResultHandle>(this WidgetHandle widget, string ancesterTypeName)
+        where TResultHandle : WidgetHandle, new()
+    {
+        while (true)
+        {
+            var parent = widget.GetParent();
+            if (parent.IsInvalid)
+                return new TResultHandle();
+            if (parent.GetName() == ancesterTypeName)
+                {
+                    var res = new TResultHandle();
+                    res.SetInternalHandle(parent.GetInternalHandle());
+                    return res;
+                }
+            widget = parent;
+        }
+    }
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_sensitive", CallingConvention = CallingConvention.Cdecl)]
     public extern static bool GetSensitive(this WidgetHandle widget);
 
     public static THandle Sensitive<THandle>(this THandle widget, bool sensitive)
