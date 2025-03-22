@@ -221,5 +221,8 @@ public static class GFile
     extern static IntPtr _GetPath(this GFileHandle file);
 
     readonly static Func<int> getId = Incrementor.UseInt();
+
+    internal static int GetAsyncReadyDelegates() => asyncReadyCallbacks.Count;
+
     readonly static ConcurrentDictionary<int, ThreePointerDelegate> asyncReadyCallbacks = new();
 }

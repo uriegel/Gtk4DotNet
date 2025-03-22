@@ -53,6 +53,8 @@ public static class GtkDelegates
     }
 
     static long delegateKey;
+
+    internal static int GetDelegatesCount() => delegates.Count;
     static readonly ConcurrentDictionary<long, Delegate> delegates = [];
 }
 

@@ -40,6 +40,7 @@ static class ColumnViewControlApp
                                     controller1.Fill();
                                 }))
                             .Show())
+                .AddActions(new GtkAction("devtools", Gtk.ShowDiagnostics, "<Ctrl><Shift>I"))
                 .Run(0, IntPtr.Zero);
 
     static void ModelToggled(ToggleButtonHandle toggleButton)

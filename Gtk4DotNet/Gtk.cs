@@ -146,7 +146,24 @@ public static class Gtk
         return SignalConnect(obj, name, Marshal.GetFunctionPointerForDelegate((Delegate)callback), IntPtr.Zero, 0);
     }
 
-    internal static void Init() => 
+    public static void ShowDiagnostics()
+    {
+        GC.Collect();
+        GC.Collect();
+        Console.WriteLine($"Total memory: {System.Diagnostics.Process.GetCurrentProcess().WorkingSet64:N0}, managed: {GC.GetTotalMemory(true):N0}");
+
+        var asyncReadies = GFile.GetAsyncReadyDelegates();
+        var delegates = GtkDelegates.GetDelegatesCount();
+        var actions = IActionMap.GetActionsCount();
+        if (asyncReadies > 0)
+            Console.WriteLine($"GFile AsyncReadies: {asyncReadies}");
+        if (delegates > 0)
+            Console.WriteLine($"Connected delegates: {delegates}");
+        if (actions > 0)
+            Console.WriteLine($"Connected actions: {actions}");
+    }
+
+    internal static void Init() =>
         SynchronizationContext.SetSynchronizationContext(
             new GtkSynchronizationContext()
                 .SideEffect(_ => mainThreadId = Environment.CurrentManagedThreadId));

@@ -93,7 +93,8 @@ public interface IActionMap
     // [DllImport(Libs.LibGtk, EntryPoint="g_simple_action_set_enabled", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void EnableAction(IntPtr action, int enabled);
 
-    static readonly  Dictionary<string, nint> actions = [];
+    internal static int GetActionsCount() => actions.Count;
+    static readonly Dictionary<string, nint> actions = [];
 }
 
 public static class IActionMapExtensions

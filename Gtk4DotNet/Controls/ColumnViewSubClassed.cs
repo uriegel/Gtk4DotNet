@@ -242,6 +242,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
     }
 
     protected ColumnViewHandle columnView = new(0);
+
     static readonly Dictionary<string, object> registeredObjects = [];
     readonly List<ColumnViewColumnHandle> columns = [];
     readonly List<CustomSorterHandle> sorters = [];
