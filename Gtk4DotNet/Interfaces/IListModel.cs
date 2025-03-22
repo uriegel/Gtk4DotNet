@@ -22,15 +22,15 @@ public interface IListModel
         return this;
     }
 
-    public IListModel Splice<T>(uint pos, IEnumerable<T> objs)
+    public IListModel Splice<T>(int pos, IEnumerable<T> objs)
     {
         Splice(pos, 0, objs);
         return this;
     }
 
-    public IListModel Splice<T>(uint pos, uint removals, IEnumerable<T> objs)
+    public IListModel Splice<T>(int pos, int removals, IEnumerable<T> objs)
     {
-        uint idx = 0;
+        var idx = 0;
         foreach (var obj in
             objs.Select(o =>
                 {
@@ -44,13 +44,13 @@ public interface IListModel
                     .Windowed(9_000).Select(n => n.ToArray()))
         {
             InternalSplice(pos + idx, idx == 0 ? removals : 0, obj);
-            idx += (uint)obj.Length;
+            idx += obj.Length;
         }
 
         return this;
     }
 
-    public IListModel RemoveItems(uint pos, uint removals)
+    public IListModel RemoveItems(int pos, int removals)
     {
         _Splice(GetInternalHandle(), pos, removals, 0, 0);
         return this;
@@ -77,7 +77,7 @@ public interface IListModel
 
     public void Dispose();
 
-    void InternalSplice(uint pos, uint removals, nint[] objs)
+    void InternalSplice(int pos, int removals, nint[] objs)
     {
         var unmanagedPtr = MakeObjArray(objs, objs.Length);
         _Splice(GetInternalHandle(), pos, removals, unmanagedPtr, objs.Length);
@@ -110,7 +110,7 @@ public interface IListModel
     }
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_list_store_splice", CallingConvention = CallingConvention.Cdecl)]
-    extern static void _Splice(nint model, uint pos, uint removalCount, nint nullArray, int length);
+    extern static void _Splice(nint model, int pos, int removalCount, nint nullArray, int length);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_list_store_append", CallingConvention = CallingConvention.Cdecl)]
     extern static void _Append(nint model, nint obj);

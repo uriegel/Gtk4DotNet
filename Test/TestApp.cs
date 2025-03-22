@@ -93,11 +93,11 @@ static class TestApp
 
     class CustomColumnView(nint obj) : ColumnViewSubClassed(obj)
     {
-        public uint FindPos(nint item)
+        public int FindPos(nint item)
         {
             var model = columnView.GetModel<SelectionHandle>();
             var items = model.GetRawItems();
-            return (uint)items.TakeWhile(n => n != item).Count();
+            return items.TakeWhile(n => n != item).Count();
         }
 
         protected override void OnCreate()

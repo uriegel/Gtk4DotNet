@@ -85,7 +85,7 @@ static class SubClassing
 class CustomButtonClass(GTypeEnum parent, string name, Func<nint, CustomButton> constructor)
     : SubClass<ButtonHandle>(parent, name, constructor)
 {
-    public static uint SlowClick;
+    public static int SlowClick;
 
     public const int PROP_TESTTITLE = 1;
 
@@ -116,13 +116,13 @@ class CustomButton(nint obj) : SubClassInst<ButtonHandle>(obj)
     protected override void OnFinalize() => WriteLine("Button finalized");
     protected override ButtonHandle CreateHandle(nint obj) => new(obj);
 
-    protected override void OnSetProperty(uint propId, nint value)
+    protected override void OnSetProperty(int propId, nint value)
     {
         if (propId == CustomButtonClass.PROP_TESTTITLE)
             testTitle = GValue.GetString(value);
     }
 
-    protected override void OnGetProperty(uint propId, nint value)
+    protected override void OnGetProperty(int propId, nint value)
     {
         if (propId == CustomButtonClass.PROP_TESTTITLE)
             GValue.SetString(value, testTitle);

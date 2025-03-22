@@ -16,8 +16,8 @@ public abstract class SubClassInst<THandle>
     protected SubClassInst(nint obj) => Handle = CreateHandle(obj);
     protected internal virtual void OnCreate() { }
     protected virtual void OnFinalize() { }
-    protected virtual void OnSetProperty(uint propId, nint value) { }
-    protected virtual void OnGetProperty(uint propId, nint value) { }
+    protected virtual void OnSetProperty(int propId, nint value) { }
+    protected virtual void OnGetProperty(int propId, nint value) { }
 
     protected abstract THandle CreateHandle(nint obj);
 
@@ -35,10 +35,10 @@ public abstract class SubClassInst<THandle>
     internal protected static SubClassInst<THandle>? GetInstance(IntPtr handle)
         => GetInstanceGCHandle(handle).Target as SubClassInst<THandle>;
 
-    static void SetProperty(nint obj, uint propId, nint value, nint pspec)
+    static void SetProperty(nint obj, int propId, nint value, nint pspec)
         => GetInstance(obj)?.OnSetProperty(propId, value);
 
-    static void GetProperty(nint obj, uint propId, nint value, nint pspec)
+    static void GetProperty(nint obj, int propId, nint value, nint pspec)
         => GetInstance(obj)?.OnGetProperty(propId, value);
 
     static GCHandle GetInstanceGCHandle(IntPtr handle)

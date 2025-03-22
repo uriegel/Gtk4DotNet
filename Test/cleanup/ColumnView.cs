@@ -70,7 +70,7 @@ static class ColumnViewCleanup
                 WriteLine($"Duration: {stamp}");
 
                 if (schritt != 20 && schritt != 21 && schritt > 0 && schritt % 2 == 0)
-                    model?.RemoveItems(0, (uint)count);
+                    model?.RemoveItems(0, count);
 
                 if (schritt == 20)
                     scrolledWindow.Ref.Child(Label.New("nil"));

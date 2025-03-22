@@ -64,12 +64,8 @@ static class ColumnViewControlApp
 
     static void FilterItems(ToggleButtonHandle toggleButton)
     {
-        // TODO eliminate
-        ColumnViewSubClassed.DontUnselect = true;
-        columnView?.SelectItem(3, false);
-        ColumnViewSubClassed.DontUnselect = false;
-        //        Controller2.IsFiltering = toggleButton.Active();
-        //        columnView?.FilterChanged(Controller2.IsFiltering ? FilterChange.MoreStrict : FilterChange.LessStrict);
+        Controller2.IsFiltering = toggleButton.Active();
+        columnView?.FilterChanged(Controller2.IsFiltering ? FilterChange.MoreStrict : FilterChange.LessStrict);
     }
 
     static readonly Controller1 controller1 = new();

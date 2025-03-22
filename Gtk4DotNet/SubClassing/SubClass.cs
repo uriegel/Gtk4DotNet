@@ -57,14 +57,14 @@ public abstract class SubClass<THandle>
         inst.OnCreate();
     }
 
-    protected void RegisterProperty(nint cls, uint id, string name, string? defaultValue = null)
+    protected void RegisterProperty(nint cls, int id, string name, string? defaultValue = null)
         => GObject.ClassInstallProperty(cls, id, GObject.ParamSpecString(
             name,
             null,
             null,
             defaultValue, ParamFlags.ReadWrite));
 
-    protected uint NewSignal(GTypeHandle type, string name, SignalFlags flags, GTypes returnType, GTypes[] param)
+    protected int NewSignal(GTypeHandle type, string name, SignalFlags flags, GTypes returnType, GTypes[] param)
         => GType.SignalNew(type, name, flags, returnType, param);
 
     protected void InitTemplateFromResource(nint cls, string name)
@@ -83,7 +83,7 @@ delegate void SubClassInitDelegate(nint gClass, nint classData);
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 delegate void SubClassInstanceInitDelegate(nint gClass, nint classData);
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-delegate void SetPropertyDelegate(nint obj, uint propId, nint value, nint pspec);
+delegate void SetPropertyDelegate(nint obj, int propId, nint value, nint pspec);
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-delegate void GetPropertyDelegate(nint obj, uint propId, nint value, nint pspec);
+delegate void GetPropertyDelegate(nint obj, int propId, nint value, nint pspec);
 

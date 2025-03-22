@@ -49,7 +49,7 @@ public static class GType
         _ => GObject.Type(),
     };
 
-    public static uint SignalNew(GTypeHandle gtype, string name, SignalFlags signalFlags, GTypes returnType, GTypes[] types)
+    public static int SignalNew(GTypeHandle gtype, string name, SignalFlags signalFlags, GTypes returnType, GTypes[] types)
         => types.Length switch
         {
             0 => SignalNew0(name, gtype, signalFlags, 0, 0, 0, 0, returnType, 0),
@@ -60,18 +60,18 @@ public static class GType
         };
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_signal_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static uint SignalNew0(string name, GTypeHandle gtype, SignalFlags signalFlags, nint classClosure, nint accumulator, nint accuData, nint cMarshaller,
+    extern static int SignalNew0(string name, GTypeHandle gtype, SignalFlags signalFlags, nint classClosure, nint accumulator, nint accuData, nint cMarshaller,
         GTypes returnType, int nParams);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_signal_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static uint SignalNew1(string name, GTypeHandle gtype, SignalFlags signalFlags, nint classClosure, nint accumulator, nint accuData, nint cMarshaller,
+    extern static int SignalNew1(string name, GTypeHandle gtype, SignalFlags signalFlags, nint classClosure, nint accumulator, nint accuData, nint cMarshaller,
         GTypes returnType, int nParams, GTypes paramType1);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_signal_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static uint SignalNew2(string name, GTypeHandle gtype, SignalFlags signalFlags, nint classClosure, nint accumulator, nint accuData, nint cMarshaller,
+    extern static int SignalNew2(string name, GTypeHandle gtype, SignalFlags signalFlags, nint classClosure, nint accumulator, nint accuData, nint cMarshaller,
         GTypes returnType, int nParams, GTypes paramType1, GTypes paramType2);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_signal_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static uint SignalNew3(string name, GTypeHandle gtype, SignalFlags signalFlags, nint classClosure, nint accumulator, nint accuData, nint cMarshaller,
+    extern static int SignalNew3(string name, GTypeHandle gtype, SignalFlags signalFlags, nint classClosure, nint accumulator, nint accuData, nint cMarshaller,
         GTypes returnType, int nParams, GTypes paramType1, GTypes paramType2, GTypes paramType3);
 }

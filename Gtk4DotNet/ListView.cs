@@ -9,7 +9,7 @@ public static class ListView
         => New(selectionModel.GetInternalHandle(), listItemFactory);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_view_scroll_to", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void ScrollTo(this ListViewHandle listView, uint pos, ListScrollFlags flags, nint nil);
+    public extern static void ScrollTo(this ListViewHandle listView, int pos, ListScrollFlags flags, nint nil);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_view_get_type", CallingConvention = CallingConvention.Cdecl)]
     public static extern GTypeHandle Type();

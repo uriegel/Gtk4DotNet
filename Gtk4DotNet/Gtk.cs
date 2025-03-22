@@ -130,7 +130,7 @@ public static class Gtk
         var delegat = mainFunction as Delegate;
         GtkDelegates.Add(key, delegat);
         var funcPtr = Marshal.GetFunctionPointerForDelegate(delegat);
-        SetTimer(priority, (uint)timeout.TotalMilliseconds, funcPtr, IntPtr.Zero, IntPtr.Zero);
+        SetTimer(priority, (int)timeout.TotalMilliseconds, funcPtr, IntPtr.Zero, IntPtr.Zero);
     }
 
     public static string? GuessContentType(string filename)
@@ -179,7 +179,7 @@ public static class Gtk
     extern static void IdleAddFull(int priority, IntPtr func, IntPtr nil, IntPtr nil2);
 
     [DllImport(Libs.LibGtk, EntryPoint="g_timeout_add_full", CallingConvention = CallingConvention.Cdecl)]
-    extern static void SetTimer(int priority, uint intervalInMillis, nint func, nint nil, nint nil2);
+    extern static void SetTimer(int priority, int intervalInMillis, nint func, nint nil, nint nil2);
 
     /// <summary>
     /// For usage in a non GTK app

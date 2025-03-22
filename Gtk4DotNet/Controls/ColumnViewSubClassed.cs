@@ -14,7 +14,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
     public bool SortDescending { get; private set; }
     public bool MultiSelection { get; set; }
 
-    public Action<nint, uint, uint>? OnSelectionChanged { get; set; }
+    public Action<nint, int, int>? OnSelectionChanged { get; set; }
 
     public ColumnViewSubClassed(nint obj) : base(obj)
     {
@@ -33,7 +33,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         columnView.EnableRubberband(controller.EnableRubberband);
     }
 
-    public void OnActivate(Action<uint>? onActivate)
+    public void OnActivate(Action<int>? onActivate)
     {
         if (onActivate != null)
             columnView.OnActivate(onActivate);
@@ -149,9 +149,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         //TODO clear it here
         //TODO clear it onweakref from this class
     }
-    // TODO eliminate
-    public static bool DontUnselect { get; set; }
-    public void SelectItem(uint pos, bool unselectRest)
+    public void SelectItem(int pos, bool unselectRest)
         => columnView.GetModel<SelectionHandle>().SelectItem(pos, unselectRest);
 
     public void FilterChanged(FilterChange change)
@@ -192,12 +190,12 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         public abstract Column<T>[] GetColumns();
         public void Insert(IEnumerable<T> items) => model?.Insert(items);
         public void RemoveAll() => model?.RemoveAll();
-        public void Insert(uint pos, IEnumerable<T> items) => model?.Insert(pos, items);
+        public void Insert(int pos, IEnumerable<T> items) => model?.Insert(pos, items);
 
         public IEnumerable<T> Items() => model?.Items() ?? [];
         public IEnumerable<nint> RawItems() => model?.RawItems() ?? [];
 
-        public T? GetItem(uint pos) => model?.GetItem(pos);
+        public T? GetItem(int pos) => model?.GetItem(pos);
 
         internal void SetModel(IColumnViewModel<T> model)
             => this.model = model;
@@ -215,7 +213,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
     {
         public IEnumerable<T> Items()
         {
-            uint pos = 0;
+            var pos = 0;
             var model = columnView.GetModel<SelectionHandle>();
             while (true)
             {
@@ -228,22 +226,19 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         }
 
         public IEnumerable<nint> RawItems() => columnView.GetModel<SelectionHandle>().GetRawItems();
+
         public void Insert(IEnumerable<T> items)
         {
             listModelHandle?.RemoveAll();
             listModelHandle?.Splice(items);
         }
 
-        public void Insert(uint pos, IEnumerable<T> items)
-        {
-            listModelHandle?.RemoveAll();
-            listModelHandle?.Splice(pos, items);
-        }
+        public void Insert(int pos, IEnumerable<T> items)
+            => listModelHandle?.Splice(pos, items);
 
-        public void RemoveAll()
-            => listModelHandle?.RemoveAll();
+        public void RemoveAll() => listModelHandle?.RemoveAll();
 
-        public T? GetItem(uint pos) => columnView.GetModel<SelectionHandle>().GetItem<T>(pos++);
+        public T? GetItem(int pos) => columnView.GetModel<SelectionHandle>().GetItem<T>(pos++);
     }
 
     protected ColumnViewHandle columnView = new(0);

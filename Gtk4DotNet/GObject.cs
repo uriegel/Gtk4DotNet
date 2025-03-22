@@ -100,15 +100,15 @@ public static class GObject
     public extern static void Notify(this ObjectHandle obj, string propertyName);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_signal_emit", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void EmitSignal(this ObjectHandle obj, uint signalId, uint detail);
+    public extern static void EmitSignal(this ObjectHandle obj, int signalId, int detail);
     [DllImport(Libs.LibGtk, EntryPoint = "g_signal_emit", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void EmitSignal(this ObjectHandle obj, uint signalId, uint detail, nint param1);
+    public extern static void EmitSignal(this ObjectHandle obj, int signalId, int detail, nint param1);
     [DllImport(Libs.LibGtk, EntryPoint = "g_signal_emit", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void EmitSignal(this ObjectHandle obj, uint signalId, uint detail, nint param1, nint param2);
+    public extern static void EmitSignal(this ObjectHandle obj, int signalId, int detail, nint param1, nint param2);
     [DllImport(Libs.LibGtk, EntryPoint = "g_signal_emit", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void EmitSignal(this ObjectHandle obj, uint signalId, uint detail, nint param1, nint param2, nint param3);
+    public extern static void EmitSignal(this ObjectHandle obj, int signalId, int detail, nint param1, nint param2, nint param3);
     [DllImport(Libs.LibGtk, EntryPoint = "g_signal_emit", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void EmitSignal(ObjectHandle obj, uint signalId, uint detail, nint param1, nint param2, nint param3, nint param4);
+    public extern static void EmitSignal(ObjectHandle obj, int signalId, int detail, nint param1, nint param2, nint param3, nint param4);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_set_data", CallingConvention = CallingConvention.Cdecl)]
     public extern static void SetData(this ObjectHandle obj, string key, nint data);
@@ -141,7 +141,7 @@ public static class GObject
     internal extern static void Unref(IntPtr obj);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_class_install_property", CallingConvention = CallingConvention.Cdecl)]
-    internal extern static void ClassInstallProperty(nint cls, uint propertyId, IntPtr pspec);
+    internal extern static void ClassInstallProperty(nint cls, int propertyId, IntPtr pspec);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_param_spec_string", CallingConvention = CallingConvention.Cdecl)]
     internal extern static nint ParamSpecString(string name, string? nick, string? blurb, string? defaultValue, ParamFlags flags);

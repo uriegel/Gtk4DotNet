@@ -76,21 +76,6 @@ WriteLine($"Return value: {ReadLine() switch
     _ => 0
 }}");
 
-// TODO: Implement this all in Commander:
-
-// TODO Focused Item with gray Border: css
-// Forget TODO  Inherit MultiSelectionModel to adapt in another custom inheritance:
-// Forget TODO The abstract multiselection is suplied with keyboard and mouse events from ColumnView
-// Forget TODO The abstract multiselection translates C style selections to C# comfort selections
-// TODO Single Selection via arrow up/down, call set_selection manually
-// TODO Switch to multi selection when more than two items are selected
-// TODO Focus Border always:
-// row:focus {
-//     /*outline: 1px solid red; */ /* Force a visible focus outline */
-// 	border-width: 1px;
-// 	border-style: solid;
-// }
-
 
 // TODO Dark theme, light theme: https://github.com/jbenner-radham/rust-gtk4-css-styling
 

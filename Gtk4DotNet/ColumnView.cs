@@ -22,10 +22,10 @@ public static class ColumnView
         return res;
     }
 
-    public static ColumnViewHandle OnActivate(this ColumnViewHandle columnView, Action<uint> onActivate)
+    public static ColumnViewHandle OnActivate(this ColumnViewHandle columnView, Action<int> onActivate)
         => columnView.SideEffect(cv => Gtk.SignalConnect<ActivateDelegate>(cv, "activate", (_, pos, __) => onActivate(pos)));
 
-    public static void ScrollTo(this ColumnViewHandle columnView, uint pos, ListScrollFlags flags)
+    public static void ScrollTo(this ColumnViewHandle columnView, int pos, ListScrollFlags flags)
         => ScrollTo(columnView, pos, 0, flags, 0);
     public static ColumnViewHandle AppendColumn(this ColumnViewHandle columnView, ColumnViewColumnHandle column)
         => columnView.SideEffect(c => c._AppendColumn(column));
@@ -58,7 +58,7 @@ public static class ColumnView
     internal extern static nint GetModel(this ColumnViewHandle columnView);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_scroll_to", CallingConvention = CallingConvention.Cdecl)]
-    extern static void ScrollTo(this ColumnViewHandle columnView, uint pos, nint nilc, ListScrollFlags flags, nint nil);
+    extern static void ScrollTo(this ColumnViewHandle columnView, int pos, nint nilc, ListScrollFlags flags, nint nil);
 }
 
-delegate void ActivateDelegate(IntPtr p, uint pos, IntPtr pp);
+delegate void ActivateDelegate(IntPtr p, int pos, IntPtr pp);

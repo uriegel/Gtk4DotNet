@@ -15,20 +15,20 @@ public static class StringList
         return list;
     }
 
-    public static void Splice(this ListModelHandle listModel, uint pos, uint removals)
+    public static void Splice(this ListModelHandle listModel, int pos, int removals)
         => _Splice(listModel, pos, removals, 0);
 
-    public static void Splice(this ListModelHandle listModel, uint pos, uint removals, IEnumerable<string> strings)
+    public static void Splice(this ListModelHandle listModel, int pos, int removals, IEnumerable<string> strings)
     {
-        uint idx = 0;
+        var idx = 0;
         foreach (var strs in strings.Windowed(9_000).Select(n => n.ToArray()))
         {
             InternalSplice(listModel, pos + idx, idx == 0 ? removals : 0, strs);
-            idx += (uint)strs.Length;
+            idx += strs.Length;
         }
     }
 
-    static void InternalSplice(this ListModelHandle listModel, uint pos, uint removals, string[] strings)
+    static void InternalSplice(this ListModelHandle listModel, int pos, int removals, string[] strings)
     {
         var unmanagedStrings = new nint[strings.Length + 1];
         for (int i = 0; i < strings.Length; i++)
@@ -52,5 +52,5 @@ public static class StringList
     extern static ListModelHandle New(nint strings);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_string_list_splice", CallingConvention = CallingConvention.Cdecl)]
-    extern static void _Splice(ListModelHandle listModel, uint pos, uint removalCount, nint strings);
+    extern static void _Splice(ListModelHandle listModel, int pos, int removalCount, nint strings);
 }
