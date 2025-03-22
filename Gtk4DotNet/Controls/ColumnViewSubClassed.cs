@@ -239,6 +239,24 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         public void RemoveAll() => listModelHandle?.RemoveAll();
 
         public T? GetItem(int pos) => columnView.GetModel<SelectionHandle>().GetItem<T>(pos++);
+
+        public void SelectAll()
+        {
+            var model = columnView.GetModel<SelectionHandle>();
+            model.SelectAll();
+        }
+
+        public void SetSelection(uint start, int count)
+        {
+            var model = columnView.GetModel<SelectionHandle>();
+            model.SelectRange(0, count, true);
+        }
+
+        public void UnselectAll()
+        {
+            var model = columnView.GetModel<SelectionHandle>();
+            model.UnselectAll();
+        }
     }
 
     protected ColumnViewHandle columnView = new(0);
