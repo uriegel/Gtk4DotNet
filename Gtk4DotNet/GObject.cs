@@ -62,9 +62,9 @@ public static class GObject
         return value;
     }
 
-    public static THandle OnNotify<THandle>(this THandle widget, string property, Action<THandle> onNotify)
+    public static THandle OnNotify<THandle>(this THandle obj, string property, Action<THandle> onNotify)
         where THandle : ObjectHandle
-        => widget.SideEffect(w => Gtk.SignalConnect<ThreePointerDelegate>(w, $"notify::{property}", (IntPtr _, IntPtr __, IntPtr ___) => onNotify(widget)));
+        => obj.SideEffect(o => Gtk.SignalConnect<ThreePointerDelegate>(o, $"notify::{property}", (IntPtr _, IntPtr __, IntPtr ___) => onNotify(obj)));
 
     public static void SetProperty(this ObjectHandle obj, string propertyName, object? value)
     {
@@ -83,6 +83,26 @@ public static class GObject
             GValue.Init(gv, GTypes.String);
         obj.SetProperty(propertyName, gv);
         GValue.Free(gv);
+    }
+
+    public static object? GetProperty(this ObjectHandle obj, string propertyName, Type type)
+    {
+        var gv = GValue.Allocate();
+        object? result = null;
+        if (type.Name == "String")
+        {
+            GValue.Init(gv, GTypes.String);
+            obj.GetProperty(propertyName, gv);
+            result = GValue.GetString(gv);
+        }
+        else if (type.Name == "Boolean")
+        {
+            GValue.Init(gv, GTypes.Boolean);
+            obj.GetProperty(propertyName, gv);
+            result = GValue.GetBool(gv);
+        }
+        GValue.Free(gv);
+        return result;
     }
 
     public static THandle BindProperty<THandle, TTargetHandle>(this THandle source, string sourceProperty, ObjectRef<TTargetHandle> target, string targetProperty, BindingFlags bindingFlags)
@@ -245,6 +265,9 @@ public static class GObject
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_set_property", CallingConvention = CallingConvention.Cdecl)]
     static extern void SetProperty(this ObjectHandle obj, string name, nint value);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_get_property", CallingConvention = CallingConvention.Cdecl)]
+    static extern void GetProperty(this ObjectHandle obj, string name, nint value);
 }
 
 

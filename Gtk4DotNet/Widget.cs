@@ -163,11 +163,11 @@ public static class Widget
         }
     }
 
-    // TODO TwoWay
     // TODO from background
     // TODO Actions
-    public static THandle Binding<THandle>(this THandle target, string targetProperty, string property, BindingFlags bindingFlags, Func<object?, object?>? converter = null)
-        where THandle : WidgetHandle, new()
+    public static THandle Binding<THandle>(this THandle target, string targetProperty, string property, BindingFlags bindingFlags,
+        Func<object?, object?>? converter = null)
+            where THandle : WidgetHandle, new()
     {
         Connect();
         return target;
@@ -186,6 +186,9 @@ public static class Widget
                 dataContext.PropertyChanged += OnChanged;
                 target.AddWeakRef(() => dataContext.PropertyChanged -= OnChanged);
 
+                if (bindingFlags.HasFlag(BindingFlags.Bidirectional))
+                    target.OnNotify(targetProperty, _ => SetValue());
+
                 void OnChanged(object? sender, PropertyChangedEventArgs e)
                     => target.SetProperty(targetProperty, GetValue());
 
@@ -195,6 +198,17 @@ public static class Widget
                     var propInfo = type?.GetProperty(property);
                     var res = propInfo?.GetValue(dataContext);
                     return converter?.Invoke(res) ?? res;
+                }
+
+                void SetValue()
+                {
+                    var type = dataContext.GetType();
+                    var propInfo = type?.GetProperty(property);
+                    if (propInfo?.PropertyType != null)
+                    {
+                        var val = target.GetProperty(targetProperty, propInfo.PropertyType);
+                        propInfo?.SetValue(dataContext, val);
+                    }
                 }
             }
             else

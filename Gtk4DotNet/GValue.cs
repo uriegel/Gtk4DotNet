@@ -20,6 +20,9 @@ public static class GValue
     [DllImport(Libs.LibGtk, EntryPoint = "g_value_set_boolean", CallingConvention = CallingConvention.Cdecl)]
     public extern static void SetBool(nint gvalue, bool value);
 
+    [DllImport(Libs.LibGtk, EntryPoint = "g_value_get_boolean", CallingConvention = CallingConvention.Cdecl)]
+    public extern static bool GetBool(nint gvalue);
+
     public static nint Allocate()
     {
         // Allocate the size of GValue. If you don't need to manipulate the structure in managed code,

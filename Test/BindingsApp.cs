@@ -51,7 +51,16 @@ static class BindingsApp
                                 .New()
                                 .HAlign(Align.Start)
                                 .HExpand(true)
-                                .Binding("label", "Active", BindingFlags.Default, b => (bool)b ? "true" : "false")))
+                                .Binding("label", "Active", BindingFlags.Default, b => (bool)b! ? "true" : "false")))
+                        .Append(Box
+                            .New(Orientation.Horizontal)
+                            .Spacing(10)
+                            .Margin(5)
+                            .Append(CheckButton
+                                .NewWithLabel("Binding")
+                                .HAlign(Align.Start)
+                                .HExpand(true)  
+                                .Binding("active", "Active", BindingFlags.Bidirectional)))
                         .Append(Box
                             .New(Orientation.Horizontal)
                             .Spacing(10)
