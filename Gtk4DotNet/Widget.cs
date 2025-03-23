@@ -163,8 +163,6 @@ public static class Widget
         }
     }
 
-    // TODO from background
-    // TODO Actions
     public static THandle Binding<THandle>(this THandle target, string targetProperty, string property, BindingFlags bindingFlags,
         Func<object?, object?>? converter = null)
             where THandle : WidgetHandle, new()
@@ -293,16 +291,28 @@ public static class Widget
         where THandle : WidgetHandle
         => _GetParent(widget);
 
-    // TODO
-    // public static TResultHandle GetAncestor<THandle, TResultHandle>(this THandle widget)
-    //     where THandle : WidgetHandle
-    //     where TResultHandle : WidgetHandle
-    //         => GetAncestor<THandle, TResultHandle>(widget, ancesterTypeName);
+    public static TResultHandle GetAncestor<TResultHandle>(this WidgetHandle widget)
+        where TResultHandle : WidgetHandle, new()
+    {
+        string[] ancestorTypeNames =
+            typeof(TResultHandle) == typeof(WindowHandle)
+            // TODO add all
+            ? ["GtkWindow", "GtkApplicationWindow", Application.MANAGED_APPLICATION_WINDOW, "AdwWindow"]
+            : typeof(TResultHandle) == typeof(BoxHandle)
+            ? ["GtkBox"]
+            : typeof(TResultHandle) == typeof(PanedHandle)
+            ? ["GtkPaned"]
+            : typeof(TResultHandle) == typeof(ScrolledWindowHandle)
+            ? ["GtkScrolledWindow"]
+            : [];
 
-    public static WidgetHandle GetAncestor(this WidgetHandle widget, string ancesterTypeName)
-            => GetAncestor<WidgetHandle>(widget, ancesterTypeName);
+        return GetAncestor<TResultHandle>(widget, ancestorTypeNames);
+    }
 
-    public static TResultHandle GetAncestor<TResultHandle>(this WidgetHandle widget, string ancesterTypeName)
+    public static WidgetHandle GetAncestor(this WidgetHandle widget, string[] ancestorTypeNames)
+            => GetAncestor<WidgetHandle>(widget, ancestorTypeNames);
+
+    public static TResultHandle GetAncestor<TResultHandle>(this WidgetHandle widget, string[] ancesterTypeNames)
         where TResultHandle : WidgetHandle, new()
     {
         while (true)
@@ -310,7 +320,7 @@ public static class Widget
             var parent = widget.GetParent();
             if (parent.IsInvalid)
                 return new TResultHandle();
-            if (parent.GetName() == ancesterTypeName)
+            if (ancesterTypeNames.Any(n => parent.GetName() == n))
             {
                 var res = new TResultHandle();
                 res.SetInternalHandle(parent.GetInternalHandle());

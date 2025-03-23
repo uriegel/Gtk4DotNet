@@ -37,7 +37,7 @@ public static class Application
     }
 
     public static ApplicationWindowHandle ManagedApplicationWindow(this ApplicationHandle app)
-        => CustomWindow(app, "ManagedApplicationWindow");
+        => CustomWindow(app, MANAGED_APPLICATION_WINDOW);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_add_window", CallingConvention = CallingConvention.Cdecl)]
     public extern static void AddWindow(this ApplicationHandle app, WindowHandle window);
@@ -85,6 +85,8 @@ public static class Application
         Resource.Register(res);
         return true;
     }
+
+    internal const string MANAGED_APPLICATION_WINDOW = "ManagedApplicationWindow";
 
     [DllImport(Libs.LibAdw, EntryPoint = "adw_application_new", CallingConvention = CallingConvention.Cdecl)]
     extern static ApplicationHandle _NewAdw(string id, int flags = 0);

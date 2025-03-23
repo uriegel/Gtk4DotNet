@@ -30,7 +30,12 @@ static class BindingsApp
                                 .Binding("label", "Name", BindingFlags.Default))
                             .Append(Button
                                 .NewWithLabel("Change")
-                                .OnClicked(() => dataContext.Name = "Name was changed to John Doe"))
+                                .OnClicked(async () =>
+                                    {
+                                        dataContext.Name = "Name was changed to John Doe";
+                                        await Task.Delay(2000);
+                                        dataContext.Name = "Name was changed back to URiegel";
+                                    }))
                             .Append(Button
                                 .NewWithLabel("To null")
                                 .OnClicked(() => dataContext.Name = null)))

@@ -46,7 +46,6 @@ static class TestApp
                             if (!sibling.IsInvalid)
                                 sibling.GrabFocus();
                         }
-
                     }
                 }, "Down")]);
             Handle.AddActions([new GtkAction("Ins", () =>
@@ -95,6 +94,7 @@ static class TestApp
     {
         public int FindPos(nint item)
         {
+            Console.WriteLine($"Focused item: {controller.GetFocusedItemPos()}");
             var model = columnView.GetModel<SelectionHandle>();
             var items = model.GetRawItems();
             return items.TakeWhile(n => n != item).Count();

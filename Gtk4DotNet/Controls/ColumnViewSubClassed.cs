@@ -29,7 +29,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
     {
         controller.RemoveAll();
         var model = SetColumns(controller.GetColumns(), controller);
-        controller.SetModel(model);
+        controller.SetModel(model, columnView);
         columnView.EnableRubberband(controller.EnableRubberband);
     }
 
@@ -61,6 +61,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
                 .Setup(listItem => listItem.SetChild(col.OnItemSetup()))
                 .Bind(listItem =>
                     {
+                        Controller<T>.AttachListItem(listItem);
                         var item = listItem.GetObject<T>();
                         if (item != null)
                         {
@@ -197,10 +198,42 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
 
         public T? GetItem(int pos) => model?.GetItem(pos);
 
-        internal void SetModel(IColumnViewModel<T> model)
-            => this.model = model;
+        public int GetFocusedItemPos()
+        {
+            if (window.IsInvalid)
+                window = columnView.GetAncestor<WindowHandle>();
+            var row = window.GetFocus<WidgetHandle>();
+            if (!row.IsInvalid && row.GetName() == "GtkColumnViewRowWidget")
+            {
+                ListItemHandle listItem = new(row.GetData(LISTITEM));
+                var focusedItem = listItem.GetRawItem();
+                return RawItems().TakeWhile(n => n != focusedItem).Count();
+            }
+            else
+                return -1;
+        }
+
+        public int ItemsCount() => RawItems().Count();
+
+        static internal void AttachListItem(ListItemHandle listItem)
+        {
+            var widget = listItem.GetChild<WidgetHandle>();
+            var row = widget.GetParent().GetParent();
+            if (!row.IsInvalid && row.GetName() == "GtkColumnViewRowWidget")
+                row.SetData(LISTITEM, listItem.GetInternalHandle());
+        }   
+
+        internal void SetModel(IColumnViewModel<T> model, ColumnViewHandle columnView)
+        {
+            this.model = model;
+            this.columnView = columnView;
+        }
+
+        const string LISTITEM = "LISTITEM";
 
         IColumnViewModel<T>? model;
+        ColumnViewHandle columnView = new();
+        WindowHandle window = new();
     }
 
     class EmptyController : Controller<object>
