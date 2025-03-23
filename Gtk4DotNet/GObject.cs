@@ -66,12 +66,40 @@ public static class GObject
         where THandle : ObjectHandle
         => widget.SideEffect(w => Gtk.SignalConnect<ThreePointerDelegate>(w, $"notify::{property}", (IntPtr _, IntPtr __, IntPtr ___) => onNotify(widget)));
 
+    public static void SetProperty(this ObjectHandle obj, string propertyName, object? value)
+    {
+        var gv = GValue.Allocate();
+        if (value is string s)
+        {
+            GValue.Init(gv, GTypes.String);
+            GValue.SetString(gv, s);
+        }
+        else if (value is bool b)
+        {
+            GValue.Init(gv, GTypes.Boolean);
+            GValue.SetBool(gv, b);
+        }
+        else
+            GValue.Init(gv, GTypes.String);
+        obj.SetProperty(propertyName, gv);
+        GValue.Free(gv);
+    }
+
     public static THandle BindProperty<THandle, TTargetHandle>(this THandle source, string sourceProperty, ObjectRef<TTargetHandle> target, string targetProperty, BindingFlags bindingFlags)
         where THandle : ObjectHandle, new()
         where TTargetHandle : ObjectHandle, new()
         => source.SideEffect(s => target.SetHandle<TTargetHandle>(t => s._BindProperty(sourceProperty, t, targetProperty, bindingFlags)));
 
     public static THandle BindProperty<THandle>(this THandle source, string sourceProperty, ObjectHandle target, string targetProperty, BindingFlags bindingFlags)
+        where THandle : ObjectHandle, new()
+        => source.SideEffect(s => s._BindProperty(sourceProperty, target, targetProperty, bindingFlags));
+
+    public static THandle Binding<THandle, TSourceHandle>(this THandle target, string targetProperty, ObjectRef<TSourceHandle> source, string sourceProperty, BindingFlags bindingFlags)
+        where THandle : ObjectHandle, new()
+        where TSourceHandle : ObjectHandle, new()
+        => target.SideEffect(t => source.SetHandle<TSourceHandle>(s => s._BindProperty(sourceProperty, t, targetProperty, bindingFlags)));
+
+    public static THandle Binding<THandle>(this ObjectHandle target, string targetProperty, THandle source, string sourceProperty, BindingFlags bindingFlags)
         where THandle : ObjectHandle, new()
         => source.SideEffect(s => s._BindProperty(sourceProperty, target, targetProperty, bindingFlags));
 
@@ -161,6 +189,10 @@ public static class GObject
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_bind_property", CallingConvention = CallingConvention.Cdecl)]
     extern static void _BindProperty(this ObjectHandle source, string sourceProperty, ObjectHandle target, string targetProperty, BindingFlags bindingFlags);
 
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_bind_property_full", CallingConvention = CallingConvention.Cdecl)]
+    extern static IntPtr BindPropertyFull(this ObjectHandle source, string sourceProperty, ObjectHandle target, string targetProperty, BindingFlags bindingFlags);
+
+
     // [DllImport(Libs.LibGtk, EntryPoint="g_object_unref", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void Unref(this IntPtr obj);
 
@@ -210,6 +242,9 @@ public static class GObject
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_weak_ref", CallingConvention = CallingConvention.Cdecl)]
     extern internal static void AddWeakRef(this ObjectHandle obj, IntPtr finalizer, IntPtr zero);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_set_property", CallingConvention = CallingConvention.Cdecl)]
+    static extern void SetProperty(this ObjectHandle obj, string name, nint value);
 }
 
 

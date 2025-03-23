@@ -6,36 +6,37 @@ WriteLine(
     1:  First
     2:  Hello World
     3:  Packing buttons
-    4:  Drawing
-    5:  Builder
-    6:  Builder from .NET resource
-    7:  Children
-    8:  Image
-    9:  Web View
-    10: Web View extended
-    11: CSS
-    12: Progress
-    13: Object subclass
-    14: Headerbar with menu (subclassed)
-    15: Progress (subclassed)
-    16: NotDecorated
-    17: Threading
-    18: Cleanup
-    19: Non GTK
-    20: ListView (String List)
-    21: ListView (Custom Objects)
-    22: ColumnView
-    23: ColumnViewControl
-    24: CustomColumnView
-    25: Example 1
-    26: Example 2
-    27: Example 3
-    28: Example 4
-    29: Example 5
-    30: Example 6
-    31: Example 7
-    32: Example 8
-    33: Test 
+    4:  Bindings
+    5:  Drawing
+    6:  Builder
+    7:  Builder from .NET resource
+    8:  Children
+    9:  Image
+    10: Web View
+    11: Web View extended
+    12: CSS
+    13: Progress
+    14: Object subclass
+    15: Headerbar with menu (subclassed)
+    16: Progress (subclassed)
+    17: NotDecorated
+    18: Threading
+    19: Cleanup
+    20: Non GTK
+    21: ListView (String List)
+    22: ListView (Custom Objects)
+    23: ColumnView
+    24: ColumnViewControl
+    25: CustomColumnView
+    26: Example 1
+    27: Example 2
+    28: Example 3
+    29: Example 4
+    30: Example 5
+    31: Example 6
+    32: Example 7
+    33: Example 8
+    34: Test 
     <any>: Quit
     """);
 WriteLine($"Return value: {ReadLine() switch 
@@ -43,36 +44,37 @@ WriteLine($"Return value: {ReadLine() switch
     "1" => First.Run(),
     "2" => HelloWorld.Run(),
     "3" => PackingButtons.Run(),
-    "4" => Drawing.Run(),
-    "5" => BuilderProgram.Run(),
-    "6" => ResourceBuilderProgram.Run(),
-    "7" => Children.Run(),
-    "8" => ImageView.Run(), 
-    "9" => Web.Run(),
-    "10" => WebExtended.Run(),
-    "11" => Css.Run(),
-    "12" => Progress.Run(),
-    "13" => SubClassing.Run(),
-    "14" => MenuSubclass.Run(),
-    "15" => ProgressSubclass.Run(),
-    "16" => NotDecorated.Run(),
-    "17" => Threading.Run(),
-    "18" => Cleanup.Run(),
-    "19" => NonGtkApp.Run(),
-    "20" => StringListView.Run(),
-    "21" => CustomItemListView.Run(),
-    "22" => ColumnViewApp.Run(),
-    "23" => ColumnViewControlApp.Run(),
-    "24" => CustomColumnViewApp.Run(),
-    "25" => Example1.Run(),
-    "26" => Example2.Run(),
-    "27" => Example3.Run(),
-    "28" => Example4.Run(),
-    "29" => Example5.Run(),
-    "30" => Example6.Run(),
-    "31" => Example7.Run(),
-    "32" => Example8.Run(),
-    "33" => TestApp.Run(),
+    "4" => BindingsApp.Run(),
+    "5" => Drawing.Run(),
+    "6" => BuilderProgram.Run(),
+    "7" => ResourceBuilderProgram.Run(),
+    "8" => Children.Run(),
+    "9" => ImageView.Run(), 
+    "10" => Web.Run(),
+    "11" => WebExtended.Run(),
+    "12" => Css.Run(),
+    "13" => Progress.Run(),
+    "14" => SubClassing.Run(),
+    "15" => MenuSubclass.Run(),
+    "16" => ProgressSubclass.Run(),
+    "17" => NotDecorated.Run(),
+    "18" => Threading.Run(),
+    "19" => Cleanup.Run(),
+    "20" => NonGtkApp.Run(),
+    "21" => StringListView.Run(),
+    "22" => CustomItemListView.Run(),
+    "23" => ColumnViewApp.Run(),
+    "24" => ColumnViewControlApp.Run(),
+    "25" => CustomColumnViewApp.Run(),
+    "26" => Example1.Run(),
+    "27" => Example2.Run(),
+    "28" => Example3.Run(),
+    "29" => Example4.Run(),
+    "30" => Example5.Run(),
+    "31" => Example6.Run(),
+    "32" => Example7.Run(),
+    "33" => Example8.Run(),
+    "34" => TestApp.Run(),
     _ => 0
 }}");
 

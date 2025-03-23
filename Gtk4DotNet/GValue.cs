@@ -1,9 +1,13 @@
 using System.Runtime.InteropServices;
+using GtkDotNet.SafeHandles;
 
 namespace GtkDotNet;
 
 public static class GValue
 {
+    [DllImport(Libs.LibGtk, EntryPoint = "g_value_init", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void Init(nint gvalue, GTypes type);
+
     public static string? GetString(nint gvalue)
         => Marshal.PtrToStringUTF8(_GetString(gvalue));
 
@@ -12,4 +16,24 @@ public static class GValue
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_value_get_string", CallingConvention = CallingConvention.Cdecl)]
     extern static nint _GetString(nint gvalue);
-}
+    
+    [DllImport(Libs.LibGtk, EntryPoint = "g_value_set_boolean", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void SetBool(nint gvalue, bool value);
+
+    public static nint Allocate()
+    {
+        // Allocate the size of GValue. If you don't need to manipulate the structure in managed code,
+        // you could simply use a size constant based on your GLib version.
+        int size = Marshal.SizeOf(typeof(GValueStruct));
+        IntPtr ptr = Marshal.AllocHGlobal(size);
+        // Optionally, zero the allocated memory.
+        for (int i = 0; i < size; i++)
+            Marshal.WriteByte(ptr, i, 0);
+        return ptr;
+    }
+
+    public static void Free(nint gvaluePtr)
+    {
+        Marshal.FreeHGlobal(gvaluePtr);
+    }
+}    
