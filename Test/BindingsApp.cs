@@ -75,6 +75,7 @@ static class BindingsApp
                             .Margin(5)
                             .Append(EditableLabel
                                 .New()
+                                .OnNotify("editing", e => Console.WriteLine("Editing..."))
                                 .HAlign(Align.Start)
                                 .HExpand(true)
                                 .Binding("text", "Name", BindingFlags.Bidirectional)))
