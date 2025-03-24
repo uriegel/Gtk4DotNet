@@ -301,11 +301,9 @@ public static class Widget
         where TResultHandle : WidgetHandle, new()
     {
         string[] ancestorTypeNames =
-            typeof(TResultHandle) == typeof(WindowHandle) 
+            typeof(TResultHandle) == typeof(WindowHandle) || typeof(TResultHandle) == typeof(ApplicationWindowHandle)
             // TODO add all
-            ? ["GtkWindow", "AdwWindow"]
-            : typeof(TResultHandle) == typeof(ApplicationWindowHandle)
-            ? ["GtkApplicationWindow", Application.MANAGED_APPLICATION_WINDOW, "AdwWindow"]
+            ? ["GtkApplicationWindow", "GtkWindow", Application.MANAGED_APPLICATION_WINDOW, "AdwWindow"]
             : typeof(TResultHandle) == typeof(BoxHandle)
             ? ["GtkBox"]
             : typeof(TResultHandle) == typeof(PanedHandle)

@@ -40,6 +40,27 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         // TODO Signal disconnect when onActivate == null
     }
 
+    public void SetSelection(int start, int count)
+    {
+        var model = columnView.GetModel<SelectionHandle>();
+        if (start == 0 && count == -1)
+            model.SelectAll();
+        else
+            model.SelectRange(start, count, true);
+    }
+
+    public void SelectAll()
+    {
+        var model = columnView.GetModel<SelectionHandle>();
+        model.SelectAll();
+    }
+
+    public void UnselectAll()
+    {
+        var model = columnView.GetModel<SelectionHandle>();
+        model.UnselectAll();
+    }
+
     IColumnViewModel<T> SetColumns<T>(Column<T>[] columns, Controller<T> controller)
         where T : class
     {
