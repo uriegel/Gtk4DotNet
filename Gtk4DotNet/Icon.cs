@@ -11,7 +11,7 @@ public static class Icon
 
     public static IEnumerable<string> ThemedNames(this IconHandle icon)
     {
-        var stringArray = _IconToString(icon);
+        var stringArray = _ThemedGetNames(icon);
         int idx = 0;
         while (true)
         {
