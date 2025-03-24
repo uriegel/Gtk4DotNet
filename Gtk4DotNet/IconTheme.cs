@@ -11,8 +11,8 @@ public static class IconTheme
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_icon_theme_add_search_path", CallingConvention = CallingConvention.Cdecl)]
     public extern static void AddSearchPath(this IconThemeHandle iconTheme, string path);
 
-    // [DllImport(Libs.LibGtk, EntryPoint = "gtk_icon_theme_has_icon", CallingConvention = CallingConvention.Cdecl)]
-    // public extern static int HasIcon(this IconThemeHandle iconTheme, string path);
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_icon_theme_has_icon", CallingConvention = CallingConvention.Cdecl)]
+    public extern static bool HasIcon(this IconThemeHandle iconTheme, string path);
     
 }
 

@@ -25,7 +25,6 @@ public static class IntPtrExtensions
         where THandle : SafeHandle
         => handle.SideEffectChoose(predicate, trueAction, falseAction);
 
-    // TODO free if it has to be freed
     internal static string? PtrToString(this IntPtr obj, bool free)
     {
         var val = Marshal.PtrToStringUTF8(obj);
