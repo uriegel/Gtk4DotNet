@@ -215,6 +215,21 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
 
         public int ItemsCount() => RawItems().Count();
 
+        public void SetSelection(int start, int count)
+        {
+            var model = columnView.GetModel<SelectionHandle>();
+            if (start == 0 && count == -1)
+                model.SelectAll();
+            else
+                model.SelectRange(start, count, true);
+        }
+
+        public void UnselectAll()
+        {
+            var model = columnView.GetModel<SelectionHandle>();
+            model.UnselectAll();
+        }
+
         static internal void AttachListItem(ListItemHandle listItem)
         {
             var widget = listItem.GetChild<WidgetHandle>();
@@ -279,10 +294,10 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
             model.SelectAll();
         }
 
-        public void SetSelection(uint start, int count)
+        public void SetSelection(int start, int count)
         {
             var model = columnView.GetModel<SelectionHandle>();
-            model.SelectRange(0, count, true);
+            model.SelectRange(start, count, true);
         }
 
         public void UnselectAll()

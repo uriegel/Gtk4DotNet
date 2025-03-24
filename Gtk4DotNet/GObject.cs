@@ -79,6 +79,16 @@ public static class GObject
             GValue.Init(gv, GTypes.Boolean);
             GValue.SetBool(gv, b);
         }
+        else if (value is int n)
+        {
+            GValue.Init(gv, GTypes.Int);
+            GValue.SetInt(gv, n);
+        }
+        else if (value is uint u)
+        {
+            GValue.Init(gv, GTypes.UInt);
+            GValue.SetUInt(gv, u);
+        }
         else
             GValue.Init(gv, GTypes.String);
         obj.SetProperty(propertyName, gv);
@@ -100,6 +110,18 @@ public static class GObject
             GValue.Init(gv, GTypes.Boolean);
             obj.GetProperty(propertyName, gv);
             result = GValue.GetBool(gv);
+        }
+        else if (type.Name == "UInt32") 
+        {
+            GValue.Init(gv, GTypes.UInt);
+            obj.GetProperty(propertyName, gv);
+            result = GValue.GetUInt(gv);
+        }
+        else if (type.Name == "Int32") 
+        {
+            GValue.Init(gv, GTypes.Int);
+            obj.GetProperty(propertyName, gv);
+            result = GValue.GetInt(gv);
         }
         GValue.Free(gv);
         return result;
