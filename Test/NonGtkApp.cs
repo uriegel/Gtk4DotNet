@@ -23,7 +23,7 @@ static class NonGtkApp
                 .OnNotify("gtk-theme-name", s => WriteLine($" changed: {s.GetString("gtk-theme-name")}"));
         });
 
-        await Gtk.Dispatch(() => WriteLine(Gtk.GuessContentType(".pdf")));
+        await Gtk.Dispatch(() => WriteLine(ContentType.Guess(".pdf")));
 
         SaveThumbnail("./resources/image.jpg");
 

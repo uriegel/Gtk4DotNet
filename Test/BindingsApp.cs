@@ -32,6 +32,18 @@ static class BindingsApp
                                 .NewWithLabel("Change")
                                 .OnClicked(async () =>
                                     {
+
+                                        // TODO on enter in EditableLabel
+                                            // TODO notify:editing
+
+
+                                        var ct = ContentType.Guess("/home/test/zwe.dll");
+                                        using var icon = ContentType.GetIcon(ct!);
+                                        var waht = icon.Names();
+
+
+
+
                                         dataContext.Name = "Name was changed to John Doe";
                                         await Task.Delay(2000);
                                         dataContext.Name = "Name was changed back to URiegel";

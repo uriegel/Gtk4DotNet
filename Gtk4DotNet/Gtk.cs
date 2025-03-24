@@ -133,9 +133,6 @@ public static class Gtk
         SetTimer(priority, (int)timeout.TotalMilliseconds, funcPtr, IntPtr.Zero, IntPtr.Zero);
     }
 
-    public static string? GuessContentType(string filename)
-        => GuessContentType(filename, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero).PtrToString(true);
-
     public static long SignalConnect<TDelegate>(this ObjectHandle obj, string name, TDelegate callback)
         where TDelegate : Delegate
     {
@@ -183,13 +180,10 @@ public static class Gtk
     // [DllImport(Libs.LibGtk, EntryPoint="gtk_main_quit", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void MainQuit();
 
-    [DllImport(Libs.LibGtk, EntryPoint = "g_content_type_guess", CallingConvention = CallingConvention.Cdecl)]
-    extern static IntPtr GuessContentType(string filename, IntPtr nil1,  IntPtr nil2, IntPtr nil3);
-
     // [DllImport(Libs.LibGtk, EntryPoint="gtk_init", CallingConvention = CallingConvention.Cdecl)]
     // public extern static void Init (ref int argc, ref IntPtr argv);
-   
-    [DllImport(Libs.LibGtk, EntryPoint="g_signal_handler_disconnect", CallingConvention = CallingConvention.Cdecl)]
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_signal_handler_disconnect", CallingConvention = CallingConvention.Cdecl)]
     internal extern static void SignalDisconnect(this ObjectHandle widget, long id);
 
     [DllImport(Libs.LibGtk, EntryPoint="g_idle_add_full", CallingConvention = CallingConvention.Cdecl)]
