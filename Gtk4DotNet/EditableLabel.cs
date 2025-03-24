@@ -10,6 +10,12 @@ public static class EditableLabel
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_editable_label_new", CallingConvention = CallingConvention.Cdecl)]
     public extern static EditableLabelHandle New(string text);
 
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_editable_label_start_editing", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void StartEditing(this EditableLabelHandle editableLabel);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_editable_label_stop_editing", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void StopEditing(this EditableLabelHandle editableLabel, bool commit);
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_editable_label_new", CallingConvention = CallingConvention.Cdecl)]
     extern static EditableLabelHandle New(nint _);
 }
