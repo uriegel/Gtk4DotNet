@@ -180,6 +180,7 @@ public static class Widget
             }
             if (dataContext != null)
             {
+                bool inChange = false;
                 target.SetProperty(targetProperty, GetValue());
                 dataContext.PropertyChanged += OnChanged;
                 target.AddWeakRef(() => dataContext.PropertyChanged -= OnChanged);
@@ -188,7 +189,10 @@ public static class Widget
                     target.OnNotify(targetProperty, _ => SetValue());
 
                 void OnChanged(object? sender, PropertyChangedEventArgs e)
-                    => target.SetProperty(targetProperty, GetValue());
+                {
+                    if (!inChange)
+                        target.SetProperty(targetProperty, GetValue());
+                }
 
                 object? GetValue()
                 {
@@ -200,6 +204,7 @@ public static class Widget
 
                 void SetValue()
                 {
+                    inChange = true;
                     var type = dataContext.GetType();
                     var propInfo = type?.GetProperty(property);
                     if (propInfo?.PropertyType != null)
@@ -207,6 +212,7 @@ public static class Widget
                         var val = target.GetProperty(targetProperty, propInfo.PropertyType);
                         propInfo?.SetValue(dataContext, val);
                     }
+                    inChange = false;
                 }
             }
             else

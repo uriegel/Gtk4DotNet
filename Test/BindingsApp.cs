@@ -61,6 +61,15 @@ static class BindingsApp
                             .New(Orientation.Horizontal)
                             .Spacing(10)
                             .Margin(5)
+                            .Append(EditableLabel
+                                .New()
+                                .HAlign(Align.Start)
+                                .HExpand(true)
+                                .Binding("text", "Name", BindingFlags.Bidirectional)))
+                        .Append(Box
+                            .New(Orientation.Horizontal)
+                            .Spacing(10)
+                            .Margin(5)
                             .Append(CheckButton
                                 .NewWithLabel("Binding")
                                 .HAlign(Align.Start)
