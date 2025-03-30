@@ -190,7 +190,7 @@ public static class Widget
 
                 void OnChanged(object? sender, PropertyChangedEventArgs e)
                 {
-                    if (!inChange)
+                    if (!inChange && e.PropertyName == property)
                         target.SetProperty(targetProperty, GetValue());
                 }
 
@@ -222,6 +222,47 @@ public static class Widget
         }
     }
 
+    public static THandle BindingToCss<THandle>(this THandle target, string cssClass, string property, Func<object?, bool>? converter = null)
+            where THandle : WidgetHandle, new()
+    {
+        Connect();
+        return target;
+
+        async void Connect()
+        {
+            var dataContext = target.GetDataContext();
+            if (dataContext == null)
+            {
+                await Task.Delay(1);
+                dataContext = target.GetDataContext();
+            }
+            if (dataContext != null)
+            {
+                target.AddCssClass(cssClass, GetValue());
+                dataContext.PropertyChanged += OnChanged;
+                target.AddWeakRef(() => dataContext.PropertyChanged -= OnChanged);
+
+                void OnChanged(object? sender, PropertyChangedEventArgs e)
+                {
+                    if (e.PropertyName == property)
+                        target.AddCssClass(cssClass, GetValue());
+                }
+
+                bool GetValue()
+                {
+                    var type = dataContext.GetType();
+                    var propInfo = type?.GetProperty(property);
+                    var res = propInfo?.GetValue(dataContext);
+                    return converter?.Invoke(res) ?? (bool?)res == true;
+                }
+            }
+            else
+            {
+                Console.Error.WriteLine($"Binding to css not possible: DataContext not set");
+            }
+        }
+    }
+    
     public static THandle AddController<THandle>(this THandle widget, EventControllerHandle eventController)
         where THandle : WidgetHandle
         => widget.SideEffect(w => w._AddController(eventController.SideEffect(n => n.IsFloating = true)));

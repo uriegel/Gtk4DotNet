@@ -6,4 +6,9 @@ button.styled {
 button.styled:hover {
     color: Blue;
     background-color: yellow;
-  }
+}
+
+.yellow {
+    color: Blue;
+    background-color: yellow;
+}

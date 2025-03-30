@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using CsTools.Extensions;
 using GtkDotNet;
 
 static class BindingsApp
@@ -16,6 +17,10 @@ static class BindingsApp
                 app
                     .NewWindow()
                     .Title("Hello Gtk Bindings👍")
+                    .SideEffect(w => StyleContext
+                        .AddProviderForDisplay(Display.GetDefault(), 
+                            CssProvider.New()
+                                .FromResource("style"), StyleProviderPriority.Application))
                     .Child(Box
                         .New(Orientation.Vertical)
                         .DataContext(dataContext)
@@ -27,7 +32,7 @@ static class BindingsApp
                                 .New()
                                 .HAlign(Align.Start)
                                 .HExpand(true)
-                                .Binding("label", "Name", BindingFlags.Default))
+                                .Binding("label", nameof(DataContext.Name), BindingFlags.Default))
                             .Append(Button
                                 .NewWithLabel("Change")
                                 .OnClicked(async () =>
@@ -47,7 +52,7 @@ static class BindingsApp
                                 .New()
                                 .HAlign(Align.Start)
                                 .HExpand(true)
-                                .Binding("label", "Active", BindingFlags.Default)))
+                                .Binding("label", nameof(DataContext.Active), BindingFlags.Default)))
                         .Append(Box
                             .New(Orientation.Horizontal)
                             .Spacing(10)
@@ -56,7 +61,8 @@ static class BindingsApp
                                 .New()
                                 .HAlign(Align.Start)
                                 .HExpand(true)
-                                .Binding("label", "Active", BindingFlags.Default, b => (bool)b! ? "true" : "false")))
+                                .BindingToCss("yellow", nameof(DataContext.Active), b => (bool?)b == false)
+                                .Binding("label", nameof(DataContext.Active), BindingFlags.Default, b => (bool)b! ? "true" : "false")))
                         .Append(Box
                             .New(Orientation.Horizontal)
                             .Spacing(10)
@@ -66,7 +72,7 @@ static class BindingsApp
                                 .OnNotify("editing", e => Console.WriteLine("Editing..."))
                                 .HAlign(Align.Start)
                                 .HExpand(true)
-                                .Binding("text", "Name", BindingFlags.Bidirectional)))
+                                .Binding("text", nameof(DataContext.Name), BindingFlags.Bidirectional)))
                         .Append(Box
                             .New(Orientation.Horizontal)
                             .Spacing(10)
@@ -75,7 +81,7 @@ static class BindingsApp
                                 .NewWithLabel("Binding")
                                 .HAlign(Align.Start)
                                 .HExpand(true)  
-                                .Binding("active", "Active", BindingFlags.Bidirectional)))
+                                .Binding("active", nameof(DataContext.Active), BindingFlags.Bidirectional)))
                         .Append(Box
                             .New(Orientation.Horizontal)
                             .Spacing(10)
@@ -84,7 +90,7 @@ static class BindingsApp
                                 .NewWithLabel("Binding")
                                 .HAlign(Align.Start)
                                 .HExpand(true)  
-                                .Binding("active", "Active", BindingFlags.Default))
+                                .Binding("active", nameof(DataContext.Active), BindingFlags.Default))
                             .Append(CheckButton
                                 .NewWithLabel("Trigger")
                                 .OnToggled(b => dataContext.Active = b.IsActive()))))
@@ -97,25 +103,23 @@ class DataContext : INotifyPropertyChanged
 {
     public string? Name
     {
-        get => _Name;
+        get => field;
         set
         {
-            _Name = value;
+            field = value;
             OnChanged(nameof(Name));
         }
     }
-    string? _Name;
 
     public bool Active
     {
-        get => _Active;
+        get => field;
         set
         {
-            _Active = value;
+            field = value;
             OnChanged(nameof(Active));
         }
     }
-    bool _Active;
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

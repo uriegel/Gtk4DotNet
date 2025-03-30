@@ -160,6 +160,8 @@ public static class Gtk
             Console.WriteLine($"Connected actions: {actions}");
     }
 
+    public static char KeyValToUnicode(int keyVal) => (char)_KeyValToUnicode(keyVal);
+
     internal static void Init() =>
         SynchronizationContext.SetSynchronizationContext(
             new GtkSynchronizationContext()
@@ -191,6 +193,9 @@ public static class Gtk
 
     [DllImport(Libs.LibGtk, EntryPoint="g_timeout_add_full", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetTimer(int priority, int intervalInMillis, nint func, nint nil, nint nil2);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gdk_keyval_to_unicode", CallingConvention = CallingConvention.Cdecl)]
+    extern static int _KeyValToUnicode(int keyVal);
 
     /// <summary>
     /// For usage in a non GTK app
