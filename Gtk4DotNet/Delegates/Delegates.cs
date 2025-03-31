@@ -25,6 +25,7 @@ delegate bool TwoPointerBoolRetDelegate(IntPtr p, IntPtr pp);
 delegate bool ThreePointerBoolRetDelegate(IntPtr p, IntPtr pp, IntPtr ppp);
 delegate void PointerBoolDelegate(nint _, bool b);
 delegate void PointerIntDelegate(nint _, int i);
+delegate void AlertDialogResponseDelegate(nint p, string response, nint pp);
 
 public static class GtkDelegates
 {

@@ -30,10 +30,13 @@ class AdwMainWindow(nint obj) : ManagedAdwApplicationWindow(obj)
     protected override void Initialize()
     {
         var button = Handle.GetTemplateChild<ButtonHandle, ApplicationWindowHandle>("button1");
-        button?.OnClicked(() =>
+        button?.OnClicked(async () =>
         {
-            var dialog = AdwAlertDialog.New("Heading", "Der Körper");
-            dialog.Present(Handle);
+
+            var dialog = Builder.FromDotNetResource("dialogbuilder").GetWidget<AdwAlertDialogHandle>("dialog");
+            var response = await dialog.PresentAsync(Handle);
+            var label = Handle.GetTemplateChild<LabelHandle, ApplicationWindowHandle>("label");
+            label?.Set(response);
         });
     }
 

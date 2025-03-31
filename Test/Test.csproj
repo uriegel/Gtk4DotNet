@@ -30,6 +30,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="./resources/dialogbuilder.ui">
+      <LogicalName>dialogbuilder</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="./resources/buildersubclass.ui">
       <LogicalName>buildersubclass</LogicalName>
     </EmbeddedResource>

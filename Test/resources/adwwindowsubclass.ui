@@ -26,6 +26,14 @@
                 </layout>
               </object>
             </child>
+            <child>
+              <object class="GtkLabel" id="label">
+                <layout>
+                  <property name="column">0</property>
+                  <property name="row">1</property>
+                </layout>
+              </object>
+            </child>
           </object>
         </child>
       </object>
