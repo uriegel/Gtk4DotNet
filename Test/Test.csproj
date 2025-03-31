@@ -40,6 +40,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="./resources/adwwindowsubclass.ui">
+      <LogicalName>adwwindowsubclass</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="./resources/customcolumnview.ui">
       <LogicalName>customcolumnview</LogicalName>
     </EmbeddedResource>

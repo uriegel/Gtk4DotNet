@@ -24,4 +24,5 @@ public enum GTypeEnum
     ColumnView,
     ScrolledWindow,
     Paned,
+    AdwApplicationWindow,
 }

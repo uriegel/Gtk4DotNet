@@ -46,6 +46,7 @@ public static class GType
         GTypeEnum.ColumnView => ColumnView.Type(),
         GTypeEnum.ScrolledWindow => ScrolledWindow.Type(),
         GTypeEnum.Paned => Paned.Type(),
+        GTypeEnum.AdwApplicationWindow => AdwApplicationWindow.Type(),
         _ => GObject.Type(),
     };
 

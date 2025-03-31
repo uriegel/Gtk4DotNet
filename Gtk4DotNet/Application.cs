@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
-using CsTools.Functional;
 using GtkDotNet.SafeHandles;
 using CsTools.Extensions;
 using GtkDotNet.SubClassing;
@@ -36,8 +35,20 @@ public static class Application
         return window;
     }
 
+    public static AdwApplicationWindowHandle CustomAdwWindow(this ApplicationHandle app, string customWindow)
+    {
+        var window = GObject.New<AdwApplicationWindowHandle>(customWindow.TypeFromName());
+        window.SetApplication(app);
+        var mw = Controls.ManagedAdwApplicationWindow.GetInstance(window.GetInternalHandle()) as Controls.ManagedAdwApplicationWindow;
+        mw?.Initialize();
+        return window;
+    }
+
     public static ApplicationWindowHandle ManagedApplicationWindow(this ApplicationHandle app)
         => CustomWindow(app, MANAGED_APPLICATION_WINDOW);
+
+    public static AdwApplicationWindowHandle ManagedAdwApplicationWindow(this ApplicationHandle app)
+        => CustomAdwWindow(app, MANAGED_ADW_APPLICATION_WINDOW);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_add_window", CallingConvention = CallingConvention.Cdecl)]
     public extern static void AddWindow(this ApplicationHandle app, WindowHandle window);
@@ -87,6 +98,7 @@ public static class Application
     }
 
     internal const string MANAGED_APPLICATION_WINDOW = "ManagedApplicationWindow";
+    internal const string MANAGED_ADW_APPLICATION_WINDOW = "ManagedAdwApplicationWindow";
 
     [DllImport(Libs.LibAdw, EntryPoint = "adw_application_new", CallingConvention = CallingConvention.Cdecl)]
     extern static ApplicationHandle _NewAdw(string id, int flags = 0);
