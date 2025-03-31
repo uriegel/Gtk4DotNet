@@ -29,6 +29,12 @@ class AdwMainWindow(nint obj) : ManagedAdwApplicationWindow(obj)
 
     protected override void Initialize()
     {
+        var button = Handle.GetTemplateChild<ButtonHandle, ApplicationWindowHandle>("button1");
+        button?.OnClicked(() =>
+        {
+            var dialog = AdwAlertDialog.New("Heading", "Der Körper");
+            dialog.Present(Handle);
+        });
     }
 
     public class AdwMainWindowClass()
