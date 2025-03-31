@@ -343,7 +343,7 @@ public static class Widget
     {
         string[] ancestorTypeNames =
             typeof(TResultHandle) == typeof(WindowHandle)
-            || typeof(TResultHandle) == typeof(ApplicationWindowHandle
+            || typeof(TResultHandle) == typeof(ApplicationWindowHandle)
             || typeof(TResultHandle) == typeof(AdwApplicationWindowHandle)
             // TODO add all
             ? ["GtkApplicationWindow", "AdwApplicationWindow", "GtkWindow", Application.MANAGED_ADW_APPLICATION_WINDOW, Application.MANAGED_APPLICATION_WINDOW, "AdwWindow"]
