@@ -24,6 +24,6 @@ public static class Banner
     [DllImport(Libs.LibAdw, EntryPoint = "adw_banner_get_revealed", CallingConvention = CallingConvention.Cdecl)]
     public extern static bool GetRevealed(this BannerHandle banner);
 
-    public static BannerHandle OnButtonClicked<THandle>(this BannerHandle banner, Action click)
+    public static BannerHandle OnButtonClicked(this BannerHandle banner, Action click)
         => banner.SideEffect(b => Gtk.SignalConnect<TwoPointerDelegate>(b, "button-clicked", (_, __) => click()));
 }

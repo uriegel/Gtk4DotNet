@@ -342,9 +342,11 @@ public static class Widget
         where TResultHandle : WidgetHandle, new()
     {
         string[] ancestorTypeNames =
-            typeof(TResultHandle) == typeof(WindowHandle) || typeof(TResultHandle) == typeof(ApplicationWindowHandle)
+            typeof(TResultHandle) == typeof(WindowHandle)
+            || typeof(TResultHandle) == typeof(ApplicationWindowHandle
+            || typeof(TResultHandle) == typeof(AdwApplicationWindowHandle)
             // TODO add all
-            ? ["GtkApplicationWindow", "GtkWindow", Application.MANAGED_APPLICATION_WINDOW, "AdwWindow"]
+            ? ["GtkApplicationWindow", "AdwApplicationWindow", "GtkWindow", Application.MANAGED_ADW_APPLICATION_WINDOW, Application.MANAGED_APPLICATION_WINDOW, "AdwWindow"]
             : typeof(TResultHandle) == typeof(BoxHandle)
             ? ["GtkBox"]
             : typeof(TResultHandle) == typeof(PanedHandle)
