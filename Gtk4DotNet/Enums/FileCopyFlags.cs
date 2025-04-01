@@ -18,5 +18,9 @@ public enum FileCopyFlags
     /// <summary>
     /// Leaves target file with default perms, instead of setting the source file perms
     /// </summary>
-    TargetDefaultPerm = 32
+    TargetDefaultPerm = 32,
+    /// <summary>
+    /// Use default modification timestamps instead of copying them from the source file. Since 2.80.
+    /// </summary>
+    TargetDefaultModifiedTime = 64,
 }

@@ -16,9 +16,9 @@ struct GErrorStruct
         Message = message;
     }
 
-    internal GErrorStruct(IntPtr error)
+    internal GErrorStruct(nint error)
     {
-        if (error != IntPtr.Zero)
+        if (error != 0)
         {
             this = Marshal.PtrToStructure<GErrorStruct>(error);
             Free(error);
@@ -32,6 +32,6 @@ struct GErrorStruct
     }
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_error_free", CallingConvention = CallingConvention.Cdecl)]
-    extern static void Free(IntPtr handle);
+    extern static void Free(nint handle);
 }
 

@@ -21,9 +21,9 @@ public static class EditableLabel
     public extern static bool IsEditing(this EditableLabelHandle editableLabel);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_editable_set_text", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void SetTextNew(this EditableLabelHandle label, string text);
+    public extern static void SetText(this EditableLabelHandle label, string text);
 
-    public static string? GetText(EditableLabelHandle editableLabel)
+    public static string? GetText(this EditableLabelHandle editableLabel)
         => editableLabel._GetText().PtrToString(false);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_editable_get_text", CallingConvention = CallingConvention.Cdecl)]
