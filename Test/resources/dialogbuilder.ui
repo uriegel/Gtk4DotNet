@@ -3,8 +3,28 @@
     <object class="AdwAlertDialog" id="dialog">
         <property name="heading" translatable="yes">Save Changes?</property>
         <property name="body" translatable="yes">Open documents contain unsaved changes. Changes which are not saved will be permanently lost.</property>
-        <property name="default-response">save</property>
         <property name="close-response">cancel</property>
+        <property name="extra-child">
+            <object class="GtkBox" id="extra">
+                <property name="orientation">vertical</property>
+                <property name="spacing">12</property>
+                <child>
+                    <object class="GtkSwitch" id="switch">
+                        <property name="active">true</property>
+                        <property name="valign">center</property>
+                        <property name="halign">start</property>
+                        <property name="margin-top">12</property>
+                        <property name="margin-bottom">12</property>
+                    </object>
+                </child>
+                <child>
+                    <object class="GtkLabel" id="label">
+                        <property name="label" translatable="yes">Do not ask again</property>
+                        <property name="halign">start</property>
+                    </object>
+                </child>
+            </object>
+        </property>
         <responses>
             <response id="cancel" translatable="yes">_Cancel</response>
             <response id="discard" translatable="yes" appearance="destructive">_Discard</response>
