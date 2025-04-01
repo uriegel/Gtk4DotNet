@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using GtkDotNet.Extensions;
 using GtkDotNet.SafeHandles;
 
 namespace GtkDotNet;
@@ -18,6 +19,15 @@ public static class EditableLabel
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_editable_label_get_editing", CallingConvention = CallingConvention.Cdecl)]
     public extern static bool IsEditing(this EditableLabelHandle editableLabel);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_editable_set_text", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void SetTextNew(this EditableLabelHandle label, string text);
+
+    public static string? GetText(EditableLabelHandle editableLabel)
+        => editableLabel._GetText().PtrToString(false);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_editable_get_text", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint _GetText(this EditableLabelHandle editableLabel);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_editable_label_new", CallingConvention = CallingConvention.Cdecl)]
     extern static EditableLabelHandle New(nint _);
