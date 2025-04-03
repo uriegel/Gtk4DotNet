@@ -38,6 +38,15 @@ public class TextBuffer
     public IntPtr ApplyTag(IntPtr tag, TextIter startIter, TextIter endIter)
         => ApplyTag(buffer, tag, ref startIter, ref endIter);
 
+    public void SelectRange(int startPos, int endPos)
+    {
+        var start = new TextIter();
+        GetIterAtOffset(buffer, ref start, startPos);
+        var end = new TextIter();
+        GetIterAtOffset(buffer, ref end, endPos);
+        SelectRange(buffer, ref start, ref end);
+    }
+
     public RangeIter SelectRange(RangeIter range)
     {
         var s = range.Start;
@@ -45,7 +54,7 @@ public class TextBuffer
         SelectRange(buffer, ref s, ref e);
         return new(s, e);
     }
-        
+
     internal TextBuffer(IntPtr buffer) => this.buffer = buffer; 
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_text_view_new", CallingConvention = CallingConvention.Cdecl)]
@@ -72,5 +81,8 @@ public class TextBuffer
     [DllImport(Libs.LibGtk, EntryPoint="gtk_text_buffer_select_range", CallingConvention = CallingConvention.Cdecl)]
     extern static void SelectRange(IntPtr buffer, ref TextIter matchStart, ref TextIter matchEnd);
 
-    readonly IntPtr buffer;
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_text_buffer_get_iter_at_offset", CallingConvention = CallingConvention.Cdecl)]
+    extern static void GetIterAtOffset(nint buffer, ref TextIter iter, int offset);
+
+    readonly nint buffer;
 }
