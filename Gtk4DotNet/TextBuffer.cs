@@ -58,9 +58,6 @@ public class TextBuffer
 
     internal TextBuffer(IntPtr buffer) => this.buffer = buffer; 
 
-    [DllImport(Libs.LibGtk, EntryPoint = "gtk_text_view_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static TextViewHandle New();
-
     [DllImport(Libs.LibGtk, EntryPoint="gtk_text_buffer_set_text", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetText(IntPtr buffer, string content, int size);
 
