@@ -439,6 +439,10 @@ public static class Widget
     public static string? GetName(this WidgetHandle widget)
         => widget._GetName().PtrToString(false);
 
+    public static THandle OnMap<THandle>(this THandle widget, Action onMap)
+        where THandle : WidgetHandle
+        => widget.SideEffect(w => Gtk.SignalConnect<TwoPointerDelegate>(w, "map", (_, __) => onMap()));
+
     // public static WidgetHandle FindChildByName<WidgetHandle>(this WidgetHandle widget, string name)
     // {
     //     if (!parent.IsInvalid)

@@ -13,7 +13,7 @@ public static class TextView
     public static TextViewHandle Text(this TextViewHandle textview, string text)
     {
         var buffer = textview.GetBuffer();
-        buffer.SetText(text, text.Length);
+        buffer.SetText(text);
         return textview;
     }
 

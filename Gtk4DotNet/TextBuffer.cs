@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using System.Text;
 using Gtk4DotNet.Structs;
 using GtkDotNet.Extensions;
 using GtkDotNet.SafeHandles;
@@ -7,8 +8,8 @@ namespace GtkDotNet;
 
 public class TextBuffer
 {
-    public void SetText(string content, int size)
-        => SetText(buffer, content, size);
+    public void SetText(string content)
+        => SetText(buffer, content, Encoding.UTF8.GetByteCount(content));
 
     public string GetText(bool includeHidden = false)
     {
