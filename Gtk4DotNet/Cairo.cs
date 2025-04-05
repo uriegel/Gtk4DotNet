@@ -19,6 +19,9 @@ public static class Cairo
     public static CairoHandle SourceRgb(this CairoHandle cairo, double r, double g, double b)
         => cairo.SideEffect(c => c.SetSourceRgb(r, g, b));
 
+    public static CairoHandle SourceRgba(this CairoHandle cairo, double r, double g, double b, double a)
+        => cairo.SideEffect(c => c.SetSourceRgba(r, g, b, a));
+
     public static CairoHandle Paint(this CairoHandle cairo)
         => cairo.SideEffect(c => c._Paint());
 
@@ -37,8 +40,14 @@ public static class Cairo
     public static CairoHandle LineCap(this CairoHandle cairo, LineCap lineCap)
         => cairo.SideEffect(c => c.SetLineCap(lineCap));
 
+    public static CairoHandle LineWidth(this CairoHandle cairo, double width)
+        => cairo.SideEffect(c => c.SetLineWidth(width));
+
     public static CairoHandle Translate(this CairoHandle cairo, double x, double y)
         => cairo.SideEffect(c => c._Translate(x, y));
+
+    public static CairoHandle Stroke(this CairoHandle cairo)
+        => cairo.SideEffect(c => c._Stroke());
 
     public static CairoHandle StrokePreserve(this CairoHandle cairo)
         => cairo.SideEffect(c => c._StrokePreserve());
@@ -64,6 +73,9 @@ public static class Cairo
     [DllImport(Libs.LibGtk, EntryPoint = "cairo_set_source_rgb", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetSourceRgb(this CairoHandle cairo, double r, double g, double b);
 
+    [DllImport(Libs.LibGtk, EntryPoint = "cairo_set_source_rgba", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetSourceRgba(this CairoHandle cairo, double r, double g, double b, double a);
+
     [DllImport(Libs.LibGtk, EntryPoint = "cairo_paint", CallingConvention = CallingConvention.Cdecl)]
     extern static CairoHandle _Paint(this CairoHandle cairo);
 
@@ -82,8 +94,14 @@ public static class Cairo
     [DllImport(Libs.LibGtk, EntryPoint = "cairo_set_line_cap", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetLineCap(this CairoHandle cairo, LineCap lineCap);
 
+    [DllImport(Libs.LibGtk, EntryPoint = "cairo_set_line_width", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetLineWidth(this CairoHandle cairo, double w);
+    
     [DllImport(Libs.LibGtk, EntryPoint = "cairo_translate", CallingConvention = CallingConvention.Cdecl)]
     extern static void _Translate(this CairoHandle cairo, double x, double y);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "cairo_stroke", CallingConvention = CallingConvention.Cdecl)]
+    extern static void _Stroke(this CairoHandle cairo);
 
     [DllImport(Libs.LibGtk, EntryPoint = "cairo_stroke_preserve", CallingConvention = CallingConvention.Cdecl)]
     extern static void _StrokePreserve(this CairoHandle cairo);

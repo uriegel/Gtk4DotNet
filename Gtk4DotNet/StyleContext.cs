@@ -9,11 +9,11 @@ public static class StyleContext
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_style_context_add_provider_for_display", CallingConvention = CallingConvention.Cdecl)]
     public extern static void AddProviderForDisplay(DisplayHandle display, CssProviderHandle provider, StyleProviderPriority priority);
 
-    public static Color GetColor(this StyleContextHandle styleContext)
+    public static GtkRgba GetColor(this StyleContextHandle styleContext)
     {
         var color = new GtkRgba();
         GetColor(styleContext, ref color);
-        return GtkRgba.ToColor(color);
+        return color;
     }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_style_context_get_color", CallingConvention = CallingConvention.Cdecl)]

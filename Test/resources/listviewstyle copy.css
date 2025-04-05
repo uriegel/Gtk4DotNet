@@ -1,0 +1,19 @@
+/* Change background color of selected items */
+listview row:selected {
+    background-color: unset;
+	color: gray;
+}
+
+listview row {
+font-size: small;
+}
+
+/* Hover effect for list items */
+listview row:hover {
+    background-color: darkgray;
+}
+
+/* Change focus color */
+listview row:focus {
+    background-color: unset;
+}
