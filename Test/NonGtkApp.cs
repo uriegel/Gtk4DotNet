@@ -12,6 +12,7 @@ static class NonGtkApp
         RunOnUIThread();
 
         var tempDir = Path.GetTempPath().AppendPath("GtkDotNet");
+        var target = tempDir.AppendPath("testfile");
         
 
         ReadLine();

@@ -150,6 +150,10 @@ public static class GFile
         }
     }
 
+    public static bool CopyAttributes(this GFileHandle file, GFileHandle starget, FileCopyFlags flags)
+        => _CopyAttributes(file, starget, flags, 0, 0);
+
+
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_load_contents", CallingConvention = CallingConvention.Cdecl)]
     extern static bool LoadContents(this GFileHandle gFile, CancellableHandle cancellable, out IntPtr content, out int length, IntPtr etagOut, IntPtr error);
 
@@ -178,6 +182,9 @@ public static class GFile
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_get_path", CallingConvention = CallingConvention.Cdecl)]
     extern static IntPtr _GetPath(this GFileHandle file);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_file_copy_attributes", CallingConvention = CallingConvention.Cdecl)]
+    extern static bool _CopyAttributes(this GFileHandle file, GFileHandle starget, FileCopyFlags flags, nint nil, nint nil2);
 
     readonly static Func<int> getId = Incrementor.UseInt();
 
