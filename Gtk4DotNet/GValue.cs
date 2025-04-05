@@ -34,6 +34,18 @@ public static class GValue
     [DllImport(Libs.LibGtk, EntryPoint = "g_value_get_uint", CallingConvention = CallingConvention.Cdecl)]
     public extern static uint GetUInt(nint gvalue);
 
+    [DllImport(Libs.LibGtk, EntryPoint = "g_value_get_double", CallingConvention = CallingConvention.Cdecl)]
+    public extern static double GetDouble(nint gvalue);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_value_set_double", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void SetDouble(nint gvalue, double value);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_value_get_float", CallingConvention = CallingConvention.Cdecl)]
+    public extern static float GetFloat(nint gvalue);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_value_set_float", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void SetFloat(nint gvalue, float value);
+
     public static nint Allocate()
     {
         // Allocate the size of GValue. If you don't need to manipulate the structure in managed code,

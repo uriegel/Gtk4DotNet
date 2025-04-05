@@ -89,6 +89,16 @@ public static class GObject
             GValue.Init(gv, GTypes.UInt);
             GValue.SetUInt(gv, u);
         }
+        else if (value is double d)
+        {
+            GValue.Init(gv, GTypes.Double);
+            GValue.SetDouble(gv, d);
+        }
+        else if (value is float f)
+        {
+            GValue.Init(gv, GTypes.Float);
+            GValue.SetFloat(gv, f);
+        }
         else
             GValue.Init(gv, GTypes.String);
         obj.SetProperty(propertyName, gv);
@@ -122,6 +132,18 @@ public static class GObject
             GValue.Init(gv, GTypes.Int);
             obj.GetProperty(propertyName, gv);
             result = GValue.GetInt(gv);
+        }
+        else if (type.Name == "Double") 
+        {
+            GValue.Init(gv, GTypes.Double);
+            obj.GetProperty(propertyName, gv);
+            result = GValue.GetDouble(gv);
+        }
+        else if (type.Name == "Float") 
+        {
+            GValue.Init(gv, GTypes.Float);
+            obj.GetProperty(propertyName, gv);
+            result = GValue.GetFloat(gv);
         }
         GValue.Free(gv);
         return result;
