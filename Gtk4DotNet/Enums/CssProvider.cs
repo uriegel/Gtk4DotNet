@@ -33,7 +33,7 @@ public static class CssProvider
         if (styleResource != null)
         {
             var memIntPtr = Marshal.AllocHGlobal((int)styleResource.Length);
-            unsafe 
+            unsafe
             {
                 var memBytePtr = (byte*)memIntPtr.ToPointer();
                 var writeStream = new UnmanagedMemoryStream(memBytePtr, styleResource.Length, styleResource.Length, FileAccess.Write);
@@ -46,10 +46,19 @@ public static class CssProvider
         return handle;
     }
 
+    public static CssProviderHandle FromData(this CssProviderHandle handle, string data)
+    {
+        _LoadFromData(handle, data, 0, 0);
+        return handle;         
+    }
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_css_provider_load_from_resource", CallingConvention = CallingConvention.Cdecl)]
     extern static void _LoadFromResource(this CssProviderHandle handle, string path);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_css_provider_load_from_bytes", CallingConvention = CallingConvention.Cdecl)]
     extern static void _LoadFromBytes(this CssProviderHandle handle, BytesHandle bytes);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_css_provider_load_from_data", CallingConvention = CallingConvention.Cdecl)]
+    extern static void _LoadFromData(this CssProviderHandle handle, string data, nint nil, nint nil2);
 }
 

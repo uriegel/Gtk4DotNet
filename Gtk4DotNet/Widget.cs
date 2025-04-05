@@ -332,7 +332,7 @@ public static class Widget
     }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_style_context", CallingConvention = CallingConvention.Cdecl)]
-    public extern static IntPtr GetStyleContext(this WidgetHandle widget);
+    public extern static StyleContextHandle GetStyleContext(this WidgetHandle widget);
 
     public static WidgetHandle GetParent<THandle>(this THandle widget)
         where THandle : WidgetHandle
