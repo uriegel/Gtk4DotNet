@@ -40,35 +40,38 @@ class ProgressDisplayClass(GTypeEnum parent, string name, Func<nint, ProgressDis
 
 class ProgressDisplay(nint obj) : SubClassInst<RevealerHandle>(obj)
 {
-    protected override void OnCreate()
+    protected override async void OnCreate()
     {
+        await Task.Delay(1);
+        var progressBar = Handle.GetTemplateChild<ProgressBarHandle, RevealerHandle>("progress_bar");
+        var drawingArea =
+            Handle.
+                GetTemplateChild<DrawingAreaHandle, RevealerHandle>("progress_area")
+                    ?.SetDrawFunction((area, cairo, w, h) =>
+                        cairo
+                            .AntiAlias(CairoAntialias.Best)
+                            .LineJoin(LineJoin.Miter)
+                            .LineCap(LineCap.Round)
+                            .Translate(w / 2.0, h / 2.0)
+                            .StrokePreserve()
+                            .ArcNegative(0, 0, (w < h ? w : h) / 2.0, -Math.PI / 2.0, -Math.PI / 2.0 + progress * Math.PI * 2)
+                            .LineTo(0, 0)
+                            .SourceRgb(0.7, 0.7, 0.7)
+                            .Fill()
+                            .MoveTo(0, 0)
+                            .Arc(0, 0, (w < h ? w : h) / 2.0, -Math.PI / 2.0, -Math.PI / 2.0 + progress * Math.PI * 2)
+                            .SourceRgb(0.3, 0.3, 0.3)
+                            .Fill());
+
         Handle.OnNotify("reveal-child", MakeProgress);
 
         async void MakeProgress(RevealerHandle revealer)
         {
+
             activeId++;
             if (!revealer.IsChildRevealed())
             {
                 var id = activeId;
-                var progressBar = Handle.GetTemplateChild<ProgressBarHandle, RevealerHandle>("progress_bar");
-                var drawingArea =
-                    Handle.
-                        GetTemplateChild<DrawingAreaHandle, RevealerHandle>("progress_area")
-                            ?.SetDrawFunction((area, cairo, w, h) =>
-                                cairo
-                                    .AntiAlias(CairoAntialias.Best)
-                                    .LineJoin(LineJoin.Miter)
-                                    .LineCap(LineCap.Round)
-                                    .Translate(w / 2.0, h / 2.0)
-                                    .StrokePreserve()
-                                    .ArcNegative(0, 0, (w < h ? w : h) / 2.0, -Math.PI / 2.0, -Math.PI / 2.0 + progress * Math.PI * 2)
-                                    .LineTo(0, 0)
-                                    .SourceRgb(0.7, 0.7, 0.7)
-                                    .Fill()
-                                    .MoveTo(0, 0)
-                                    .Arc(0, 0, (w < h ? w : h) / 2.0, -Math.PI / 2.0, -Math.PI / 2.0 + progress * Math.PI * 2)
-                                    .SourceRgb(0.3, 0.3, 0.3)
-                                    .Fill());
                 for (int i = 0; i < 1000 && id == activeId && !closing; i++)
                 {
                     progress = i / 1000f;
