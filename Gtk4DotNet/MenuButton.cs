@@ -26,8 +26,14 @@ public static class MenuButton
 
     public static MenuButtonHandle Popover(this MenuButtonHandle menuButton, PopoverHandle popover)
         => menuButton.SideEffect(b => b.SetPopover(popover));
+        
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_menu_button_popup", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void Popup(this MenuButtonHandle button);
 
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_menu_button_set_direction", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_menu_button_popdown", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void Popdown(this MenuButtonHandle button);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_menu_button_set_direction", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetDirection(this MenuButtonHandle menuButton, Arrow arrow);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_menu_button_set_menu_model", CallingConvention = CallingConvention.Cdecl)]
