@@ -191,7 +191,7 @@ public static class Widget
                 void OnChanged(object? sender, PropertyChangedEventArgs e)
                 {
                     if (!inChange && e.PropertyName == property)
-                        target.SetProperty(targetProperty, GetValue());
+                        Gtk.BeginInvoke(200, () => target.SetProperty(targetProperty, GetValue()));
                 }
 
                 object? GetValue()
