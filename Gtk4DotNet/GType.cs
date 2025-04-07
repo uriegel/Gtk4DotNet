@@ -47,6 +47,8 @@ public static class GType
         GTypeEnum.ScrolledWindow => ScrolledWindow.Type(),
         GTypeEnum.Paned => Paned.Type(),
         GTypeEnum.AdwApplicationWindow => AdwApplicationWindow.Type(),
+        GTypeEnum.AdwDialog => AdwDialog.Type(),
+        GTypeEnum.AdwAlertDialog => AdwAlertDialog.Type(),
         _ => GObject.Type(),
     };
 

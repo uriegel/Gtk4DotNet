@@ -25,4 +25,6 @@ public enum GTypeEnum
     ScrolledWindow,
     Paned,
     AdwApplicationWindow,
+    AdwDialog,
+    AdwAlertDialog,
 }

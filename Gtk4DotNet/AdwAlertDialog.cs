@@ -8,6 +8,9 @@ public static class AdwAlertDialog
     [DllImport(Libs.LibAdw, EntryPoint = "adw_alert_dialog_new", CallingConvention = CallingConvention.Cdecl)]
     public extern static AdwAlertDialogHandle New(string heading, string body);
 
+    [DllImport(Libs.LibAdw, EntryPoint = "adw_alert_dialog_get_type", CallingConvention = CallingConvention.Cdecl)]
+    public static extern GTypeHandle Type();
+
     public static AdwAlertDialogHandle Heading(this AdwAlertDialogHandle dialog, string heading)
     {
         SetHeading(dialog, heading);
