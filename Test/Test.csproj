@@ -30,6 +30,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="./resources/alertdialogbuilder.ui">
+      <LogicalName>alertdialogbuilder</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="./resources/dialogbuilder.ui">
       <LogicalName>dialogbuilder</LogicalName>
     </EmbeddedResource>

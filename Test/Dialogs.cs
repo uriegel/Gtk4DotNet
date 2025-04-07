@@ -1,4 +1,3 @@
-
 using GtkDotNet;
 using GtkDotNet.Controls;
 using GtkDotNet.SafeHandles;
@@ -29,15 +28,22 @@ class AdwMainWindow(nint obj) : ManagedAdwApplicationWindow(obj)
 
     protected override void Initialize()
     {
-        var button = Handle.GetTemplateChild<ButtonHandle, ApplicationWindowHandle>("button1");
-        button?.OnClicked(async () =>
-        {
-
-            var dialog = Builder.FromDotNetResource("dialogbuilder").GetWidget<AdwAlertDialogHandle>("dialog");
-            var response = await dialog.PresentAsync(Handle);
-            var label = Handle.GetTemplateChild<LabelHandle, ApplicationWindowHandle>("label");
-            label?.Set(response);
-        });
+        Handle
+            .GetTemplateChild<ButtonHandle, ApplicationWindowHandle>("alert-button")
+            ?.OnClicked(async () =>
+            {
+                var dialog = Builder.FromDotNetResource("alertdialogbuilder").GetWidget<AdwAlertDialogHandle>("dialog");
+                var response = await dialog.PresentAsync(Handle);
+                var label = Handle.GetTemplateChild<LabelHandle, ApplicationWindowHandle>("label");
+                label?.Set(response);
+            });
+        Handle
+            .GetTemplateChild<ButtonHandle, ApplicationWindowHandle>("dialog-button")
+            ?.OnClicked(() =>
+            {
+                var dialog = Builder.FromDotNetResource("dialogbuilder").GetWidget<AdwAlertDialogHandle>("dialog");
+                dialog.Present(Handle);
+            });
     }
 
     public class AdwMainWindowClass()
