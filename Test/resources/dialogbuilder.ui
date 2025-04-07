@@ -3,6 +3,8 @@
     <object class="AdwDialog" id="dialog">
         <property name="title">Test Dialog</property>
         <property name="presentation-mode">bottom-sheet</property>
+        <property name="content-width">1900</property>
+        <property name="content-height">1000</property>
         <property name="child">
             <object class="AdwToolbarView">
                 <child type="top">
