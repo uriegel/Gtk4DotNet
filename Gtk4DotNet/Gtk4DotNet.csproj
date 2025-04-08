@@ -5,9 +5,9 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<Version>7.0.43-beta-43</Version>
-	<FileVersion>7.0.43.0</FileVersion>
-	<AssemblyVersion>7.0.43.0</AssemblyVersion>
+	<Version>7.0.44-beta-44</Version>
+	<FileVersion>7.0.44.0</FileVersion>
+	<AssemblyVersion>7.0.44.0</AssemblyVersion>
 	<AssemblyName>Gtk4DotNet</AssemblyName>
 	<Authors>Uwe Riegel</Authors>
 	<Company>Uwe Riegel</Company>		

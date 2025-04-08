@@ -193,13 +193,13 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
     protected override void OnSetProperty(int propId, nint value)
     {
         if (propId == ColumnViewSubClassedClass.PROP_TABBEHAVIOR)
-            tabBehavior = (ListTabBehavior)GValue.GetInt(value);
+            columnView.TabBehavior((ListTabBehavior)GValue.GetInt(value));
     }
 
     protected override void OnGetProperty(int propId, nint value)
     {
         if (propId == ColumnViewSubClassedClass.PROP_TABBEHAVIOR)
-            GValue.SetInt(value, (int)tabBehavior);
+             GValue.SetInt(value, (int)columnView.GetTabBehavior());
     }
 
     ListTabBehavior tabBehavior;
