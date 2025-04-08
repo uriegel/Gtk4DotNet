@@ -22,6 +22,12 @@ public static class ColumnView
         return res;
     }
 
+    public static ColumnViewHandle TabBehavior(this ColumnViewHandle columnView, ListTabBehavior behavior)
+        => columnView.SideEffect(cv => cv.SetTabBehavior(behavior));
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_get_tab_behavior", CallingConvention = CallingConvention.Cdecl)]
+    public extern static ListTabBehavior GetTabBehavior(this ColumnViewHandle columnView);
+
     public static ColumnViewHandle OnActivate(this ColumnViewHandle columnView, Action<int> onActivate)
         => columnView.SideEffect(cv => Gtk.SignalConnect<ActivateDelegate>(cv, "activate", (_, pos, __) => onActivate(pos)));
 
@@ -59,6 +65,9 @@ public static class ColumnView
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_scroll_to", CallingConvention = CallingConvention.Cdecl)]
     extern static void ScrollTo(this ColumnViewHandle columnView, int pos, nint nilc, ListScrollFlags flags, nint nil);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_set_tab_behavior", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetTabBehavior(this ColumnViewHandle columnView, ListTabBehavior behavior);
 }
 
 delegate void ActivateDelegate(IntPtr p, int pos, IntPtr pp);

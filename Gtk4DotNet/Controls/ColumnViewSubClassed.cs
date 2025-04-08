@@ -7,7 +7,15 @@ namespace GtkDotNet.Controls;
 
 public class ColumnViewSubClassedClass(string name, Func<nint, ColumnViewSubClassed> constructor)
     : SubClass<CustomColumnViewHandle>(GTypeEnum.ScrolledWindow, name, constructor)
-{ }
+{ 
+    public const int PROP_TABBEHAVIOR = 1;
+
+    protected override void ClassInit(nint cls, nint _)
+    {
+        base.ClassInit(cls, _);
+        RegisterProperty(cls, PROP_TABBEHAVIOR, "tab-behavior");
+    }
+}
 
 public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle>
 {
@@ -39,6 +47,8 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
             columnView.OnActivate(onActivate);
         // TODO Signal disconnect when onActivate == null
     }
+
+    public void SetTabBehavior(ListTabBehavior behavior) => columnView.TabBehavior(behavior);
 
     public void SetSelection(int start, int count)
     {
@@ -179,6 +189,20 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
 
     static SubClassInst<CustomColumnViewHandle>? GetInstance(ColumnViewHandle handle)
         => GetInstance(handle.GetInternalHandle());
+
+    protected override void OnSetProperty(int propId, nint value)
+    {
+        if (propId == ColumnViewSubClassedClass.PROP_TABBEHAVIOR)
+            tabBehavior = (ListTabBehavior)GValue.GetInt(value);
+    }
+
+    protected override void OnGetProperty(int propId, nint value)
+    {
+        if (propId == ColumnViewSubClassedClass.PROP_TABBEHAVIOR)
+            GValue.SetInt(value, (int)tabBehavior);
+    }
+
+    ListTabBehavior tabBehavior;
 
     void Release()
     {
