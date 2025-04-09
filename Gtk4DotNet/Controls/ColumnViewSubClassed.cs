@@ -40,7 +40,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         var model = SetColumns(controller.GetColumns(), controller);
         controller.SetModel(model, columnView);
         columnView.EnableRubberband(controller.EnableRubberband);
-        columnView.TabBehavior(_Behavior);
+        columnView.TabBehavior(tabBehavior);
     }
 
     public void OnActivate(Action<int>? onActivate)
@@ -52,10 +52,9 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
 
     public void SetTabBehavior(ListTabBehavior behavior)
     {
-        _Behavior = behavior;
+        tabBehavior = behavior;
         columnView.TabBehavior(behavior);
     }
-    ListTabBehavior _Behavior;
 
     public void SetSelection(int start, int count)
     {
