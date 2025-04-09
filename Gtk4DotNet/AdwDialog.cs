@@ -16,4 +16,8 @@ public static class AdwDialog
 
     [DllImport(Libs.LibAdw, EntryPoint = "adw_dialog_set_presentation_mode", CallingConvention = CallingConvention.Cdecl)]
     public extern static void SetPresentationMode(this AdwDialogHandle dialog, DialogPresentationMode mode);
+
+    [DllImport(Libs.LibAdw, EntryPoint = "adw_dialog_set_default_widget", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void SetDefaultWidget(this AdwDialogHandle dialog, WidgetHandle defaultWidget);
+    
 }

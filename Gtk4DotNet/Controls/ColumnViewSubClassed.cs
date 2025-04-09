@@ -21,6 +21,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
 {
     public bool SortDescending { get; private set; }
     public bool MultiSelection { get; set; }
+    public bool SingleSelection { get; set; }
 
     public Action<nint, int, int>? OnSelectionChanged { get; set; }
 
@@ -39,6 +40,7 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         var model = SetColumns(controller.GetColumns(), controller);
         controller.SetModel(model, columnView);
         columnView.EnableRubberband(controller.EnableRubberband);
+        columnView.TabBehavior(_Behavior);
     }
 
     public void OnActivate(Action<int>? onActivate)
@@ -48,7 +50,12 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
         // TODO Signal disconnect when onActivate == null
     }
 
-    public void SetTabBehavior(ListTabBehavior behavior) => columnView.TabBehavior(behavior);
+    public void SetTabBehavior(ListTabBehavior behavior)
+    {
+        _Behavior = behavior;
+        columnView.TabBehavior(behavior);
+    }
+    ListTabBehavior _Behavior;
 
     public void SetSelection(int start, int count)
     {
@@ -137,7 +144,12 @@ public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle
             var sortListModel =
                 SortListModel.New(FilterListModel.New(model, filterHandle), columnView.GetSorter().OnChanged((desc, changed) => SortDescending = desc));
 
-            SelectionHandle selModelHandle = MultiSelection ? GtkDotNet.MultiSelection.New(sortListModel) : SingleSelection.New(sortListModel);
+            SelectionHandle selModelHandle =
+                MultiSelection
+                ? GtkDotNet.MultiSelection.New(sortListModel)
+                : SingleSelection
+                ? GtkDotNet.SingleSelection.New(sortListModel)
+                : GtkDotNet.NoSelection.New(sortListModel);
             IListModel selModel = selModelHandle;
 
             // TODO Check Single button-press without ctrl and one selection unselect: No!!
