@@ -21,8 +21,8 @@ public abstract class Dialog<T>(nint obj) : SubClassTemplateInst<AdwDialogHandle
 
     protected void Close(T t)
     {
-        Handle.CloseDialog();
         completionSource.TrySetResult(t);
+        Handle.CloseDialog();
     }
 
     internal readonly TaskCompletionSource<T> completionSource = new();

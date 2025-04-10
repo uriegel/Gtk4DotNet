@@ -5,11 +5,10 @@ namespace GtkDotNet.SubClassing;
 public abstract class SubClassTemplateInst<THandle>(nint obj) : SubClassInst<THandle>(obj)
     where THandle : WidgetHandle, new()
 {
-    protected internal async override void OnCreate()
+    protected internal override void OnCreate()
     {
         Handle.InitTemplate();
-        await Task.Delay(1);
-        OnInitialize();
+        Handle.OnRealize(_ => OnInitialize());
     }
 
     protected TResultHandle GetTemplateChild<TResultHandle>(string id)

@@ -87,10 +87,6 @@ public static class Window
         return res;
     }
 
-    public static THandle OnRealize<THandle>(this THandle window, Action<WindowHandle> realized)
-        where THandle : WindowHandle
-        => window.SideEffect(a => Gtk.SignalConnect<TwoPointerDelegate>(a, "realize", (_, ___) => realized(window)));
-
     public static THandle OnClose<THandle>(this THandle window, Func<WindowHandle, bool> preventClosing)
         where THandle : WindowHandle
         => window.SideEffect(a => Gtk.SignalConnect<TwoPointerBoolRetDelegate>(a, "close-request", (_, ___) => preventClosing(window)));

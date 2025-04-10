@@ -63,6 +63,10 @@ public static class Widget
             .MarginStart(margin)
             .MarginEnd(margin);
 
+    public static THandle OnRealize<THandle>(this THandle widget, Action<THandle> onRealize)
+        where THandle : WidgetHandle
+        => widget.SideEffect(a => Gtk.SignalConnect<TwoPointerDelegate>(a, "realize", (_, ___) => onRealize(widget)));
+
     public static THandle OnSizeChanged<THandle>(this THandle widget, Action<int, int> onSizeChanged)
         where THandle : WidgetHandle
     {
