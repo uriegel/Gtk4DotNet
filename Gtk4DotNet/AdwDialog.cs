@@ -21,7 +21,7 @@ public static class AdwDialog
     public extern static void SetDefaultWidget(this AdwDialogHandle dialog, WidgetHandle defaultWidget);
 
     [DllImport(Libs.LibAdw, EntryPoint = "adw_dialog_close", CallingConvention = CallingConvention.Cdecl)]
-    public extern static bool Close(this AdwDialogHandle dialog);
+    public extern static bool CloseDialog(this AdwDialogHandle dialog);
 
     public static void OnClosed(this AdwDialogHandle dialog, Action onClosed)
         => Gtk.SignalConnect<TwoPointerDelegate>(dialog, "closed", (_, __) => onClosed());
