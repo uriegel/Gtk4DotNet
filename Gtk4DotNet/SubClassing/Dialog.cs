@@ -4,7 +4,26 @@ namespace GtkDotNet.SubClassing;
 
 public abstract class Dialog<T>(nint obj) : SubClassTemplateInst<AdwDialogHandle>(obj)
 {
+    public Task<T> PresentAsync(WidgetHandle parent)
+    {
+        Handle.Present(parent);
+        var dialog = Dialog<T>.GetInstance(Handle.GetInternalHandle()) as Dialog<T>;
+        return dialog!.completionSource.Task;
+    }
+
+    protected override void OnInitialize()
+    {
+        base.OnInitialize();
+        Handle.OnClosed(() => completionSource.TrySetException(new TaskCanceledException()));
+    }
+
     protected override AdwDialogHandle CreateHandle(nint obj) => new(obj);
+
+    protected void Close(T t)
+    {
+        Handle.CloseDialog();
+        completionSource.TrySetResult(t);
+    }
 
     internal readonly TaskCompletionSource<T> completionSource = new();
 }
@@ -13,15 +32,5 @@ public class DialogClass<T> : SubClassTemplateInstClass<AdwDialogHandle>
 {
     public DialogClass(string typeName, string templateName, Func<nint, SubClassInst<AdwDialogHandle>> constructor)
         : base(GTypeEnum.AdwDialog, typeName, templateName, constructor)
-        => this.typeName = typeName;
-
-    public Task<T> PresentAsync(WidgetHandle parent)
-    {
-        var dialogHandle = GObject.New<AdwDialogHandle>(typeName.TypeFromName());
-        dialogHandle.Present(parent);
-        var dialog = Dialog<T>.GetInstance(dialogHandle.GetInternalHandle()) as Dialog<T>;
-        return dialog!.completionSource.Task;
-    }
-
-    readonly string typeName;
+    {}
 }
