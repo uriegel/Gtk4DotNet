@@ -23,7 +23,7 @@ public static class AdwDialog
     [DllImport(Libs.LibAdw, EntryPoint = "adw_dialog_close", CallingConvention = CallingConvention.Cdecl)]
     public extern static bool Close(this AdwDialogHandle dialog);
 
-    public static void OnClosed<THandle>(this AdwDialogHandle dialog, Action onClosed)
+    public static void OnClosed(this AdwDialogHandle dialog, Action onClosed)
         => Gtk.SignalConnect<TwoPointerDelegate>(dialog, "closed", (_, __) => onClosed());
 
 }
