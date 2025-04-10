@@ -19,7 +19,7 @@ public abstract class SubClassTemplateInst<THandle>(nint obj) : SubClassInst<THa
     protected virtual void OnInitialize() { }
 }
 
-class SubClassTemplateInstClass<THandle>(GTypeEnum parent, string typeName, string templateName, Func<nint, SubClassInst<THandle>> constructor)
+public class SubClassTemplateInstClass<THandle>(GTypeEnum parent, string typeName, string templateName, Func<nint, SubClassInst<THandle>> constructor)
     : SubClass<THandle>(parent, typeName, constructor)
     where THandle : WidgetHandle, new()
 {

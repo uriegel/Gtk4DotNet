@@ -4,10 +4,12 @@ namespace GtkDotNet.SubClassing;
 
 public abstract class Dialog<T>(nint obj) : SubClassTemplateInst<AdwDialogHandle>(obj)
 {
+    protected override AdwDialogHandle CreateHandle(nint obj) => new(obj);
+
     internal readonly TaskCompletionSource<T> completionSource = new();
 }
 
-class DialogClass<T> : SubClassTemplateInstClass<AdwDialogHandle>
+public class DialogClass<T> : SubClassTemplateInstClass<AdwDialogHandle>
 {
     public DialogClass(string typeName, string templateName, Func<nint, SubClassInst<AdwDialogHandle>> constructor)
         : base(GTypeEnum.AdwDialog, typeName, templateName, constructor)

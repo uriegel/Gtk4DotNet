@@ -2,9 +2,12 @@ using GtkDotNet.SafeHandles;
 
 namespace GtkDotNet.SubClassing;
 
-public abstract class AlertDialog(nint obj) : SubClassTemplateInst<AdwAlertDialogHandle>(obj) { }
+public abstract class AlertDialog(nint obj) : SubClassTemplateInst<AdwAlertDialogHandle>(obj)
+{ 
+    protected override AdwAlertDialogHandle CreateHandle(nint obj) => new(obj);
+}
 
-class AlertDialogClass : SubClassTemplateInstClass<AdwAlertDialogHandle>
+public class AlertDialogClass : SubClassTemplateInstClass<AdwAlertDialogHandle>
 {
     public AlertDialogClass(string typeName, string templateName, Func<nint, SubClassInst<AdwAlertDialogHandle>> constructor)
         : base(GTypeEnum.AdwAlertDialog, typeName, templateName, constructor)
