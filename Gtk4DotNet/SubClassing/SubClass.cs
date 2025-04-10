@@ -10,7 +10,7 @@ public abstract class SubClass<THandle>
 
     static internal ushort MemoryOffset { get; private set; }
 
-    public SubClass(GTypeEnum parent, string name, Func<nint, SubClassInst<THandle>> constructor)
+    public SubClass(GTypeEnum parent, string typeName, Func<nint, SubClassInst<THandle>> constructor)
     {
         this.constructor = constructor;
         GTypeHandle parentType = GType.Get(parent);
@@ -18,7 +18,7 @@ public abstract class SubClass<THandle>
         MemoryOffset = GetParentInstanceSize();
         GTypeQuery query = new();
         parentType.Query(ref query);
-        Console.WriteLine($"{name}: {MemoryOffset} {typeof(THandle).FullName})]");
+        Console.WriteLine($"{typeName}: {MemoryOffset} {typeof(THandle).FullName})]");
         initDelegate = ClassInit;
         instanceInitDelegate = InstanceInit;
 
@@ -30,7 +30,7 @@ public abstract class SubClass<THandle>
             instanceInit = Marshal.GetFunctionPointerForDelegate(instanceInitDelegate)
         };
         
-        Type = GType.RegisterStatic(parentType, name, ref typeInfo);
+        Type = GType.RegisterStatic(parentType, typeName, ref typeInfo);
         if (Type.IsInvalid)
             throw new Exception("Custom sub class could not be registered");
 

@@ -390,7 +390,7 @@ public static class Widget
         where THandle : WidgetHandle
         => BuildableGetBuildableId(widget).PtrToString(false);
 
-    public static TResultHandle? GetTemplateChild<TResultHandle, THandle>(this THandle widget, string id)
+    public static TResultHandle GetTemplateChild<TResultHandle, THandle>(this THandle widget, string id)
         where THandle : WidgetHandle
         where TResultHandle : WidgetHandle, new()
     {
@@ -402,7 +402,7 @@ public static class Widget
             return res;
         }
         else
-            return null;
+            return new TResultHandle();
     }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_add_css_class", CallingConvention = CallingConvention.Cdecl)]
