@@ -17,7 +17,7 @@ public class ColumnViewSubClassedClass(string name, Func<nint, ColumnViewSubClas
     }
 }
 
-public abstract class ColumnViewSubClassed : SubClassInst<CustomColumnViewHandle>
+public abstract class ColumnViewSubClassed : SubClassWidgetInst<CustomColumnViewHandle>
 {
     public bool SortDescending { get; private set; }
     public bool MultiSelection { get; set; }

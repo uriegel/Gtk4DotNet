@@ -30,7 +30,7 @@ public abstract class Dialog<T>(nint obj) : SubClassTemplateInst<AdwDialogHandle
 
 public class DialogClass<T> : SubClassTemplateInstClass<AdwDialogHandle>
 {
-    public DialogClass(string typeName, string templateName, Func<nint, SubClassInst<AdwDialogHandle>> constructor)
+    public DialogClass(string typeName, string templateName, Func<nint, SubClassTemplateInst<AdwDialogHandle>> constructor)
         : base(GTypeEnum.AdwDialog, typeName, templateName, constructor)
     {}
 }

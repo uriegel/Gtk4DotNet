@@ -11,7 +11,7 @@ public abstract class AlertDialog(nint obj) : SubClassTemplateInst<AdwAlertDialo
 
 public class AlertDialogClass : SubClassTemplateInstClass<AdwAlertDialogHandle>
 {
-    public AlertDialogClass(string typeName, string templateName, Func<nint, SubClassInst<AdwAlertDialogHandle>> constructor)
+    public AlertDialogClass(string typeName, string templateName, Func<nint, SubClassTemplateInst<AdwAlertDialogHandle>> constructor)
         : base(GTypeEnum.AdwAlertDialog, typeName, templateName, constructor)
     {}
 }

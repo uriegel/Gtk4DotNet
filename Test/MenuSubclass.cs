@@ -34,7 +34,7 @@ class MenuWindowClass(GTypeEnum parent, string name, Func<nint, MenuWindow> cons
     }
 }
 
-class MenuWindow(nint obj) : SubClassInst<WindowHandle>(obj)
+class MenuWindow(nint obj) : SubClassWidgetInst<WindowHandle>(obj)
 {
     protected override void OnCreate() => Handle.InitTemplate();
     protected override void OnFinalize() => WriteLine("Window finalized");
