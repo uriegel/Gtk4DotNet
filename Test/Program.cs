@@ -72,11 +72,11 @@ WriteLine($"Return value: {ReadLine() switch
     "28" => Example2.Run(),
     "29" => Example3.Run(),
     "30" => Example4.Run(),
-    "32" => Example5.Run(),
-    "33" => Example6.Run(),
-    "34" => Example7.Run(),
-    "35" => Example8.Run(),
-    "36" => TestApp.Run(),
+    "31" => Example5.Run(),
+    "32" => Example6.Run(),
+    "33" => Example7.Run(),
+    "34" => Example8.Run(),
+    "35" => TestApp.Run(),
     _ => 0
 }}");
 

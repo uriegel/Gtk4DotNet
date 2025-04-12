@@ -259,14 +259,16 @@ public abstract class ColumnViewSubClassed : SubClassWidgetInst<CustomColumnView
             if (window.IsInvalid)
                 window = columnView.GetAncestor<WindowHandle>();
             var row = window.GetFocus<WidgetHandle>();
-            if (!row.IsInvalid && row.GetName() == "GtkColumnViewRowWidget")
-            {
-                ListItemHandle listItem = new(row.GetData(LISTITEM));
-                var focusedItem = listItem.GetRawItem();
-                return RawItems().TakeWhile(n => n != focusedItem).Count();
-            }
-            else
+            if (!IsWidgetInColumnView(row))
                 return -1;
+            if (!row.IsInvalid && row.GetName() == "GtkColumnViewRowWidget")
+                {
+                    ListItemHandle listItem = new(row.GetData(LISTITEM));
+                    var focusedItem = listItem.GetRawItem();
+                    return RawItems().TakeWhile(n => n != focusedItem).Count();
+                }
+                else
+                    return -1;
         }
 
         public int ItemsCount() => RawItems().Count();
@@ -298,6 +300,19 @@ public abstract class ColumnViewSubClassed : SubClassWidgetInst<CustomColumnView
         {
             this.model = model;
             this.columnView = columnView;
+        }
+
+        bool IsWidgetInColumnView(WidgetHandle w)
+        {
+            while (true)
+            {
+                var p = w.GetParent();
+                if (p.IsInvalid)
+                    return false;
+                if (p.GetInternalHandle() == columnView.GetInternalHandle())
+                    return true;
+                w = p;
+            }
         }
 
         const string LISTITEM = "LISTITEM";
