@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <OutputType>library</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<Version>7.0.51-beta-51</Version>
-	<FileVersion>7.0.51.0</FileVersion>
-	<AssemblyVersion>7.0.51.0</AssemblyVersion>
+	<Version>7.0.52-beta-52</Version>
+	<FileVersion>7.0.52.0</FileVersion>
+	<AssemblyVersion>7.0.52.0</AssemblyVersion>
 	<AssemblyName>Gtk4DotNet</AssemblyName>
 	<Authors>Uwe Riegel</Authors>
 	<Company>Uwe Riegel</Company>		

@@ -10,13 +10,16 @@
             "request": "launch",
             "requireExactSource": true, 
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Test/bin/Debug/net8.0/linux-x64/Test.dll",
+            "program": "${workspaceFolder}/Test/bin/Debug/net9.0/linux-x64/Test.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Test",
             "stopAtEntry": false,
             "justMyCode": false,
             "enableStepFiltering": true,
-            "console": "integratedTerminal"
+            "env": {
+                "DOTNET_EnableDiagnostics": "0" // <- optional
+            },
+            "console": "internalConsole"
         }, {
             "name": "Test C",
             "type": "cppdbg",

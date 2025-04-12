@@ -75,6 +75,15 @@ sudo apt install libwebkitgtk-6.0-dev
 
 To use these features there is a nuget package  [Gtk4DotNet](https://www.nuget.org/packages/Gtk4DotNet/), which you have to include. 
 
+### Necessary change in Visual Studio Code ```launch.json``` for debugging when targeting .Net 9:
+
+```
+"env": {
+    "DOTNET_EnableDiagnostics": "0" 
+}
+```
+
+Otherwise the app chrashes, when an exception is being created or thrown!
 
 ## Hello World (a minimal GTK4 app) <a name="helloworld"></a>
 

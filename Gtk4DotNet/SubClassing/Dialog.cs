@@ -28,9 +28,5 @@ public abstract class Dialog<T>(nint obj) : SubClassTemplateInst<AdwDialogHandle
     internal readonly TaskCompletionSource<T> completionSource = new();
 }
 
-public class DialogClass<T> : SubClassTemplateInstClass<AdwDialogHandle>
-{
-    public DialogClass(string typeName, string templateName, Func<nint, SubClassTemplateInst<AdwDialogHandle>> constructor)
-        : base(GTypeEnum.AdwDialog, typeName, templateName, constructor)
-    {}
-}
+public class DialogClass<T>(string typeName, string templateName, Func<nint, SubClassTemplateInst<AdwDialogHandle>> constructor) 
+    : SubClassTemplateClass<AdwDialogHandle>(GTypeEnum.AdwDialog, typeName, templateName, constructor) { }

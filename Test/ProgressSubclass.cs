@@ -43,11 +43,10 @@ class ProgressWindow(nint obj) : SubClassInst<ApplicationWindowHandle>(obj)
 class ProgressDisplayClass(GTypeEnum parent, string name, Func<nint, ProgressDisplay> constructor)
     : SubClass<RevealerHandle>(parent, name, constructor) {}
 
-class ProgressDisplay(nint obj) : SubClassInst<RevealerHandle>(obj)
+class ProgressDisplay(nint obj) : SubClassWidgetInst<RevealerHandle>(obj)
 {
-    protected override async void OnCreate()
+    protected override void OnInitialize()
     {
-        await Task.Delay(1);
         var progressBar = Handle.GetTemplateChild<ProgressBarHandle, RevealerHandle>("progress_bar");
         var drawingArea =
             Handle

@@ -9,9 +9,5 @@ public abstract class AlertDialog(nint obj) : SubClassTemplateInst<AdwAlertDialo
     protected override AdwAlertDialogHandle CreateHandle(nint obj) => new(obj);
 }
 
-public class AlertDialogClass : SubClassTemplateInstClass<AdwAlertDialogHandle>
-{
-    public AlertDialogClass(string typeName, string templateName, Func<nint, SubClassTemplateInst<AdwAlertDialogHandle>> constructor)
-        : base(GTypeEnum.AdwAlertDialog, typeName, templateName, constructor)
-    {}
-}
+public class AlertDialogClass(string typeName, string templateName, Func<nint, SubClassTemplateInst<AdwAlertDialogHandle>> constructor) 
+    : SubClassTemplateClass<AdwAlertDialogHandle>(GTypeEnum.AdwAlertDialog, typeName, templateName, constructor) { }

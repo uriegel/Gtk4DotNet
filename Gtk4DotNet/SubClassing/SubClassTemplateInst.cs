@@ -2,23 +2,21 @@ using GtkDotNet.SafeHandles;
 
 namespace GtkDotNet.SubClassing;
 
-public abstract class SubClassTemplateInst<THandle>(nint obj) : SubClassInst<THandle>(obj)
+public abstract class SubClassTemplateInst<THandle>(nint obj) : SubClassWidgetInst<THandle>(obj)
     where THandle : WidgetHandle, new()
 {
     protected internal override void OnCreate()
     {
         Handle.InitTemplate();
-        Handle.OnRealize(_ => OnInitialize());
+        base.OnCreate();
     }
 
     protected TResultHandle GetTemplateChild<TResultHandle>(string id)
         where TResultHandle : WidgetHandle, new()
         => Handle.GetTemplateChild<TResultHandle, THandle>(id);
-
-    protected virtual void OnInitialize() { }
 }
 
-public class SubClassTemplateInstClass<THandle>(GTypeEnum parent, string typeName, string templateName, Func<nint, SubClassTemplateInst<THandle>> constructor)
+public class SubClassTemplateClass<THandle>(GTypeEnum parent, string typeName, string templateName, Func<nint, SubClassTemplateInst<THandle>> constructor)
     : SubClass<THandle>(parent, typeName, constructor)
     where THandle : WidgetHandle, new()
 {

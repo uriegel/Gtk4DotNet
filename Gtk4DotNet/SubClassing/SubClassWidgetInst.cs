@@ -11,7 +11,3 @@ public abstract class SubClassWidgetInst<THandle>(nint obj) : SubClassInst<THand
     protected virtual void OnInitialize() { }
 }
 
-public class SubClassWidgetInstClass<THandle>(GTypeEnum parent, string typeName, Func<nint, SubClassWidgetInst<THandle>> constructor)
-    : SubClass<THandle>(parent, typeName, constructor)
-    where THandle : WidgetHandle, new()
-{}

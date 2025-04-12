@@ -164,7 +164,15 @@ class Controller2 : Controller<Type2>
 
 class ColumnViewControl(nint obj) : ColumnViewSubClassed(obj)
 {
-    protected override void OnCreate() => MultiSelection = true;
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+        MultiSelection = true;
+    } 
+
+    protected override void OnInitialize()
+        => base.OnInitialize();
+
     protected override void OnFinalize() => Console.WriteLine("ColumnView finalized");
     protected override CustomColumnViewHandle CreateHandle(nint obj) => new(obj);
 }
