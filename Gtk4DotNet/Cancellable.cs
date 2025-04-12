@@ -6,7 +6,7 @@ namespace GtkDotNet;
 class Cancellable : IDisposable
 {
     public Cancellable(CancellationToken cancellationToken) : this(true)
-        => cancellationToken.Register(Cancel);
+        => cancellationTokenRegistration = cancellationToken.Register(Cancel); 
     
     public static Cancellable Zero() => new(false);
 
@@ -27,6 +27,8 @@ class Cancellable : IDisposable
     }
 
     internal CancellableHandle handle;
+    
+    readonly CancellationTokenRegistration cancellationTokenRegistration;
 
     #region IDisposable
 
@@ -35,13 +37,16 @@ class Cancellable : IDisposable
         if (!disposedValue)
         {
             if (disposing)
+            {
+                cancellationTokenRegistration.Unregister();
                 handle.Dispose();
-                // Verwalteten Zustand (verwaltete Objekte) bereinigen
-           
+            }
+            // Verwalteten Zustand (verwaltete Objekte) bereinigen
+
 
             // Nicht verwaltete Ressourcen (nicht verwaltete Objekte) freigeben und Finalizer überschreiben
             // Große Felder auf NULL setzen
-            
+
             disposedValue = true;
         }
     }
