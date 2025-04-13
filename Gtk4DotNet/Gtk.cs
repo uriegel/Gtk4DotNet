@@ -159,7 +159,32 @@ public static class Gtk
             Console.WriteLine($"Connected actions: {actions}");
     }
 
-    public static char KeyValToUnicode(int keyVal) => (char)_KeyValToUnicode(keyVal);
+    public static char KeyValToUnicode(int keyVal)
+        => keyVal switch
+        {
+            22 => (char)ConsoleKey.Backspace,
+            23 => (char)ConsoleKey.Tab,
+            67 => (char)ConsoleKey.F1,
+            68 => (char)ConsoleKey.F2,
+            69 => (char)ConsoleKey.F3,
+            70 => (char)ConsoleKey.F4,
+            71 => (char)ConsoleKey.F5,
+            72 => (char)ConsoleKey.F6,
+            73 => (char)ConsoleKey.F7,
+            74 => (char)ConsoleKey.F8,
+            75 => (char)ConsoleKey.F9,
+            76 => (char)ConsoleKey.F10,
+            77 => (char)ConsoleKey.F11,
+            78 => (char)ConsoleKey.F12,
+            110 => (char)ConsoleKey.Home,
+            112 => (char)ConsoleKey.PageUp,
+            115 => (char)ConsoleKey.End,
+            117 => (char)ConsoleKey.PageDown,
+            118 => (char)ConsoleKey.Insert,
+            _ => (char)_KeyValToUnicode(keyVal)
+        };
+
+    public static char RawKeyValToUnicode(int keyVal) => (char)_KeyValToUnicode(keyVal);
 
     internal static void Init() =>
         SynchronizationContext.SetSynchronizationContext(

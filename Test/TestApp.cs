@@ -78,8 +78,8 @@ static class TestApp
             Handle.AddController(
                 EventControllerKey
                 .New()
-                .OnKeyPressed((i, c, m) => false.SideEffect(_ => Console.WriteLine($"Key pressed {i}, {c}, {m}")))
-                .OnKeyReleased((i, c, m) => Console.WriteLine($"Key released {i}, {c}, {m}"))
+                .OnRawKeyPressed((i, c, m) => false.SideEffect(_ => Console.WriteLine($"Key pressed {i}, {c}, {m}")))
+                .OnRawKeyReleased((i, c, m) => Console.WriteLine($"Key released {i}, {c}, {m}"))
                 .OnModifiers((m) => Console.WriteLine($"Modifiers {m} {m.HasFlag(KeyModifiers.Control)}, {m.HasFlag(KeyModifiers.Alt)}, {m.HasFlag(KeyModifiers.Shift)}")));
         }
 

@@ -48,7 +48,7 @@ static class CustomItemListView
                                         .FromResource("listviewstyle"), StyleProviderPriority.Application))
                                         .AddController(EventControllerKey
                                             .New()
-                                            .OnKeyPressed((k, Kc, m) =>
+                                            .OnRawKeyPressed((k, Kc, m) =>
                                             {
                                                 if ((m & KeyModifiers.Control) == KeyModifiers.Control)
                                                 {

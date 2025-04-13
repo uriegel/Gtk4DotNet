@@ -21,7 +21,7 @@ static class Web
                                 EventControllerKey
                                     .New()
                                     .RefSink()
-                                    .OnKeyPressed((k, kc, m) =>
+                                    .OnRawKeyPressed((k, kc, m) =>
                                     {
                                         if (kc == 73)
                                         {

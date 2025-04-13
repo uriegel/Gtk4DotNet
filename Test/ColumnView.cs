@@ -56,7 +56,7 @@ static class ColumnViewApp
                                         .FromResource("listviewstyle"), StyleProviderPriority.Application))
                             .AddController(EventControllerKey
                                 .New()
-                                .OnKeyPressed((k, kc, m) =>
+                                .OnRawKeyPressed((k, kc, m) =>
                                 {
                                     if (kc == 118)
                                     {
