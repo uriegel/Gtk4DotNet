@@ -17,7 +17,7 @@
             "justMyCode": false,
             "enableStepFiltering": true,
             "env": {
-                "DOTNET_EnableDiagnostics": "0" // <- optional
+//                "DOTNET_EnableDiagnostics": "0" // <- optional
             },
             "console": "internalConsole"
         }, {
