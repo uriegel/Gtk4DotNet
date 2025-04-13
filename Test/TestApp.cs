@@ -80,6 +80,7 @@ static class TestApp
                 .New()
                 .OnRawKeyPressed((i, c, m) => false.SideEffect(_ => Console.WriteLine($"Key pressed {i}, {c}, {m}")))
                 .OnRawKeyReleased((i, c, m) => Console.WriteLine($"Key released {i}, {c}, {m}"))
+                .OnKeyPressed((c, m) => false.SideEffect(_ => Console.WriteLine($"Key pressed (chr) {(int)c}, {m}")))
                 .OnModifiers((m) => Console.WriteLine($"Modifiers {m} {m.HasFlag(KeyModifiers.Control)}, {m.HasFlag(KeyModifiers.Alt)}, {m.HasFlag(KeyModifiers.Shift)}")));
         }
 

@@ -159,8 +159,8 @@ public static class Gtk
             Console.WriteLine($"Connected actions: {actions}");
     }
 
-    public static char KeyValToUnicode(int keyVal)
-        => keyVal switch
+    public static char KeyValToUnicode(int keyVal, int keyCode)
+        => keyCode switch
         {
             22 => (char)ConsoleKey.Backspace,
             23 => (char)ConsoleKey.Tab,

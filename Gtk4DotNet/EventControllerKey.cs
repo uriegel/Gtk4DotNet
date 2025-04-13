@@ -19,11 +19,11 @@ public static class EventControllerKey
 
     public static EventControllerKeyHandle OnKeyPressed(this EventControllerKeyHandle eventControllerKey, Func<char, KeyModifiers, bool> onKeyPressed)
         => eventControllerKey.SideEffect(eck => Gtk.SignalConnect<KeyPressedDelegate>(eck, "key-pressed",
-            (nint _, int key, int keyCode, KeyModifiers modifiers, nint __) => onKeyPressed(Gtk.KeyValToUnicode(key), modifiers)));
+            (nint _, int key, int keyCode, KeyModifiers modifiers, nint __) => onKeyPressed(Gtk.KeyValToUnicode(key, keyCode), modifiers)));
 
     public static EventControllerKeyHandle OnKeyReleased(this EventControllerKeyHandle eventControllerKey, Action<char, KeyModifiers> onKeyReleased)
         => eventControllerKey.SideEffect(eck => Gtk.SignalConnect<KeyReleasedDelegate>(eck, "key-released",
-            (nint _, int key, int keyCode, KeyModifiers modifiers, nint __) => onKeyReleased(Gtk.KeyValToUnicode(key), modifiers)));
+            (nint _, int key, int keyCode, KeyModifiers modifiers, nint __) => onKeyReleased(Gtk.KeyValToUnicode(key, keyCode), modifiers)));
 
     public static EventControllerKeyHandle OnModifiers(this EventControllerKeyHandle eventControllerKey, Action<KeyModifiers> onModifiers)
         => eventControllerKey.SideEffect(eck => Gtk.SignalConnect<OnModifiersDelegate>(eck, "modifiers",
