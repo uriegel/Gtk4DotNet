@@ -1,5 +1,3 @@
-using GtkDotNet;
-
 namespace GtkDotNet.Exceptions;
 
 public class GFileException : GtkException

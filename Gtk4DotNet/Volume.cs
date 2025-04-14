@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using GtkDotNet.Exceptions;
 using GtkDotNet.Extensions;
 using GtkDotNet.SafeHandles;
 
@@ -18,8 +19,9 @@ public static class Volume
     public static string? GetUnixDevice(this VolumeHandle volume)
         => volume._GetIdentifier("unix-device").PtrToString(true);
 
-    public static void Eject(this VolumeHandle volume, UnmountFlags flags, MountOperationHandle mountOperation)
+    public static Task EjectAsync(this VolumeHandle volume, UnmountFlags flags, MountOperationHandle mountOperation)
     {
+        var tcs = new TaskCompletionSource();
         Eject(volume, flags, mountOperation, 0, (a, res, c) =>
         {
             var error = IntPtr.Zero;
@@ -28,14 +30,13 @@ public static class Volume
                 var gerror = new GErrorStruct(error);
 
                 var message = gerror.Message;
-                Console.WriteLine("Mount failed: " + message);
+                Console.WriteLine("Eject failed: " + message);
+                tcs.TrySetException(new VolumeException(message, volume.GetName(), volume.GetUnixDevice(), gerror));
             }
             else
-            {
-                // TODO Task Completion
-                // TODO Cancellable with timeout
-            }            
+                tcs.TrySetResult();
         }, 0);
+        return tcs.Task;
     }
 
     [DllImport(Libs.LibGio, EntryPoint = "g_volume_eject_with_operation_finish", CallingConvention = CallingConvention.Cdecl)]

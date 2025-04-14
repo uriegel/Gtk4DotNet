@@ -7,19 +7,6 @@ static class NonGtkApp
     public static int Run()
     {
         Gtk.Start();
-
-        var vm = VolumeMonitor.Get();
-        var volumes = vm.GetVolumes();
-        foreach (var volume in volumes)
-            WriteLine($"Volume: {volume.GetName()}, {volume.CanMount()}, {volume.CanEject()}, {volume.GetUnixDevice()}");
-
-        var sde1 = volumes.FirstOrDefault(n => n.GetUnixDevice() == "/dev/sde1");
-        if (sde1 != null)
-        {
-            using var mo = MountOperation.New();
-            sde1.Eject(UnmountFlags.Force, mo);
-        }
-
         RunOnUIThread();
 
         var tempDir = Path.GetTempPath().AppendPath("GtkDotNet");
@@ -33,8 +20,27 @@ static class NonGtkApp
 
     async static void RunOnUIThread()
     {
-        await Gtk.Dispatch(() =>
+        await Gtk.Dispatch(async () =>
         {
+            var vm = VolumeMonitor.Get();
+            var volumes = vm.GetVolumes();
+            foreach (var volume in volumes)
+                WriteLine($"Volume: {volume.GetName()}, {volume.CanMount()}, {volume.CanEject()}, {volume.GetUnixDevice()}");
+
+            var sde1 = volumes.FirstOrDefault(n => n.GetUnixDevice() == "/dev/sde1");
+            if (sde1 != null)
+            {
+                try
+                {
+                    using var mo = MountOperation.New();
+                    await sde1.EjectAsync(UnmountFlags.Force, mo);
+                }
+                catch (Exception e)
+                {
+                    WriteLine($"{e}");
+                }
+            }
+
             WriteLine(ContentType.Guess(".pdf"));
             GtkSettings
                 .GetDefault()
