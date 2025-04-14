@@ -1,18 +1,7 @@
-using System.Runtime.InteropServices;
 using CsTools.Extensions;
 using GtkDotNet;
-using GtkDotNet.Extensions;
 using static System.Console;
 
-[StructLayout(LayoutKind.Sequential)]
-struct GList {
-    public nint data;
-    public  nint next;
-    public nint prev;
-
-    [DllImport("libgtk-4.so.1", EntryPoint = "g_list_free ", CallingConvention = CallingConvention.Cdecl)]
-    internal extern static IntPtr Free(IntPtr list);
-}
 static class NonGtkApp
 {
     public static int Run()
@@ -27,31 +16,11 @@ static class NonGtkApp
         var sde1 = volumes.FirstOrDefault(n => n.GetUnixDevice() == "/dev/sde1");
         if (sde1 != null)
         {
-            var mo = MountOperation.New();
+            using var mo = MountOperation.New();
             sde1.Eject(UnmountFlags.Force, mo);
         }
 
-        //GVolumeMonitor *monitor = g_volume_monitor_get();
-            //     var monitor = g_volume_monitor_get();
-            // var volumes = g_volume_monitor_get_volumes(monitor);
-            // var l = volumes;
-            // while (true)
-            // {
-            //     var glist = Marshal.PtrToStructure<GList>(l);
-            //     if (g_volume_can_mount(glist.data))
-            //     {
-            //         WriteLine($"Found mountable volume: {g_volume_get_name(glist.data).PtrToString(false)}");
-            //         var mo = g_mount_operation_new();
-            //         g_volume_mount(glist.data, 0, mo, 0, (a, b, c) =>
-            //         {
-
-            //         }, 0);
-            //     }
-            // }
-
-
-
-            RunOnUIThread();
+        RunOnUIThread();
 
         var tempDir = Path.GetTempPath().AppendPath("GtkDotNet");
         var target = tempDir.AppendPath("testfile");
@@ -61,32 +30,6 @@ static class NonGtkApp
         Gtk.Stop();
         return 0;
     }
-
-    [DllImport("libgtk-4.so.1", EntryPoint = "g_volume_monitor_get", CallingConvention = CallingConvention.Cdecl)]
-    extern static nint g_volume_monitor_get();
-
-    [DllImport("libgtk-4.so.1", EntryPoint = "g_volume_monitor_get_volumes", CallingConvention = CallingConvention.Cdecl)]
-    extern static nint g_volume_monitor_get_volumes(nint monitor);
-
-    [DllImport("libgtk-4.so.1", EntryPoint = "g_volume_can_mount", CallingConvention = CallingConvention.Cdecl)]
-    extern static bool g_volume_can_mount(nint volume);
-
-    [DllImport("libgtk-4.so.1", EntryPoint = "g_volume_get_name", CallingConvention = CallingConvention.Cdecl)]
-    extern static nint g_volume_get_name(nint volume);
-
-    [DllImport("libgtk-4.so.1", EntryPoint = "g_mount_operation_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static nint g_mount_operation_new();
-    
-    [DllImport("libgtk-4.so.1", EntryPoint = "g_volume_mount", CallingConvention = CallingConvention.Cdecl)]
-    extern static void g_volume_mount(nint volume, int mmf, nint mo, nint cancel, GAsyncReadyCallback cb, nint nil);
-    
-    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate void GAsyncReadyCallback(nint sourceObject, nint res, nint userData);
-
-
-
-
-
 
     async static void RunOnUIThread()
     {
