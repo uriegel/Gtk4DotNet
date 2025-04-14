@@ -21,22 +21,25 @@ public static class Volume
     public static void Eject(this VolumeHandle volume, UnmountFlags flags, MountOperationHandle mountOperation)
     {
         Eject(volume, flags, mountOperation, 0, (a, res, c) =>
-        { 
-            if (!EjectFinish(volume, res, out nint error))
+        {
+            var error = IntPtr.Zero;
+            if (!EjectFinish(volume, res, ref error))
             {
-                var message = error.GetMessage();
+                var gerror = new GErrorStruct(error);
+
+                var message = gerror.Message;
                 Console.WriteLine("Mount failed: " + message);
-                //GLib.g_error_free(error);
             }
             else
             {
-                Console.WriteLine("Mount successful!");
+                // TODO Task Completion
+                // TODO Cancellable with timeout
             }            
         }, 0);
     }
 
     [DllImport(Libs.LibGio, EntryPoint = "g_volume_eject_with_operation_finish", CallingConvention = CallingConvention.Cdecl)]
-    extern static bool EjectFinish(this VolumeHandle volume, nint result, out nint error);
+    extern static bool EjectFinish(this VolumeHandle volume, nint result, ref nint error);
     
     [DllImport(Libs.LibGio, EntryPoint = "g_volume_get_name", CallingConvention = CallingConvention.Cdecl)]
     extern static nint _GetName(this VolumeHandle volume);

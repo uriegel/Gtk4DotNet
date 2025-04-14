@@ -27,7 +27,7 @@ static class NonGtkApp
         var sde1 = volumes.FirstOrDefault(n => n.GetUnixDevice() == "/dev/sde1");
         if (sde1 != null)
         {
-            using var mo = MountOperation.New();
+            var mo = MountOperation.New();
             sde1.Eject(UnmountFlags.Force, mo);
         }
 
