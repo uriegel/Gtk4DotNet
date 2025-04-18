@@ -3,8 +3,9 @@ using GtkDotNet.SafeHandles;
 namespace GtkDotNet.SubClassing;
 
 public abstract class Dialog<T>(nint obj) : SubClassTemplateInst<AdwDialogHandle>(obj)
+    where T : notnull
 {
-    public Task<T> PresentAsync(WidgetHandle parent)
+    public Task<T?> PresentAsync(WidgetHandle parent)
     {
         Handle.Present(parent);
         var dialog = Dialog<T>.GetInstance(Handle.GetInternalHandle()) as Dialog<T>;
@@ -14,7 +15,7 @@ public abstract class Dialog<T>(nint obj) : SubClassTemplateInst<AdwDialogHandle
     protected override void OnInitialize()
     {
         base.OnInitialize();
-        Handle.OnClosed(() => completionSource.TrySetException(new TaskCanceledException()));
+        Handle.OnClosed(() => completionSource.TrySetResult(default));
     }
 
     protected override AdwDialogHandle CreateHandle(nint obj) => new(obj);
@@ -25,7 +26,7 @@ public abstract class Dialog<T>(nint obj) : SubClassTemplateInst<AdwDialogHandle
         Handle.CloseDialog();
     }
 
-    internal readonly TaskCompletionSource<T> completionSource = new();
+    internal readonly TaskCompletionSource<T?> completionSource = new();
 }
 
 public class DialogClass<T>(string typeName, string templateName, Func<nint, SubClassTemplateInst<AdwDialogHandle>> constructor) 
