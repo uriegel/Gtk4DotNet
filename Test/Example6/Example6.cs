@@ -123,7 +123,7 @@ static class Example6
             stack.Ref
                 .GetVisibleChild()
                 .FindWidget(n => n.GetName() == "TextView")
-                ?.DownCastTextViewHandle();
+                ?.DownCastTextView();
         if (textView != null)
         {
             var buffer = textView.GetBuffer();
@@ -143,7 +143,7 @@ static class Example6
             stack.Ref
                 .GetVisibleChild()
                 .FindWidget(n => n.GetName() == "TextView")
-                ?.DownCastTextViewHandle();
+                ?.DownCastTextView();
         if (textView != null)
         {
             wordsBox.Ref.RemoveAll();

@@ -135,7 +135,7 @@ static class Example7
         => stack.Ref
             .GetVisibleChild()
             .FindWidget(n => n.GetName() == "TextView")
-            ?.DownCastTextViewHandle()
+            ?.DownCastTextView()
             ?.SideEffect(textView =>
             {
                 var buffer = textView.GetBuffer();
@@ -151,7 +151,7 @@ static class Example7
         => stack.Ref
             .GetVisibleChild()
             .FindWidget(n => n.GetName() == "TextView")
-            ?.DownCastTextViewHandle()
+            ?.DownCastTextView()
             ?.SideEffect(_ => wordsBox.Ref.RemoveAll())
             ?.GetText()
                 .Split(new[] { ' ', '\n', '.', '"', '(', ')', ';', '}', '{', '/', ',', '<', '>', '=' }, StringSplitOptions.RemoveEmptyEntries)
@@ -176,7 +176,7 @@ static class Example7
         => stack.Ref
             .GetVisibleChild()
             .FindWidget(n => n.GetName() == "TextView")
-            ?.DownCastTextViewHandle()
+            ?.DownCastTextView()
             ?.SideEffect(tv => lines.Ref.Set($"{tv.GetText().Length}"));
 
     static SettingsHandle settings = new();

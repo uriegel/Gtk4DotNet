@@ -10,7 +10,7 @@ public class TextViewHandle : WidgetHandle
 
 public static class TextViewHandleExtensions
 {
-    public static TextViewHandle DownCastTextViewHandle(this WidgetHandle widget) => new(widget);
+    public static TextViewHandle DownCastTextView(this WidgetHandle widget) => new(widget);
 }
 
 

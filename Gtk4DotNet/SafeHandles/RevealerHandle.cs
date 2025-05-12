@@ -4,4 +4,13 @@ public class RevealerHandle : WidgetHandle
 {
     public RevealerHandle() : base() { }
     public RevealerHandle(nint obj) : base() => SetInternalHandle(obj);
+
+    internal RevealerHandle(WidgetHandle widget) : base() => handle = widget.TakeHandle();
 }
+
+public static class RevealerHandleExtensions
+{
+    public static RevealerHandle DownCastRevealer(this WidgetHandle widget) => new(widget);
+}
+
+
