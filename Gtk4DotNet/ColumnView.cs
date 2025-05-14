@@ -36,6 +36,9 @@ public static class ColumnView
     public static ColumnViewHandle AppendColumn(this ColumnViewHandle columnView, ColumnViewColumnHandle column)
         => columnView.SideEffect(c => c._AppendColumn(column));
 
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_insert_column", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void InsertColumn(this ColumnViewHandle columnView, int pos, ColumnViewColumnHandle column);
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_get_sorter", CallingConvention = CallingConvention.Cdecl)]
     public extern static CustomSorterHandle GetSorter(this ColumnViewHandle columnView);
 

@@ -77,6 +77,42 @@ public abstract class ColumnViewSubClassed : SubClassWidgetInst<CustomColumnView
         model.UnselectAll();
     }
 
+    public void RemoveCol(int pos)
+    {
+        using var h = columns[pos];
+        columnView.RemoveColumn(h);
+        columns.Remove(h);
+    }
+
+    public void SelectItem(int pos, bool unselectRest)
+        => columnView.GetModel<SelectionHandle>().SelectItem(pos, unselectRest);
+
+    public void FilterChanged(FilterChange change)
+        => filterHandle?.Changed(change);
+
+    public void InsertColumn<T>(int pos, Column<T> col)
+        where T : class
+    {
+        var colHandle = InsertColumn(col);
+        columns.Insert(pos, colHandle);
+        columnView.InsertColumn(pos, colHandle);
+    }
+
+    static SubClassInst<CustomColumnViewHandle>? GetInstance(ColumnViewHandle handle)
+        => GetInstance(handle.GetInternalHandle());
+
+    protected override void OnSetProperty(int propId, nint value)
+    {
+        if (propId == ColumnViewSubClassedClass.PROP_TABBEHAVIOR)
+            columnView.TabBehavior((ListTabBehavior)GValue.GetInt(value));
+    }
+
+    protected override void OnGetProperty(int propId, nint value)
+    {
+        if (propId == ColumnViewSubClassedClass.PROP_TABBEHAVIOR)
+             GValue.SetInt(value, (int)columnView.GetTabBehavior());
+    }
+
     IColumnViewModel<T> SetColumns<T>(Column<T>[] columns, Controller<T> controller)
         where T : class
     {
@@ -92,45 +128,7 @@ public abstract class ColumnViewSubClassed : SubClassWidgetInst<CustomColumnView
 
         foreach (var col in columns)
         {
-            var itemFactory = SignalListItemFactory
-                .New()
-                .AddWeakRef(() => Console.WriteLine("itemFactory disposed"))
-                .Setup(listItem => listItem.SetChild(col.OnItemSetup()))
-                .Bind(listItem =>
-                    {
-                        Controller<T>.AttachListItem(listItem);
-                        var item = listItem.GetObject<T>();
-                        if (item != null)
-                        {
-                            if (col.OnItemBind != null)
-                                col.OnItemBind.Invoke(listItem, item);
-                            else if (col.OnLabelBind != null)
-                            {
-                                var label = listItem.GetChild<LabelHandle>();
-                                label.Set(col.OnLabelBind.Invoke(item));
-                            }
-                        }
-                    });
-            var colHandle = ColumnViewColumn.New(col.Title, itemFactory)
-                .AddWeakRef(() => Console.WriteLine("ColumnViewColumn finalized"));
-            if (col.Expanded)
-                colHandle.Expand();
-            if (col.Resizeable)
-                colHandle.Resizeable();
-            if (col.OnSort != null)
-            {
-                var sorter = CustomSorter.New((a, b) =>
-                {
-                    var itemA = GetItem(a);
-                    var itemB = GetItem(b);
-                    return itemA != null && itemB != null
-                        ? col.OnSort(itemA, itemB, SortDescending)
-                        : 0;
-                }).SideEffect(n => n.AddWeakRef(() => Console.WriteLine("Sorter finalized")));
-
-                colHandle.SetSorter(sorter);
-                sorters.Add(sorter);
-            }
+            var colHandle = InsertColumn(col);
             this.columns.Add(colHandle);
             columnView.AppendColumn(colHandle);
         }
@@ -167,16 +165,10 @@ public abstract class ColumnViewSubClassed : SubClassWidgetInst<CustomColumnView
             columnView.SetModel(selModel);
         }
 
-        onfilter = item => controller.OnFilter == null || GetItem(item) is T t && t != null && controller.OnFilter!(t);
+        onfilter = item => controller.OnFilter == null || GetItem<T>(item) is T t && t != null && controller.OnFilter!(t);
 
         return new Model<T>(columnView, listModelHandle);
 
-        T? GetItem(nint h)
-        {
-            var ptr = h.GetData(ListItem.MANAGED_OBJECT);
-            var gcHandle = GCHandle.FromIntPtr(ptr);
-            return gcHandle.Target as T;
-        }
         //  class ObservableModel<T>(): IDisposable
         // {
         //     public ObservableCollection<T> Items 
@@ -192,25 +184,58 @@ public abstract class ColumnViewSubClassed : SubClassWidgetInst<CustomColumnView
         //TODO clear it here
         //TODO clear it onweakref from this class
     }
-    public void SelectItem(int pos, bool unselectRest)
-        => columnView.GetModel<SelectionHandle>().SelectItem(pos, unselectRest);
 
-    public void FilterChanged(FilterChange change)
-        => filterHandle?.Changed(change);
-
-    static SubClassInst<CustomColumnViewHandle>? GetInstance(ColumnViewHandle handle)
-        => GetInstance(handle.GetInternalHandle());
-
-    protected override void OnSetProperty(int propId, nint value)
+    ColumnViewColumnHandle InsertColumn<T>(Column<T> col)
+        where T : class
     {
-        if (propId == ColumnViewSubClassedClass.PROP_TABBEHAVIOR)
-            columnView.TabBehavior((ListTabBehavior)GValue.GetInt(value));
+        var itemFactory = SignalListItemFactory
+            .New()
+            .AddWeakRef(() => Console.WriteLine("itemFactory disposed"))
+            .Setup(listItem => listItem.SetChild(col.OnItemSetup()))
+            .Bind(listItem =>
+                {
+                    Controller<T>.AttachListItem(listItem);
+                    var item = listItem.GetObject<T>();
+                    if (item != null)
+                    {
+                        if (col.OnItemBind != null)
+                            col.OnItemBind.Invoke(listItem, item);
+                        else if (col.OnLabelBind != null)
+                        {
+                            var label = listItem.GetChild<LabelHandle>();
+                            label.Set(col.OnLabelBind.Invoke(item));
+                        }
+                    }
+                });
+        var colHandle = ColumnViewColumn.New(col.Title, itemFactory)
+            .AddWeakRef(() => Console.WriteLine("ColumnViewColumn finalized"));
+        if (col.Expanded)
+            colHandle.Expand();
+        if (col.Resizeable)
+            colHandle.Resizeable();
+        if (col.OnSort != null)
+        {
+            var sorter = CustomSorter.New((a, b) =>
+            {
+                var itemA = GetItem<T>(a);
+                var itemB = GetItem<T>(b);
+                return itemA != null && itemB != null
+                    ? col.OnSort(itemA, itemB, SortDescending)
+                    : 0;
+            }).SideEffect(n => n.AddWeakRef(() => Console.WriteLine("Sorter finalized")));
+
+            colHandle.SetSorter(sorter);
+            sorters.Add(sorter);
+        }
+        return colHandle;
     }
 
-    protected override void OnGetProperty(int propId, nint value)
+    static T? GetItem<T>(nint h)
+        where T : class
     {
-        if (propId == ColumnViewSubClassedClass.PROP_TABBEHAVIOR)
-             GValue.SetInt(value, (int)columnView.GetTabBehavior());
+        var ptr = h.GetData(ListItem.MANAGED_OBJECT);
+        var gcHandle = GCHandle.FromIntPtr(ptr);
+        return gcHandle.Target as T;
     }
 
     ListTabBehavior tabBehavior;
