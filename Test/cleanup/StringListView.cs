@@ -13,10 +13,10 @@ static class StringListViewCleanup
 
         var model = StringList.New([]);
         var itemFactory = SignalListItemFactory
-            .New()
-            .Setup(OnListItemSetup)
-            .Bind(OnListItemBind)
-            .AddWeakRef(() => WriteLine("Factory disposed"));
+            .New();
+        itemFactory.Setup(OnListItemSetup);
+        itemFactory.Bind(OnListItemBind);
+        itemFactory.AddWeakRef(() => WriteLine("Factory disposed"));
         var selectionModel = SingleSelection.New(model).AddWeakRef(() => WriteLine("SelectionModel disposed"));
 
         int schritt = 0;
@@ -70,10 +70,10 @@ static class StringListViewCleanup
                 {
                     model = StringList.New([]);
                     itemFactory = SignalListItemFactory
-                        .New()
-                        .Setup(OnListItemSetup)
-                        .Bind(OnListItemBind)
-                        .AddWeakRef(() => WriteLine("Factory disposed"));
+                        .New();
+                    itemFactory.Setup(OnListItemSetup);
+                    itemFactory.Bind(OnListItemBind);
+                    itemFactory.AddWeakRef(() => WriteLine("Factory disposed"));
                     selectionModel = SingleSelection.New(model).AddWeakRef(() => WriteLine("SelectionModel disposed"));
                     scrolledWindow.Ref.Child(ListView
                             .New(selectionModel, itemFactory).AddWeakRef(() => WriteLine("ListView disposed")));

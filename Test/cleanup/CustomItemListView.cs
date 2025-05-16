@@ -15,10 +15,10 @@ static class CustomItemListViewCleanup
         {
             model = ListStore.New(GObject.Type()).AddWeakRef(() => WriteLine("model disposed"));
             itemFactory = SignalListItemFactory
-                .New()
-                .Setup(OnListItemSetup)
-                .Bind(OnListItemBind)
-                .AddWeakRef(() => WriteLine("Factory disposed"));
+                .New();
+            itemFactory.Setup(OnListItemSetup);
+            itemFactory.Bind(OnListItemBind);
+            itemFactory.AddWeakRef(() => WriteLine("Factory disposed"));
             selectionModel = SingleSelection.New(model).AddWeakRef(() => WriteLine("SelectionModel disposed"));
         }
 
@@ -65,10 +65,10 @@ static class CustomItemListViewCleanup
                 {
                     model = ListStore.New().AddWeakRef(() => WriteLine("model disposed"));
                     itemFactory = SignalListItemFactory
-                        .New()
-                        .Setup(OnListItemSetup)
-                        .Bind(OnListItemBind)
-                        .AddWeakRef(() => WriteLine("Factory disposed"));
+                        .New();
+                    itemFactory.Setup(OnListItemSetup);
+                    itemFactory.Bind(OnListItemBind);
+                    itemFactory.AddWeakRef(() => WriteLine("Factory disposed"));
                     selectionModel = SingleSelection.New(model).AddWeakRef(() => WriteLine("SelectionModel disposed"));
                     scrolledWindow.Ref.Child(ListView
                             .New(selectionModel, itemFactory).AddWeakRef(() => WriteLine("ListView disposed")));

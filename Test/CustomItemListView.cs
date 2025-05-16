@@ -18,10 +18,10 @@ static class CustomItemListView
                             .Splice(3, Enumerable.Range(1, 1_000_000).Select(n => new Contact($"Item no {n}", "uriegel@hotmail.de", n)))
                             .AddWeakRef(() => Console.WriteLine("model disposed"));
             itemFactory = SignalListItemFactory
-                .New()
-                .Setup(OnListItemSetup)
-                .Bind(OnListItemBind)
-                .AddWeakRef(() => Console.WriteLine("Factory disposed"));
+                .New();
+            itemFactory.Setup(OnListItemSetup);
+            itemFactory.Bind(OnListItemBind);
+            itemFactory.AddWeakRef(() => Console.WriteLine("Factory disposed"));
             selectionModel = SingleSelection.New(model);
 
             await Task.Delay(10000);

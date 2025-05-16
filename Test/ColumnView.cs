@@ -17,15 +17,15 @@ static class ColumnViewApp
                             .Splice(3, Enumerable.Range(1, 1000).Select(n => new Contact($"Item no {n}", $"person{n}@hotmail.de", n)))
                             .AddWeakRef(() => Console.WriteLine("model disposed"));
             var itemNameFactory = SignalListItemFactory
-                .New()
-                .Setup(OnListItemSetup)
-                .Bind(OnListItemBind)
-                .AddWeakRef(() => Console.WriteLine("itemNameFactory disposed"));
+                .New();
+            itemNameFactory.Setup(OnListItemSetup);
+            itemNameFactory.Bind(OnListItemBind);
+            itemNameFactory.AddWeakRef(() => Console.WriteLine("itemNameFactory disposed"));
             var itemEMailFactory = SignalListItemFactory
-                .New()
-                .Setup(OnListItemSetup)
-                .Bind(OnEMailBind)
-                .AddWeakRef(() => Console.WriteLine("itemEMailFactory disposed"));
+                .New();
+            itemEMailFactory.Setup(OnListItemSetup);
+            itemEMailFactory.Bind(OnEMailBind);
+            itemEMailFactory.AddWeakRef(() => Console.WriteLine("itemEMailFactory disposed"));
 
             selectionModel = SingleSelection.New(model);
 

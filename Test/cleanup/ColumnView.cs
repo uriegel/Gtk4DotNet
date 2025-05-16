@@ -16,15 +16,15 @@ static class ColumnViewCleanup
         {
             model = ListStore.New().AddWeakRef(() => WriteLine("model disposed"));
             itemNameFactory = SignalListItemFactory
-                .New()
-                .Setup(OnListItemSetup)
-                .Bind(OnListItemBind)
-                .AddWeakRef(() => WriteLine("itemNameFactory disposed"));
+                .New();
+            itemNameFactory.Setup(OnListItemSetup);
+            itemNameFactory.Bind(OnListItemBind);
+            itemNameFactory.AddWeakRef(() => WriteLine("itemNameFactory disposed"));
             itemEMailFactory = SignalListItemFactory
-                .New()
-                .Setup(OnListItemSetup)
-                .Bind(OnEMailBind)
-                .AddWeakRef(() => WriteLine("itemEMailFactory disposed"));
+                .New();
+            itemNameFactory.Setup(OnListItemSetup);
+            itemNameFactory.Bind(OnEMailBind);
+            itemNameFactory.AddWeakRef(() => WriteLine("itemEMailFactory disposed"));
 
             selectionModel = SingleSelection.New(model).AddWeakRef(() => WriteLine("SelectionModel disposed"));
 
@@ -79,15 +79,15 @@ static class ColumnViewCleanup
                 {
                     model = ListStore.New().AddWeakRef(() => WriteLine("model disposed"));
                     itemNameFactory = SignalListItemFactory
-                        .New()
-                        .Setup(OnListItemSetup)
-                        .Bind(OnListItemBind)
-                        .AddWeakRef(() => Console.WriteLine("itemNameFactory disposed"));
+                        .New();
+                    itemNameFactory.Setup(OnListItemSetup);
+                    itemNameFactory.Bind(OnListItemBind);
+                    itemNameFactory.AddWeakRef(() => Console.WriteLine("itemNameFactory disposed"));
                     itemEMailFactory = SignalListItemFactory
-                        .New()
-                        .Setup(OnListItemSetup)
-                        .Bind(OnEMailBind)
-                        .AddWeakRef(() => Console.WriteLine("itemEMailFactory disposed"));
+                        .New();
+                    itemEMailFactory.Setup(OnListItemSetup);
+                    itemEMailFactory.Bind(OnEMailBind);
+                    itemEMailFactory.AddWeakRef(() => Console.WriteLine("itemEMailFactory disposed"));
                     selectionModel = SingleSelection.New(model).AddWeakRef(() => WriteLine("SelectionModel disposed"));
                     scrolledWindow.Ref.Child(ColumnView
                             .New(selectionModel)

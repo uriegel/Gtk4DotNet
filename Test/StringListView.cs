@@ -12,10 +12,10 @@ static class StringListView
                             .Range(1, 1_000_000)
                             .Select(n => $"Item no {n}"));
         var itemFactory = SignalListItemFactory
-            .New()
-            .Setup(OnListItemSetup)
-            .Bind(OnListItemBind)
-            .AddWeakRef(() => Console.WriteLine("Factory disposed"));
+            .New();
+        itemFactory.Setup(OnListItemSetup);
+        itemFactory.Bind(OnListItemBind);
+        itemFactory.AddWeakRef(() => Console.WriteLine("Factory disposed"));
         var selectionModel = SingleSelection.New(model);
 
         return Application
