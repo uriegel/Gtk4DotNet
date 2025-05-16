@@ -17,9 +17,12 @@ public static class Button
         where THandle : ButtonHandle
         => button.SideEffect(a => Gtk.SignalConnect<TwoPointerDelegate>(a, "clicked", (_, __) => click()));
 
+    public static SignalData Clicked(this ButtonHandle button, Action click)
+        => Gtk.SignalConnect<TwoPointerDelegate>(button, "clicked", (_, __) => click());
+
     public static THandle Label<THandle>(this THandle button, string label)
-        where THandle : ButtonHandle
-        => button.SideEffect(b => b.SetLabel(label));
+            where THandle : ButtonHandle
+            => button.SideEffect(b => b.SetLabel(label));
 
     public static string GetLabel(this ButtonHandle button)
         => _GetLabel(button).PtrToString(false) ?? "";

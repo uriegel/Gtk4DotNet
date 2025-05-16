@@ -24,7 +24,8 @@ public static class Gtk
     /// Stops the GTK application started with 'Start'
     /// </summary>
     public static void Stop()
-        => Dispatch(() => {
+        => Dispatch(() =>
+        {
             nonGtkWindow?.Close();
             nonGtkApp?.Quit();
         });
@@ -56,7 +57,7 @@ public static class Gtk
     public static Task<T> Dispatch<T>(Func<T> action, int priority)
     {
         var tcs = new TaskCompletionSource<T>(TaskCreationOptions.RunContinuationsAsynchronously);
-        BeginInvoke(priority, () => 
+        BeginInvoke(priority, () =>
         {
             try
             {
@@ -85,7 +86,7 @@ public static class Gtk
             OnePointerBoolRetDelegate? mainFunction = _ =>
             {
                 action?.Invoke();
-                mainFunction = null;    
+                mainFunction = null;
                 action = null;
                 GtkDelegates.Remove(key);
                 return false;
@@ -132,14 +133,19 @@ public static class Gtk
         SetTimer(priority, (int)timeout.TotalMilliseconds, funcPtr, IntPtr.Zero, IntPtr.Zero);
     }
 
-    public static long SignalConnect<TDelegate>(this ObjectHandle obj, string name, TDelegate callback)
+    public static SignalData SignalConnect<TDelegate>(this ObjectHandle obj, string name, TDelegate callback)
         where TDelegate : Delegate
     {
-        // TODO Signal disconnect
         var key = GtkDelegates.GetKey();
         GtkDelegates.Add(key, callback);
         obj.AddWeakRefRaw(() => GtkDelegates.Remove(key));
-        return SignalConnect(obj, name, Marshal.GetFunctionPointerForDelegate((Delegate)callback), IntPtr.Zero, 0);
+        return new(SignalConnect(obj, name, Marshal.GetFunctionPointerForDelegate((Delegate)callback), IntPtr.Zero, 0), key);
+    }
+
+    public static void SignalDisconnect(this ObjectHandle widget, SignalData signal)
+    {
+        _SignalDisconnect(widget, signal.id);
+        GtkDelegates.Remove(signal.key);
     }
 
     public static void ShowDiagnostics()
@@ -194,10 +200,10 @@ public static class Gtk
     [DllImport(Libs.LibGtk, EntryPoint = "g_signal_connect_object", CallingConvention = CallingConvention.Cdecl)]
     extern static long SignalConnect(this ObjectHandle widget, string name, IntPtr callback, IntPtr obj, int n3);
 
-    [DllImport(Libs.LibGtk, EntryPoint="g_signal_connect_object", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(Libs.LibGtk, EntryPoint = "g_signal_connect_object", CallingConvention = CallingConvention.Cdecl)]
     internal extern static long SignalConnectAction(IntPtr action, string name, IntPtr callback, IntPtr obj, int n3);
 
-    [DllImport(Libs.LibGtk, EntryPoint="g_signal_connect_object", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(Libs.LibGtk, EntryPoint = "g_signal_connect_object", CallingConvention = CallingConvention.Cdecl)]
     internal extern static long SignalConnectAction(ActionHandle action, string name, IntPtr callback, IntPtr obj, int n3);
 
     // [DllImport(Libs.LibGtk, EntryPoint="gtk_main", CallingConvention = CallingConvention.Cdecl)]
@@ -210,12 +216,12 @@ public static class Gtk
     // public extern static void Init (ref int argc, ref IntPtr argv);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_signal_handler_disconnect", CallingConvention = CallingConvention.Cdecl)]
-    internal extern static void SignalDisconnect(this ObjectHandle widget, long id);
+    extern static void _SignalDisconnect(this ObjectHandle widget, long id);
 
-    [DllImport(Libs.LibGtk, EntryPoint="g_idle_add_full", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(Libs.LibGtk, EntryPoint = "g_idle_add_full", CallingConvention = CallingConvention.Cdecl)]
     extern static void IdleAddFull(int priority, IntPtr func, IntPtr nil, IntPtr nil2);
 
-    [DllImport(Libs.LibGtk, EntryPoint="g_timeout_add_full", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(Libs.LibGtk, EntryPoint = "g_timeout_add_full", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetTimer(int priority, int intervalInMillis, nint func, nint nil, nint nil2);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gdk_keyval_to_unicode", CallingConvention = CallingConvention.Cdecl)]
@@ -233,3 +239,13 @@ public static class Gtk
     static int mainThreadId;
 }
 
+public struct SignalData
+{
+    internal SignalData(long id, long key)
+    {
+        this.key = key;
+        this.id = id;
+    }
+    internal long key;
+    internal long id;
+}

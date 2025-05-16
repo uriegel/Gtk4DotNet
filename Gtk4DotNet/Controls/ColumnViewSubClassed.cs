@@ -110,7 +110,7 @@ public abstract class ColumnViewSubClassed : SubClassWidgetInst<CustomColumnView
     protected override void OnGetProperty(int propId, nint value)
     {
         if (propId == ColumnViewSubClassedClass.PROP_TABBEHAVIOR)
-             GValue.SetInt(value, (int)columnView.GetTabBehavior());
+            GValue.SetInt(value, (int)columnView.GetTabBehavior());
     }
 
     IColumnViewModel<T> SetColumns<T>(Column<T>[] columns, Controller<T> controller)
@@ -156,10 +156,10 @@ public abstract class ColumnViewSubClassed : SubClassWidgetInst<CustomColumnView
             // TODO implement 
             if (OnSelectionChanged != null)
                 selModelHandle.OnSelectionChanged(OnSelectionChanged);
-                // {
-                //     if (!DontUnselect)
-                //         n.UnselectRange(p, c);
-                // });
+            // {
+            //     if (!DontUnselect)
+            //         n.UnselectRange(p, c);
+            // });
 
             listModelHandle = model;
             columnView.SetModel(selModel);
@@ -190,28 +190,33 @@ public abstract class ColumnViewSubClassed : SubClassWidgetInst<CustomColumnView
     {
         var itemFactory = SignalListItemFactory
             .New()
-            .AddWeakRef(() => Console.WriteLine("itemFactory disposed"))
-            .Setup(listItem => listItem.SetChild(col.OnItemSetup()))
-            .Bind(listItem =>
+            .AddWeakRef(() => Console.WriteLine("itemFactory disposed"));
+        var setupSignal = itemFactory.Setup(listItem => listItem.SetChild(col.OnItemSetup()));
+        itemFactory.TearDown(_ => Gtk.SignalDisconnect(itemFactory, setupSignal));
+
+        var bindSignal = itemFactory.Bind(listItem =>
+            {
+                Controller<T>.AttachListItem(listItem);
+                var item = listItem.GetObject<T>();
+                if (item != null)
                 {
-                    Controller<T>.AttachListItem(listItem);
-                    var item = listItem.GetObject<T>();
-                    if (item != null)
+                    if (col.OnItemBind != null)
+                        col.OnItemBind.Invoke(listItem, item);
+                    else if (col.OnLabelBind != null)
                     {
-                        if (col.OnItemBind != null)
-                            col.OnItemBind.Invoke(listItem, item);
-                        else if (col.OnLabelBind != null)
-                        {
-                            var label = listItem.GetChild<LabelHandle>();
-                            label.Set(col.OnLabelBind.Invoke(item));
-                        }
+                        var label = listItem.GetChild<LabelHandle>();
+                        label.Set(col.OnLabelBind.Invoke(item));
                     }
-                })
-            .Unbind(listItem =>
+                }
+            });
+        DisposeSignal unbindSignal = new();
+        unbindSignal.SignalData = itemFactory.Unbind(listItem =>
             {
                 var item = listItem.GetObject<T>();
                 if (item != null)
                     col.OnItemUnbind?.Invoke(listItem, item);
+                Gtk.SignalDisconnect(itemFactory, bindSignal);
+                Gtk.SignalDisconnect(itemFactory, unbindSignal.SignalData);
             });
 
         var colHandle = ColumnViewColumn.New(col.Title, itemFactory)
@@ -295,13 +300,13 @@ public abstract class ColumnViewSubClassed : SubClassWidgetInst<CustomColumnView
             if (!IsWidgetInColumnView(row))
                 return -1;
             if (!row.IsInvalid && row.GetName() == "GtkColumnViewRowWidget")
-                {
-                    ListItemHandle listItem = new(row.GetData(LISTITEM));
-                    var focusedItem = listItem.GetRawItem();
-                    return RawItems().TakeWhile(n => n != focusedItem).Count();
-                }
-                else
-                    return -1;
+            {
+                ListItemHandle listItem = new(row.GetData(LISTITEM));
+                var focusedItem = listItem.GetRawItem();
+                return RawItems().TakeWhile(n => n != focusedItem).Count();
+            }
+            else
+                return -1;
         }
 
         public int ItemsCount() => RawItems().Count();
@@ -327,7 +332,7 @@ public abstract class ColumnViewSubClassed : SubClassWidgetInst<CustomColumnView
             var row = widget.GetParent().GetParent();
             if (!row.IsInvalid && row.GetName() == "GtkColumnViewRowWidget")
                 row.SetData(LISTITEM, listItem.GetInternalHandle());
-        }   
+        }
 
         internal void SetModel(IColumnViewModel<T> model, ColumnViewHandle columnView)
         {
@@ -422,4 +427,9 @@ public abstract class ColumnViewSubClassed : SubClassWidgetInst<CustomColumnView
     Func<nint, bool> onfilter = _ => true;
     IListModel? listModelHandle;
     CustomFilterHandle? filterHandle;
+}
+
+class DisposeSignal
+{ 
+    public SignalData SignalData { get; set; }
 }
