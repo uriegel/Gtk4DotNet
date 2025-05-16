@@ -206,7 +206,14 @@ public abstract class ColumnViewSubClassed : SubClassWidgetInst<CustomColumnView
                             label.Set(col.OnLabelBind.Invoke(item));
                         }
                     }
-                });
+                })
+            .Unbind(listItem =>
+            {
+                var item = listItem.GetObject<T>();
+                if (item != null)
+                    col.OnItemUnbind?.Invoke(listItem, item);
+            });
+
         var colHandle = ColumnViewColumn.New(col.Title, itemFactory)
             .AddWeakRef(() => Console.WriteLine("ColumnViewColumn finalized"));
         if (col.Expanded)
@@ -260,6 +267,7 @@ public abstract class ColumnViewSubClassed : SubClassWidgetInst<CustomColumnView
         public Func<WidgetHandle> OnItemSetup { get; set; } = () => Label.New().HAlign(Align.Start);
         public Action<ListItemHandle, TObj>? OnItemBind { get; set; }
         public Func<TObj, string>? OnLabelBind { get; set; }
+        public Action<ListItemHandle, TObj>? OnItemUnbind { get; set; }
         public Func<TObj, TObj, bool, int>? OnSort { get; set; }
     }
 
