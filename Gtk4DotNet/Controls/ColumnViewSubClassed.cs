@@ -24,6 +24,7 @@ public abstract class ColumnViewSubClassed : SubClassWidgetInst<CustomColumnView
     public bool SingleSelection { get; set; }
 
     public Action<nint, int, int>? OnSelectionChanged { get; set; }
+    public Action? OnSortChanging { get; set; }
 
     public ColumnViewSubClassed(nint obj) : base(obj)
     {
@@ -139,7 +140,12 @@ public abstract class ColumnViewSubClassed : SubClassWidgetInst<CustomColumnView
 
             filterHandle = CustomFilter.New(OnFilter);
             var sortListModel =
-                SortListModel.New(FilterListModel.New(model, filterHandle), columnView.GetSorter().OnChanged((desc, changed) => SortDescending = desc));
+                SortListModel.New(FilterListModel.New(model, filterHandle), columnView.GetSorter()
+                    .OnChanged((desc, changed) =>
+                    {
+                        SortDescending = desc;
+                        OnSortChanging?.Invoke();
+                    }));
 
             SelectionHandle selModelHandle =
                 MultiSelection
