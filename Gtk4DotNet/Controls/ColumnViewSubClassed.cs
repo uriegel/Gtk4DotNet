@@ -191,10 +191,8 @@ public abstract class ColumnViewSubClassed : SubClassWidgetInst<CustomColumnView
         var itemFactory = SignalListItemFactory
             .New()
             .AddWeakRef(() => Console.WriteLine("itemFactory disposed"));
-        var setupSignal = itemFactory.Setup(listItem => listItem.SetChild(col.OnItemSetup()));
-        itemFactory.TearDown(_ => Gtk.SignalDisconnect(itemFactory, setupSignal));
-
-        var bindSignal = itemFactory.Bind(listItem =>
+        itemFactory.Setup(listItem => listItem.SetChild(col.OnItemSetup()));
+        itemFactory.Bind(listItem =>
             {
                 Controller<T>.AttachListItem(listItem);
                 var item = listItem.GetObject<T>();
@@ -209,14 +207,11 @@ public abstract class ColumnViewSubClassed : SubClassWidgetInst<CustomColumnView
                     }
                 }
             });
-        DisposeSignal unbindSignal = new();
-        unbindSignal.SignalData = itemFactory.Unbind(listItem =>
+        itemFactory.Unbind(listItem =>
             {
                 var item = listItem.GetObject<T>();
                 if (item != null)
                     col.OnItemUnbind?.Invoke(listItem, item);
-                Gtk.SignalDisconnect(itemFactory, bindSignal);
-                Gtk.SignalDisconnect(itemFactory, unbindSignal.SignalData);
             });
 
         var colHandle = ColumnViewColumn.New(col.Title, itemFactory)
@@ -427,9 +422,4 @@ public abstract class ColumnViewSubClassed : SubClassWidgetInst<CustomColumnView
     Func<nint, bool> onfilter = _ => true;
     IListModel? listModelHandle;
     CustomFilterHandle? filterHandle;
-}
-
-class DisposeSignal
-{ 
-    public SignalData SignalData { get; set; }
 }
