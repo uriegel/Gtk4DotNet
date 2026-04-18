@@ -2,16 +2,16 @@
 
   <PropertyGroup>
     <OutputType>library</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<Version>7.0.65-beta-65</Version>
-	<FileVersion>7.0.65.0</FileVersion>
-	<AssemblyVersion>7.0.65.0</AssemblyVersion>
+	<Version>8.0.0</Version>
+	<FileVersion>8.0.0</FileVersion>
+	<AssemblyVersion>8.0.0</AssemblyVersion>
 	<AssemblyName>Gtk4DotNet</AssemblyName>
 	<Authors>Uwe Riegel</Authors>
 	<Company>Uwe Riegel</Company>		
-	<Description>.NET 8 Bindings for GTK 4, functional declarative similar to REACT or Kotlin Compose</Description>
+	<Description>.NET 10 Bindings for GTK 4, functional declarative similar to REACT or Kotlin Compose</Description>
 	<PackageLicenseUrl></PackageLicenseUrl>
 	<PackageProjectUrl>https://github.com/uriegel/Gtk4DotNet</PackageProjectUrl>
 	<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
@@ -36,7 +36,7 @@
 </ItemGroup>
 
 <ItemGroup>
-  <PackageReference Include="CsTools" Version="7.25.7" />
+  <PackageReference Include="CsTools" Version="7.25.8" />
 </ItemGroup>  
 
 </Project>

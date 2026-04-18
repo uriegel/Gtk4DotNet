@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using GtkDotNet.Extensions;
 using GtkDotNet.SafeHandles;
 
 namespace GtkDotNet;
@@ -31,7 +32,14 @@ public static class Settings
     [DllImport(Libs.LibGtk, EntryPoint="g_settings_get_int", CallingConvention = CallingConvention.Cdecl)]
     public extern static int GetInt(this SettingsHandle settings, string name);
 
-    [DllImport(Libs.LibGtk, EntryPoint="g_settings_create_action", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(Libs.LibGtk, EntryPoint = "g_settings_create_action", CallingConvention = CallingConvention.Cdecl)]
     public extern static ActionHandle CreateAction(this SettingsHandle settings, string key);
+
+    public static string? GetString(this SettingsHandle settings, string key)
+        => settings._GetString(key).PtrToString(true);
+        
+    
+    [DllImport(Libs.LibGtk, EntryPoint = "g_settings_get_string", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint _GetString(this SettingsHandle settings, string key);
 }
 
