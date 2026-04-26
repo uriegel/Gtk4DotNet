@@ -1,5 +1,5 @@
 # Gtk4DotNet
-C# .NET 8 bindings for GTK4. You can create programs using the GTK4 UI system as a .NET 8 app.
+C# .NET 10 bindings for GTK4. You can create programs using the GTK4 UI system as a .NET 10 app.
 
 In the following tutorial are (almost) all examples from the original [GTK4 documentation](https://docs.gtk.org/gtk4/getting_started.html) as well as from the [GUI development with Rust and GTK 4](https://gtk-rs.org/gtk4-rs/git/book/), all ported to C#. There is a Test project. In the terminal window, you can choose a certain example to run.
 
