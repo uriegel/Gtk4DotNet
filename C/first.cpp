@@ -1,8 +1,12 @@
 #include <gtk/gtk.h>
+#include <string>
+using namespace std;
 
 static void print_hello (GtkWidget *widget, gpointer data)
 {
     g_print ("Hello World\n");
+    string test = "Hello World in cpp\n";
+    g_print (test.c_str());
 }
 
 static void activate (GtkApplication *app, gpointer user_data)
@@ -35,5 +39,5 @@ int main (int argc, char **argv)
 }
 
 /* 
-gcc $(pkg-config --cflags gtk4) -o first first.c $(pkg-config --libs gtk4)
+gcc $(pkg-config --cflags gtk4) -o first first.cpp $(pkg-config --libs gtk4)
 */
