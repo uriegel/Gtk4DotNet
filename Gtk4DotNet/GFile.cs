@@ -50,7 +50,7 @@ public static class GFile
         }
     }
 
-    public static Task CopyAsync(this GFileHandle source, string destination, FileCopyFlags flags= FileCopyFlags.None, 
+    public static Task CopyAsync(this GFileHandle source, string destination, FileCopyFlags flags = FileCopyFlags.None, 
         bool createTargetPath = false, ProgressCallback? cb = null, CancellationToken? cancellation = null)
     {
         var tcs = new TaskCompletionSource();
@@ -59,14 +59,17 @@ public static class GFile
         asyncReadyCallbacks[id] = asyncReady;
         using var cancellable = cancellation.HasValue ? new Cancellable(cancellation.Value) : null;
         using var destinationFile = New(destination);
-        TwoLongAndPtrCallback? rcb = cb != null ? (c, t, _) => cb(c, t) : null;
+        var rcb = cb != null ? new TwoLongAndPtrCallback((c, t, _) => cb(c, t)) : null;
+        if (rcb != null)
+            progressCallbacks[id] = rcb;
         cb?.Invoke(0, 0);
         CopyAsync(source, destinationFile, flags, 100, cancellable?.handle?.IsInvalid == false ? cancellable.handle : Cancellable.Zero().handle, rcb, 0, asyncReady, 0);
         return tcs.Task;
 
         async void AsyncReady(IntPtr _, IntPtr result, IntPtr zero)
-        {     
+        {
             asyncReadyCallbacks.Remove(id, out var _);
+            progressCallbacks.Remove(id, out var _);
             var error = IntPtr.Zero;
             var res = CopyFinish(source, result, ref error);
             if (res)
@@ -109,14 +112,17 @@ public static class GFile
         asyncReadyCallbacks[id] = asyncReady;
         using var cancellable = cancellation.HasValue ? new Cancellable(cancellation.Value) : null;
         using var destinationFile = New(destination);
-        TwoLongAndPtrCallback? rcb = cb != null ? (c, t, _) => cb(c, t) : null;
+        var rcb = cb != null ? new TwoLongAndPtrCallback((c, t, _) => cb(c, t)) : null;
+        if (rcb != null)
+            progressCallbacks[id] = rcb;
         cb?.Invoke(0, 0);
         MoveAsync(source, destinationFile, flags, 100, cancellable?.handle?.IsInvalid == false ? cancellable.handle : Cancellable.Zero().handle, rcb, 0, asyncReady, 0);
         return tcs.Task;
 
         async void AsyncReady(IntPtr _, IntPtr result, IntPtr zero)
-        {     
+        {
             asyncReadyCallbacks.Remove(id, out var _);
+            progressCallbacks.Remove(id, out var _);
             var error = IntPtr.Zero;
             var res = MoveFinish(source, result, ref error);
             if (res)
@@ -191,4 +197,5 @@ public static class GFile
     internal static int GetAsyncReadyDelegates() => asyncReadyCallbacks.Count;
 
     readonly static ConcurrentDictionary<int, ThreePointerDelegate> asyncReadyCallbacks = new();
+    readonly static ConcurrentDictionary<int, TwoLongAndPtrCallback> progressCallbacks = new();
 }
