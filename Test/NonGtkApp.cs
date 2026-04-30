@@ -22,6 +22,11 @@ static class NonGtkApp
     {
         await Gtk.Dispatch(async () =>
         {
+            var list = AppInfo.GetAllApps();
+            foreach (var item in list)
+                item.Dispose();
+
+
             var vm = VolumeMonitor.Get();
             var volumes = vm.GetVolumes();
             foreach (var volume in volumes)
