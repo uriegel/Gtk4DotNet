@@ -5,9 +5,9 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	<Version>8.1.1</Version>
-	<FileVersion>8.1.1</FileVersion>
-	<AssemblyVersion>8.1.1</AssemblyVersion>
+	<Version>8.1.2</Version>
+	<FileVersion>8.1.2</FileVersion>
+	<AssemblyVersion>8.1.2</AssemblyVersion>
 	<AssemblyName>Gtk4DotNet</AssemblyName>
 	<Authors>Uwe Riegel</Authors>
 	<Company>Uwe Riegel</Company>		
@@ -36,7 +36,7 @@
 </ItemGroup>
 
 <ItemGroup>
-  <PackageReference Include="CsTools" Version="8.0.0" />
+  <PackageReference Include="CsTools" Version="8.0.1" />
 </ItemGroup>  
 
 </Project>

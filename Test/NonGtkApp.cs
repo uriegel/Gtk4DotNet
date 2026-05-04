@@ -22,10 +22,15 @@ static class NonGtkApp
     {
         await Gtk.Dispatch(async () =>
         {
-            var list = AppInfo.GetAllApps();
-            foreach (var item in list)
-                item.Dispose();
-
+            {
+                using var file = GFile.New("/home/uwe/Dokumente/Urlaub/Klassentreffen 2025.odt");
+                using var info = file.QueryContentType();
+                var contentType = info.GetContentType();
+                using var list = AppInfo.GetRecommendedApps(contentType ?? "");
+                var items = list.Select(n => new { Name = n.GetName(), Executable = n.GetExecutable(), Icon = n.GetIcon() }).ToArray();
+                using var list2 = AppInfo.GetAllApps();
+                var items2 = list2.Select(n => new { Name = n.GetName(), Executable = n.GetExecutable(), Icon = n.GetIcon() }).ToArray();
+            }
 
             var vm = VolumeMonitor.Get();
             var volumes = vm.GetVolumes();

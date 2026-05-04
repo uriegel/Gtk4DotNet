@@ -159,6 +159,11 @@ public static class GFile
     public static bool CopyAttributes(this GFileHandle file, GFileHandle starget, FileCopyFlags flags)
         => _CopyAttributes(file, starget, flags, 0, 0);
 
+    public static FileInfoHandle QueryContentType(this GFileHandle file) => file.QueryInfo("standard::content-type");
+
+    public static FileInfoHandle QueryInfo(this GFileHandle file, string attributes)
+        => _QueryInfo(file, attributes, 0, 0, 0);
+
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_load_contents", CallingConvention = CallingConvention.Cdecl)]
     extern static bool LoadContents(this GFileHandle gFile, CancellableHandle cancellable, out IntPtr content, out int length, IntPtr etagOut, IntPtr error);
@@ -191,6 +196,9 @@ public static class GFile
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_copy_attributes", CallingConvention = CallingConvention.Cdecl)]
     extern static bool _CopyAttributes(this GFileHandle file, GFileHandle starget, FileCopyFlags flags, nint nil, nint nil2);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_file_query_info", CallingConvention = CallingConvention.Cdecl)]
+    extern static FileInfoHandle _QueryInfo(this GFileHandle file, string attributes, int flags, nint nil, nint nil2);
 
     readonly static Func<int> getId = Incrementor.UseInt();
 
