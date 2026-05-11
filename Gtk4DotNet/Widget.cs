@@ -101,6 +101,10 @@ public static class Widget
             });
     }
 
+    public static THandle Opacity<THandle>(this THandle widget, double opacity)
+        where THandle : WidgetHandle
+        => widget.SideEffect(n => n.SetOpacity(opacity));
+    
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_hide", CallingConvention = CallingConvention.Cdecl)]
     public extern static void Hide(this WidgetHandle widget);
 
@@ -134,6 +138,9 @@ public static class Widget
         else
             widget.RemoveCssClass(cssClass);
     }
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_set_can_target", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void CanTarget(this WidgetHandle widget, bool set);
 
     public static THandle DataContext<THandle>(this THandle widget, INotifyPropertyChanged dataContext)
         where THandle : WidgetHandle, new()
@@ -561,5 +568,8 @@ public static class Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_buildable_get_buildable_id", CallingConvention = CallingConvention.Cdecl)]
     extern static IntPtr BuildableGetBuildableId(this WidgetHandle buildable);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_set_opacity", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetOpacity(this WidgetHandle widget, double opacity);
 }
 
