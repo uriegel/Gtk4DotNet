@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using CsTools.Extensions;
 using GtkDotNet;
 using static System.Console;
@@ -23,6 +24,20 @@ static class NonGtkApp
         await Gtk.Dispatch(async () =>
         {
             {
+                string? Test()
+                {
+                    var probeFile = GFile.New("/run/media/uwe/Daten/Bilder/Fotos/1965");
+                    using var mount = probeFile.FindEnclosingMount();
+                    using var volume = mount.GetVolume();
+                    return volume.GetUnixDevice();
+                }
+
+                var stopwatch = new Stopwatch();
+                stopwatch.Start();
+                var ud = Test();
+                var elapsed = stopwatch.Elapsed;
+
+
                 using var file = GFile.New("/home/uwe/Dokumente/Urlaub/Klassentreffen 2025.odt");
                 using var info = file.QueryContentType();
                 var contentType = info.GetContentType();

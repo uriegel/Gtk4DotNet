@@ -1,6 +1,4 @@
-using System.Collections.Concurrent;
 using System.Runtime.InteropServices;
-using CsTools.Functional;
 using GtkDotNet.Exceptions;
 using GtkDotNet.Extensions;
 using GtkDotNet.SafeHandles;
@@ -29,15 +27,15 @@ public static class GFile
     public static Task TrashAsync(this GFileHandle file)
     {
         var tcs = new TaskCompletionSource();
-        var id = getId();
-        var asyncReady = new ThreePointerDelegate(AsyncReady);
-        asyncReadyCallbacks[id] = asyncReady;
+        var id = AsyncReady.GetId();
+        var asyncReady = new ThreePointerDelegate(AsyncReadyCallback);
+        AsyncReady.Callbacks[id] = asyncReady;
         Trash(file, 100, Cancellable.Zero().handle, asyncReady, 0);
         return tcs.Task;
 
-        void AsyncReady(nint _, nint result, nint __)
+        void AsyncReadyCallback(nint _, nint result, nint __)
         {     
-            asyncReadyCallbacks.Remove(id, out var _);
+            AsyncReady.Callbacks.Remove(id, out var _);
             nint error = 0;
             if (TrashFinish(file, result, ref error))
                 tcs.TrySetResult();
@@ -54,22 +52,22 @@ public static class GFile
         bool createTargetPath = false, ProgressCallback? cb = null, CancellationToken? cancellation = null)
     {
         var tcs = new TaskCompletionSource();
-        var id = getId();
-        var asyncReady = new ThreePointerDelegate(AsyncReady);
-        asyncReadyCallbacks[id] = asyncReady;
+        var id = AsyncReady.GetId();
+        var asyncReady = new ThreePointerDelegate(AsyncReadyCallback);
+        AsyncReady.Callbacks[id] = asyncReady;
         using var cancellable = cancellation.HasValue ? new Cancellable(cancellation.Value) : null;
         using var destinationFile = New(destination);
         var rcb = cb != null ? new TwoLongAndPtrCallback((c, t, _) => cb(c, t)) : null;
         if (rcb != null)
-            progressCallbacks[id] = rcb;
+            AsyncReady.ProgressCallbacks[id] = rcb;
         cb?.Invoke(0, 0);
         CopyAsync(source, destinationFile, flags, 100, cancellable?.handle?.IsInvalid == false ? cancellable.handle : Cancellable.Zero().handle, rcb, 0, asyncReady, 0);
         return tcs.Task;
 
-        async void AsyncReady(IntPtr _, IntPtr result, IntPtr zero)
+        async void AsyncReadyCallback(IntPtr _, IntPtr result, IntPtr zero)
         {
-            asyncReadyCallbacks.Remove(id, out var _);
-            progressCallbacks.Remove(id, out var _);
+            AsyncReady.Callbacks.Remove(id, out var _);
+            AsyncReady.ProgressCallbacks.Remove(id, out var _);
             var error = IntPtr.Zero;
             var res = CopyFinish(source, result, ref error);
             if (res)
@@ -103,26 +101,26 @@ public static class GFile
         }
     }
 
-    public static Task MoveAsync(this GFileHandle source, string destination, FileCopyFlags flags= FileCopyFlags.None, 
+    public static Task MoveAsync(this GFileHandle source, string destination, FileCopyFlags flags = FileCopyFlags.None,
         bool createTargetPath = false, ProgressCallback? cb = null, CancellationToken? cancellation = null)
     {
         var tcs = new TaskCompletionSource();
-        var id = getId();
-        var asyncReady = new ThreePointerDelegate(AsyncReady);
-        asyncReadyCallbacks[id] = asyncReady;
+        var id = AsyncReady.GetId();
+        var asyncReady = new ThreePointerDelegate(AsyncReadyCallback);
+        AsyncReady.Callbacks[id] = asyncReady;
         using var cancellable = cancellation.HasValue ? new Cancellable(cancellation.Value) : null;
         using var destinationFile = New(destination);
         var rcb = cb != null ? new TwoLongAndPtrCallback((c, t, _) => cb(c, t)) : null;
         if (rcb != null)
-            progressCallbacks[id] = rcb;
+            AsyncReady.ProgressCallbacks[id] = rcb;
         cb?.Invoke(0, 0);
         MoveAsync(source, destinationFile, flags, 100, cancellable?.handle?.IsInvalid == false ? cancellable.handle : Cancellable.Zero().handle, rcb, 0, asyncReady, 0);
         return tcs.Task;
 
-        async void AsyncReady(IntPtr _, IntPtr result, IntPtr zero)
+        async void AsyncReadyCallback(IntPtr _, IntPtr result, IntPtr zero)
         {
-            asyncReadyCallbacks.Remove(id, out var _);
-            progressCallbacks.Remove(id, out var _);
+            AsyncReady.Callbacks.Remove(id, out var _);
+            AsyncReady.ProgressCallbacks.Remove(id, out var _);
             var error = IntPtr.Zero;
             var res = MoveFinish(source, result, ref error);
             if (res)
@@ -151,10 +149,13 @@ public static class GFile
                     await MoveAsync(source, destination, flags, true, cb, cancellation);
                 }
                 else
-                    tcs.TrySetException(new GFileException(path,gerror));
+                    tcs.TrySetException(new GFileException(path, gerror));
             }
         }
     }
+    
+    public static MountHandle FindEnclosingMount(this GFileHandle file) 
+        => file.FindEnclosingMount(0, 0);
 
     public static bool CopyAttributes(this GFileHandle file, GFileHandle starget, FileCopyFlags flags)
         => _CopyAttributes(file, starget, flags, 0, 0);
@@ -200,10 +201,6 @@ public static class GFile
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_query_info", CallingConvention = CallingConvention.Cdecl)]
     extern static FileInfoHandle _QueryInfo(this GFileHandle file, string attributes, int flags, nint nil, nint nil2);
 
-    readonly static Func<int> getId = Incrementor.UseInt();
-
-    internal static int GetAsyncReadyDelegates() => asyncReadyCallbacks.Count;
-
-    readonly static ConcurrentDictionary<int, ThreePointerDelegate> asyncReadyCallbacks = new();
-    readonly static ConcurrentDictionary<int, TwoLongAndPtrCallback> progressCallbacks = new();
+    [DllImport(Libs.LibGtk, EntryPoint = "g_file_find_enclosing_mount", CallingConvention = CallingConvention.Cdecl)]
+    extern static MountHandle FindEnclosingMount(this GFileHandle file, nint _, nint __);
 }

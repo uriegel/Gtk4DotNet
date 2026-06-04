@@ -19,6 +19,9 @@ public static class Volume
     public static string? GetUnixDevice(this VolumeHandle volume)
         => volume._GetIdentifier("unix-device").PtrToString(true);
 
+    public static string? GetUuid(this VolumeHandle volume)
+        => _GetUuid(volume).PtrToString(true);
+
     public static Task EjectAsync(this VolumeHandle volume, UnmountFlags flags, MountOperationHandle mountOperation)
     {
         var tcs = new TaskCompletionSource();
@@ -47,6 +50,9 @@ public static class Volume
 
     [DllImport(Libs.LibGio, EntryPoint = "g_volume_get_identifier", CallingConvention = CallingConvention.Cdecl)]
     extern static nint _GetIdentifier(this VolumeHandle volume, string kind);
+
+    [DllImport(Libs.LibGio, EntryPoint = "g_volume_get_uuid", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint _GetUuid(this VolumeHandle volume);
 
     [DllImport(Libs.LibGio, EntryPoint = "g_volume_eject_with_operation", CallingConvention = CallingConvention.Cdecl)]
     extern static void Eject(this VolumeHandle volume, UnmountFlags flags, MountOperationHandle mountOperation, nint _, GAsyncReadyCallback cb, nint __);
