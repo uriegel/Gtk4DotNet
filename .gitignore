@@ -14,3 +14,5 @@ C/gobject
 Test/resources/image.jpg.thumbnail.jpg
 Test/TestDirectory/First.cs
 C/listview
+Test/Test.csproj.lscache
+Gtk4DotNet/Gtk4DotNet.csproj.lscache
