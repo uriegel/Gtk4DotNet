@@ -26,7 +26,8 @@ static class NonGtkApp
             {
                 string? Test()
                 {
-                    var probeFile = GFile.New("/run/media/uwe/Daten/Bilder/Fotos/1965");
+                    var probeFile = GFile.New("/");
+                    //var probeFile = GFile.New("/run/media/uwe/Daten/Bilder/Fotos/1965");
                     using var mount = probeFile.FindEnclosingMount();
                     using var volume = mount.GetVolume();
                     return volume.GetUnixDevice();
@@ -50,9 +51,9 @@ static class NonGtkApp
             var vm = VolumeMonitor.Get();
             var volumes = vm.GetVolumes();
             foreach (var volume in volumes)
-                WriteLine($"Volume: {volume.GetName()}, {volume.CanMount()}, {volume.CanEject()}, {volume.GetUnixDevice()}");
+                WriteLine($"Volume: {volume.GetName()}, {volume.CanMount()}, {volume.CanEject()}, {volume.GetUnixDevice()}, {volume.GetIcon()}");
 
-            var sde1 = volumes.FirstOrDefault(n => n.GetUnixDevice() == "/dev/sde1");
+            var sde1 = volumes.FirstOrDefault(n => n.GetUnixDevice() == "/dev/sdf4");
             if (sde1 != null)
             {
                 try

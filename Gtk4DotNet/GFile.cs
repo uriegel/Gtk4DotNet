@@ -117,7 +117,7 @@ public static class GFile
         MoveAsync(source, destinationFile, flags, 100, cancellable?.handle?.IsInvalid == false ? cancellable.handle : Cancellable.Zero().handle, rcb, 0, asyncReady, 0);
         return tcs.Task;
 
-        async void AsyncReadyCallback(IntPtr _, IntPtr result, IntPtr zero)
+        async void AsyncReadyCallback(nint _, nint result, nint zero)
         {
             AsyncReady.Callbacks.Remove(id, out var _);
             AsyncReady.ProgressCallbacks.Remove(id, out var _);

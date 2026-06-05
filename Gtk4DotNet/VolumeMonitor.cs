@@ -22,7 +22,7 @@ public static class VolumeMonitor
             current = glist.Next;
         }
         GList.Free(volumes);
-        return list.ToArray();
+        return [.. list];
     }
 
     [DllImport(Libs.LibGio, EntryPoint = "g_volume_monitor_get_volumes", CallingConvention = CallingConvention.Cdecl)]
