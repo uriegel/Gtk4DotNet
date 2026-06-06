@@ -25,6 +25,9 @@ public class Builder : GObject
         return res;
     }
 
+    internal nint GetWidgetPtr(string objectName)
+        => _GetWidget(this, objectName);
+
     public static Builder FromString(string ui) => _FromString(ui, -1);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_builder_new_from_resource", CallingConvention = CallingConvention.Cdecl)]

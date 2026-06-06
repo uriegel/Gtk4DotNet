@@ -5,8 +5,6 @@ using Gtk4DotNet.Internals;
 namespace Gtk4DotNet;
 
 // TODO new AdwWindow in First Widget
-// TODO base() in Window base class: search Annotations with name and set the Child properties 
-// TODO Then in own Constructor, set Bindings and OnClicks
 
 public static class Gtk
 {

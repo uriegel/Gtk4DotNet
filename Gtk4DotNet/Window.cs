@@ -15,7 +15,7 @@ public class Window : Widget
     public bool IsMaximized
     {
         get => GetIsMaximized(this);
-        set 
+        set
         {
             if (value)
                 Maximize(this);
@@ -24,12 +24,14 @@ public class Window : Widget
         }
     }
 
-    public Window() : base() { }
-    public Window(nint obj) : base() => SetInternalHandle(obj);
+    public void CloseWindow() => CloseWindow(this);
 
     public void SetDefaultSize(int width, int height) => SetDefaultSize(this, width, height);
 
     public void SetChild(Widget child) => SetChild(this, child);
+
+    public Window() : base() { }
+    public Window(nint obj) : base() => SetInternalHandle(obj);
 
     internal Window(Widget widget) : base() => handle = widget.TakeHandle();
 
@@ -56,6 +58,9 @@ public class Window : Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_unmaximize", CallingConvention = CallingConvention.Cdecl)]
     extern static void UnMaximize(Window window);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_close", CallingConvention = CallingConvention.Cdecl)]
+    extern static void CloseWindow(Window window);
 }
 
 public static class WindowExtensions
