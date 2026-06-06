@@ -1,0 +1,40 @@
+using System.Runtime.InteropServices;
+using CsTools.Extensions;
+using Gtk4DotNet.Internals;
+
+namespace Gtk4DotNet;
+
+public class Application : GObject //, IActionMap
+{
+    public static Application New(string id, int flags = 0)
+        => _New(id, 0)
+                .SideEffect(_ => Gtk.Init());
+
+    public static Application NewAdwaita(string id, int flags = 0)
+        => _NewAdw(id, 0)
+                .SideEffect(_ => Gtk.Init());
+
+    public Application OnActivate(Action<Application> activate)
+        => this.SideEffect(_ => SignalConnect<OnePointerDelegate>("activate", _ => activate(this)));
+
+    public int Run(int c = 0, nint a = 0)
+    {
+        var result = _Run(this, c, a);
+        Dispose();
+        return result;
+    }
+
+    public ApplicationWindow NewWindow() => NewWindow(this);
+
+    [DllImport(Libs.LibAdw, EntryPoint = "adw_application_new", CallingConvention = CallingConvention.Cdecl)]
+    extern static Application _NewAdw(string id, int flags = 0);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_new", CallingConvention = CallingConvention.Cdecl)]
+    extern static Application _New(string id, int flags = 0);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_application_run", CallingConvention = CallingConvention.Cdecl)]
+    extern static int _Run(Application app, int c, nint a);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_window_new", CallingConvention = CallingConvention.Cdecl)]
+    extern static ApplicationWindow NewWindow(Application app);
+}

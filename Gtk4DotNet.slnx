@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/Tests/">
+    <Project Path="Tests/First/First.csproj" />
+  </Folder>
+  <Project Path="Gtk4DotNet/Gtk4DotNet.csproj" />
+</Solution>
