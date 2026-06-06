@@ -6,3 +6,6 @@ Tests/FirstWidget/bin
 Tests/FirstWidget/obj
 Tests/Builder/bin
 Tests/Builder/obj
+Tests/Bindings/bin
+Tests/Bindings/obj
+

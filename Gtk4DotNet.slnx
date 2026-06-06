@@ -3,6 +3,7 @@
     <Project Path="Tests/FirstWidget/FirstWidget.csproj" />
     <Project Path="Tests/HelloWorld/HelloWorld.csproj" />
     <Project Path="Tests/Builder/Builder.csproj" />
+    <Project Path="Tests/Bindings/Bindings.csproj" />
   </Folder>
   <Project Path="Gtk4DotNet/Gtk4DotNet.csproj" />
 </Solution>
