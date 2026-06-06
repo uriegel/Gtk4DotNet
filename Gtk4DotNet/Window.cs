@@ -33,6 +33,9 @@ public class Window : Widget
 
     internal Window(Widget widget) : base() => handle = widget.TakeHandle();
 
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_application", CallingConvention = CallingConvention.Cdecl)]
+    internal extern static void SetApplication(Window window, Application application);
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_title", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetTitle(Window window, string title);
 

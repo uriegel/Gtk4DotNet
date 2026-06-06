@@ -26,6 +26,12 @@ public class Application : GObject //, IActionMap
 
     public ApplicationWindow NewWindow() => NewWindow(this);
 
+    public ApplicationWindow WindowFromBuilder(string template, string window, Func<WindowBuilder, ApplicationWindow> creator)
+    {
+        using var builder = Builder.FromDotNetResource(template);
+        return creator(new(window, builder, this));
+    }
+
     [DllImport(Libs.LibAdw, EntryPoint = "adw_application_new", CallingConvention = CallingConvention.Cdecl)]
     extern static Application _NewAdw(string id, int flags = 0);
 
@@ -38,3 +44,5 @@ public class Application : GObject //, IActionMap
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_window_new", CallingConvention = CallingConvention.Cdecl)]
     extern static ApplicationWindow NewWindow(Application app);
 }
+
+public record WindowBuilder(string Window, Builder Builder, Application Application);

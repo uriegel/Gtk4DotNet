@@ -2,6 +2,7 @@
   <Folder Name="/Tests/">
     <Project Path="Tests/FirstWidget/FirstWidget.csproj" />
     <Project Path="Tests/HelloWorld/HelloWorld.csproj" />
+    <Project Path="Tests/Builder/Builder.csproj" />
   </Folder>
   <Project Path="Gtk4DotNet/Gtk4DotNet.csproj" />
 </Solution>

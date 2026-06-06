@@ -4,3 +4,5 @@ Tests/HelloWorld/bin
 Tests/HelloWorld/obj
 Tests/FirstWidget/bin
 Tests/FirstWidget/obj
+Tests/Builder/bin
+Tests/Builder/obj
