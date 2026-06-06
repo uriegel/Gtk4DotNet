@@ -1,4 +1,6 @@
 Gtk4DotNet/bin
 Gtk4DotNet/obj
-Tests/First/bin
-Tests/First/obj
+Tests/HelloWorld/bin
+Tests/HelloWorld/obj
+Tests/FirstWidget/bin
+Tests/FirstWidget/obj

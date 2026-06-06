@@ -5,14 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "1 - First",
+            "name": "1 - Hello World",
             "type": "coreclr",
             "request": "launch",
             "requireExactSource": true, 
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Tests/First/bin/Debug/net10.0/First.dll",
+            "program": "${workspaceFolder}/Tests/HelloWorld/bin/Debug/net10.0/HelloWorld.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/Tests/First",
+            "cwd": "${workspaceFolder}/Tests/HelloWorld",
             "stopAtEntry": false,
             "justMyCode": false,
             "enableStepFiltering": true,
@@ -20,15 +20,15 @@
 //                "DOTNET_EnableDiagnostics": "0" // <- optional
             },
             "console": "internalConsole"
-        },         {
-            "name": "2 - Hello World",
+        }, {
+            "name": "2 - First Widget",
             "type": "coreclr",
             "request": "launch",
             "requireExactSource": true, 
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/HelloWorld/bin/Debug/net10.0/HelloWorld.dll",
+            "program": "${workspaceFolder}/Tests/FirstWidget/bin/Debug/net10.0/FirstWidget.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/HelloWorld",
+            "cwd": "${workspaceFolder}/Tests/FirstWidget",
             "stopAtEntry": false,
             "justMyCode": false,
             "enableStepFiltering": true,
