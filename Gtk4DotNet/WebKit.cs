@@ -27,6 +27,10 @@ public static class WebKit
         => webView.SideEffect(a => Gtk.SignalConnect<TwoPointerDelegate>(a, "script-dialog", 
             (IntPtr _, IntPtr s) => alert(webView, Marshal.PtrToStringUTF8(ScriptDialogGetMessage(s)))));
 
+    public static WebViewHandle OnPermissionRequest(this WebViewHandle webView, Func<nint, bool> permissionRequest)
+        => webView.SideEffect(a => Gtk.SignalConnect<ThreePointerBoolRetDelegate>(a, "permission-request", 
+            (IntPtr _, IntPtr rq, IntPtr _)  => permissionRequest(rq)));
+
     public static WebViewHandle DisableContextMenu(this WebViewHandle webView)
         => webView.OnContextMenu(_ => true);
 

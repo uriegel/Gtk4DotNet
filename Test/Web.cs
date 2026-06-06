@@ -2,10 +2,46 @@ using GtkDotNet;
 using CsTools.Extensions;
 
 using static System.Console;
+using CsTools.Functional;
+using GtkDotNet.SafeHandles;
+using GtkDotNet.SubClassing;
+using System.Runtime.InteropServices;
 
 static class Web
 {
     public static int Run()
+        => Application
+            .New("org.gtk.example")
+            .OnActivate(app => app
+                .SideEffect(_ =>
+                {
+                    var webkitType = GType.Get(GTypeEnum.WebKitWebView);
+                    GType.Ensure(webkitType);
+                })
+                .SideEffect(app =>
+                    Builder.FromDotNetResource("builderWeb").Use(
+                        builder =>
+                        {
+                            builder
+                                .GetObject<WindowHandle>("window", w => w
+                                    .SetApplication(app)
+                                    .Show());
+                            builder
+                                //.GetObject<WebViewHandle>("webview", wv => wv.LoadUri("https://selqio.com/tools/webrtc-tester"));
+                                .GetObject<WebViewHandle>("webview", wv =>
+                                {
+                                    wv.OnPermissionRequest(rq =>
+                                    {
+                                        webkit_permission_request_allow(rq);
+                                        return true;
+                                    });
+                                    //wv.LoadUri("https://selqio.com/tools/webrtc-tester");
+                                    wv.LoadUri("http://localhost:5173");
+                                });
+                        })))
+            .Run(0, IntPtr.Zero);
+
+    public static int Run1()
         => Application
             .New("org.gtk.example")
             .OnActivate(app =>
@@ -63,4 +99,8 @@ static class Web
             .Run(0, IntPtr.Zero)
             .SideEffect(_ => GC.Collect())
             .SideEffect(_ => GC.Collect());
+
+
+    [DllImport("libwebkitgtk-6.0.so.4", CallingConvention = CallingConvention.Cdecl)]
+    static extern void webkit_permission_request_allow(nint request);
 }
