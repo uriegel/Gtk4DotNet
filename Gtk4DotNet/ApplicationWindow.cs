@@ -11,9 +11,9 @@ public class ApplicationWindow : Window // , IActionMap
         builder.Builder.GetWindow(this, builder.Window);
         SetApplication(this, builder.Application);
         var widgetFields = GetType()
-            .GetFields(BindingFlags.Instance |
-               BindingFlags.NonPublic |
-               BindingFlags.Public)
+            .GetFields(System.Reflection.BindingFlags.Instance |
+               System.Reflection.BindingFlags.NonPublic |
+               System.Reflection.BindingFlags.Public)
             .Select(f => new
             {
                 Field = f,
