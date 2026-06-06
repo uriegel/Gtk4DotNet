@@ -31,6 +31,9 @@ public static class Mount
     [DllImport(Libs.LibGtk, EntryPoint = "g_mount_get_volume", CallingConvention = CallingConvention.Cdecl)]
     public extern static VolumeHandle GetVolume(this MountHandle mount);
 
+    [DllImport(Libs.LibGtk, EntryPoint = "g_mount_get_root", CallingConvention = CallingConvention.Cdecl)]
+    public extern static GFileHandle GetRoot(this MountHandle mount);
+
     [DllImport(Libs.LibGtk, EntryPoint = "g_mount_get_name", CallingConvention = CallingConvention.Cdecl)]
     extern static nint _GetName(MountHandle mount);
 

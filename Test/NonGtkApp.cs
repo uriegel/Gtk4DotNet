@@ -24,13 +24,19 @@ static class NonGtkApp
         await Gtk.Dispatch(async () =>
         {
             {
-                string? Test()
+                (string?, string?) Test()
                 {
-                    var probeFile = GFile.New("/");
-                    //var probeFile = GFile.New("/run/media/uwe/Daten/Bilder/Fotos/1965");
+                    //var probeFile = GFile.New("/");
+                    using var probeFile = GFile.New("/run/media/uwe/Daten/Bilder/Bildschirmfotos");
+                    //using var probeFile = GFile.New("/home/uwe/Dokumente");
                     using var mount = probeFile.FindEnclosingMount();
+                    if (mount.IsInvalid)
+                        return (null, null);
                     using var volume = mount.GetVolume();
-                    return volume.GetUnixDevice();
+                    using var root = mount.GetRoot();
+                    return (volume.GetUuid(), root.GetPath());
+                    
+                    //return volume.GetUnixDevice();
                 }
 
                 var stopwatch = new Stopwatch();
