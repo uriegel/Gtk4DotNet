@@ -8,4 +8,5 @@ Tests/Builder/bin
 Tests/Builder/obj
 Tests/Bindings/bin
 Tests/Bindings/obj
-
+Tests/ProgressSubclass/bin
+Tests/ProgressSubclass/obj

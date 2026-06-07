@@ -68,6 +68,22 @@
 //                "DOTNET_EnableDiagnostics": "0" // <- optional
             },
             "console": "internalConsole"
+        }, {
+            "name": "5 - Progress Subclass",
+            "type": "coreclr",
+            "request": "launch",
+            "requireExactSource": true, 
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Tests/ProgressSubclass/bin/Debug/net10.0/ProgressSubclass.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Tests/ProgressSubclass",
+            "stopAtEntry": false,
+            "justMyCode": false,
+            "enableStepFiltering": true,
+            "env": {
+//                "DOTNET_EnableDiagnostics": "0" // <- optional
+            },
+            "console": "internalConsole"
         }
     ]
 }

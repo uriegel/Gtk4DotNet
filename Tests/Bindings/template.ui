@@ -2,7 +2,7 @@
 <interface>
   <object class="GtkWindow" id="window">
     <property name="title">Hello Gtk Bindings👍</property>
-<child>
+    <child>
       <object class="GtkBox" id="box">
         <property name="orientation">vertical</property>
         <child>

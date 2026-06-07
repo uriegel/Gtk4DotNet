@@ -154,10 +154,17 @@ public class Widget : FloatingObject
             Console.Error.WriteLine($"Binding to css not possible: DataContext not set");
     }
 
+    public StyleContext GetStyleContext() => GetStyleContext(this);
+    public void QueueDraw() => QueueDraw(this);
+
     public Widget() : base() { }
 
-    public Widget(Builder builder) : base()
+    // TODO Call for all Widgets
+    public Widget(Builder builder, string? name = null) : base()
     {
+        if (name != null)
+            SetInternalHandle(builder.GetWidgetPtr(name));
+
         var widgetFields = GetType()
             .GetFields(System.Reflection.BindingFlags.Instance |
                System.Reflection.BindingFlags.NonPublic |
@@ -170,11 +177,15 @@ public class Widget : FloatingObject
             .Where(x => x.Attribute != null);
         foreach (var field in widgetFields)
         {
-            var p = builder.GetWidgetPtr(field.Attribute!.Name ?? field.Field.Name);
+            var templateElementName = field.Attribute!.Name ?? field.Field.Name;
+            var p = builder.GetWidgetPtr(templateElementName);
             if (p != 0)
             {
                 var widgetType = field.Field.FieldType;
-                var instance = Activator.CreateInstance(widgetType) as Widget;
+                var ctor = widgetType.GetConstructor([ typeof(Builder), typeof(string)]);
+                var instance = (ctor != null
+                    ? ctor.Invoke([ builder, templateElementName])
+                    : Activator.CreateInstance(widgetType)) as Widget;
                 instance?.SetInternalHandle(p);
                 field.Field.SetValue(this, instance);
             }
@@ -226,6 +237,12 @@ public class Widget : FloatingObject
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_remove_css_class", CallingConvention = CallingConvention.Cdecl)]
     extern static void RemoveCssClass(Widget widget, string cssClass);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_style_context", CallingConvention = CallingConvention.Cdecl)]
+    extern static StyleContext GetStyleContext(Widget widget);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_queue_draw", CallingConvention = CallingConvention.Cdecl)]
+    extern static void QueueDraw(Widget widget);
 }
 
 public static class WidgetExtensions

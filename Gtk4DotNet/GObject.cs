@@ -116,8 +116,11 @@ public class GObject : BaseHandle
         return result;
     }
 
-    public void  OnNotify(string property, Action onNotify)
+    public void OnNotify(string property, Action onNotify)
         => SignalConnect<ThreePointerDelegate>($"notify::{property}", (nint _, nint __, nint ___) => onNotify());
+
+    public void BindProperty(string property, GObject target, string targetProperty, BindingFlags flags)
+        => BindProperty(this, property, target, targetProperty, flags);
 
     internal void SignalConnect<TDelegate>(string name, TDelegate callback)
         where TDelegate : Delegate
@@ -155,6 +158,9 @@ public class GObject : BaseHandle
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_get_property", CallingConvention = CallingConvention.Cdecl)]
     static extern void GetProperty(GObject obj, string name, nint value);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_bind_property", CallingConvention = CallingConvention.Cdecl)]
+    static extern nint BindProperty(GObject source, string property, GObject target, string targetProperty, BindingFlags flags);
 }
 
 public static class GObjectExtensions

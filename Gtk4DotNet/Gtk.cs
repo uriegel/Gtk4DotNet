@@ -4,7 +4,6 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
-// TODO Progress from resource, no subclassing, but custom WidgetCreator when setting revealer from builder
 // TODO new AdwWindow in First Widget
 
 public static class Gtk
