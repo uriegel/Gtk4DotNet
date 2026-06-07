@@ -13,8 +13,16 @@ class MyWindow : ApplicationWindow
     readonly Button button1 = null!;
 
     [Widget]
-    readonly Button button2 = null!;
-    
+    readonly MyButton button2 = null!;
+
     [Widget]
     readonly Button quit = null!;
+}
+
+class MyButton : Button
+{
+    public MyButton()
+    {
+        Console.WriteLine("My custom Button created");
+    }
 }

@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using CsTools.Extensions;
 using Gtk4DotNet.Extensions;
@@ -123,9 +124,7 @@ public class Widget : FloatingObject
             }
         }
         else
-        {
             Console.Error.WriteLine("Binding not possible: DataContext not set");
-        }
     }
 
     public void SetBindingToCss(string cssClass, string property, Func<object?, bool>? converter = null)
@@ -152,12 +151,35 @@ public class Widget : FloatingObject
             }
         }
         else
-        {
             Console.Error.WriteLine($"Binding to css not possible: DataContext not set");
-        }
     }
 
     public Widget() : base() { }
+
+    public Widget(Builder builder) : base()
+    {
+        var widgetFields = GetType()
+            .GetFields(System.Reflection.BindingFlags.Instance |
+               System.Reflection.BindingFlags.NonPublic |
+               System.Reflection.BindingFlags.Public)
+            .Select(f => new
+            {
+                Field = f,
+                Attribute = f.GetCustomAttribute<WidgetAttribute>()
+            })
+            .Where(x => x.Attribute != null);
+        foreach (var field in widgetFields)
+        {
+            var p = builder.GetWidgetPtr(field.Attribute!.Name ?? field.Field.Name);
+            if (p != 0)
+            {
+                var widgetType = field.Field.FieldType;
+                var instance = Activator.CreateInstance(widgetType) as Widget;
+                instance?.SetInternalHandle(p);
+                field.Field.SetValue(this, instance);
+            }
+        }
+    }
 
     public Widget(nint obj) : base() => SetInternalHandle(obj);
 
