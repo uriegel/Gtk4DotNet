@@ -8,6 +8,11 @@ class ProgressDisplay : Revealer
         drawingArea.SetDrawFunction(Draw);
         OnNotify("reveal-child", MakeProgress);
         starter.BindProperty("active", this, "reveal-child", BindingFlags.Bidirectional);
+        OnFinalize(async () =>
+        {
+            closing = true;
+            await Task.Delay(400);
+        });
     }
 
     void Draw(DrawingArea area, Cairo cairo, int w, int h)
@@ -41,7 +46,7 @@ class ProgressDisplay : Revealer
                 if (closing || id != activeId)
                     return;
                 drawingArea.QueueDraw();
-                // TODO progressBar?.Fraction(progress);                
+                progressBar.Fraction = progress;                
             }
             await Task.Delay(5000);
             IsRevealed = false;
@@ -49,7 +54,7 @@ class ProgressDisplay : Revealer
     }
 
     [Widget(Name = "progress_bar")]
-    Widget progressBar = null!;
+    ProgressBar progressBar = null!;
 
     [Widget(Name = "progress_area")]
     DrawingArea drawingArea = null!;
@@ -58,7 +63,7 @@ class ProgressDisplay : Revealer
     Widget starter = null!;
 
     float progress = 0.0f;
-    // TODO AddWeakRef (OnFinalize)
+    
     bool closing;
     int activeId;
 }
