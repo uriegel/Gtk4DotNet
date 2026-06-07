@@ -9,4 +9,5 @@ public sealed class WidgetAttribute : Attribute
     }
 
     public string? Name { get; set; }
+    public string? Template { get; set; }
 }

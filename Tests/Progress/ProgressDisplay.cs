@@ -7,6 +7,7 @@ class ProgressDisplay : Revealer
         AddCssClass("custom-accent");
         drawingArea.SetDrawFunction(Draw);
         OnNotify("reveal-child", MakeProgress);
+        starter.BindProperty("active", this, "reveal-child", BindingFlags.Bidirectional);
     }
 
     void Draw(DrawingArea area, Cairo cairo, int w, int h)
@@ -52,6 +53,9 @@ class ProgressDisplay : Revealer
 
     [Widget(Name = "progress_area")]
     DrawingArea drawingArea = null!;
+
+    [Widget]
+    Widget starter = null!;
 
     float progress = 0.0f;
     // TODO AddWeakRef (OnFinalize)

@@ -3,7 +3,7 @@
   <requires lib="gtk" version="4.6"/>
   <requires lib="adw" version="1.0"/>
   <object class="GtkWindow" id="window">
-    <property name="title">Hello Progress Subclass👍</property>
+    <property name="title">Hello Progress👍</property>
     <property name="default-width">800</property>
     <property name="default-height">600</property>    
     <property name="titlebar">
@@ -14,25 +14,7 @@
           </object>
         </child>
         <child type="end">
-          <object class="GtkRevealer" id="revealer">
-            <property name="transition-type">slide-left</property>
-            <child>
-              <object class="GtkMenuButton">
-                <property name="popover">
-                  <object class="GtkPopover">
-                    <child>
-                      <object class="GtkProgressBar" id="progress_bar">
-                        <property name="show-text">True</property>
-                      </object>
-                    </child>
-                  </object>
-                </property>
-                <child>
-                  <object class="GtkDrawingArea" id="progress_area"/>
-                </child>
-              </object>              
-            </child>
-          </object>
+          <object class="GtkBox" id="revealer"/>
         </child>      
       </object>
     </property>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.6"/>
+  <requires lib="adw" version="1.0"/>
+  <object class="GtkRevealer" id="revealer">
+    <property name="transition-type">slide-left</property>
+    <child>
+      <object class="GtkMenuButton">
+        <property name="popover">
+          <object class="GtkPopover">
+            <child>
+              <object class="GtkProgressBar" id="progress_bar">
+                <property name="show-text">True</property>
+              </object>
+            </child>
+          </object>
+        </property>
+        <child>
+          <object class="GtkDrawingArea" id="progress_area"/>
+        </child>
+      </object>              
+    </child>
+  </object>
+</interface>

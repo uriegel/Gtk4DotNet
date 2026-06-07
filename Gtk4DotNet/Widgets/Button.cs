@@ -17,7 +17,6 @@ public class Button : Widget
 
     public Button() : base() { }
     public Button(Builder builder, string? name = null) : base(builder, name) { }
-    public Button(nint obj) : base() => SetInternalHandle(obj);
 
     internal Button(Widget widget) : base() => handle = widget.TakeHandle();
 

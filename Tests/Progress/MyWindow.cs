@@ -10,13 +10,9 @@ class MyWindow : ApplicationWindow
             display,
             cssProvider,
             StyleProviderPriority.Application);
-        starter.BindProperty("active", revealer, "reveal-child", BindingFlags.Bidirectional);
     }
 
     [Widget]
-    Widget starter = null!;
-
-    [Widget(Template = "progress")]
-    ProgressDisplay revealer = null!;
+    readonly ProgressDisplay revealer = null!;
 }
 

@@ -13,7 +13,7 @@ public class Widget : FloatingObject
         get;
         private set;
     }
-    
+
     public int MarginStart
     {
         get => GetMarginStart(this);
@@ -193,14 +193,27 @@ public class Widget : FloatingObject
                 var widgetType = field.Field.FieldType;
                 var ctor = widgetType.GetConstructor([typeof(Builder), typeof(string)]);
                 var instance = (ctor != null
-                    ? ctor.Invoke([builder, templateElementName])
+                    ? field.Attribute.Template != null
+                    ? CreateInnerWidget(ctor, builder, field.Attribute.Template, templateElementName)
+                    : ctor.Invoke([builder, templateElementName])
                     : Activator.CreateInstance(widgetType)) as Widget;
-                instance?.SetInternalHandle(p);
+                if (field.Attribute.Template == null)
+                    instance?.SetInternalHandle(p);
                 field.Field.SetValue(this, instance);
             }
         }
+
+        object CreateInnerWidget(ConstructorInfo ctor, Builder builder, string innerTemplate, string name)
+        {
+            using var innerBuilder = Builder.FromDotNetResource(innerTemplate);
+            var obj = ctor.Invoke([innerBuilder, name]);
+            var container = builder.GetWidget<Box>(name);
+            if (obj is Widget w)
+                container.Append(w);
+            return obj;
+        }
     }
-    
+
     protected override void OnFinalization()
         => Console.WriteLine(Name != null ? $"{GetType().Name} {Name} finalized" : $"{GetType().Name} finalized");
 
