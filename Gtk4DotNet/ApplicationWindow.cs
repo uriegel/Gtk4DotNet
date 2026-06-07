@@ -22,7 +22,7 @@ public class ApplicationWindow : Window // , IActionMap
             .Where(x => x.Attribute != null);
         foreach (var field in widgetFields)
         {
-            var p = builder.Builder.GetWidgetPtr(field.Attribute!.Name!);
+            var p = builder.Builder.GetWidgetPtr(field.Attribute!.Name ?? field.Field.Name);
             if (p != 0)
             {
                 var widgetType = field.Field.FieldType;

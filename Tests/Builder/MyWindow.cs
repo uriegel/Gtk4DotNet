@@ -9,10 +9,12 @@ class MyWindow : ApplicationWindow
         quit.OnClicked(CloseWindow);
     }
 
-    [Widget(Name = "button1")]
+    [Widget]
     readonly Button button1 = null!;
-    [Widget(Name = "button2")]
+
+    [Widget]
     readonly Button button2 = null!;
-    [Widget(Name = "quit")]
+    
+    [Widget]
     readonly Button quit = null!;
 }

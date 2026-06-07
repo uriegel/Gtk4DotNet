@@ -73,6 +73,13 @@ public class Widget : FloatingObject
 
     public Widget GetParent() => GetParent(this);
 
+    public void AddCssClass(string cssClass, bool add = true)
+    {
+        if (add)
+            AddCssClass(this, cssClass);
+        else
+            RemoveCssClass(this, cssClass);
+    }
 
     public void SetBinding(string targetProperty, string property,
         BindingFlags bindingFlags = BindingFlags.Default, Func<object?, object?>? converter = null)
@@ -86,7 +93,7 @@ public class Widget : FloatingObject
             AddWeakRef(() => dataContext.PropertyChanged -= OnChanged);
 
             if (bindingFlags.HasFlag(BindingFlags.Bidirectional))
-                this.OnNotify(targetProperty, _ => SetValue());
+                OnNotify(targetProperty, SetValue);
 
             void OnChanged(object? sender, PropertyChangedEventArgs e)
             {
@@ -118,6 +125,35 @@ public class Widget : FloatingObject
         else
         {
             Console.Error.WriteLine("Binding not possible: DataContext not set");
+        }
+    }
+
+    public void SetBindingToCss(string cssClass, string property, Func<object?, bool>? converter = null)
+    {
+        var dataContext = DataContext;
+        if (dataContext != null)
+        {
+            AddCssClass(cssClass, GetValue());
+            dataContext.PropertyChanged += OnChanged;
+            AddWeakRef(() => dataContext.PropertyChanged -= OnChanged);
+
+            void OnChanged(object? sender, PropertyChangedEventArgs e)
+            {
+                if (e.PropertyName == property)
+                    AddCssClass(cssClass, GetValue());
+            }
+
+            bool GetValue()
+            {
+                var type = dataContext.GetType();
+                var propInfo = type?.GetProperty(property);
+                var res = propInfo?.GetValue(dataContext);
+                return converter?.Invoke(res) ?? (bool?)res == true;
+            }
+        }
+        else
+        {
+            Console.Error.WriteLine($"Binding to css not possible: DataContext not set");
         }
     }
 
@@ -162,6 +198,12 @@ public class Widget : FloatingObject
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_parent", CallingConvention = CallingConvention.Cdecl)]
     extern static Widget GetParent(Widget widget);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_add_css_class", CallingConvention = CallingConvention.Cdecl)]
+    extern static void AddCssClass(Widget widget, string cssClass);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_remove_css_class", CallingConvention = CallingConvention.Cdecl)]
+    extern static void RemoveCssClass(Widget widget, string cssClass);
 }
 
 public static class WidgetExtensions
@@ -184,9 +226,12 @@ public static class WidgetExtensions
         where THandle : Widget
         => widget.SideEffect(w => w.TooltipText = text);
 
-    // TODO
-    // public static THandle Binding<THandle>(this THandle target, string targetProperty, string property, BindingFlags bindingFlags,
-    //     Func<object?, object?>? converter = null)
-    //         where THandle : WidgetHandle, new()
+    public static THandle Binding<THandle>(this THandle target, string targetProperty, string property, BindingFlags bindingFlags = BindingFlags.Default,
+        Func<object?, object?>? converter = null)
+            where THandle : Widget
+        => target.SideEffect(t => t.SetBinding(targetProperty, property, bindingFlags, converter));
 
+    public static THandle CssClass<THandle>(this THandle widget, string cssClass)
+        where THandle : Widget
+        => widget.SideEffect(w => w.AddCssClass(cssClass));
 }

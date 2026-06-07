@@ -116,13 +116,16 @@ public class GObject : BaseHandle
         return result;
     }
 
+    public void  OnNotify(string property, Action onNotify)
+        => SignalConnect<ThreePointerDelegate>($"notify::{property}", (nint _, nint __, nint ___) => onNotify());
+
     internal void SignalConnect<TDelegate>(string name, TDelegate callback)
         where TDelegate : Delegate
     {
         var key = GtkDelegates.GetKey();
         GtkDelegates.Add(key, callback);
         AddWeakRef(() => GtkDelegates.Remove(key));
-        SignalConnect(this, name, Marshal.GetFunctionPointerForDelegate((Delegate)callback), IntPtr.Zero, 0);
+        SignalConnect(this, name, Marshal.GetFunctionPointerForDelegate((Delegate)callback), 0, 0);
     }
 
     protected override bool ReleaseHandle()
@@ -168,7 +171,7 @@ public static class GObjectExtensions
         where THandle : GObject, new()
         => (THandle)obj.SideEffect(o => o.AddWeakRef(onDisposing));
 
-    public static THandle OnNotify<THandle>(this THandle obj, string property, Action<THandle> onNotify)
+    public static THandle Notify<THandle>(this THandle obj, string property, Action onNotify)
         where THandle : GObject
-        => obj.SideEffect(o => o.SignalConnect<ThreePointerDelegate>($"notify::{property}", (IntPtr _, IntPtr __, IntPtr ___) => onNotify(obj)));
+        => obj.SideEffect(o => o.OnNotify(property, onNotify));
 }

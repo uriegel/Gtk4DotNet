@@ -21,11 +21,13 @@
             <child>
               <object class="GtkButton" id="button1">
                 <property name="label">Change</property>
+                <property name="css-classes">styled</property>
               </object>
             </child>
             <child>
               <object class="GtkButton" id="buttonNull">
                 <property name="label">To null</property>
+                <property name="css-classes">styled</property>
               </object>
             </child>
           </object>
@@ -39,69 +41,82 @@
             <property name="margin-top">5</property>
             <property name="spacing">10</property>
             <child>
-              <object class="GtkLabel"/>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="GtkBox">
-            <property name="spacing">10</property>
-            <property name="margin-bottom">5</property>
-            <property name="margin-end">5</property>
-            <property name="margin-start">5</property>
-            <property name="margin-top">5</property>
-            <property name="spacing">10</property>
-            <child>
-              <object class="GtkLabel"/>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="GtkBox">
-            <property name="spacing">10</property>
-            <property name="margin-bottom">5</property>
-            <property name="margin-end">5</property>
-            <property name="margin-start">5</property>
-            <property name="margin-top">5</property>
-            <property name="spacing">10</property>
-            <child>
-              <object class="GtkEditableLabel"/>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="GtkBox">
-            <property name="spacing">10</property>
-            <property name="margin-bottom">5</property>
-            <property name="margin-end">5</property>
-            <property name="margin-start">5</property>
-            <property name="margin-top">5</property>
-            <property name="spacing">10</property>
-            <child>
-              <object class="GtkCheckButton">
-                <property name="label">Binding</property>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="GtkBox">
-            <property name="spacing">10</property>
-            <property name="margin-bottom">5</property>
-            <property name="margin-end">5</property>
-            <property name="margin-start">5</property>
-            <property name="margin-top">5</property>
-            <property name="spacing">10</property>
-            <child>
-              <object class="GtkCheckButton">
+              <object class="GtkLabel" id="label2" >
                 <property name="halign">start</property>
                 <property name="hexpand">True</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="spacing">10</property>
+            <property name="margin-bottom">5</property>
+            <property name="margin-end">5</property>
+            <property name="margin-start">5</property>
+            <property name="margin-top">5</property>
+            <property name="spacing">10</property>
+            <child>
+              <object class="GtkLabel" id="label3">
+                <property name="halign">start</property>
+                <property name="hexpand">True</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="spacing">10</property>
+            <property name="margin-bottom">5</property>
+            <property name="margin-end">5</property>
+            <property name="margin-start">5</property>
+            <property name="margin-top">5</property>
+            <property name="spacing">10</property>
+            <child>
+              <object class="GtkEditableLabel" id="editable">
+                <property name="halign">start</property>
+                <property name="hexpand">True</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="spacing">10</property>
+            <property name="margin-bottom">5</property>
+            <property name="margin-end">5</property>
+            <property name="margin-start">5</property>
+            <property name="margin-top">5</property>
+            <property name="spacing">10</property>
+            <child>
+              <object class="GtkCheckButton" id="chk_1">
                 <property name="label">Binding</property>
+                <property name="halign">start</property>
+                <property name="hexpand">True</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="spacing">10</property>
+            <property name="margin-bottom">5</property>
+            <property name="margin-end">5</property>
+            <property name="margin-start">5</property>
+            <property name="margin-top">5</property>
+            <property name="spacing">10</property>
+            <child>
+              <object class="GtkCheckButton" id="chk_2">
+                <property name="label">Binding</property>
+                <property name="halign">start</property>
+                <property name="hexpand">True</property>
               </object>            
             </child>
             <child>
-              <object class="GtkCheckButton">
+              <object class="GtkCheckButton" id="chk_trigger">
                 <property name="label">Trigger</property>
+                <property name="halign">start</property>
+                <property name="hexpand">True</property>
               </object>            
             </child>
           </object>

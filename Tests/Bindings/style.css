@@ -1,0 +1,14 @@
+button {
+    color: darkblue;
+    background-color: lightblue;
+}
+
+button:hover {
+    color: darkblue;
+    background-color: rgb(220, 236, 241);
+}
+
+.yellow {
+    color: Blue;
+    background-color: yellow;
+}

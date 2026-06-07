@@ -2,7 +2,7 @@
 using Gtk4DotNet;
 
 Application
-    .New("de.uriegel.gtk4dotnet")
+    .NewAdwaita("de.uriegel.gtk4dotnet")
     .OnActivate(app => app
         .NewWindow()
         .Title("First Widget👍")
