@@ -10,3 +10,5 @@ Tests/Bindings/bin
 Tests/Bindings/obj
 Tests/ProgressSubclass/bin
 Tests/ProgressSubclass/obj
+Tests/Actions/bin
+Tests/Actions/obj
