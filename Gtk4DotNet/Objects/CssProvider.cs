@@ -5,10 +5,9 @@ namespace Gtk4DotNet;
 
 public class CssProvider : GObject
 {
-    public CssProvider() : base() { }
+    public static CssProvider New() => _New();
 
-    [DllImport(Libs.LibGtk, EntryPoint = "gtk_css_provider_new", CallingConvention = CallingConvention.Cdecl)]
-    public extern static CssProvider New();
+    public CssProvider() : base() { }
 
     /// <summary>
     /// Loads a css style from .NET resource
@@ -41,6 +40,9 @@ public class CssProvider : GObject
         _LoadFromData(this, data, 0, 0);
         return this;
     }
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_css_provider_new", CallingConvention = CallingConvention.Cdecl)]
+    extern static CssProvider _New();
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_css_provider_load_from_resource", CallingConvention = CallingConvention.Cdecl)]
     extern static void _LoadFromResource(CssProvider handle, string path);

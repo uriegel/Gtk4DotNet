@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using Gtk4DotNet;
 
 class ProgressDisplay : Revealer
@@ -42,7 +41,7 @@ class ProgressDisplay : Revealer
                 if (closing || id != activeId)
                     return;
                 drawingArea.QueueDraw();
-                //progressBar?.Fraction(progress);                
+                // TODO progressBar?.Fraction(progress);                
             }
             await Task.Delay(5000);
             IsRevealed = false;

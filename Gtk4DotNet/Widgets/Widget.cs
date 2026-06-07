@@ -8,6 +8,12 @@ namespace Gtk4DotNet;
 
 public class Widget : FloatingObject
 {
+    public string? Name
+    {
+        get;
+        private set;
+    }
+    
     public int MarginStart
     {
         get => GetMarginStart(this);
@@ -162,7 +168,11 @@ public class Widget : FloatingObject
     public Widget(Builder builder, string? name = null) : base()
     {
         if (name != null)
+        {
             SetInternalHandle(builder.GetWidgetPtr(name));
+            Name = name;
+            CheckDiagnostics();
+        }
 
         var widgetFields = GetType()
             .GetFields(System.Reflection.BindingFlags.Instance |
@@ -181,17 +191,18 @@ public class Widget : FloatingObject
             if (p != 0)
             {
                 var widgetType = field.Field.FieldType;
-                var ctor = widgetType.GetConstructor([ typeof(Builder), typeof(string)]);
+                var ctor = widgetType.GetConstructor([typeof(Builder), typeof(string)]);
                 var instance = (ctor != null
-                    ? ctor.Invoke([ builder, templateElementName])
+                    ? ctor.Invoke([builder, templateElementName])
                     : Activator.CreateInstance(widgetType)) as Widget;
                 instance?.SetInternalHandle(p);
                 field.Field.SetValue(this, instance);
             }
         }
     }
-
-    public Widget(nint obj) : base() => SetInternalHandle(obj);
+    
+    protected override void OnFinalization()
+        => Console.WriteLine(Name != null ? $"{GetType().Name} {Name} finalized" : $"{GetType().Name} finalized");
 
     internal const string DATA_CONTEXT = "DATA_CONTEXT";
 

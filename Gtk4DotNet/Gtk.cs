@@ -92,19 +92,25 @@ public static class Gtk
         // IdleAddFull(priority, funcPtr, IntPtr.Zero, IntPtr.Zero);
     }
 
+    public static bool Diagnostics
+    {
+        get;
+        set;
+    } 
+
     public static void ShowDiagnostics()
     {
         GC.Collect();
         GC.Collect();
         Console.WriteLine($"Total memory: {System.Diagnostics.Process.GetCurrentProcess().WorkingSet64:N0}, managed: {GC.GetTotalMemory(true):N0}");
 
-        // var asyncReadies = AsyncReady.GetDelegateCount();
-        // var delegates = GtkDelegates.GetDelegatesCount();
+        //var asyncReadies = AsyncReady.GetDelegateCount();
+        var delegates = GtkDelegates.GetDelegatesCount();
         // var actions = IActionMap.GetActionsCount();
         // if (asyncReadies > 0)
         //     Console.WriteLine($"GFile AsyncReadies: {asyncReadies}");
-        // if (delegates > 0)
-        //     Console.WriteLine($"Connected delegates: {delegates}");
+        if (delegates > 0)
+            Console.WriteLine($"Connected delegates: {delegates}");
         // if (actions > 0)
         //     Console.WriteLine($"Connected actions: {actions}");
     }

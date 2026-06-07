@@ -8,13 +8,10 @@ public class Cairo : GObject
     public Cairo(bool isWeak = false) : base() => this.isWeak = isWeak;
 
     internal static Cairo CreateWeak(nint raw)
-    {
-        return new Cairo(true)
+        => new Cairo(true)
         {
             handle = raw,
-            
         };
-    }
 
     protected override bool ReleaseHandle()
     {

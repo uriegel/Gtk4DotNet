@@ -6,9 +6,11 @@ namespace Gtk4DotNet;
 
 public class GObject : BaseHandle
 {
-    public GObject() : base() { }
+    public GObject() : base() => CheckDiagnostics();
 
     public bool IsFloating { get; set; }
+
+    public void OnFinalize(Action onFinalize) => AddWeakRef(onFinalize);
 
     /// <summary>
     /// Adds a weak reference callback to an object. Weak references are used for notification when an object is disposed. They are called “weak references” 
@@ -122,6 +124,15 @@ public class GObject : BaseHandle
     public void BindProperty(string property, GObject target, string targetProperty, BindingFlags flags)
         => BindProperty(this, property, target, targetProperty, flags);
 
+    internal void CheckDiagnostics()
+    {
+        if (!IsInvalid && Gtk.Diagnostics && !diagnosticsSet)
+        {
+            OnFinalize(OnFinalization);
+            diagnosticsSet = true;
+        }
+    }
+
     internal void SignalConnect<TDelegate>(string name, TDelegate callback)
         where TDelegate : Delegate
     {
@@ -130,6 +141,9 @@ public class GObject : BaseHandle
         AddWeakRef(() => GtkDelegates.Remove(key));
         SignalConnect(this, name, Marshal.GetFunctionPointerForDelegate((Delegate)callback), 0, 0);
     }
+
+    protected virtual void OnFinalization()
+        => Console.WriteLine($"{GetType().Name} finalized");
 
     protected override bool ReleaseHandle()
          => IsFloating
@@ -161,6 +175,8 @@ public class GObject : BaseHandle
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_bind_property", CallingConvention = CallingConvention.Cdecl)]
     static extern nint BindProperty(GObject source, string property, GObject target, string targetProperty, BindingFlags flags);
+
+    bool diagnosticsSet;
 }
 
 public static class GObjectExtensions
@@ -180,4 +196,8 @@ public static class GObjectExtensions
     public static THandle Notify<THandle>(this THandle obj, string property, Action onNotify)
         where THandle : GObject
         => obj.SideEffect(o => o.OnNotify(property, onNotify));
+
+    public static THandle Finalize<THandle>(this THandle obj, Action onFinalize)
+        where THandle : GObject
+        => obj.SideEffect(o => o.OnFinalize(onFinalize));
 }

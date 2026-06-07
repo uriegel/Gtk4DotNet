@@ -33,9 +33,6 @@ public class Window : Widget
     public Window(Builder builder, string? name = null) : base(builder, name) { }
     
     public Window() : base() { }
-    public Window(nint obj) : base() => SetInternalHandle(obj);
-
-    internal Window(Widget widget) : base() => handle = widget.TakeHandle();
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_application", CallingConvention = CallingConvention.Cdecl)]
     internal extern static void SetApplication(Window window, Application application);

@@ -10,7 +10,9 @@ public class Builder : GObject
     public static Builder FromDotNetResource(string path)
     {
         var ui = new StreamReader(Resources.Get(path)!).ReadToEnd();
-        return _FromString(ui, -1);
+        var res = _FromString(ui, -1);
+        res.CheckDiagnostics();
+        return res;
     }
 
     public void GetWindow(Window window, string objectName)

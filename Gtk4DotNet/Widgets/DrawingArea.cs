@@ -6,8 +6,12 @@ namespace Gtk4DotNet;
 
 public class DrawingArea : Widget
 {
-    [DllImport(Libs.LibGtk, EntryPoint = "gtk_drawing_area_new", CallingConvention = CallingConvention.Cdecl)]
-    public extern static DrawingArea New();
+    public static DrawingArea New()
+    {
+        var res = _New();
+        res.CheckDiagnostics();
+        return res;
+    }
 
     public DrawingArea() : base() { }
 
@@ -31,6 +35,9 @@ public class DrawingArea : Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_drawing_area_set_draw_func", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetDrawFunction(DrawingArea drawingArea, IntPtr drawFunction, IntPtr zero, OnePointerDelegate onDestroy);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_drawing_area_new", CallingConvention = CallingConvention.Cdecl)]
+    extern static DrawingArea _New();
 }
 
 

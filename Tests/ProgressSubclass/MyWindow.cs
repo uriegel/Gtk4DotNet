@@ -4,9 +4,11 @@ class MyWindow : ApplicationWindow
 {
     public MyWindow(WindowBuilder builder) : base(builder)
     {
+        using var display = Display.GetDefault();
+        using var cssProvider = CssProvider.New().FromResource("style");
         StyleContext.AddProviderForDisplay(
-            Display.GetDefault(),
-            CssProvider.New().FromResource("style"),
+            display,
+            cssProvider,
             StyleProviderPriority.Application);
     }
 

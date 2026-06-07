@@ -6,9 +6,13 @@ namespace Gtk4DotNet;
 
 public class Button : Widget
 {
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_button_new_with_label", CallingConvention = CallingConvention.Cdecl)]
-    public extern static Button NewWithLabel(string label);
-
+    public static Button NewWithLabel(string label)
+    {
+        var res = _NewWithLabel(label);
+        res.CheckDiagnostics();
+        return res;
+    }
+    
     public void OnClicked(Action click) => SignalConnect<TwoPointerDelegate>("clicked", (_, __) => click());
 
     public Button() : base() { }
@@ -16,6 +20,9 @@ public class Button : Widget
     public Button(nint obj) : base() => SetInternalHandle(obj);
 
     internal Button(Widget widget) : base() => handle = widget.TakeHandle();
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_button_new_with_label", CallingConvention = CallingConvention.Cdecl)]
+    extern static Button _NewWithLabel(string label);
 }
 
 public static class ButtonExtensions
