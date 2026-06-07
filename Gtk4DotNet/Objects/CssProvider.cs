@@ -1,6 +1,5 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
-using CsTools.Extensions;
 
 namespace Gtk4DotNet;
 
@@ -40,7 +39,7 @@ public class CssProvider : GObject
     public CssProvider FromData(string data)
     {
         _LoadFromData(this, data, 0, 0);
-        return this;         
+        return this;
     }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_css_provider_load_from_resource", CallingConvention = CallingConvention.Cdecl)]

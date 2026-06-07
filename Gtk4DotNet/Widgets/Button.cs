@@ -12,6 +12,7 @@ public class Button : Widget
     public void OnClicked(Action click) => SignalConnect<TwoPointerDelegate>("clicked", (_, __) => click());
 
     public Button() : base() { }
+    public Button(Builder builder, string? name = null) : base(builder, name) { }
     public Button(nint obj) : base() => SetInternalHandle(obj);
 
     internal Button(Widget widget) : base() => handle = widget.TakeHandle();

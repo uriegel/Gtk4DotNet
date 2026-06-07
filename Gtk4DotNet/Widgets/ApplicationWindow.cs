@@ -1,17 +1,11 @@
-using System.Diagnostics;
-using System.Reflection;
-
 namespace Gtk4DotNet;
 
 public class ApplicationWindow : Window // , IActionMap
 {
     public ApplicationWindow() : base() { }
     
-    public ApplicationWindow(WindowBuilder builder) : base(builder.Builder)
-    {
-        builder.Builder.GetWindow(this, builder.Window);
-        SetApplication(this, builder.Application);
-    }
+    public ApplicationWindow(WindowBuilder builder) : base(builder.Builder, builder.Window)
+        => SetApplication(this, builder.Application);
 
     public ApplicationWindow(nint obj) : base() => SetInternalHandle(obj);
 

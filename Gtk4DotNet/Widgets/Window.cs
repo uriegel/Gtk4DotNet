@@ -30,7 +30,7 @@ public class Window : Widget
 
     public void SetChild(Widget child) => SetChild(this, child);
 
-    public Window(Builder builder) : base(builder) { }
+    public Window(Builder builder, string? name = null) : base(builder, name) { }
     
     public Window() : base() { }
     public Window(nint obj) : base() => SetInternalHandle(obj);

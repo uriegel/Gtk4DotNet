@@ -159,7 +159,6 @@ public class Widget : FloatingObject
 
     public Widget() : base() { }
 
-    // TODO Call for all Widgets
     public Widget(Builder builder, string? name = null) : base()
     {
         if (name != null)
