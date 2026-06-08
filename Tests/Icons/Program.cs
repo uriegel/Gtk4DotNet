@@ -33,12 +33,8 @@ static async Task<bool> GetIconFromName(IRequest request)
     var subPath = request.SubPath;
     if (subPath == null)
         return true;
-    // var payload = await Icon.GetAsync(subPath);
-    // if (payload.Length == 0)
-    //     payload = await Icon.GetAsync("res=32application-x-executable");
-    //    await request.SendAsync(payload, payload.IsSvg() ? "image/svg+xml" : "image/png");
-    //    return true;
-    return false;
+    var size = request.QueryParts.GetValue("size")?.ParseInt() ?? 64;
+    return await GetIcon(request, subPath, size);
 }
 
 static async Task<bool> GetIconFromExtension(IRequest request)
@@ -49,7 +45,12 @@ static async Task<bool> GetIconFromExtension(IRequest request)
     var size = request.QueryParts.GetValue("size")?.ParseInt() ?? 64;
     using var icon = GIcon.Get(Gio.GuessContentType(subPath) ?? "none");
     var names = icon.ThemedNames().ToArray();
-    using var paintable = Display.GetDefault().GetIconTheme().LookupIcon(names[0], size);
+    return await GetIcon(request, names[0], size);
+}
+
+static async Task<bool> GetIcon(IRequest request, string name, int size)
+{
+    using var paintable = Display.GetDefault().GetIconTheme().LookupIcon(name, size);
     using var gfile = paintable.GetFile();
     var path = gfile.Path;
     if (path == null)
@@ -60,3 +61,4 @@ static async Task<bool> GetIconFromExtension(IRequest request)
     await request.SendAsync(payload, payload.IsSvg() ? "image/svg+xml" : "image/png");
     return true;
 }
+
