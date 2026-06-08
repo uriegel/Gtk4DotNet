@@ -1,13 +1,9 @@
 ﻿using Gtk4DotNet;
 
 Application
-    .New("de.uriegel.gtk4dotnet")
+    .NewAdwaita("de.uriegel.gtk4dotnet")
     .WithDiagnostics()
     .OnActivate(app => app
-        .NewWindow()
-        .Title("Hello World👍")
-        .DefaultSize(600, 200)
+        .WindowFromBuilder("template", "window", p => new MyWindow(p))
         .Show()
     ).Run();
-
-

@@ -147,7 +147,6 @@ public static class Gtk
             new GtkSynchronizationContext()
                 .SideEffect(_ => mainThreadId = Environment.CurrentManagedThreadId));
 
-
     [DllImport(Libs.LibGtk, EntryPoint = "g_signal_connect_object", CallingConvention = CallingConvention.Cdecl)]
     internal extern static long SignalConnectAction(IntPtr action, string name, IntPtr callback, IntPtr obj, int n3);
 
