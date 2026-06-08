@@ -8,6 +8,7 @@
     <Project Path="Tests/ProgressSubclass/ProgressSubclass.csproj" />
     <Project Path="Tests/Actions/Actions.csproj" />
     <Project Path="Tests/Icons/Icons.csproj" />
+    <Project Path="Tests/HelloWebView/HelloWebView.csproj" />
   </Folder>
   <Project Path="Gtk4DotNet/Gtk4DotNet.csproj" />
 </Solution>

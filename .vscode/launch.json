@@ -132,6 +132,23 @@
 //                "DOTNET_EnableDiagnostics": "0" // <- optional
             },
             "console": "internalConsole"
+        }, {
+            "name": "9 - WebView",
+            "type": "coreclr",
+            "request": "launch",
+            "requireExactSource": true, 
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Tests/HelloWebView/bin/Debug/net10.0/HelloWebView.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Tests/HelloWebView",
+            "stopAtEntry": false,
+            "justMyCode": false,
+            "enableStepFiltering": true,
+            "env": {
+//                "DOTNET_EnableDiagnostics": "0" // <- optional
+            },
+            "console": "internalConsole"
         }
     ]
 }
+
