@@ -4,10 +4,12 @@ namespace Gtk4DotNet;
 
 public class Display : FloatingObject
 {
-    public static Display GetDefault() =>  _GetDefault();
-    
-    // [DllImport(Libs.LibGtk, EntryPoint = "gtk_icon_theme_get_for_display", CallingConvention = CallingConvention.Cdecl)]
-    // public extern static IconThemeHandle GetIconTheme(Display display);
+    public static Display GetDefault() => _GetDefault();
+
+    public IconTheme GetIconTheme() => GetIconTheme(this);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_icon_theme_get_for_display", CallingConvention = CallingConvention.Cdecl)]
+    extern static IconTheme GetIconTheme(Display display);
 
     // [DllImport(Libs.LibGtk, EntryPoint = "gdk_display_get_default_seat", CallingConvention = CallingConvention.Cdecl)]
     // public extern static GdkSeatHandle GetDefaultSeat(Display display);
