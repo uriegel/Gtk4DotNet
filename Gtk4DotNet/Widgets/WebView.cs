@@ -33,8 +33,8 @@ public class WebView : Widget
     public WebView OnContextMenu(Func<WebView, bool> contextMenu)
         => this.SideEffect(a => SignalConnect<Action>("context-menu", () => contextMenu(this)));
 
-    [DllImport(Libs.LibWebKit, EntryPoint = "webkit_web_view_load_uri", CallingConvention = CallingConvention.Cdecl)]
-    extern static void LoadUri(WebView webView, string uri);
+    [DllImport(Libs.LibWebKit, EntryPoint = "webkit_web_view_get_type", CallingConvention = CallingConvention.Cdecl)]
+    public static extern new GType Type();
 
     public static void RunJavascript(WebView webView, string script)
     {
@@ -44,7 +44,7 @@ public class WebView : Widget
             var res = FinishJavascript(webView, result, IntPtr.Zero);
             GtkDelegates.Remove(key);
             if (res != IntPtr.Zero && JscIsString(res))
-                GObject.Free(res);
+                Free(res);
         };
         GtkDelegates.Add(key, callback);
         EvaluateJavascript(webView, script, -1, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, Marshal.GetFunctionPointerForDelegate(callback as Delegate), IntPtr.Zero);
@@ -75,6 +75,9 @@ public class WebView : Widget
 
     [DllImport(Libs.LibWebKit, EntryPoint = "webkit_web_view_new", CallingConvention = CallingConvention.Cdecl)]
     extern static WebView _New();
+
+    [DllImport(Libs.LibWebKit, EntryPoint = "webkit_web_view_load_uri", CallingConvention = CallingConvention.Cdecl)]
+    extern static void LoadUri(WebView webView, string uri);
 
     [DllImport(Libs.LibWebKit, EntryPoint = "webkit_script_dialog_get_message", CallingConvention = CallingConvention.Cdecl)]
     extern static nint ScriptDialogGetMessage(nint msg);

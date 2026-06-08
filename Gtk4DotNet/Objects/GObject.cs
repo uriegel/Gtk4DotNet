@@ -122,6 +122,9 @@ public class GObject : BaseHandle
     public void BindProperty(string property, GObject target, string targetProperty, BindingFlags flags)
         => BindProperty(this, property, target, targetProperty, flags);
 
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_get_type", CallingConvention = CallingConvention.Cdecl)]
+    public static extern GType Type();
+
     internal void CheckDiagnostics()
     {
         if (!IsInvalid && Gtk.Diagnostics && !diagnosticsSet)

@@ -30,6 +30,12 @@ public class Application : GObject, IActionMap
         return this;
     }
 
+    public Application WithWebKit()
+    {
+        GType.Get(GTypeEnum.WebKitWebView);
+        return this;
+    }
+
     public int Run(int c = 0, nint a = 0)
     {
         var result = _Run(this, c, a);

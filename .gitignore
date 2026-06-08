@@ -18,3 +18,5 @@ Tests/Icons/bin
 Tests/Icons/obj
 Tests/HelloWebView/bin
 Tests/HelloWebView/obj
+Tests/WebViewFromTemplate/bin
+Tests/WebViewFromTemplate/obj

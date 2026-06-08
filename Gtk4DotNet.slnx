@@ -9,6 +9,7 @@
     <Project Path="Tests/Actions/Actions.csproj" />
     <Project Path="Tests/Icons/Icons.csproj" />
     <Project Path="Tests/HelloWebView/HelloWebView.csproj" />
+    <Project Path="Tests/WebViewFromTemplate/WebViewFromTemplate.csproj" />
   </Folder>
   <Project Path="Gtk4DotNet/Gtk4DotNet.csproj" />
 </Solution>

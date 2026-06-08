@@ -8,11 +8,13 @@ class MyWindow : AdwApplicationWindow
             new("quit", CloseWindow, "<Ctrl>Q"),
             new("preview", false, show => Console.WriteLine($"Preview: {show}"), "F3")
         ]);
+
+        webView.LoadUri("https://github.com/uriegel/Gtk4DotNet");
     }
+
+    [Widget(Name="webview")]
+    readonly WebView webView = null!;
 }
 
-// TODO GFile
-// TODO GVolume, GDrive...
-// TODO For Action a delegate and the action is remaining
+// TODO Action for opening Inspector
 
-// TODO check IActionMap, GtkAction, ActionHandle: Action delegates are not being freed
