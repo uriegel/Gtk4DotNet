@@ -12,3 +12,8 @@ class MyWindow : AdwApplicationWindow
 }
 
 // TODO check IActionMap, GtkAction, ActionHandle: Action delegates are not being freed
+
+// TODO WebKit
+// TODO Icon from name and ext
+// TODO GFile
+// TODO GVolume, GDrive...
