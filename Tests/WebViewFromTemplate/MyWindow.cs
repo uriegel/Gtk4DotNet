@@ -1,3 +1,4 @@
+using System.Drawing;
 using Gtk4DotNet;
 
 class MyWindow : AdwApplicationWindow
@@ -9,6 +10,9 @@ class MyWindow : AdwApplicationWindow
             new("preview", false, show => Console.WriteLine($"Preview: {show}"), "F3")
         ]);
 
+        webView.BackgroundColor(Color.Transparent);
+        var settings = webView.GetSettings();
+        settings.EnableDeveloperExtras = true;
         webView.LoadUri("https://github.com/uriegel/Gtk4DotNet");
     }
 
@@ -16,5 +20,5 @@ class MyWindow : AdwApplicationWindow
     readonly WebView webView = null!;
 }
 
-// TODO Action for opening Inspector
-
+// TODO Action for opening Inspector and detach it
+// TODO Disable Context Menu

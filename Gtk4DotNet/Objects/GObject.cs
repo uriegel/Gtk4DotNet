@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using CsTools.Extensions;
+using Gtk4DotNet.Extensions;
 using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
@@ -122,6 +123,23 @@ public class GObject : BaseHandle
     public void BindProperty(string property, GObject target, string targetProperty, BindingFlags flags)
         => BindProperty(this, property, target, targetProperty, flags);
 
+    public void SetString(string name, string? value)
+        => SetString(this, name, value ?? "", 0);
+
+    public string? GetString(string name)
+    {
+        GetString(this, name, out var value, IntPtr.Zero);
+        return value.PtrToString(true);
+    }
+
+    public void SetBool(string name, bool value)
+        => SetBool(this, name, value, 0);
+    public bool GetBool(string name)
+    {
+        GetBool(this, name, out var value, 0);
+        return value;
+    }
+
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_get_type", CallingConvention = CallingConvention.Cdecl)]
     public static extern GType Type();
 
@@ -176,6 +194,18 @@ public class GObject : BaseHandle
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_bind_property", CallingConvention = CallingConvention.Cdecl)]
     static extern nint BindProperty(GObject source, string property, GObject target, string targetProperty, BindingFlags flags);
+
+     [DllImport(Libs.LibGtk, EntryPoint = "g_object_set", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetString(GObject obj, string name, string value, nint end);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_get", CallingConvention = CallingConvention.Cdecl)]
+    extern static void GetString(GObject obj, string name, out nint value, nint end);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_set", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetBool(GObject obj, string name, bool value, nint end);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_get", CallingConvention = CallingConvention.Cdecl)]
+    extern static bool GetBool(GObject obj, string name, out bool value, nint end);
 
     bool diagnosticsSet;
 }

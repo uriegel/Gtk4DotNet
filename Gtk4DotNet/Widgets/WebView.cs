@@ -11,17 +11,17 @@ public class WebView : Widget
     {
         var webview = _New();
         webview.CheckDiagnostics();
-        return webview;        
+        return webview;
     }
 
     public WebView LoadUri(string uri)
         => this.SideEffect(w => LoadUri(this, uri));
 
     public WebView OnLoadChanged(Action<WebView, WebViewLoad> loadChanged)
-        => this.SideEffect(a => SignalConnect<TwoPointerDelegate>("load-changed", (nint _, nint e)  => loadChanged(this, (WebViewLoad)e)));
+        => this.SideEffect(a => SignalConnect<TwoPointerDelegate>("load-changed", (nint _, nint e) => loadChanged(this, (WebViewLoad)e)));
 
     public WebView OnAlert(Action<WebView, string?> alert)
-        => this.SideEffect(a => SignalConnect<TwoPointerDelegate>("script-dialog", 
+        => this.SideEffect(a => SignalConnect<TwoPointerDelegate>("script-dialog",
             (IntPtr _, IntPtr s) => alert(this, Marshal.PtrToStringUTF8(ScriptDialogGetMessage(s)))));
 
     // public WebView OnPermissionRequest(Func<nint, bool> permissionRequest)
@@ -50,11 +50,7 @@ public class WebView : Widget
         EvaluateJavascript(webView, script, -1, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, Marshal.GetFunctionPointerForDelegate(callback as Delegate), IntPtr.Zero);
     }
 
-    // [DllImport(Libs.LibWebKit, EntryPoint = "webkit_web_view_get_settings", CallingConvention = CallingConvention.Cdecl)]
-    // public extern static WebViewSettingsHandle GetSettings(this WebViewHandle webView);
-
-    // [DllImport(Libs.LibWebKit, EntryPoint = "webkit_web_view_get_inspector", CallingConvention = CallingConvention.Cdecl)]
-    // public extern static WebInspectorHandle GetInspector(this WebViewHandle webView);
+    public WebViewSettings GetSettings() => GetSettings(this);
 
     public WebView BackgroundColor(Color color)
     {
@@ -62,6 +58,8 @@ public class WebView : Widget
         SetBackgroundColor(this, ref rgba);
         return this;
     }
+
+    public WebInspector GetInspector() => GetInspector(this);
 
     public WebView() : base() { }
 
@@ -83,7 +81,7 @@ public class WebView : Widget
     extern static nint ScriptDialogGetMessage(nint msg);
 
     [DllImport(Libs.LibWebKit, EntryPoint = "webkit_web_view_set_background_color", CallingConvention = CallingConvention.Cdecl)]
-    extern static void SetBackgroundColor(WebView webView,  ref GtkRgba rgba);
+    extern static void SetBackgroundColor(WebView webView, ref GtkRgba rgba);
 
     [DllImport(Libs.LibWebKit, EntryPoint = "webkit_web_view_evaluate_javascript", CallingConvention = CallingConvention.Cdecl)]
     extern static void EvaluateJavascript(WebView webView, string script, int _, nint __, nint ___, nint ____, nint callback, nint _____);
@@ -95,6 +93,12 @@ public class WebView : Widget
     extern static bool JscIsString(IntPtr obj);
 
     [DllImport(Libs.LibWebKit, EntryPoint = "jsc_value_is_undefined", CallingConvention = CallingConvention.Cdecl)]
-    extern static bool JscIsUndefined(IntPtr obj);   
+    extern static bool JscIsUndefined(IntPtr obj);
+
+    [DllImport(Libs.LibWebKit, EntryPoint = "webkit_web_view_get_inspector", CallingConvention = CallingConvention.Cdecl)]
+    extern static WebInspector GetInspector(WebView webView);
+
+    [DllImport(Libs.LibWebKit, EntryPoint = "webkit_web_view_get_settings", CallingConvention = CallingConvention.Cdecl)]
+    extern static WebViewSettings GetSettings(WebView webView);
 }
 

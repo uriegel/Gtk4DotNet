@@ -17,28 +17,6 @@
                 <property name="menu-model">main-menu</property>
               </object>
             </child>      
-            <child type="end">
-              <object class="GtkToggleButton" id="preview_button">
-                <property name="icon-name">x-office-presentation</property>
-                <property name="action-name">win.preview</property>
-              </object>
-            </child>
-            <child type="end">
-              <object class="GtkDropDown" id="preview_mode">
-                <property name="visible"
-                  bind-source="preview_button"
-                  bind-property="active"
-                  bind-flags="sync-create"/><property name="model">
-                  <object class="GtkStringList">
-                    <items>
-                      <item>Bild</item>
-                      <item>Bild+Ort</item>
-                      <item>Ort</item>
-                    </items>
-                  </object>
-                </property>
-              </object>
-            </child>        
           </object>
         </child>
         <child>
@@ -57,110 +35,19 @@
   <menu id="main-menu">
     <section>
       <item>
-        <attribute name="label">_Aktualisieren</attribute>
-        <attribute name="action">win.refresh</attribute>
-      </item>
-      <item>
-        <attribute name="label">_Versteckte Dateien</attribute>
-        <attribute name="action">win.showhidden</attribute>
+        <attribute name="label">Dev Tools</attribute>
+        <attribute name="action">win.devtools</attribute>
       </item>
     </section>
     <section>
     </section>
     <section>
       <submenu>
-        <attribute name="label">_Datei</attribute>
-        <section>
-          <item>
-            <attribute name="label">_Umbenennen</attribute>
-            <attribute name="action">win.rename</attribute>
-          </item>
-          <item>
-            <attribute name="label">Kopie _anlegen</attribute>
-            <attribute name="action">win.renameascopy</attribute>
-          </item>
-          <item>
-            <attribute name="label">_Erweitertes Umbenennen</attribute>
-            <attribute name="action">win.extendedrename</attribute>
-          </item>
-        </section>
-        <section>
-          <item>
-            <attribute name="label">_Kopieren</attribute>
-            <attribute name="action">win.copy</attribute>
-          </item>
-          <item> 
-            <attribute name="label">_Verschieben</attribute>
-            <attribute name="action">win.move</attribute>
-          </item>
-          <item>
-            <attribute name="label">_Löschen</attribute>
-            <attribute name="action">win.delete</attribute>
-          </item>
-        </section>
-        <section>
-          <item>
-            <attribute name="label">_Ordner anlegen</attribute>
-            <attribute name="action">win.createfolder</attribute>
-          </item>
-        </section>
-        <section>
-          <item>
-            <attribute name="label">_Öffnen mit...</attribute>
-            <attribute name="action">win.openwith</attribute>
-          </item>
-        </section>
+        <attribute name="label">_File</attribute>
         <section>
           <item>
             <attribute name="label">_Beenden</attribute>
             <attribute name="action">win.quit</attribute>
-          </item>
-        </section>
-      </submenu>
-      <submenu>
-        <attribute name="label">_Navigation</attribute>
-        <section>
-          <item>
-            <attribute name="label">_Favoriten</attribute>
-            <attribute name="action">win.favorites</attribute>
-          </item>
-          <item>
-            <attribute name="label">_Gleichen Ordner öffnen</attribute>
-            <attribute name="action">win.adaptpath</attribute>
-          </item>
-        </section>
-      </submenu>
-      <submenu>
-        <attribute name="label">_Selektion</attribute>
-        <section>
-          <item>
-            <attribute name="label">Selektion _wechseln</attribute>
-            <attribute name="action">win.toggleselection</attribute>
-          </item>
-        </section>
-        <section>
-          <item>
-            <attribute name="label">_Alles</attribute>
-            <attribute name="action">win.selectall</attribute>
-          </item>
-          <item>
-            <attribute name="label">_Selektion entfernen</attribute>
-            <attribute name="action">win.selectnone</attribute>
-          </item>
-        </section>
-      </submenu>
-      <submenu id="sub-menu-view">
-        <attribute name="label">_Ansicht</attribute>
-        <section>
-          <item>
-            <attribute name="label">_Vollbild</attribute>
-            <attribute name="action">app.fullscreen</attribute>
-          </item>
-        </section>
-        <section>
-          <item>
-            <attribute name="label">_Entwicklerwerkzeuge</attribute>
-            <attribute name="action">win.devtools</attribute>
           </item>
         </section>
       </submenu>
