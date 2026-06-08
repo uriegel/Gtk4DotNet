@@ -172,7 +172,10 @@ public class Widget : FloatingObject
     }
 
     public StyleContext GetStyleContext() => GetStyleContext(this);
+
     public void QueueDraw() => QueueDraw(this);
+
+    public Widget GetRoot() => GetRoot(this);
 
     public Widget() : base() { }
 
@@ -287,6 +290,9 @@ W A R N I N G
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_queue_draw", CallingConvention = CallingConvention.Cdecl)]
     extern static void QueueDraw(Widget widget);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_root", CallingConvention = CallingConvention.Cdecl)]
+    extern static Widget GetRoot(Widget widget);
 }
 
 public static class WidgetExtensions

@@ -30,6 +30,9 @@ public class Window : Widget
 
     public void SetChild(Widget child) => SetChild(this, child);
 
+    public Application GetApplication()
+        => _GetApplication(this).SideEffect(a => a.IsFloating = true);
+
     public Window(Builder builder, string? name = null) : base(builder, name) { }
 
     public Window() : base() { }
@@ -60,6 +63,9 @@ public class Window : Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_close", CallingConvention = CallingConvention.Cdecl)]
     extern static void CloseWindow(Window window);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_get_application", CallingConvention = CallingConvention.Cdecl)]
+    extern static Application _GetApplication(Window window);
 }
 
 public static class WindowExtensions

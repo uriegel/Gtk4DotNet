@@ -4,7 +4,7 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
-public class Application : GObject //, IActionMap
+public class Application : GObject, IActionMap
 {
     public static Application New(string id, int flags = 0)
     {
@@ -44,7 +44,7 @@ public class Application : GObject //, IActionMap
         var res = NewWindow(this);
         res.CheckDiagnostics();
         return res;
-    } 
+    }
 
     public ApplicationWindow WindowFromBuilder(string template, string window, Func<WindowBuilder, ApplicationWindow> creator)
     {
@@ -53,6 +53,8 @@ public class Application : GObject //, IActionMap
         res.CheckDiagnostics();
         return res;
     }
+    
+    public void SetAccelsForAction(string action, [In] string?[] accels) => SetAccelsForAction(this, action, accels);
 
     [DllImport(Libs.LibAdw, EntryPoint = "adw_application_new", CallingConvention = CallingConvention.Cdecl)]
     extern static Application _NewAdw(string id, int flags = 0);
@@ -65,6 +67,9 @@ public class Application : GObject //, IActionMap
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_window_new", CallingConvention = CallingConvention.Cdecl)]
     extern static ApplicationWindow NewWindow(Application app);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_set_accels_for_action", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetAccelsForAction(Application app, string action, [In] string?[] accels);
 }
 
 public record WindowBuilder(string Window, Builder Builder, Application Application);
