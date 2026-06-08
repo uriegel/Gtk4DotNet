@@ -3,25 +3,25 @@ using CsTools.Extensions;
 
 namespace Gtk4DotNet.Internals;
 
-delegate void ProgressCallback(long current, long total);
+public delegate void ProgressCallback(long current, long total);
 delegate void CustomSchemeRequestDelegate(nint request);
 delegate void SoupMessageHeadersDelegate(string name, string value);
 
-delegate void OnePointerDelegate(IntPtr p);
-delegate void TwoPointerDelegate(IntPtr p, IntPtr pp);
-delegate void ThreePointerDelegate(IntPtr p, IntPtr pp, IntPtr ppp);
-delegate void DrawFunctionDelegate(IntPtr drawingArea, IntPtr cairo, int width, int height, IntPtr data);
-delegate void DrawingAreaResizeDelegate(IntPtr drawingArea, int width, int height, IntPtr data);
-delegate void PressedGestureDelegate(IntPtr _, int pressCount, double x, double y, IntPtr __);
-delegate void DragGestureDelegate(IntPtr _, double x, double y, IntPtr __);
+delegate void OnePointerDelegate(nint p);
+delegate void TwoPointerDelegate(nint p, nint pp);
+delegate void ThreePointerDelegate(nint p, nint pp, nint ppp);
+delegate void DrawFunctionDelegate(nint drawingArea, nint cairo, int width, int height, nint data);
+delegate void DrawingAreaResizeDelegate(nint drawingArea, int width, int height, nint data);
+delegate void PressedGestureDelegate(nint _, int pressCount, double x, double y, nint __);
+delegate void DragGestureDelegate(nint _, double x, double y, nint __);
 //delegate bool KeyPressedDelegate(nint _, int key, int keyCode, KeyModifiers keyModifiers, nint __);
 //delegate void KeyReleasedDelegate(nint _, int key, int keyCode, KeyModifiers keyModifiers, nint __);
 //delegate void OnModifiersDelegate(nint _, KeyModifiers keyModifiers, nint __);
-delegate void TwoLongAndPtrCallback(long current, long total, IntPtr zero);
+delegate void TwoLongAndPtrCallback(long current, long total, nint zero);
 delegate bool BoolRetDelegate();
-delegate bool OnePointerBoolRetDelegate(IntPtr p);
-delegate bool TwoPointerBoolRetDelegate(IntPtr p, IntPtr pp);
-delegate bool ThreePointerBoolRetDelegate(IntPtr p, IntPtr pp, IntPtr ppp);
+delegate bool OnePointerBoolRetDelegate(nint p);
+delegate bool TwoPointerBoolRetDelegate(nint p, nint pp);
+delegate bool ThreePointerBoolRetDelegate(nint p, nint pp, nint ppp);
 delegate void PointerBoolDelegate(nint _, bool b);
 delegate void PointerIntDelegate(nint _, int i);
 delegate void AlertDialogResponseDelegate(nint p, string response, nint pp);

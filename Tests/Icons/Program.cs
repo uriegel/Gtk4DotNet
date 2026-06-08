@@ -1,4 +1,5 @@
 ﻿using System.Net.Mime;
+using System.Text;
 using CsTools.Extensions;
 using Gtk4DotNet;
 using WebServerLight;
@@ -49,8 +50,19 @@ static async Task<bool> GetIconFromExtension(IRequest request)
     using var icon = GIcon.Get(Gio.GuessContentType(subPath) ?? "none");
     var names = icon.ThemedNames().ToArray();
     using var paintable = Display.GetDefault().GetIconTheme().LookupIcon(names[0], 64);
-    // var payload = await Icon.GetAsync($"ext:{subPath}");
-    // await request.SendAsync(payload, payload.IsSvg() ? "image/svg+xml" : "image/png", WebView.StartTime);
-    //    return true;
-    return false;
+    using var gfile = paintable.GetFile();
+    var path = gfile.Path;
+    if (path == null)
+        return false;
+    using var file = File.OpenRead(path);
+    var payload = new byte[file.Length];
+    int v = await file.ReadAsync(payload, 0, payload.Length);
+    await request.SendAsync(payload, IsSvg(payload) ? "image/svg+xml" : "image/png");
+    return true;
 }
+
+// TODO to CsTools
+static bool IsSvg(byte[] payload)
+    => payload.Length > 4
+        && (payload[0] == 60 && payload[1] == 115 && payload[2] == 118 && payload[3] == 103
+          || payload[0] == 60 && payload[1] == 63 && payload[2] == 120 && payload[3] == 109);
