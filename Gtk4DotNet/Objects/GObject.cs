@@ -6,8 +6,6 @@ namespace Gtk4DotNet;
 
 public class GObject : BaseHandle
 {
-    public GObject() : base() => CheckDiagnostics();
-
     public bool IsFloating { get; set; }
 
     public void OnFinalize(Action onFinalize) => AddWeakRef(onFinalize);

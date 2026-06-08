@@ -5,8 +5,6 @@ namespace Gtk4DotNet;
 
 public class Surface : GObject
 {
-    public Surface() : base() {}
-
     protected override bool ReleaseHandle()
         => true.SideEffect(_ => SurfaceDestroy(handle));
         

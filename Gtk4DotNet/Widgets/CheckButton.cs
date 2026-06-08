@@ -15,10 +15,12 @@ public class CheckButton : Widget
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_check_button_new_with_label", CallingConvention = CallingConvention.Cdecl)]
     public extern static CheckButton NewWithLabel(string label);
 
+    public CheckButton() : base() { }
+
     public CheckButton(Builder builder, string? name = null) : base(builder, name) { }
 
-    public void OnToggled(Action<bool> onToggle)
-        => SignalConnect<TwoPointerDelegate>("toggled", (_, __) => onToggle(IsActive));
+    public CheckButton OnToggled(Action<bool> onToggle)
+        => this.SideEffect(_ => SignalConnect<TwoPointerDelegate>("toggled", (_, __) => onToggle(IsActive)));
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_check_button_get_active", CallingConvention = CallingConvention.Cdecl)]
     extern static bool GetIsActive(CheckButton button);
@@ -27,8 +29,3 @@ public class CheckButton : Widget
     extern static bool SetIsActive(CheckButton button, bool active);
 }
 
-public static class CheckButtonExtensions
-{
-    public static CheckButton Toggled(this CheckButton button, Action<bool> onToggle)
-        => button.SideEffect(b => b.OnToggled(onToggle));
-}

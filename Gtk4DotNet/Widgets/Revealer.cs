@@ -11,14 +11,13 @@ public class Revealer : Widget
         res.CheckDiagnostics();
         return res;
     }
-    
-    public Revealer() : base() { }
 
+    public Revealer() : base() { }
+    
     public Revealer(Builder builder, string? name = null) : base(builder, name) { }
 
-    public Revealer(nint obj) : base() => SetInternalHandle(obj);
-
-    public void SetChild(Widget child) => SetChild(this, child);
+    public Revealer Child(Widget child) =>
+        this.SideEffect(_ => SetChild(this, child));
 
     public bool IsRevealed
     {
@@ -26,7 +25,11 @@ public class Revealer : Widget
         set => SetRevealChild(this, value);
     }
 
-    public void SetTransitionType(RevealerTransition transition) => SetTransitionType(this, transition);
+    public Revealer TransitionType(RevealerTransition transition) =>
+        this.SideEffect(_ => SetTransitionType(this, transition));
+
+    public Revealer RevealChild(bool reveal = true)
+        => this.SideEffect(r => r.IsRevealed = reveal);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_revealer_set_reveal_child", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetRevealChild(Revealer revealer, bool reveal);
@@ -44,15 +47,3 @@ public class Revealer : Widget
     extern static Revealer _New();
 }
 
-public static class RevealerExtensions
-{
-    public static Revealer TransitionType(this Revealer revealer, RevealerTransition transition)
-        => revealer.SideEffect(r => r.SetTransitionType(transition));
-
-    public static Revealer Child(this Revealer revealer, Widget widget)
-        => revealer.SideEffect(r => r.SetChild(widget));
-
-    public static Revealer RevealChild(this Revealer revealer, bool reveal = true)
-        => revealer.SideEffect(r => r.IsRevealed = reveal);
-        
-}

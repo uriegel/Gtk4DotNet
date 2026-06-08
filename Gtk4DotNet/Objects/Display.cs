@@ -6,8 +6,6 @@ public class Display : FloatingObject
 {
     public static Display GetDefault() =>  _GetDefault();
     
-    public Display() : base() { }
-
     // [DllImport(Libs.LibGtk, EntryPoint = "gtk_icon_theme_get_for_display", CallingConvention = CallingConvention.Cdecl)]
     // public extern static IconThemeHandle GetIconTheme(Display display);
 

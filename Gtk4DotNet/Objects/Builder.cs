@@ -5,8 +5,6 @@ namespace Gtk4DotNet;
 
 public class Builder : GObject
 {
-    public Builder() : base() { }
-    
     public static Builder FromDotNetResource(string path)
     {
         var ui = new StreamReader(Resources.Get(path)!).ReadToEnd();

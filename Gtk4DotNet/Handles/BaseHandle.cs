@@ -7,8 +7,8 @@ public abstract class BaseHandle : SafeHandleZeroOrMinusOneIsInvalid
     public BaseHandle()
         : base(ownsHandle: true) { }
 
-    public BaseHandle(nint handle)
-        : base(ownsHandle: true) => this.handle = handle;
+    // public BaseHandle(nint handle)
+    //     : base(ownsHandle: true) => this.handle = handle;
 
     public nint GetInternalHandle() => handle;
 
@@ -16,13 +16,6 @@ public abstract class BaseHandle : SafeHandleZeroOrMinusOneIsInvalid
 
     protected override bool ReleaseHandle() => true;
     //     => NativeMethods.CloseHandle(handle);
-
-    internal IntPtr TakeHandle() 
-    {
-        var result = handle;
-        handle = 0;
-        return result;
-    }
 
     // - There is no need to implement a finalizer, MySafeHandle already has one
     // - You do not need to protect against multiple disposing, MySafeHandle already does

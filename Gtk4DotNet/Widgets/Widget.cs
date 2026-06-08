@@ -14,6 +14,17 @@ public class Widget : FloatingObject
         private set;
     }
 
+    public int Margin
+    {
+        set
+        {
+            SetMarginStart(this, value);
+            SetMarginEnd(this, value);
+            SetMarginTop(this, value);
+            SetMarginBottom(this, value);
+        }
+    }
+
     public int MarginStart
     {
         get => GetMarginStart(this);
@@ -192,6 +203,16 @@ public class Widget : FloatingObject
             {
                 var widgetType = field.Field.FieldType;
                 var ctor = widgetType.GetConstructor([typeof(Builder), typeof(string)]);
+                if (ctor == null)
+                {
+                    Console.Error.WriteLine(
+@$"===================================================
+W A R N I N G
+{templateElementName} could not be built from template, ctor(Builder, string) is missing
+                    
+===================================================");
+                    continue;
+                }
                 var instance = (ctor != null
                     ? field.Attribute.Template != null
                     ? CreateInnerWidget(ctor, builder, field.Attribute.Template, templateElementName)
@@ -270,6 +291,10 @@ public class Widget : FloatingObject
 
 public static class WidgetExtensions
 {
+    public static THandle Margin<THandle>(this THandle widget, int margin)
+        where THandle : Widget
+        => widget.SideEffect(w => w.Margin = margin);
+
     public static THandle MarginStart<THandle>(this THandle widget, int margin)
         where THandle : Widget
         => widget.SideEffect(w => w.MarginStart = margin);

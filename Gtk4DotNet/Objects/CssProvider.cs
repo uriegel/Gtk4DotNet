@@ -7,8 +7,6 @@ public class CssProvider : GObject
 {
     public static CssProvider New() => _New();
 
-    public CssProvider() : base() { }
-
     /// <summary>
     /// Loads a css style from .NET resource
     /// </summary>

@@ -25,7 +25,7 @@ class MyWindow : ApplicationWindow
             .SetBindingToCss("yellow", nameof(WindowDataContext.Active));
         checkBtn1.SetBinding("active", nameof(WindowDataContext.Active), BindingFlags.Bidirectional);
         checkBtn2.SetBinding("active", nameof(WindowDataContext.Active));
-        trigger.Toggled(b => dataContext.Active = b);
+        trigger.OnToggled(b => dataContext.Active = b);
         editable
             .Binding("text", nameof(WindowDataContext.Name), BindingFlags.Bidirectional)
             .Notify("editing", () => Console.WriteLine("Editing..."));

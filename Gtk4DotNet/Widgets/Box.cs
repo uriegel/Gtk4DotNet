@@ -13,7 +13,7 @@ public class Box : Widget
     }
 
     public Box() : base() { }
-
+    
     public Box(Builder builder, string? name = null) : base(builder, name) { }
 
     public Box Append(Widget widget)

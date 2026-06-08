@@ -16,7 +16,6 @@ public class DrawingArea : Widget
     public DrawingArea() : base() { }
 
     public DrawingArea(Builder builder, string? name = null) : base(builder, name) { }
-    public DrawingArea(nint obj) : base() => SetInternalHandle(obj);
 
     public void SetDrawFunction(Action<DrawingArea, Cairo, int, int> draw)
         => SetDrawFunction((nint _, nint cairo, int w, int h, nint ___) => draw(this, Cairo.CreateWeak(cairo), w, h));

@@ -16,9 +16,8 @@ public class Button : Widget
     public void OnClicked(Action click) => SignalConnect<TwoPointerDelegate>("clicked", (_, __) => click());
 
     public Button() : base() { }
-    public Button(Builder builder, string? name = null) : base(builder, name) { }
 
-    internal Button(Widget widget) : base() => handle = widget.TakeHandle();
+    public Button(Builder builder, string? name = null) : base(builder, name) { }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_button_new_with_label", CallingConvention = CallingConvention.Cdecl)]
     extern static Button _NewWithLabel(string label);

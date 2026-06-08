@@ -7,5 +7,3 @@ Application
         .WindowFromBuilder("template", "window", p => new MyWindow(p))
         .Show()
     ).Run();
-
-// TODO MyButton not finalized

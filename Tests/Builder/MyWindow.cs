@@ -21,8 +21,6 @@ class MyWindow : ApplicationWindow
 
 class MyButton : Button
 {
-    public MyButton()
-    {
-        Console.WriteLine("My custom Button created");
-    }
+    public MyButton(Builder builder, string? name = null) : base(builder, name) 
+        => Console.WriteLine("My custom Button created");
 }
