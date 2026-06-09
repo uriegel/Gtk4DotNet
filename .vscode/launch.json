@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "1 - Hello World",
+            "name": "Hello World",
             "type": "coreclr",
             "request": "launch",
             "requireExactSource": true, 
@@ -21,7 +21,7 @@
             },
             "console": "internalConsole"
         }, {
-            "name": "2 - First Widget",
+            "name": "First Widget",
             "type": "coreclr",
             "request": "launch",
             "requireExactSource": true, 
@@ -37,7 +37,7 @@
             },
             "console": "internalConsole"
         }, {
-            "name": "3 - Builder",
+            "name": "Builder",
             "type": "coreclr",
             "request": "launch",
             "requireExactSource": true, 
@@ -53,7 +53,7 @@
             },
             "console": "internalConsole"
         }, {
-            "name": "4 - Bindings",
+            "name": "Bindings",
             "type": "coreclr",
             "request": "launch",
             "requireExactSource": true, 
@@ -69,7 +69,23 @@
             },
             "console": "internalConsole"
         }, {
-            "name": "5 - Progress",
+            "name": "Dialog",
+            "type": "coreclr",
+            "request": "launch",
+            "requireExactSource": true, 
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Tests/Dialog/bin/Debug/net10.0/Dialog.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Tests/Dialog",
+            "stopAtEntry": false,
+            "justMyCode": false,
+            "enableStepFiltering": true,
+            "env": {
+//                "DOTNET_EnableDiagnostics": "0" // <- optional
+            },
+            "console": "internalConsole"
+        }, {
+            "name": "Progress",
             "type": "coreclr",
             "request": "launch",
             "requireExactSource": true, 
@@ -85,7 +101,7 @@
             },
             "console": "internalConsole"
         }, {
-            "name": "6 - Progress Subclass",
+            "name": "Progress Subclass",
             "type": "coreclr",
             "request": "launch",
             "requireExactSource": true, 
@@ -101,7 +117,7 @@
             },
             "console": "internalConsole"
         }, {
-            "name": "7 - Actions",
+            "name": "Actions",
             "type": "coreclr",
             "request": "launch",
             "requireExactSource": true, 
@@ -117,7 +133,7 @@
             },
             "console": "internalConsole"
         }, {
-            "name": "8 - Icons",
+            "name": "Icons",
             "type": "coreclr",
             "request": "launch",
             "requireExactSource": true, 
@@ -133,7 +149,7 @@
             },
             "console": "internalConsole"
         }, {
-            "name": "9 - WebView",
+            "name": "WebView",
             "type": "coreclr",
             "request": "launch",
             "requireExactSource": true, 
@@ -149,7 +165,7 @@
             },
             "console": "internalConsole"
         }, {
-            "name": "10 - WebView fromTemplate",
+            "name": "WebView fromTemplate",
             "type": "coreclr",
             "request": "launch",
             "requireExactSource": true, 

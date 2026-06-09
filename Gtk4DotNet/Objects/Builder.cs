@@ -22,6 +22,7 @@ public class Builder : GObject
         var p = _GetWidget(this, objectName);
         var res = new THandle();
         res.SetInternalHandle(p);
+        res.CheckDiagnostics();
         return res;
     }
 

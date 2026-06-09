@@ -20,3 +20,6 @@ Tests/HelloWebView/bin
 Tests/HelloWebView/obj
 Tests/WebViewFromTemplate/bin
 Tests/WebViewFromTemplate/obj
+Tests/Dialog/bin/Debug
+Tests/Dialog/obj
+

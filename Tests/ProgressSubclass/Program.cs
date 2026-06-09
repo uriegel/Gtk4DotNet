@@ -8,3 +8,5 @@ Application
         .Show()
     ).Run();
 
+// TODO Progress revealer not in Box but directly and calling 
+//    var dialog = bilder.GetWidget<MyRevealer>("progress");
