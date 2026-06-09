@@ -1,5 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Created with Cambalache 1.0.2 -->
 <interface>
+  <!-- interface-name template.ui -->
+  <requires lib="gtk" version="4.20"/>
   <object class="GtkWindow" id="window">
     <property name="title">Hello Gtk Bindings👍</property>
     <child>
@@ -7,41 +10,40 @@
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkBox">
-            <property name="spacing">10</property>
             <property name="margin-bottom">5</property>
             <property name="margin-end">5</property>
             <property name="margin-start">5</property>
             <property name="margin-top">5</property>
+            <property name="spacing">10</property>
             <child>
               <object class="GtkLabel" id="label1">
                 <property name="halign">start</property>
                 <property name="hexpand">True</property>
+                <property name="single-line-mode">True</property>
               </object>
             </child>
             <child>
               <object class="GtkButton" id="button1">
-                <property name="label">Change</property>
                 <property name="css-classes">styled</property>
+                <property name="label">Change</property>
               </object>
             </child>
             <child>
               <object class="GtkButton" id="buttonNull">
-                <property name="label">To null</property>
-                <property name="css-classes">styled</property>
+                <property name="label">Reset text</property>
               </object>
             </child>
           </object>
         </child>
         <child>
           <object class="GtkBox">
-            <property name="spacing">10</property>
             <property name="margin-bottom">5</property>
             <property name="margin-end">5</property>
             <property name="margin-start">5</property>
             <property name="margin-top">5</property>
             <property name="spacing">10</property>
             <child>
-              <object class="GtkLabel" id="label2" >
+              <object class="GtkLabel" id="label2">
                 <property name="halign">start</property>
                 <property name="hexpand">True</property>
               </object>
@@ -50,7 +52,6 @@
         </child>
         <child>
           <object class="GtkBox">
-            <property name="spacing">10</property>
             <property name="margin-bottom">5</property>
             <property name="margin-end">5</property>
             <property name="margin-start">5</property>
@@ -66,7 +67,6 @@
         </child>
         <child>
           <object class="GtkBox">
-            <property name="spacing">10</property>
             <property name="margin-bottom">5</property>
             <property name="margin-end">5</property>
             <property name="margin-start">5</property>
@@ -82,7 +82,6 @@
         </child>
         <child>
           <object class="GtkBox">
-            <property name="spacing">10</property>
             <property name="margin-bottom">5</property>
             <property name="margin-end">5</property>
             <property name="margin-start">5</property>
@@ -90,16 +89,15 @@
             <property name="spacing">10</property>
             <child>
               <object class="GtkCheckButton" id="chk_1">
-                <property name="label">Binding</property>
                 <property name="halign">start</property>
                 <property name="hexpand">True</property>
+                <property name="label">Binding (2-way)</property>
               </object>
             </child>
           </object>
         </child>
         <child>
           <object class="GtkBox">
-            <property name="spacing">10</property>
             <property name="margin-bottom">5</property>
             <property name="margin-end">5</property>
             <property name="margin-start">5</property>
@@ -107,17 +105,17 @@
             <property name="spacing">10</property>
             <child>
               <object class="GtkCheckButton" id="chk_2">
-                <property name="label">Binding</property>
                 <property name="halign">start</property>
                 <property name="hexpand">True</property>
-              </object>            
+                <property name="label">Binding (1-way)</property>
+              </object>
             </child>
             <child>
               <object class="GtkCheckButton" id="chk_trigger">
-                <property name="label">Trigger</property>
                 <property name="halign">start</property>
                 <property name="hexpand">True</property>
-              </object>            
+                <property name="label">Trigger</property>
+              </object>
             </child>
           </object>
         </child>
@@ -125,4 +123,3 @@
     </child>
   </object>
 </interface>
-
