@@ -13,6 +13,3 @@ class MyWindow : AdwApplicationWindow
 
 // TODO GFile
 // TODO GVolume, GDrive...
-// TODO For Action a delegate and the action is remaining
-
-// TODO check IActionMap, GtkAction, ActionHandle: Action delegates are not being freed
