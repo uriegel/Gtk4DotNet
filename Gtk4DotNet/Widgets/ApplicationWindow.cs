@@ -2,10 +2,7 @@ namespace Gtk4DotNet;
 
 public class ApplicationWindow : Window, IActionMap
 {
-    public ApplicationWindow() : base()
-    {
-        AddWeakRef((this as IActionMap).FreeActions);
-    }
+    public ApplicationWindow() : base() { }
 
     public ApplicationWindow(WindowBuilder builder) : base(builder.Builder, builder.Window)
     {
