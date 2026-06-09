@@ -11,7 +11,8 @@ class MyWindow : ApplicationWindow
     {
         var dialog = AdwAlertDialog.New("Save changes?", "Do you want to save your changes?");
         dialog.SetResponses([
-                new("ok", "_Ok", Default: true),
+                new("yes", "_Yes", Default: true, Appearance: AdwResponseAppearance.Suggested),
+                new("no", "_No", Appearance: AdwResponseAppearance.Destructive),
                 new("cancel", "_Cancel", Cancel: true)
             ], Console.WriteLine);
         dialog.PresentAsync(this);
@@ -20,6 +21,9 @@ class MyWindow : ApplicationWindow
     [Widget]
     readonly Button dialog1 = null!;
 }
+
+// TODO Button 2 Dialog from builder, Cambalache
+
 
 // static bool PreventClosing(ApplicationWindow window)
 // {

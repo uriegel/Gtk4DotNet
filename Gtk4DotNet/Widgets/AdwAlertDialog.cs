@@ -15,13 +15,15 @@ public class AdwAlertDialog : AdwDialog
 
     public void SetResponses(IEnumerable<AlertDialogResponse> responses, Action<string?> onResponse)
     {
-        foreach (var response in responses)
+        foreach (var response in responses.Reverse())
         {
             AddResponse(this, response.Id, response.Label);
             if (response.Default == true)
                 SetDefaultResponse(this, response.Id);
             else if (response.Cancel == true)
                 SetCloseResponse(this, response.Id);
+            if (response.Appearance.HasValue)
+                SetResponseAppearance(this, response.Id, response.Appearance.Value);
         }
         SignalConnect<ThreePointerDelegate>("response", (_, id, ___) => onResponse(id.PtrToString(false)));
     }
@@ -49,6 +51,14 @@ public class AdwAlertDialog : AdwDialog
 
     [DllImport(Libs.LibAdw, EntryPoint = "adw_alert_dialog_set_close_response", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetCloseResponse(AdwAlertDialog dialog, string id);
+
+    [DllImport(Libs.LibAdw, EntryPoint = "adw_alert_dialog_set_response_appearance", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetResponseAppearance(AdwAlertDialog dialog, string id, AdwResponseAppearance appearance);
 }
 
-public record AlertDialogResponse(string Id, string Label, bool? Default = null, bool? Cancel = null);
+public record AlertDialogResponse(
+    string Id,
+    string Label,
+    bool? Default = null,
+    bool? Cancel = null,
+    AdwResponseAppearance? Appearance = null);
