@@ -2,56 +2,51 @@
 <!-- Created with Cambalache 1.0.2 -->
 <interface>
   <!-- interface-name template.ui -->
+  <requires lib="gio" version="2.0"/>
   <requires lib="gtk" version="4.20"/>
+  <requires lib="libadwaita" version="1.4"/>
+  <requires lib="webkitgtk" version="6.0"/>
   <object class="AdwApplicationWindow" id="window">
-    <property name="title">WebView from Template👍</property>
-    <property name="default-width">900</property>
-    <property name="default-height">600</property>    
-    <property name="content"> 
+    <property name="content">
       <object class="AdwToolbarView">
         <child type="top">
           <object class="AdwHeaderBar" id="headerBar">
             <child type="end">
               <object class="GtkMenuButton" id="menu_button">
                 <property name="icon-name">open-menu-symbolic</property>
-                <property name="menu-model">main-menu</property>
-              </object>
-            </child>      
-          </object>
-        </child>
-        <child>
-          <object class="GtkBox">
-            <property name="orientation">vertical</property>
-            <child> 
-              <object class="WebKitWebView" id="webview">
-                <property name="vexpand">True</property>
+                <property name="menu-model">
+                  <menu>
+                    <section>
+                      <item>
+                        <attribute name="action">win.devtools</attribute>
+                        <attribute name="icon">dbus-symbolic</attribute>
+                        <attribute name="label">_Dev Tools</attribute>
+                      </item>
+                    </section>
+                    <section>
+                      <submenu>
+                        <attribute name="label">_File</attribute>
+                        <section>
+                          <item>
+                            <attribute name="action">win.quit</attribute>
+                            <attribute name="label">_Quit</attribute>
+                          </item>
+                        </section>
+                      </submenu>
+                    </section>
+                  </menu>
+                </property>
               </object>
             </child>
           </object>
         </child>
+        <child>
+          <object class="WebKitWebView" id="webview"/>
+        </child>
       </object>
     </property>
+    <property name="default-height">600</property>
+    <property name="default-width">900</property>
+    <property name="title">WebView from Template👍</property>
   </object>
-  <menu id="main-menu">
-    <section>
-      <item>
-        <attribute name="label">Dev Tools</attribute>
-        <attribute name="action">win.devtools</attribute>
-      </item>
-    </section>
-    <section>
-    </section>
-    <section>
-      <submenu>
-        <attribute name="label">_File</attribute>
-        <section>
-          <item>
-            <attribute name="label">_Beenden</attribute>
-            <attribute name="action">win.quit</attribute>
-          </item>
-        </section>
-      </submenu>
-    </section>
-  </menu>  
 </interface>
-
