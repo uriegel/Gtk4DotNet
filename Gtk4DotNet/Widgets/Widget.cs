@@ -99,6 +99,8 @@ public class Widget : FloatingObject
             RemoveCssClass(this, cssClass);
     }
 
+    public void GrabFocus() => GrabFocus(this);
+    
     public void SetBinding(string targetProperty, string property,
         BindingFlags bindingFlags = BindingFlags.Default, Func<object?, object?>? converter = null)
     {
@@ -293,6 +295,9 @@ W A R N I N G
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_root", CallingConvention = CallingConvention.Cdecl)]
     extern static Widget GetRoot(Widget widget);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_grab_focus", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void GrabFocus(Widget widget);
 }
 
 public static class WidgetExtensions

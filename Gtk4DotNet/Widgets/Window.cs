@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices;
 using CsTools.Extensions;
 using Gtk4DotNet.Extensions;
+using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
@@ -29,6 +30,9 @@ public class Window : Widget
     public void SetDefaultSize(int width, int height) => SetDefaultSize(this, width, height);
 
     public void SetChild(Widget child) => SetChild(this, child);
+
+    public void OnClose<THandle>(Func<Window, bool> preventClosing)
+        => SignalConnect<TwoPointerBoolRetDelegate>("close-request", (_, ___) => preventClosing(this));
 
     public Application GetApplication()
         => _GetApplication(this).SideEffect(a => a.IsFloating = true);
@@ -81,6 +85,10 @@ public static class WindowExtensions
     public static THandle Child<THandle>(this THandle window, Widget child)
         where THandle : Window
         => window.SideEffect(w => w.SetChild(child));
+
+    public static THandle Closing<THandle>(this THandle window, Func<THandle, bool> preventClosing)
+        where THandle : Window
+        => window.SideEffect(a => window.OnClose<THandle>((Window win) => preventClosing((THandle)win)));
 }
 
 

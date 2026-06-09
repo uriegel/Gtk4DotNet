@@ -59,7 +59,12 @@ public class WebView : Widget
         return this;
     }
 
-    public WebInspector GetInspector() => GetInspector(this);
+    public WebInspector GetInspector()
+    {
+        var insp = GetInspector(this);
+        insp.CheckDiagnostics();
+        return insp;
+    }
 
     public WebView() : base() { }
 
