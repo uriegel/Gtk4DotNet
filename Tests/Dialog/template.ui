@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Created with Cambalache 1.0.2 -->
+<interface>
+  <!-- interface-name template.ui -->
+  <requires lib="gtk" version="4.20"/>
+  <object class="GtkApplicationWindow" id="window">
+    <property name="title">Hello Dialog👍</property>
+    <child>
+      <object class="GtkBox">
+        <property name="margin-bottom">5</property>
+        <property name="margin-end">5</property>
+        <property name="margin-start">5</property>
+        <property name="margin-top">5</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">10</property>
+        <child>
+          <object class="GtkButton" id="dialog1">
+            <property name="halign">center</property>
+            <property name="label">Dialog 1</property>
+            <property name="valign">center</property>
+            <property name="vexpand">True</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

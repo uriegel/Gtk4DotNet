@@ -7,7 +7,18 @@ public class Builder : GObject
 {
     public static Builder FromDotNetResource(string path)
     {
-        var ui = new StreamReader(Resources.Get(path)!).ReadToEnd();
+        var stream = Resources.Get(path);
+        if (stream == null)
+        {
+            Console.Error.WriteLine(
+@$"===================================================
+W A R N I N G
+Resource '{path}' could not be found! Could not create Builder.
+                    
+===================================================");
+            return new Builder(); 
+        }
+        var ui = new StreamReader(stream).ReadToEnd();
         var res = _FromString(ui, -1);
         res.CheckDiagnostics();
         return res;
