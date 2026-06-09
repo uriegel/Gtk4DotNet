@@ -7,16 +7,23 @@
     <property name="title">Hello Dialog👍</property>
     <child>
       <object class="GtkBox">
-        <property name="margin-bottom">5</property>
-        <property name="margin-end">5</property>
-        <property name="margin-start">5</property>
-        <property name="margin-top">5</property>
+        <property name="halign">center</property>
+        <property name="margin-bottom">10</property>
+        <property name="margin-end">10</property>
+        <property name="margin-start">10</property>
+        <property name="margin-top">10</property>
         <property name="orientation">vertical</property>
         <property name="spacing">10</property>
         <child>
-          <object class="GtkButton" id="dialog1">
-            <property name="halign">center</property>
-            <property name="label">Dialog 1</property>
+          <object class="GtkButton" id="dialogFromCode">
+            <property name="label">Dialog from code</property>
+            <property name="valign">center</property>
+            <property name="vexpand">True</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="dialogFromResource">
+            <property name="label">Dialog from resource</property>
             <property name="valign">center</property>
             <property name="vexpand">True</property>
           </object>

@@ -4,10 +4,12 @@ class MyWindow : ApplicationWindow
 {
     public MyWindow(WindowBuilder builder) : base(builder)
     {
-        dialog1.OnClicked(OnDialog1);
+        dialogFromCode.OnClicked(OnDialog);
+        dialogFromResource.OnClicked(OnDialogFromResource);
+        OnClose(PreventClosing);
     }
 
-    void OnDialog1()
+    async void OnDialog()
     {
         var dialog = AdwAlertDialog.New("Save changes?", "Do you want to save your changes?");
         dialog.SetResponses([
@@ -15,28 +17,39 @@ class MyWindow : ApplicationWindow
                 new("no", "_No", Appearance: AdwResponseAppearance.Destructive),
                 new("cancel", "_Cancel", Cancel: true)
             ], Console.WriteLine);
-        dialog.PresentAsync(this);
+        var res = await dialog.PresentAsync(this);
+    }
+
+    async void OnDialogFromResource()
+    {
+        using var bilder = Builder.FromDotNetResource("dialog");
+        var dialog = bilder.GetWidget<AdwAlertDialog>("dialog");
+        await dialog.PresentAsync(this);
+    }
+
+    bool PreventClosing(Window window)
+    {
+        var dialog = AdwAlertDialog.New("Close Window?", "Do you want to close the application?");
+        dialog.SetResponses([
+                new("ok", "_Ok", Default: true),
+                new("cancel", "_Cancel", Cancel: true)
+            ], Console.WriteLine);
+        PresentAsync();
+        return true;
+
+        async void PresentAsync()
+        {
+            var result = await dialog.PresentAsync(window);
+            Console.WriteLine($"Dialog result: {result}");
+        }
     }
 
     [Widget]
-    readonly Button dialog1 = null!;
+    readonly Button dialogFromCode = null!;
+
+    [Widget]
+    readonly Button dialogFromResource = null!;
 }
 
-// TODO Button 2 Dialog from builder, Cambalache
-
-
-// static bool PreventClosing(ApplicationWindow window)
-// {
-//     using var bilder = Builder.FromDotNetResource("dialog");
-//     var dialog = bilder.GetWidget<AdwAlertDialog>("dialog");
-//     PresentAsync();
-//     return true;
-
-//     async void PresentAsync()
-//     {
-//         var result = await dialog.PresentAsync(window);
-//         Console.WriteLine($"Dialog result: {result}");
-//     }
-// }
 
 // TODO Dialog asking close or not? force closing

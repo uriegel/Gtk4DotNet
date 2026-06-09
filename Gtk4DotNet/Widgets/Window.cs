@@ -31,7 +31,7 @@ public class Window : Widget
 
     public void SetChild(Widget child) => SetChild(this, child);
 
-    public void OnClose<THandle>(Func<Window, bool> preventClosing)
+    public void OnClose(Func<Window, bool> preventClosing)
         => SignalConnect<TwoPointerBoolRetDelegate>("close-request", (_, ___) => preventClosing(this));
 
     public Application GetApplication()
@@ -86,9 +86,9 @@ public static class WindowExtensions
         where THandle : Window
         => window.SideEffect(w => w.SetChild(child));
 
-    public static THandle Closing<THandle>(this THandle window, Func<THandle, bool> preventClosing)
+    public static THandle Closing<THandle>(this THandle window, Func<Window, bool> preventClosing)
         where THandle : Window
-        => window.SideEffect(a => window.OnClose<THandle>((Window win) => preventClosing((THandle)win)));
+        => window.SideEffect(a => window.OnClose((Window win) => preventClosing(win)));
 }
 
 
