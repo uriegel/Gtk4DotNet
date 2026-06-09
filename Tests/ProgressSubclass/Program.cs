@@ -8,4 +8,3 @@ Application
         .Show()
     ).Run();
 
-// TODO Cambalache

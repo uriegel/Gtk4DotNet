@@ -1,11 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Created with Cambalache 1.0.2 -->
 <interface>
-  <requires lib="gtk" version="4.6"/>
+  <!-- interface-name template.ui -->
   <requires lib="adw" version="1.0"/>
+  <requires lib="gtk" version="4.6"/>
+  <requires lib="libadwaita" version="1.0"/>
   <object class="GtkWindow" id="window">
-    <property name="title">Hello Progress👍</property>
+    <property name="default-height">600</property>
     <property name="default-width">800</property>
-    <property name="default-height">600</property>    
+    <property name="title">Hello Progress Subclass👍</property>
     <property name="titlebar">
       <object class="AdwHeaderBar">
         <child type="end">
@@ -15,7 +18,7 @@
         </child>
         <child type="end">
           <object class="GtkBox" id="revealer"/>
-        </child>      
+        </child>
       </object>
     </property>
   </object>
