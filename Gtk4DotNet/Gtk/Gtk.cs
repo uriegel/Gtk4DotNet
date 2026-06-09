@@ -4,8 +4,6 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
-// TODO new AdwWindow in First Widget
-
 public static class Gtk
 {
     public static Task Dispatch(Action action, bool highPriority = false)
