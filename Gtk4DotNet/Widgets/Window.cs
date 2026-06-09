@@ -34,6 +34,25 @@ public class Window : Widget
     public void OnClose(Func<Window, bool> preventClosing)
         => SignalConnect<TwoPointerBoolRetDelegate>("close-request", (_, ___) => preventClosing(this));
 
+    public void OnCloseAsync(Func<Window, Task<bool>> preventClosing)
+        => SignalConnect<TwoPointerBoolRetDelegate>("close-request", (_, ___) =>
+        {
+            if (forceClose)
+                return false;
+            Run();
+            return true;
+
+            async void Run()
+            {
+                var ret = await preventClosing(this);
+                if (!ret)
+                {
+                    forceClose = true;
+                    CloseWindow();
+                }
+            }
+        });
+
     public Application GetApplication()
         => _GetApplication(this).SideEffect(a => a.IsFloating = true);
 
@@ -70,6 +89,8 @@ public class Window : Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_get_application", CallingConvention = CallingConvention.Cdecl)]
     extern static Application _GetApplication(Window window);
+
+    bool forceClose;
 }
 
 public static class WindowExtensions
@@ -89,6 +110,10 @@ public static class WindowExtensions
     public static THandle Closing<THandle>(this THandle window, Func<Window, bool> preventClosing)
         where THandle : Window
         => window.SideEffect(a => window.OnClose((Window win) => preventClosing(win)));
+
+    public static THandle ClosingAsync<THandle>(this THandle window, Func<Window, Task<bool>> preventClosing)
+        where THandle : Window
+        => window.SideEffect(a => window.OnCloseAsync((Window win) => preventClosing(win)));
 }
 
 

@@ -102,11 +102,11 @@ public static class Gtk
         GC.Collect();
         Console.WriteLine($"Total memory: {System.Diagnostics.Process.GetCurrentProcess().WorkingSet64:N0}, managed: {GC.GetTotalMemory(true):N0}");
 
-        //var asyncReadies = AsyncReady.GetDelegateCount();
+        var asyncReadies = AsyncReady.GetDelegateCount();
         var delegates = GtkDelegates.GetDelegatesCount();
         var actions = IActionMap.GetActionsCount();
-        // if (asyncReadies > 0)
-        //     Console.WriteLine($"GFile AsyncReadies: {asyncReadies}");
+        if (asyncReadies > 0)
+            Console.WriteLine($"GFile AsyncReadies: {asyncReadies}");
         if (delegates > 0)
             Console.WriteLine($"Connected delegates: {delegates}");
         if (actions > 0)

@@ -12,3 +12,5 @@ class MyWindow : AdwApplicationWindow
 }
 
 // TODO GVolume, GDrive...
+// TODO release Beta, build WebWindowNetCore beta
+// TODO check Commander

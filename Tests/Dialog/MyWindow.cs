@@ -6,7 +6,7 @@ class MyWindow : ApplicationWindow
     {
         dialogFromCode.OnClicked(OnDialog);
         dialogFromResource.OnClicked(OnDialogFromResource);
-        OnClose(PreventClosing);
+        OnCloseAsync(PreventClosing);
     }
 
     async void OnDialog()
@@ -16,7 +16,7 @@ class MyWindow : ApplicationWindow
                 new("yes", "_Yes", Default: true, Appearance: AdwResponseAppearance.Suggested),
                 new("no", "_No", Appearance: AdwResponseAppearance.Destructive),
                 new("cancel", "_Cancel", Cancel: true)
-            ], Console.WriteLine);
+            ]);
         var res = await dialog.PresentAsync(this);
     }
 
@@ -27,21 +27,14 @@ class MyWindow : ApplicationWindow
         await dialog.PresentAsync(this);
     }
 
-    bool PreventClosing(Window window)
+    async Task<bool> PreventClosing(Window window)
     {
         var dialog = AdwAlertDialog.New("Close Window?", "Do you want to close the application?");
         dialog.SetResponses([
                 new("ok", "_Ok", Default: true),
                 new("cancel", "_Cancel", Cancel: true)
-            ], Console.WriteLine);
-        PresentAsync();
-        return true;
-
-        async void PresentAsync()
-        {
-            var result = await dialog.PresentAsync(window);
-            Console.WriteLine($"Dialog result: {result}");
-        }
+            ]);
+        return await dialog.PresentAsync(window) != "ok";
     }
 
     [Widget]
@@ -50,6 +43,3 @@ class MyWindow : ApplicationWindow
     [Widget]
     readonly Button dialogFromResource = null!;
 }
-
-
-// TODO Dialog asking close or not? force closing

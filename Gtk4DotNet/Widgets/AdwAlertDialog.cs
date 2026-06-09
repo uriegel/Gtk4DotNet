@@ -13,7 +13,7 @@ public class AdwAlertDialog : AdwDialog
         return dialog;
     }
 
-    public void SetResponses(IEnumerable<AlertDialogResponse> responses, Action<string?> onResponse)
+    public void SetResponses(IEnumerable<AlertDialogResponse> responses, Action<string?>? onResponse = null)
     {
         foreach (var response in responses.Reverse())
         {
@@ -25,7 +25,8 @@ public class AdwAlertDialog : AdwDialog
             if (response.Appearance.HasValue)
                 SetResponseAppearance(this, response.Id, response.Appearance.Value);
         }
-        SignalConnect<ThreePointerDelegate>("response", (_, id, ___) => onResponse(id.PtrToString(false)));
+        if (onResponse != null)
+            SignalConnect<ThreePointerDelegate>("response", (_, id, ___) => onResponse(id.PtrToString(false)));
     }
 
     public Task<string> PresentAsync(Widget parent)
