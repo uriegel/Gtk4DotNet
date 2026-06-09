@@ -4,6 +4,9 @@ namespace Gtk4DotNet;
 
 public class GtkAction
 {
+    internal long DelegateId { get; set; }
+    internal long SignalId { get; set; }
+
     public GtkAction(string actionName, Action action, string? accelerator = null)
     {
         Action = action;

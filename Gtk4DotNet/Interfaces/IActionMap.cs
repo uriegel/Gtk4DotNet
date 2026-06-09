@@ -16,30 +16,45 @@ public interface IActionMap
     public static nint GetAction(string name)
         => actions[name];
 
+    void FreeActions()
+    {
+        foreach (var action in GetActionList())
+        {
+            GtkDelegates.Remove(action.DelegateId);
+            Gtk.SignalDisconnect(action.action, action.SignalId);
+            RemoveAction(GetInternalHandle(), action.Name);
+            actions.Remove(action.Name);
+            GObject.Unref(action.action);
+        }
+    }
+
+    List<GtkAction> GetActionList();
+
     IActionMap AddActions(IEnumerable<GtkAction> actions)
     {
+        var actionList = GetActionList();
         var gtkActions = actions.OfType<GtkAction>();
         foreach (var action in gtkActions)
         {
+            actionList.Add(action);
             if (action.Action != null)
             {
-                // TODO DO actions have to be freed?
                 var simpleAction = NewAction(action.Name, null);
                 action.action = simpleAction;
-                GtkDelegates.Add(action.Action);
-                Gtk.SignalConnectAction(simpleAction, "activate", Marshal.GetFunctionPointerForDelegate(action.Action as Delegate), IntPtr.Zero, 0);
+                action.DelegateId = GtkDelegates.Add(action.Action);
+                action.SignalId = Gtk.SignalConnectAction(simpleAction, "activate", Marshal.GetFunctionPointerForDelegate(action.Action as Delegate), IntPtr.Zero, 0);
                 AddAction(GetInternalHandle(), simpleAction);
                 IActionMap.actions.Add(action.Name, simpleAction);
             }
             else
             {
-                GtkDelegates.Add(action.StateChanged);
+                action.DelegateId = GtkDelegates.Add(action.StateChanged);
                 var state = action.StateParameterType == "s"
                     ? NewString(action.State as string ?? "")
                     : NewBool((bool?)action.State == true ? -1 : 0);
                 var simpleAction = NewStatefulAction(action.Name, action.StateParameterType, state);
                 action.action = simpleAction;
-                Gtk.SignalConnectAction(simpleAction, "change-state", Marshal.GetFunctionPointerForDelegate(action.StateChanged), IntPtr.Zero, 0);
+                action.SignalId = Gtk.SignalConnectAction(simpleAction, "change-state", Marshal.GetFunctionPointerForDelegate(action.StateChanged), IntPtr.Zero, 0);
                 AddAction(GetInternalHandle(), simpleAction);
                 IActionMap.actions.Add(action.Name, simpleAction);
             }
@@ -79,6 +94,9 @@ public interface IActionMap
     [DllImport(Libs.LibGio, EntryPoint = "g_action_map_add_action", CallingConvention = CallingConvention.Cdecl)]
     extern static void AddAction(nint window, nint action);
 
+    [DllImport(Libs.LibGio, EntryPoint = "g_action_map_remove_action", CallingConvention = CallingConvention.Cdecl)]
+    extern static void RemoveAction(nint window, string name);
+    
     [DllImport(Libs.LibGtk, EntryPoint = "g_action_map_add_action", CallingConvention = CallingConvention.Cdecl)]
     extern static void _AddAction(nint window, ActionHandle action);
 

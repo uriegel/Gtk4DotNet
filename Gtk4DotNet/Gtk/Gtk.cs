@@ -146,10 +146,13 @@ public static class Gtk
                 .SideEffect(_ => mainThreadId = Environment.CurrentManagedThreadId));
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_signal_connect_object", CallingConvention = CallingConvention.Cdecl)]
-    internal extern static long SignalConnectAction(IntPtr action, string name, IntPtr callback, IntPtr obj, int n3);
+    internal extern static long SignalConnectAction(nint action, string name, nint callback, nint obj, int n3);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_signal_handler_disconnect", CallingConvention = CallingConvention.Cdecl)]
+    internal extern static void SignalDisconnect(nint action, long id);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_idle_add_full", CallingConvention = CallingConvention.Cdecl)]
-    extern static void IdleAddFull(int priority, IntPtr func, IntPtr nil, IntPtr nil2);
+    extern static void IdleAddFull(int priority, nint func, nint nil, nint nil2);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_timeout_add_full", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetTimer(int priority, int intervalInMillis, nint func, nint nil, nint nil2);

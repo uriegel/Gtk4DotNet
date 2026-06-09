@@ -59,7 +59,7 @@ public class Application : GObject, IActionMap
         res.CheckDiagnostics();
         return res;
     }
-    
+
     public void SetAccelsForAction(string action, [In] string?[] accels) => SetAccelsForAction(this, action, accels);
 
     [DllImport(Libs.LibAdw, EntryPoint = "adw_application_new", CallingConvention = CallingConvention.Cdecl)]
@@ -76,6 +76,13 @@ public class Application : GObject, IActionMap
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_set_accels_for_action", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetAccelsForAction(Application app, string action, [In] string?[] accels);
+
+    #region IActionMap
+
+    public List<GtkAction> GetActionList() => actionList;
+    readonly List<GtkAction> actionList = [];
+
+    #endregion
 }
 
 public record WindowBuilder(string Window, Builder Builder, Application Application);
