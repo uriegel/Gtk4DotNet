@@ -88,6 +88,5 @@ class WindowDataContext : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    // TODO to main thread
     void OnChanged(string name) => PropertyChanged?.Invoke(this, new(name));
 }

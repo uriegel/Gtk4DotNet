@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Created with Cambalache 1.0.2 -->
 <interface>
-  <!-- interface-name template.ui -->
+  <!-- interface-name window.ui -->
   <requires lib="adw" version="1.0"/>
   <requires lib="gtk" version="4.6"/>
   <requires lib="libadwaita" version="1.0"/>
@@ -13,7 +13,7 @@
       <object class="AdwHeaderBar">
         <child type="end">
           <object class="GtkToggleButton" id="starter">
-            <property name="icon-name">open-menu-symbolic</property>
+            <property name="icon-name">media-playback-start-symbolic</property>
           </object>
         </child>
         <child type="end">

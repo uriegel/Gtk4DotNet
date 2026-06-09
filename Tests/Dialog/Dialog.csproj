@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="./template.ui">
-      <LogicalName>template</LogicalName>
+    <EmbeddedResource Include="./window.ui">
+      <LogicalName>window</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="./dialog.ui">
       <LogicalName>dialog</LogicalName>

@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Created with Cambalache 1.0.2 -->
+<interface>
+  <!-- interface-name window.ui -->
+  <requires lib="gio" version="2.0"/>
+  <requires lib="gtk" version="4.20"/>
+  <requires lib="libadwaita" version="1.7"/>
+  <object class="AdwApplicationWindow" id="window">
+    <property name="content">
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar" id="headerBar">
+            <child type="end">
+              <object class="GtkMenuButton" id="menu_button">
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="menu-model">main-menu</property>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkToggleButton" id="preview_button">
+                <property name="action-name">win.preview</property>
+                <property name="icon-name">x-office-presentation</property>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkDropDown" id="preview_mode">
+                <property name="model">
+                  <object class="GtkStringList">
+                    <items>
+                      <item>Bild</item>
+                      <item>Bild+Ort</item>
+                      <item>Ort</item>
+                    </items>
+                  </object>
+                </property>
+                <property name="visible" bind-source="preview_button" bind-property="active" bind-flags="sync-create"/>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="label">Content</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </property>
+    <property name="title">Actions👍</property>
+  </object>
+  <menu id="main-menu">
+    <section>
+      <submenu>
+        <attribute name="label">_Datei</attribute>
+        <section>
+          <item>
+            <attribute name="action">win.quit</attribute>
+            <attribute name="label">_Beenden</attribute>
+          </item>
+        </section>
+      </submenu>
+    </section>
+  </menu>
+</interface>

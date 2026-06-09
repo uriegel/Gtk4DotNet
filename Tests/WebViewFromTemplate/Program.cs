@@ -5,6 +5,6 @@ Application
     .WithDiagnostics()
     .OnActivate(app => app
         .WithWebKit()
-        .WindowFromBuilder("template", "window", p => new MyWindow(p))
+        .WindowFromBuilder("window", "window", p => new MyWindow(p))
         .Show()
     ).Run();

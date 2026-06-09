@@ -11,5 +11,4 @@ class MyWindow : AdwApplicationWindow
     }
 }
 
-// TODO GFile
 // TODO GVolume, GDrive...
