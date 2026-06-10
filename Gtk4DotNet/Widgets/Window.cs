@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.Runtime.InteropServices;
 using CsTools.Extensions;
 using Gtk4DotNet.Extensions;
@@ -24,6 +25,17 @@ public class Window : Widget
                 UnMaximize(this);
         }
     }
+
+    public Size Size
+    {
+        get
+        {
+            GetSize(this, out var w, out var h);
+            return new(w, h);
+        }
+    } 
+    public int Width { get => Size.Width; }
+    public int Height { get => Size.Height; }
 
     public void CloseWindow() => CloseWindow(this);
 
@@ -89,6 +101,9 @@ public class Window : Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_get_application", CallingConvention = CallingConvention.Cdecl)]
     extern static Application _GetApplication(Window window);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_get_default_size", CallingConvention = CallingConvention.Cdecl)]
+    extern static void GetSize(Window window, out int width, out int height);
 
     bool forceClose;
 }

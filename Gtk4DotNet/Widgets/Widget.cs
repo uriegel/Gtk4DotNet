@@ -49,6 +49,12 @@ public class Widget : FloatingObject
         set => SetMarginBottom(this, value);
     }
 
+    public bool Visible
+    {
+        get => GetVisible(this);
+        set => SetVisible(this, value);
+    }
+
     public string TooltipText
     {
         get => GetTooltipText(this).PtrToString(true) ?? "";
@@ -297,7 +303,13 @@ W A R N I N G
     extern static Widget GetRoot(Widget widget);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_grab_focus", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void GrabFocus(Widget widget);
+    extern static void GrabFocus(Widget widget);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_set_visible", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetVisible(Widget widget, bool visible);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_visible", CallingConvention = CallingConvention.Cdecl)]
+    extern static bool GetVisible(Widget widget);
 }
 
 public static class WidgetExtensions
@@ -323,6 +335,10 @@ public static class WidgetExtensions
     public static THandle Tooltip<THandle>(this THandle widget, string text)
         where THandle : Widget
         => widget.SideEffect(w => w.TooltipText = text);
+
+    public static THandle Visible<THandle>(this THandle widget, bool value = true)
+        where THandle : Widget
+        => widget.SideEffect(w => w.Visible = value);
 
     public static THandle Binding<THandle>(this THandle target, string targetProperty, string property, BindingFlags bindingFlags = BindingFlags.Default,
         Func<object?, object?>? converter = null)

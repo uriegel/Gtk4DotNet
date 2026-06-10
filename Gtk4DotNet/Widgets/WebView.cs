@@ -36,18 +36,18 @@ public class WebView : Widget
     [DllImport(Libs.LibWebKit, EntryPoint = "webkit_web_view_get_type", CallingConvention = CallingConvention.Cdecl)]
     public static extern new GType Type();
 
-    public static void RunJavascript(WebView webView, string script)
+    public void RunJavascript(string script)
     {
         var key = GtkDelegates.GetKey();
         ThreePointerDelegate callback = (_, result, ___) =>
         {
-            var res = FinishJavascript(webView, result, IntPtr.Zero);
+            var res = FinishJavascript(this, result, 0);
             GtkDelegates.Remove(key);
             if (res != IntPtr.Zero && JscIsString(res))
                 Free(res);
         };
         GtkDelegates.Add(key, callback);
-        EvaluateJavascript(webView, script, -1, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, Marshal.GetFunctionPointerForDelegate(callback as Delegate), IntPtr.Zero);
+        EvaluateJavascript(this, script, -1, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, Marshal.GetFunctionPointerForDelegate(callback as Delegate), IntPtr.Zero);
     }
 
     public WebViewSettings GetSettings() => GetSettings(this);
@@ -106,4 +106,5 @@ public class WebView : Widget
     [DllImport(Libs.LibWebKit, EntryPoint = "webkit_web_view_get_settings", CallingConvention = CallingConvention.Cdecl)]
     extern static WebViewSettings GetSettings(WebView webView);
 }
+
 
