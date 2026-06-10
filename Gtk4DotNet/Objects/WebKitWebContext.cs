@@ -13,9 +13,11 @@ public class WebKitWebContext : FloatingObject
     }
 
     public void RegisterUriScheme(string scheme, Action<WebkitUriSchemeRequest> callback)
+        => RegisterUriScheme(scheme, request => callback(new WebkitUriSchemeRequest(request)));
+
+    void RegisterUriScheme(string scheme, CustomSchemeRequestDelegate callback)
     {
-        CustomSchemeRequestDelegate delelegat = request => callback(new WebkitUriSchemeRequest(request));
-        GtkDelegates.Add(delelegat);
+        GtkDelegates.Add(callback);
         RegisterUriScheme(this, scheme, Marshal.GetFunctionPointerForDelegate((Delegate)callback));
     }
 
