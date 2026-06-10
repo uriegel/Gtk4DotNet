@@ -6,10 +6,10 @@ namespace Gtk4DotNet;
 
 public static class Gtk
 {
-    public static Task Dispatch(Action action, bool highPriority = false)
-        => Dispatch(action, highPriority ? 100 : 200);
+    public static Task InvokeAsync(Action action, bool highPriority = false)
+        => InvokeAsync(action, highPriority ? 100 : 200);
 
-    public static Task Dispatch(Action action, int priority)
+    public static Task InvokeAsync(Action action, int priority)
     {
         var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         BeginInvoke(priority, () =>
@@ -54,10 +54,10 @@ public static class Gtk
         }
     }
 
-    public static Task<T> Dispatch<T>(Func<T> action, bool highPriority = false)
-        => Dispatch(action, highPriority ? 100 : 200);
+    public static Task<T> InvokeAsync<T>(Func<T> action, bool highPriority = false)
+        => InvokeAsync(action, highPriority ? 100 : 200);
 
-    public static Task<T> Dispatch<T>(Func<T> action, int priority)
+    public static Task<T> InvokeAsync<T>(Func<T> action, int priority)
     {
         var tcs = new TaskCompletionSource<T>(TaskCreationOptions.RunContinuationsAsynchronously);
         BeginInvoke(priority, () =>
