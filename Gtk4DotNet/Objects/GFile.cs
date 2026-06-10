@@ -11,7 +11,14 @@ public class GFile : GObject
     {
         get => GetPath(this).PtrToString(true);
     }
-    
+
+    public static GFile New(string path)
+    {
+        var file = _New(path);
+        file.CheckDiagnostics();
+        return file;
+    }
+
     public string? GetBasename() => GetBasename(this).PtrToString(true);
 
     public string? LoadStringContents()
@@ -21,7 +28,7 @@ public class GFile : GObject
             ? content.PtrToString(true) ?? ""
             : null;
     }
-        
+
     public Task TrashAsync()
     {
         var tcs = new TaskCompletionSource();
@@ -32,7 +39,7 @@ public class GFile : GObject
         return tcs.Task;
 
         void AsyncReadyCallback(nint _, nint result, nint __)
-        {     
+        {
             AsyncReady.Callbacks.Remove(id, out var _);
             nint error = 0;
             if (TrashFinish(this, result, ref error))
@@ -45,7 +52,16 @@ public class GFile : GObject
         }
     }
 
-    public Task CopyAsync(string destination, FileCopyFlags flags = FileCopyFlags.None, 
+    public GFileInfo QueryContentType() => QueryInfo("standard::content-type");
+
+    public GFileInfo QueryInfo(string attributes)
+    {
+        var info = _QueryInfo(this, attributes, 0, 0, 0);
+        info.CheckDiagnostics();
+        return info;
+    } 
+
+    public Task CopyAsync(string destination, FileCopyFlags flags = FileCopyFlags.None,
         bool createTargetPath = false, ProgressCallback? cb = null, CancellationToken? cancellation = null)
     {
         var tcs = new TaskCompletionSource();
@@ -148,32 +164,28 @@ public class GFile : GObject
             }
         }
     }
-    
+
     // public MountHandle FindEnclosingMount() 
     //     => FindEnclosingMount(this, 0, 0);
 
     public bool CopyAttributes(GFile target, FileCopyFlags flags)
         => CopyAttributes(this, target, flags, 0, 0);
 
-//    public FileInfoHandle QueryContentType() => QueryInfo(this, "standard::content-type");
-
-//    public FileInfoHandle QueryInfo(string attributes) => QueryInfo(this, attributes, 0, 0, 0);
-
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_new_for_path", CallingConvention = CallingConvention.Cdecl)]
-    extern static GFile New(string path);
+    extern static GFile _New(string path);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_load_contents", CallingConvention = CallingConvention.Cdecl)]
     extern static bool LoadContents(GFile gFile, Cancellable cancellable, out IntPtr content, out int length, IntPtr etagOut, IntPtr error);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_copy_async", CallingConvention = CallingConvention.Cdecl)]
-    extern static void CopyAsync(GFile source, GFile destination, FileCopyFlags flags, int priority, Cancellable cancellable, 
+    extern static void CopyAsync(GFile source, GFile destination, FileCopyFlags flags, int priority, Cancellable cancellable,
         TwoLongAndPtrCallback? progress, nint _, ThreePointerDelegate asyncCallback, nint __);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_copy_finish", CallingConvention = CallingConvention.Cdecl)]
     extern static bool CopyFinish(GFile source, nint asyncResult, ref nint error);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_move_async", CallingConvention = CallingConvention.Cdecl)]
-    extern static void MoveAsync(GFile source,GFile destination, FileCopyFlags flags, int priority, Cancellable cancellable, 
+    extern static void MoveAsync(GFile source, GFile destination, FileCopyFlags flags, int priority, Cancellable cancellable,
         TwoLongAndPtrCallback? progress, nint _, ThreePointerDelegate asyncCallback, nint __);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_move_finish", CallingConvention = CallingConvention.Cdecl)]
@@ -194,8 +206,8 @@ public class GFile : GObject
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_copy_attributes", CallingConvention = CallingConvention.Cdecl)]
     extern static bool CopyAttributes(GFile file, GFile starget, FileCopyFlags flags, nint nil, nint nil2);
 
-    // [DllImport(Libs.LibGtk, EntryPoint = "g_file_query_info", CallingConvention = CallingConvention.Cdecl)]
-    // extern static FileInfoHandle QueryInfo(GFile file, string attributes, int flags, nint nil, nint nil2);
+    [DllImport(Libs.LibGtk, EntryPoint = "g_file_query_info", CallingConvention = CallingConvention.Cdecl)]
+    extern static GFileInfo _QueryInfo(GFile file, string attributes, int flags, nint nil, nint nil2);
 
     // [DllImport(Libs.LibGtk, EntryPoint = "g_file_find_enclosing_mount", CallingConvention = CallingConvention.Cdecl)]
     // extern static MountHandle FindEnclosingMount(GFile file, nint _, nint __);

@@ -11,8 +11,3 @@ class MyWindow : AdwApplicationWindow
     }
 }
 
-// TODO release Beta, 
-// TODO WebWindowNetCore with WithAdwaita(), WithUIFromResource where the native WebView is contained
-// TODO build WebWindowNetCore beta
-// TODO GVolume, GDrive...
-// TODO check Commander
