@@ -4,7 +4,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Version>9.0.1-beta</Version>
+    <Version>9.0.2-beta</Version>
     <AssemblyName>Gtk4DotNet</AssemblyName>
     <Authors>Uwe Riegel</Authors>
     <Company>Uwe Riegel</Company>		
