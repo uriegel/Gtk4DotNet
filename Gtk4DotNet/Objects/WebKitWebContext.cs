@@ -5,12 +5,8 @@ namespace Gtk4DotNet;
 
 public class WebKitWebContext : FloatingObject
 {
-    public static WebKitWebContext GetDefault()
-    {
-        var context = _GetDefault();
-        context.CheckDiagnostics();
-        return context;
-    }
+    // Do not call CheckDiagnostics because app hangs indefinetely
+    public static WebKitWebContext GetDefault() => _GetDefault();
 
     public void RegisterUriScheme(string scheme, Action<WebkitUriSchemeRequest> callback)
         => RegisterUriScheme(scheme, request => callback(new WebkitUriSchemeRequest(request)));
