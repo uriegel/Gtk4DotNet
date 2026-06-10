@@ -15,6 +15,8 @@ public class GBytes : BaseHandle
         return gBytes;
     }
 
+    public static GBytes New(byte[] data) => New(data, data.Length);
+
     [DllImport(Libs.LibGtk, EntryPoint = "g_bytes_new", CallingConvention = CallingConvention.Cdecl)]
     public extern static GBytes New(IntPtr data, long size);
 
