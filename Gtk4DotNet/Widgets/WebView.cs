@@ -22,7 +22,7 @@ public class WebView : Widget
 
     public WebView OnAlert(Action<WebView, string?> alert)
         => this.SideEffect(a => SignalConnect<TwoPointerDelegate>("script-dialog",
-            (IntPtr _, IntPtr s) => alert(this, Marshal.PtrToStringUTF8(ScriptDialogGetMessage(s)))));
+            (nint _, nint s) => alert(this, Marshal.PtrToStringUTF8(ScriptDialogGetMessage(s)))));
 
     // public WebView OnPermissionRequest(Func<nint, bool> permissionRequest)
     //     => this.SideEffect(a => Gtk.SignalConnect<ThreePointerBoolRetDelegate>(a, "permission-request", 
