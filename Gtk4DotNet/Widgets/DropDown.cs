@@ -18,8 +18,4 @@ public class DropDown : Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_drop_down_set_selected", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetSelected(DropDown dropDown, int pos);
-
 }
-
-
-

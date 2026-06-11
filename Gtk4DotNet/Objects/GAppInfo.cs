@@ -30,9 +30,9 @@ public class GAppInfo : GObject
         return result;
     }
 
-    public string? Name { get => _GetName(this).PtrToString(false); }
+    public string? Name { get => GetName(this).PtrToString(false); }
 
-    public string? GetExecutable { get => _GetExecutable(this).PtrToString(false); }
+    public string? Executable { get => GetExecutable(this).PtrToString(false); }
 
     // TODO geticons now better!
     public AppIcon? GetIcon()
@@ -88,10 +88,10 @@ public class GAppInfo : GObject
     extern static nint _GetRecommended(string contentType);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_app_info_get_name", CallingConvention = CallingConvention.Cdecl)]
-    extern static nint _GetName(GAppInfo appInfo);
+    extern static nint GetName(GAppInfo appInfo);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_app_info_get_executable", CallingConvention = CallingConvention.Cdecl)]
-    extern static nint _GetExecutable(GAppInfo appInfo);
+    extern static nint GetExecutable(GAppInfo appInfo);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_app_info_get_icon", CallingConvention = CallingConvention.Cdecl)]
     extern static nint _GetIcon(GAppInfo appInfo);
