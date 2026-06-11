@@ -128,12 +128,13 @@ public class GObject : BaseHandle
 
     public string? GetString(string name)
     {
-        GetString(this, name, out var value, IntPtr.Zero);
+        GetString(this, name, out var value, 0);
         return value.PtrToString(true);
     }
 
     public void SetBool(string name, bool value)
         => SetBool(this, name, value, 0);
+    
     public bool GetBool(string name)
     {
         GetBool(this, name, out var value, 0);
