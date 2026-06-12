@@ -35,6 +35,11 @@ public class GAppInfo : GObject
     public string? Executable { get => GetExecutable(this).PtrToString(false); }
 
     // TODO geticons now better!
+    public nint GetGIcon()
+    {
+        return _GetIcon(this);
+    }
+    
     public AppIcon? GetIcon()
     {
         var icon = _GetIcon(this);

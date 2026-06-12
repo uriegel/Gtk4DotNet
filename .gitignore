@@ -25,3 +25,5 @@ Tests/Dialog/obj
 Tests/Dialog/bin
 Tests/FileCopy/bin
 Tests/FileCopy/obj
+Tests/ListBox/bin
+Tests/ListBox/obj

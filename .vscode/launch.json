@@ -165,6 +165,22 @@
             },
             "console": "internalConsole"
         }, {
+            "name": "ListBox",
+            "type": "coreclr",
+            "request": "launch",
+            "requireExactSource": true, 
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Tests/ListBox/bin/Debug/net10.0/ListBox.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Tests/ListBox",
+            "stopAtEntry": false,
+            "justMyCode": false,
+            "enableStepFiltering": true,
+            "env": {
+//                "DOTNET_EnableDiagnostics": "0" // <- optional
+            },
+            "console": "internalConsole"
+        }, {
             "name": "WebView",
             "type": "coreclr",
             "request": "launch",
