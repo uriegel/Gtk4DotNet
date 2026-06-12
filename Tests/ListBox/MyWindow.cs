@@ -1,8 +1,6 @@
 using System.Diagnostics;
 using Gtk4DotNet;
 
-// TODO memoize Builder
-// TODO measure creation time
 // TODO Group items (like in Nautilus)
 
 class MyWindow : ApplicationWindow
