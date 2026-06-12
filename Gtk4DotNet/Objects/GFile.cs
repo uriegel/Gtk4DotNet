@@ -61,10 +61,30 @@ public class GFile : GObject
         return info;
     }
 
+    /// <summary>
+    /// Copies a GFile to destination (you have to specify the destination file name!).
+    /// W A R N I N G: If you cancel the copy operation, the target file might remain as partial file!
+    /// </summary>
+    /// <param name="destination">Destination file path (with file name!)</param>
+    /// <param name="flags">Copy flags</param>
+    /// <param name="createTargetPath">If target path does not exist, dreate it</param>
+    /// <param name="cb">Progress callback, current/total bytes </param>
+    /// <param name="cancellation">A cancellation token to cancel the operation. W A R N I N G: If you cancel the copy operation, the target file might remain as partial file!</param>
+    /// <returns></returns>
     public Task CopyAsync(string destination, FileCopyFlags flags = FileCopyFlags.None,
         bool createTargetPath = false, ProgressCallback? cb = null, CancellationToken? cancellation = null)
         => CopyAsync(false, destination, flags, createTargetPath, cb, cancellation);
 
+    /// <summary>
+    /// Moves a GFile to destination (you have to specify the destination file name!).
+    /// W A R N I N G: If you cancel the move operation, the target file might remain as partial file!
+    /// </summary>
+    /// <param name="destination">Destination file path (with file name!)</param>
+    /// <param name="flags">Copy flags</param>
+    /// <param name="createTargetPath">If target path does not exist, dreate it</param>
+    /// <param name="cb">Progress callback, current/total bytes </param>
+    /// <param name="cancellation">A cancellation token to cancel the operation. W A R N I N G: If you cancel the move operation, the target file might remain as partial file!</param>
+    /// <returns></returns>
     public Task MoveAsync(string destination, FileCopyFlags flags = FileCopyFlags.None,
         bool createTargetPath = false, ProgressCallback? cb = null, CancellationToken? cancellation = null)
         => CopyAsync(true, destination, flags, createTargetPath, cb, cancellation);
