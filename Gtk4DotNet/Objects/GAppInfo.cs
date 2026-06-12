@@ -8,9 +8,33 @@ namespace Gtk4DotNet;
 // TODO check
 public class GAppInfo : GObject
 {
+    public bool ShouldShow { get => _ShouldShow(this); }
+    
     public static DisposableEnumerable<GAppInfo> GetAllApps()
     {
         var list = GetALl();
+        var result = GetItems(list)
+            .ToArray()
+            .AsDisposable();
+
+        GList.Free(list);
+        return result;
+    }
+
+    public static DisposableEnumerable<GAppInfo> GetAllApps(string contentType)
+    {
+        var list = GetALl(contentType);
+        var result = GetItems(list)
+            .ToArray()
+            .AsDisposable();
+
+        GList.Free(list);
+        return result;
+    }
+
+    public static DisposableEnumerable<GAppInfo> GetRecommendedApps()
+    {
+        var list = _GetRecommended();
         var result = GetItems(list)
             .ToArray()
             .AsDisposable();
@@ -34,36 +58,12 @@ public class GAppInfo : GObject
 
     public string? Executable { get => GetExecutable(this).PtrToString(false); }
 
-    // TODO geticons now better!
-    public nint GetGIcon()
-    {
-        return _GetIcon(this);
-    }
-    
-    public AppIcon? GetIcon()
+    public GIcon GetIcon()
     {
         var icon = _GetIcon(this);
-        if (icon == 0)
-            return null;
-
-        var file = GetIconFile(icon);
-        if (file != 0)
-        {
-            var iconPath = GetIconPath(file).PtrToString(true);
-            if (iconPath != null)
-                return new(iconPath, true);
-        }
-        var names = GetIconNames(icon);
-        if (names == 0)
-            return null;
-        var firstName = Marshal.ReadIntPtr(names);
-        if (firstName == 0)
-            return null;
-        var iconName = firstName.PtrToString(false);
-        if (iconName != null)
-            return new(iconName, false);
-
-        return null;
+        icon.CheckDiagnostics();
+        icon.IsFloating = true;
+        return icon;
     }
 
     static IEnumerable<GAppInfo> GetItems(nint list)
@@ -89,6 +89,12 @@ public class GAppInfo : GObject
     [DllImport(Libs.LibGtk, EntryPoint = "g_app_info_get_all", CallingConvention = CallingConvention.Cdecl)]
     extern static nint GetALl();
 
+    [DllImport(Libs.LibGtk, EntryPoint = "g_app_info_get_all_for_type", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint GetALl(string contentType);
+    
+    [DllImport(Libs.LibGtk, EntryPoint = "g_app_info_get_recommended", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint _GetRecommended();
+
     [DllImport(Libs.LibGtk, EntryPoint = "g_app_info_get_recommended_for_type", CallingConvention = CallingConvention.Cdecl)]
     extern static nint _GetRecommended(string contentType);
 
@@ -99,21 +105,9 @@ public class GAppInfo : GObject
     extern static nint GetExecutable(GAppInfo appInfo);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_app_info_get_icon", CallingConvention = CallingConvention.Cdecl)]
-    extern static nint _GetIcon(GAppInfo appInfo);
+    extern static GIcon _GetIcon(GAppInfo appInfo);
 
-    [DllImport(Libs.LibGtk, EntryPoint = "g_file_icon_get_file", CallingConvention = CallingConvention.Cdecl)]
-    extern static nint GetIconFile(nint icon);
-
-    [DllImport(Libs.LibGtk, EntryPoint = "g_file_get_path", CallingConvention = CallingConvention.Cdecl)]
-    extern static nint GetIconPath(nint iconFile);
-
-    [DllImport(Libs.LibGtk, EntryPoint = "g_themed_icon_get_names", CallingConvention = CallingConvention.Cdecl)]
-    static extern nint GetIconNames(nint icon);
+    [DllImport(Libs.LibGtk, EntryPoint = "g_app_info_should_show", CallingConvention = CallingConvention.Cdecl)]
+    extern static bool _ShouldShow(GAppInfo appInfo);
 }
 
-/// <summary>
-/// An icon from AppInfo, <see cref="AppIcon.Name"/> is either a path to the icon file or an icon name   
-/// </summary>
-/// <param name="Name"></param>
-/// <param name="IsPath">Either a path to the icon file (true) or an icon name</param>
-public record AppIcon(string Name, bool IsPath);

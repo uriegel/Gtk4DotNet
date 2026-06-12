@@ -2,16 +2,31 @@ using Gtk4DotNet;
 
 class ListItem : Box
 {
-    public static ListItem New(nint icon, string? text)
+    public static ListItem New(GIcon icon, string? text)
     {
         var builder = Builder.FromDotNetResource("listitem");
         return new ListItem(builder, icon, text);
     }
-    ListItem(Builder builder, nint icon, string? text) : base(builder, "listitem")
+    ListItem(Builder builder, GIcon icon, string? text) : base(builder, "listitem")
     {
-        image.SetGIcon(icon);
+        IsFloating = false;
+        image.SetIcon(icon);
         this.text.Text = text;
     }
+
+    public ListItem() : base() {}
+
+    public static ListItem New(string? text)
+    {
+        var builder = Builder.FromDotNetResource("listitem");
+        return new ListItem(builder, text);
+    }
+    ListItem(Builder builder,  string? text) : base(builder, "listitem")
+    {
+        this.text.Text = text;
+    }
+
+
     [Widget]
     readonly Image image = null!;
 
