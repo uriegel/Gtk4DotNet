@@ -11,6 +11,7 @@
     <Project Path="Tests/Icons/Icons.csproj" />
     <Project Path="Tests/HelloWebView/HelloWebView.csproj" />
     <Project Path="Tests/WebViewFromTemplate/WebViewFromTemplate.csproj" />
+    <Project Path="Tests/FileCopy/FileCopy.csproj" />
   </Folder>
   <Project Path="Gtk4DotNet/Gtk4DotNet.csproj" />
 </Solution>

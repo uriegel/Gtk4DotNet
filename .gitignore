@@ -23,3 +23,5 @@ Tests/WebViewFromTemplate/obj
 Tests/Dialog/bin
 Tests/Dialog/obj
 Tests/Dialog/bin
+Tests/FileCopy/bin
+Tests/FileCopy/obj

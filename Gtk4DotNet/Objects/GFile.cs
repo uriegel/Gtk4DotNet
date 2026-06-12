@@ -23,7 +23,7 @@ public class GFile : GObject
 
     public string? LoadStringContents()
     {
-        var result = LoadContents(this, Cancellable.Zero(), out var content, out var length, IntPtr.Zero, IntPtr.Zero);
+        var result = LoadContents(this, Cancellable.None(), out var content, out var length, IntPtr.Zero, IntPtr.Zero);
         return result
             ? content.PtrToString(true) ?? ""
             : null;
@@ -35,7 +35,7 @@ public class GFile : GObject
         var id = AsyncReady.GetId();
         var asyncReady = new ThreePointerDelegate(AsyncReadyCallback);
         AsyncReady.Callbacks[id] = asyncReady;
-        Trash(this, 100, Cancellable.Zero(), asyncReady, 0);
+        Trash(this, 100, Cancellable.None(), asyncReady, 0);
         return tcs.Task;
 
         void AsyncReadyCallback(nint _, nint result, nint __)
@@ -59,25 +59,42 @@ public class GFile : GObject
         var info = _QueryInfo(this, attributes, 0, 0, 0);
         info.CheckDiagnostics();
         return info;
-    } 
+    }
 
     public Task CopyAsync(string destination, FileCopyFlags flags = FileCopyFlags.None,
+        bool createTargetPath = false, ProgressCallback? cb = null, CancellationToken? cancellation = null)
+        => CopyAsync(false, destination, flags, createTargetPath, cb, cancellation);
+
+    public Task MoveAsync(string destination, FileCopyFlags flags = FileCopyFlags.None,
+        bool createTargetPath = false, ProgressCallback? cb = null, CancellationToken? cancellation = null)
+        => CopyAsync(true, destination, flags, createTargetPath, cb, cancellation);
+
+    // public MountHandle FindEnclosingMount() 
+    //     => FindEnclosingMount(this, 0, 0);
+
+    public bool CopyAttributes(GFile target, FileCopyFlags flags)
+        => CopyAttributes(this, target, flags, 0, 0);
+
+    async Task CopyAsync(bool move, string destination, FileCopyFlags flags = FileCopyFlags.None,
         bool createTargetPath = false, ProgressCallback? cb = null, CancellationToken? cancellation = null)
     {
         var tcs = new TaskCompletionSource();
         var id = AsyncReady.GetId();
         var asyncReady = new ThreePointerDelegate(AsyncReadyCallback);
         AsyncReady.Callbacks[id] = asyncReady;
-        using var cancellable = cancellation.HasValue ? new Cancellable(cancellation.Value) : null;
+        using var cancellable = Cancellable.New(cancellation);
         using var destinationFile = New(destination);
         var rcb = cb != null ? new TwoLongAndPtrCallback((c, t, _) => cb(c, t)) : null;
         if (rcb != null)
             AsyncReady.ProgressCallbacks[id] = rcb;
         cb?.Invoke(0, 0);
-        CopyAsync(this, destinationFile, flags, 100, cancellable?.IsInvalid == false ? cancellable : Cancellable.Zero(), rcb, 0, asyncReady, 0);
-        return tcs.Task;
+        if (move)
+            MoveAsync(this, destinationFile, flags, 100, cancellable, rcb, 0, asyncReady, 0);
+        else
+            CopyAsync(this, destinationFile, flags, 100, cancellable, rcb, 0, asyncReady, 0);
+        await tcs.Task;
 
-        async void AsyncReadyCallback(nint _, nint result, IntPtr zero)
+        async void AsyncReadyCallback(nint _, nint result, nint zero)
         {
             AsyncReady.Callbacks.Remove(id, out var _);
             AsyncReady.ProgressCallbacks.Remove(id, out var _);
@@ -108,68 +125,16 @@ public class GFile : GObject
                     await CopyAsync(destination, flags, true, cb, cancellation);
                 }
                 else
-                    tcs.TrySetException(new GFileException(Path, gerror));
-            }
-        }
-    }
-
-    public Task MoveAsync(string destination, FileCopyFlags flags = FileCopyFlags.None,
-        bool createTargetPath = false, ProgressCallback? cb = null, CancellationToken? cancellation = null)
-    {
-        var tcs = new TaskCompletionSource();
-        var id = AsyncReady.GetId();
-        var asyncReady = new ThreePointerDelegate(AsyncReadyCallback);
-        AsyncReady.Callbacks[id] = asyncReady;
-        using var cancellable = cancellation.HasValue ? new Cancellable(cancellation.Value) : null;
-        using var destinationFile = New(destination);
-        var rcb = cb != null ? new TwoLongAndPtrCallback((c, t, _) => cb(c, t)) : null;
-        if (rcb != null)
-            AsyncReady.ProgressCallbacks[id] = rcb;
-        cb?.Invoke(0, 0);
-        MoveAsync(this, destinationFile, flags, 100, cancellable?.IsInvalid == false ? cancellable : Cancellable.Zero(), rcb, 0, asyncReady, 0);
-        return tcs.Task;
-
-        async void AsyncReadyCallback(nint _, nint result, nint zero)
-        {
-            AsyncReady.Callbacks.Remove(id, out var _);
-            AsyncReady.ProgressCallbacks.Remove(id, out var _);
-            var error = IntPtr.Zero;
-            var res = MoveFinish(this, result, ref error);
-            if (res)
-                tcs.TrySetResult();
-            else
-            {
-                var gerror = new GErrorStruct(error);
-                if (createTargetPath && gerror.Domain == 232 && gerror.Code == 1 && File.Exists(Path))
                 {
-                    var fi = new FileInfo(destination);
-                    var destPath = fi.Directory;
-                    try
-                    {
-                        destPath?.Create();
-                    }
-                    catch (UnauthorizedAccessException)
-                    {
-                        tcs.TrySetException(new GFileException(Path, new GErrorStruct(232, 14, "Access Denied")));
-                    }
-                    catch
-                    {
-                        tcs.TrySetException(new GFileException(Path, new GErrorStruct(0, 0, "General Exception")));
-                    }
-
-                    await MoveAsync(destination, flags, true, cb, cancellation);
+                    var e = new GFileException(Path, gerror);
+                    if (e.ErrorType == GFileError.Canceled)
+                        tcs.TrySetCanceled();
+                    else
+                        tcs.TrySetException(e);
                 }
-                else
-                    tcs.TrySetException(new GFileException(Path, gerror));
             }
         }
     }
-
-    // public MountHandle FindEnclosingMount() 
-    //     => FindEnclosingMount(this, 0, 0);
-
-    public bool CopyAttributes(GFile target, FileCopyFlags flags)
-        => CopyAttributes(this, target, flags, 0, 0);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_new_for_path", CallingConvention = CallingConvention.Cdecl)]
     extern static GFile _New(string path);
