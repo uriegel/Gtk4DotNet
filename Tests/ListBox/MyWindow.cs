@@ -1,5 +1,11 @@
 using Gtk4DotNet;
 
+// TODO memoize Builder
+// TODO measure creation time
+// TODO GIcon as SafeHandle
+// TODO only the applictions with a reasonable icon (like in Nautilus)
+// TODO Group items (like in Nautilus)
+
 class MyWindow : ApplicationWindow
 {
     public MyWindow(WindowBuilder builder) : base(builder)
@@ -7,12 +13,8 @@ class MyWindow : ApplicationWindow
         using var appinfos = GAppInfo.GetAllApps();
         foreach (var appinfo in appinfos.OrderBy(n => n.Name))
         {
-            listbox.Append(Box
-                .New(Orientation.Horizontal, 5)
-                .Margin(5)
-                .Append(Image.NewFromGIcon(appinfo.GetGIcon()))
-                .Append(Label.New(appinfo.Name ?? "-"))
-            );    
+            var listitem = ListItem.New(appinfo.GetGIcon(), appinfo.Name);
+            listbox.Append(listitem);
         }
     }
 

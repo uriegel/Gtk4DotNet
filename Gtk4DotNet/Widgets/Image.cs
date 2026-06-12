@@ -24,6 +24,8 @@ public class Image : Widget
         return img;
     }
 
+    public void SetGIcon(nint icon) => SetGIcon(this, icon);
+
     public Image() : base() { }
 
     public Image(Builder builder, string? name = null) : base(builder, name) { }
@@ -36,4 +38,7 @@ public class Image : Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_image_new_from_icon_name", CallingConvention = CallingConvention.Cdecl)]
     extern static Image _NewFromIconName(string iconName, IconSize size);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_image_set_from_gicon", CallingConvention = CallingConvention.Cdecl)]
+    extern static Image SetGIcon(Image image, nint icon);
 }

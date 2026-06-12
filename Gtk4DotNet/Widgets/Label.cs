@@ -1,10 +1,17 @@
 using System.Runtime.InteropServices;
 using CsTools.Extensions;
+using Gtk4DotNet.Extensions;
 
 namespace Gtk4DotNet;
 
 public class Label : Widget
 {
+    public string? Text
+    {
+        get => _GetLabel(this).PtrToString(false);
+        set => _Set(this, value);
+    }
+    
     public bool Selectable
     {
         get => GetSelectable(this);
@@ -36,8 +43,6 @@ public class Label : Widget
     extern static Label New(nint nil);
 
     // TODO implement
-    // public static LabelHandle Set(this LabelHandle label, string? text)
-    //     => label.SideEffect(l => l._Set(text));
 
     // public static LabelHandle SetSelectable(this LabelHandle label, bool selectable)
     //     => label.SideEffect(l => l._SetSelectable(selectable));
@@ -61,11 +66,11 @@ public class Label : Widget
     // public static string? GetLabel(this LabelHandle label)
     //     => Marshal.PtrToStringUTF8(_GetLabel(label));
 
-    // [DllImport(Libs.LibGtk, EntryPoint = "gtk_label_get_label", CallingConvention = CallingConvention.Cdecl)]
-    // extern static nint _GetLabel(this LabelHandle label);
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_label_get_label", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint _GetLabel(Label label);
 
-    // [DllImport(Libs.LibGtk, EntryPoint = "gtk_label_set_label", CallingConvention = CallingConvention.Cdecl)]
-    // extern static void _Set(this LabelHandle label, string? text);
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_label_set_label", CallingConvention = CallingConvention.Cdecl)]
+    extern static void _Set(Label label, string? text);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_label_set_selectable", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetSelectable(Label label, bool selectable);

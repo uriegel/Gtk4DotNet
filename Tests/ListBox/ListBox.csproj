@@ -15,6 +15,9 @@
     <EmbeddedResource Include="./template.ui">
       <LogicalName>template</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="./listitem.ui">
+      <LogicalName>listitem</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
