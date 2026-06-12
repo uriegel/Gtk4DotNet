@@ -16,6 +16,12 @@ public class ListBox : Widget
         return listbox;
     }
 
+    public void AppendFromTemplate(string template, Func<Builder, Widget> getWidget)
+    {
+        using var builder = Builder.FromDotNetResource(template);
+        Append(this, getWidget(builder));  
+    } 
+
     public void RemoveAll() => RemoveAll(this);
     public void Insert(Widget widget, int position = -1) => Insert(this, widget, position);
     public void Prepend(Widget widget) => Prepend(this, widget);

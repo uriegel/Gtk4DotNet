@@ -2,14 +2,8 @@ using Gtk4DotNet;
 
 class ListItem : Box
 {
-    public static ListItem New(GIcon icon, string? text)
+    public ListItem(Builder builder, GIcon icon, string? text) : base(builder, "listitem")
     {
-        var builder = Builder.FromDotNetResource("listitem");
-        return new ListItem(builder, icon, text);
-    }
-    ListItem(Builder builder, GIcon icon, string? text) : base(builder, "listitem")
-    {
-        IsFloating = false;
         image.SetIcon(icon);
         this.text.Text = text;
     }
