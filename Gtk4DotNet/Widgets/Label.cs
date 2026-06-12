@@ -25,9 +25,9 @@ public class Label : Widget
         return res;
     }
 
-    public static Label New(string text) 
+    public static Label New(string? text) 
     {
-        var res = _New(text);
+        var res = _New(text ?? "");
         res.CheckDiagnostics();
         return res;
     }
