@@ -19,7 +19,6 @@ public class SimpleActionGroup : FloatingObject
             if (action.Action != null)
             {
                 var simpleAction = NewAction(action.Name, null);
-                //action.action = simpleAction;
                 action.DelegateId = GtkDelegates.Add(action.Action);
                 action.SignalId = Gtk.SignalConnectAction(simpleAction, "activate", Marshal.GetFunctionPointerForDelegate(action.Action as Delegate), IntPtr.Zero, 0);
                 AddAction(this, simpleAction);
