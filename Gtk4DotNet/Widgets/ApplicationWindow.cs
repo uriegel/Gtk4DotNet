@@ -9,9 +9,34 @@ public class ApplicationWindow : Window
     public ApplicationWindow() : base() { }
 
     public ApplicationWindow(WindowBuilder builder) : base(builder.Builder, builder.Window)
+        => SetApplication(this, builder.Application);
+
+    /// <summary>
+    /// Adds actions to this ActionMap.
+    /// </summary>
+    /// <remarks>
+    /// Important: when setting actions with shortcuts, add those with more specific shortcuts like <c>&lt;Ctrl&gt;F3</c>  b e f o r e  those with less specific shortcuts like <c>F3</c>. 
+    /// </remarks>
+    /// <param name="actions"></param>
+    public void AddActions(params GtkAction[] actions)
     {
-        SetApplication(this, builder.Application);
-        // TODO        AddWeakRef((this as IActionMap).FreeActions);
+        foreach (var action in actions)
+            AddAction(this, action);
+
+        AddWeakRef(() =>
+        {
+            foreach (var id in actionDelegateIds)
+                GtkDelegates.Remove(id);
+        });
+
+        var accelEntries =
+            actions
+            .Where(n => n.Accelerator != null)
+            .Select(n => new { Name = $"win.{n.Name}", n.Accelerator });
+
+        var winApp = GetApplication();
+        foreach (var accelEntry in accelEntries)
+            winApp?.SetAccelsForAction(accelEntry.Name, [accelEntry.Accelerator, null]);
     }
 
     /// <summary>
@@ -21,8 +46,7 @@ public class ApplicationWindow : Window
     /// Important: when setting actions with shortcuts, add those with more specific shortcuts like <c>&lt;Ctrl&gt;F3</c>  b e f o r e  those with less specific shortcuts like <c>F3</c>. 
     /// </remarks>
     /// <param name="actions"></param>
-    /// <returns></returns>
-    public void AddActions(params GtkAction[] actions)
+    public void AddActionsEliminate(params GtkAction1[] actions)
     {
         foreach (var action in actions)
         {
@@ -67,6 +91,10 @@ public class ApplicationWindow : Window
     [DllImport(Libs.LibGtk, EntryPoint = "g_simple_action_new_stateful", CallingConvention = CallingConvention.Cdecl)]
     extern static ActionHandle NewStatefulAction(string action, string? p, nint state);
 
+    [DllImport(Libs.LibGio, EntryPoint = "g_action_map_add_action", CallingConvention = CallingConvention.Cdecl)]
+    extern static void AddAction(ApplicationWindow window, GtkAction action);
+
+    // TODO eliminate
     [DllImport(Libs.LibGio, EntryPoint = "g_action_map_add_action", CallingConvention = CallingConvention.Cdecl)]
     extern static void AddAction(ApplicationWindow window, ActionHandle action);
 

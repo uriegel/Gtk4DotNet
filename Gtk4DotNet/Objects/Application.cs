@@ -68,7 +68,7 @@ public class Application : GObject
     /// </remarks>
     /// <param name="actions"></param>
     /// <returns></returns>
-    public void AddActions(params GtkAction[] actions)
+    public void AddActions(params GtkAction1[] actions)
     {
         foreach (var action in actions)
         {
@@ -135,7 +135,7 @@ public class Application : GObject
 
 public static class ApplicationExtensions
 {
-    public static THandle Actions<THandle>(this THandle app, params GtkAction[] actions)
+    public static THandle Actions<THandle>(this THandle app, params GtkAction1[] actions)
         where THandle : Application
         => app.SideEffect(app => app.AddActions(actions));
 }

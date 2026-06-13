@@ -105,6 +105,7 @@ public static class Gtk
         var registeredWidgets = Widget.GetRegisteredWidgetCount();
         var asyncReadies = AsyncReady.GetDelegateCount();
         var delegates = GtkDelegates.GetDelegatesCount();
+        if (registeredWidgets > 0)
             Console.WriteLine($"Dangling widgets: {registeredWidgets}");
         if (asyncReadies > 0)
             Console.WriteLine($"GFile AsyncReadies: {asyncReadies}");
@@ -147,6 +148,7 @@ public static class Gtk
     [DllImport(Libs.LibGtk, EntryPoint = "g_signal_connect_object", CallingConvention = CallingConvention.Cdecl)]
     internal extern static long SignalConnectAction(nint action, string name, nint callback, nint obj, int n3);
 
+    // TODO eliminate
     [DllImport(Libs.LibGtk, EntryPoint = "g_signal_connect_object", CallingConvention = CallingConvention.Cdecl)]
     internal extern static long SignalConnectAction(ActionHandle action, string name, nint callback, nint obj, int n3);
 
