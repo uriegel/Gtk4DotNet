@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using Gtk4DotNet;
 
-// TODO Test with Finalizer in ListItem
 class MyWindow : ApplicationWindow
 {
     public MyWindow(WindowBuilder builder) : base(builder)
