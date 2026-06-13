@@ -141,5 +141,4 @@ public static class ApplicationExtensions
         => app.SideEffect(app => app.AddActions(actions));
 }
 
-
 public record WindowBuilder(string Window, Builder Builder, Application Application);
