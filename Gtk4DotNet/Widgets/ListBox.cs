@@ -17,10 +17,22 @@ public class ListBox : Widget
         return listbox;
     }
 
+    public void PrependFromTemplate(string template, Func<Builder, Widget> getWidget)
+    {
+        using var builder = Builder.FromDotNetResource(template);
+        Prepend(this, getWidget(builder));
+    }
+
     public void AppendFromTemplate(string template, Func<Builder, Widget> getWidget)
     {
         using var builder = Builder.FromDotNetResource(template);
         Append(this, getWidget(builder));
+    } 
+
+    public void InsertFromTemplate(string template, Func<Builder, Widget> getWidget, int position = -1)  
+    {
+        using var builder = Builder.FromDotNetResource(template);
+        Insert(this, getWidget(builder), position);
     } 
     
     public void SetHeaderFunc<THandle>(Action<ListBoxRow?, ListBoxRow?> onHeader)

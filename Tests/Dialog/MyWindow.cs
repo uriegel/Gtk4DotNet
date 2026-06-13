@@ -1,5 +1,8 @@
 using Gtk4DotNet;
 
+// TODO AdwDialog with Cancel "Open file" Open, Box with description and ...
+// TODO AppChooserWidget in an AdwDialog
+
 class MyWindow : ApplicationWindow
 {
     public MyWindow(WindowBuilder builder) : base(builder)
