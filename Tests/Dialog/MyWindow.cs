@@ -1,7 +1,11 @@
 using Gtk4DotNet;
 
-// TODO AdwDialog with Cancel "Open file" Open, Box with description and ...
+// TODO set description from file name
+// TODO Mnemonics in Buttons
+// TODO Cancel Button 
+// TODO default action "Open File"
 // TODO AppChooserWidget in an AdwDialog
+// TODO open file
 
 class MyWindow : ApplicationWindow
 {
@@ -9,6 +13,7 @@ class MyWindow : ApplicationWindow
     {
         dialogFromCode.OnClicked(OnDialog);
         dialogFromResource.OnClicked(OnDialogFromResource);
+        dialogAppChooser.OnClicked(OnAppChoser);
         OnCloseAsync(PreventClosing);
     }
 
@@ -24,11 +29,10 @@ class MyWindow : ApplicationWindow
     }
 
     async void OnDialogFromResource()
-    {
-        using var bilder = Builder.FromDotNetResource("dialog");
-        var dialog = bilder.GetWidget<AdwAlertDialog>("dialog");
-        await dialog.PresentAsync(this);
-    }
+        => await AdwAlertDialog.PresentFromTemplateAsync("dialog", "dialog", this);
+
+    void OnAppChoser()
+        => AdwDialog.PresentFromTemplate("appchooser", "dialog", this, (builder, name) => new AppChooser(builder, name));
 
     async Task<bool> PreventClosing(Window window)
     {
@@ -45,4 +49,7 @@ class MyWindow : ApplicationWindow
 
     [Widget]
     readonly Button dialogFromResource = null!;
+
+    [Widget]
+    readonly Button dialogAppChooser = null!;
 }

@@ -28,6 +28,11 @@
             <property name="vexpand">True</property>
           </object>
         </child>
+        <child>
+          <object class="GtkButton" id="dialogAppChooser">
+            <property name="label">Dialog with AppChooser</property>
+          </object>
+        </child>
       </object>
     </child>
   </object>

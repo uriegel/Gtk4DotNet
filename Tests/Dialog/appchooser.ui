@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Created with Cambalache 1.0.2 -->
+<interface>
+  <!-- interface-name appchooser.ui -->
+  <requires lib="gtk" version="4.18"/>
+  <requires lib="libadwaita" version="1.5"/>
+  <object class="AdwDialog" id="dialog">
+    <property name="child">
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar">
+            <property name="show-end-title-buttons">False</property>
+            <child>
+              <object class="GtkButton">
+                <property name="label">_Cancel</property>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkButton">
+                <property name="css-classes">suggested-action</property>
+                <property name="label">_Open</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="margin-bottom">20</property>
+            <property name="margin-end">20</property>
+            <property name="margin-start">20</property>
+            <property name="margin-top">20</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">20</property>
+            <child>
+              <object class="GtkLabel" id="description">
+                <property name="label">Choose an Application to open &lt;b&gt;this file&lt;/b&gt;</property>
+                <property name="use-markup">True</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </property>
+    <property name="content-height">600</property>
+    <property name="content-width">500</property>
+    <property name="title">Open File</property>
+  </object>
+</interface>

@@ -13,6 +13,13 @@ public class AdwAlertDialog : AdwDialog
         return dialog;
     }
 
+    public static Task<string> PresentFromTemplateAsync(string template, string name, Widget parent, Func<Builder, string, AdwAlertDialog>? ctor = null)
+    {
+        using var builder = Builder.FromDotNetResource(template);
+        var dialog = ctor?.Invoke(builder, name) ?? new AdwAlertDialog(builder, name);
+        return dialog.PresentAsync(parent);
+    }
+
     public void SetResponses(IEnumerable<AlertDialogResponse> responses, Action<string?>? onResponse = null)
     {
         foreach (var response in responses.Reverse())
@@ -36,6 +43,10 @@ public class AdwAlertDialog : AdwDialog
         Present(parent);
         return tcs.Task;
     }
+
+    protected AdwAlertDialog(Builder builder, string? name = null) : base(builder, name) { }
+
+    AdwAlertDialog() : base() {}
 
     void OnResponse(Action<string> onResponse)
         => SignalConnect<AlertDialogResponseDelegate>("response", (_, response, __) => onResponse(response));

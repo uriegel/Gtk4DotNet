@@ -18,6 +18,9 @@
     <EmbeddedResource Include="./dialog.ui">
       <LogicalName>dialog</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="./appchooser.ui">
+      <LogicalName>appchooser</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
