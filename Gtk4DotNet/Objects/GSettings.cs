@@ -51,8 +51,6 @@ public class GSettings : GObject
     public bool SetInt(string key, int value)
         => ValidateKey(key)?._SetInt(key, value) ?? false;
 
-    public ActionHandle CreateAction(string key) => CreateAction(this, key);
-
     [DllImport(Libs.LibGtk, EntryPoint = "g_settings_bind", CallingConvention = CallingConvention.Cdecl)]
     extern static void Bind(GSettings settings, string key, GObject obj, string property, BindFlags flags);
 

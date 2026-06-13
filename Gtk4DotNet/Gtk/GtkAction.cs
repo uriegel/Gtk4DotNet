@@ -3,12 +3,12 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
-public class GtkAction : FloatingObject
+public class GtkAction2 : FloatingObject
 {
     public string Name { get; private set; } = null!;
     public string? Accelerator { get; private set; }
 
-    public static GtkAction New(string name, Action action, string? accelerator = null)
+    public static GtkAction2 New(string name, Action action, string? accelerator = null)
     {
         var gAction = NewAction(name, null);
         gAction.CheckDiagnostics();
@@ -16,7 +16,7 @@ public class GtkAction : FloatingObject
         return gAction;
     }
 
-    public static GtkAction New(string name, bool initialState, Action<bool> stateChanged, string? accelerator = null)
+    public static GtkAction2 New(string name, bool initialState, Action<bool> stateChanged, string? accelerator = null)
     {
         var state = NewBool(initialState ? -1 : 0);
         var gAction = NewStatefulAction(name, null, state);
@@ -26,7 +26,7 @@ public class GtkAction : FloatingObject
         return gAction;
     }
 
-    public static GtkAction New(string name, string initialState, Action<string> stateChanged, string? accelerator = null)
+    public static GtkAction2 New(string name, string initialState, Action<string> stateChanged, string? accelerator = null)
     {
         var state = NewString(initialState ?? "");
         var gAction = NewStatefulAction(name, "s", state);
@@ -36,40 +36,54 @@ public class GtkAction : FloatingObject
         return gAction;
     }
 
+    public void Disconnect()
+    {
+        SignalDisconnect(this, signalId);
+        GtkDelegates.Remove(id);
+        IsFloating = false;
+        Unref(GetInternalHandle());
+        
+    } 
+
     void Initialize(string name, Action action, string? accelerator = null)
     {
-        Name = name;
-        Accelerator = accelerator;
-        actionDelegateIds.Add(GtkDelegates.Add(action));
-        SignalConnectAction(this, "activate", Marshal.GetFunctionPointerForDelegate(action as Delegate), 0, 0);
+        Initialize(name, accelerator);
+        id = GtkDelegates.Add(action);
+        signalId = SignalConnectAction(this, "activate", Marshal.GetFunctionPointerForDelegate(action as Delegate), 0, 0);
     }
 
     void Initialize(string name, Action<bool> stateChanged, string? accelerator = null)
     {
-        Name = name;
-        Accelerator = accelerator;
+        Initialize(name, accelerator);
         StateChanged = (a, s) =>
         {
             var state = HandleBoolState(a, s);
             stateChanged(state);
         };
 
-        actionDelegateIds.Add(GtkDelegates.Add(StateChanged));
-        SignalConnectAction(this, "change-state", Marshal.GetFunctionPointerForDelegate(StateChanged), 0, 0);
+        id = GtkDelegates.Add(StateChanged);
+        signalId = SignalConnectAction(this, "change-state", Marshal.GetFunctionPointerForDelegate(StateChanged), 0, 0);
     }
 
     void Initialize(string name, Action<string> stateChanged, string? accelerator = null)
     {
-        Name = name;
-        Accelerator = accelerator;
+        Initialize(name, accelerator);
         StateChanged = (a, s) =>
         {
             var state = HandleStringState(a, s);
             stateChanged(state);
         };
 
-        actionDelegateIds.Add(GtkDelegates.Add(StateChanged));
-        SignalConnectAction(this, "change-state", Marshal.GetFunctionPointerForDelegate(StateChanged), 0, 0);
+        id = GtkDelegates.Add(StateChanged);
+        signalId = SignalConnectAction(this, "change-state", Marshal.GetFunctionPointerForDelegate(StateChanged), 0, 0);
+    }
+
+    void Initialize(string name, string? accelerator = null)
+    {
+        Name = name;
+        Accelerator = accelerator;
+        AddWeakRef(() 
+            => GtkDelegates.Remove(id));
     }
 
     bool HandleBoolState(nint _, nint state)
@@ -90,17 +104,23 @@ public class GtkAction : FloatingObject
     delegate void BoolStateChangedDelegate(bool newState);
     delegate void StringStateChangedDelegate(string newState);
     delegate void StateChangedDelegate(IntPtr action, IntPtr state);
-    
+
+    long id;
+    long signalId;
+    // TODO ???
     StateChangedDelegate StateChanged = (a, s) => { };
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_simple_action_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static GtkAction NewAction(string action, string? p);
+    extern static GtkAction2 NewAction(string action, string? p);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_simple_action_new_stateful", CallingConvention = CallingConvention.Cdecl)]
-    extern static GtkAction NewStatefulAction(string action, string? p, nint state);
+    extern static GtkAction2 NewStatefulAction(string action, string? p, nint state);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_signal_connect_object", CallingConvention = CallingConvention.Cdecl)]
-    extern static long SignalConnectAction(GtkAction action, string name, nint callback, nint obj, int n3);
+    extern static long SignalConnectAction(GtkAction2 action, string name, nint callback, nint obj, int n3);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_signal_handler_disconnect", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SignalDisconnect(GtkAction2 action, long id);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_variant_new_boolean", CallingConvention = CallingConvention.Cdecl)]
     extern static nint NewBool(int value);
@@ -109,7 +129,7 @@ public class GtkAction : FloatingObject
     internal extern static nint NewString(string value);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_simple_action_set_state", CallingConvention = CallingConvention.Cdecl)]
-    extern static void ActionSetState(GtkAction action, nint state);
+    extern static void ActionSetState(GtkAction2 action, nint state);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_variant_get_boolean", CallingConvention = CallingConvention.Cdecl)]
     extern static int GetBool(nint value);
