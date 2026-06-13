@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using Gtk4DotNet;
 
-// TODO Header from template like Nautilus
 // TODO Test with Finalizer in ListItem
 class MyWindow : ApplicationWindow
 {
@@ -9,12 +8,12 @@ class MyWindow : ApplicationWindow
     {
         listbox.SetHeaderFunc<ListItem>((current, previous) =>
         {
-            if (previous == null && current != null)
-                current.SetHeader(Label.New("Recommended Apps"));
             var currentListitem = current?.GetChild<ListItem>();
             var previousListitem = previous?.GetChild<ListItem>();
+            if (previous == null && currentListitem?.IsRecommended == true)
+                current?.CreateHeader("Recommended Apps");
             if (previousListitem?.IsRecommended == true && currentListitem?.IsRecommended == false)
-                current?.SetHeader(Label.New("All Apps"));
+                current?.CreateHeader("All Apps");
         });
 
         var stopuhr = new Stopwatch();
@@ -34,7 +33,13 @@ class MyWindow : ApplicationWindow
 
     [Widget]
     readonly ListBox listbox = null!;
-
-
 }
 
+static class MyWindowExtensions
+{
+    public static void CreateHeader(this ListBoxRow listBoxRow, string header)
+    {
+        using var builder = Builder.FromDotNetResource("listitemheader");
+        listBoxRow.SetHeader(new ListItemHeader(builder, header));
+    }
+}

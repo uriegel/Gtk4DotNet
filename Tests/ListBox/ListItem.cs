@@ -13,18 +13,6 @@ class ListItem : Box
         this.text.Text = text;
     }
 
-    public ListItem() : base() {}
-
-    public static ListItem New(string? text)
-    {
-        var builder = Builder.FromDotNetResource("listitem");
-        return new ListItem(builder, text);
-    }
-    ListItem(Builder builder,  string? text) : base(builder, "listitem")
-    {
-        this.text.Text = text;
-    }
-
     [Widget]
     readonly Image image = null!;
 
