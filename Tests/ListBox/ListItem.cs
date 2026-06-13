@@ -2,6 +2,8 @@ using Gtk4DotNet;
 
 class ListItem : Box
 {
+    public new string? Name { get => text.Text; }
+    
     public ListItem(Builder builder, GIcon icon, string? text) : base(builder, "listitem")
     {
         image.SetIcon(icon);
@@ -19,7 +21,6 @@ class ListItem : Box
     {
         this.text.Text = text;
     }
-
 
     [Widget]
     readonly Image image = null!;

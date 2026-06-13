@@ -102,9 +102,12 @@ public static class Gtk
         GC.Collect();
         Console.WriteLine($"Total memory: {System.Diagnostics.Process.GetCurrentProcess().WorkingSet64:N0}, managed: {GC.GetTotalMemory(true):N0}");
 
+        var registeredWidgets = Widget.GetRegisteredWidgetCount();
         var asyncReadies = AsyncReady.GetDelegateCount();
         var delegates = GtkDelegates.GetDelegatesCount();
         var actions = IActionMap.GetActionsCount();
+        if (registeredWidgets > 0)
+            Console.WriteLine($"Dangling widgets: {registeredWidgets}");
         if (asyncReadies > 0)
             Console.WriteLine($"GFile AsyncReadies: {asyncReadies}");
         if (delegates > 0)

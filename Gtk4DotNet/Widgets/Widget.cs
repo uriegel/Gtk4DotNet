@@ -185,6 +185,15 @@ public class Widget : FloatingObject
 
     public Widget GetRoot() => GetRoot(this);
 
+    public void Register()
+    {
+        widgets.TryAdd(handle, this);
+        AddWeakRef(() => widgets.Remove(handle));
+    }
+
+    public static TWidget? GetRegistered<TWidget>(nint widgetKey) where TWidget : Widget
+        => widgets.TryGetValue(widgetKey, out var val) ? val as TWidget : null;
+
     public Widget() : base() { }
 
     public Widget(Builder builder, string? name = null) : base()
@@ -250,6 +259,10 @@ W A R N I N G
         => Console.WriteLine(Name != null ? $"{GetType().Name} {Name} finalized" : $"{GetType().Name} finalized");
 
     internal const string DATA_CONTEXT = "DATA_CONTEXT";
+
+    internal static int GetRegisteredWidgetCount() => widgets.Count;
+
+    static readonly Dictionary<nint, Widget> widgets = [];
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_show", CallingConvention = CallingConvention.Cdecl)]
     extern static void Show(Widget widget);
@@ -348,4 +361,8 @@ public static class WidgetExtensions
     public static THandle CssClass<THandle>(this THandle widget, string cssClass)
         where THandle : Widget
         => widget.SideEffect(w => w.AddCssClass(cssClass));
+
+    public static THandle RegisterWidget<THandle>(this THandle widget)
+        where THandle : Widget
+        => widget.SideEffect(w => w.Register());
 }

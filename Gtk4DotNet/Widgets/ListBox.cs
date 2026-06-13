@@ -23,9 +23,14 @@ public class ListBox : Widget
         Append(this, getWidget(builder));
     } 
     
-    public void SetHeaderFunc(Action<nint, nint> onHeader)
+    public void SetHeaderFunc<THandle>(Action<THandle?, THandle?> onHeader) where THandle: Widget
     {
-        ThreePointerDelegate threePointerDelegate = (p1, p2, p3) => onHeader(p1, p2);
+        ThreePointerDelegate threePointerDelegate = (p1, p2, p3) =>
+        {
+            var currentItem = GetRegistered<THandle>(RowGetWidgetKey(p1));
+            var previousItem = GetRegistered<THandle>(RowGetWidgetKey(p2));
+            onHeader(currentItem, previousItem);
+        };
         var key = GtkDelegates.GetKey();
         GtkDelegates.Add(key, threePointerDelegate);
         AddWeakRef(() => GtkDelegates.Remove(key));
@@ -42,6 +47,8 @@ public class ListBox : Widget
     
     public ListBox(Builder builder, string? name = null) : base(builder, name) { }
 
+    static nint RowGetWidgetKey(nint row) => row != 0 ? _RowGetWidgetKey(row) : 0;
+        
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_new", CallingConvention = CallingConvention.Cdecl)]
     extern static ListBox _New();
 
@@ -64,8 +71,12 @@ public class ListBox : Widget
     extern static void SetSelectionMode(ListBox listbox, SelectionMode selectionMode);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_get_selection_mode", CallingConvention = CallingConvention.Cdecl)]
-    extern static SelectionMode GetSelectionMode(ListBox listbox);    
-    
+    extern static SelectionMode GetSelectionMode(ListBox listbox);
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_set_header_func", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetHeaderFunc(ListBox listbox, nint callback, nint _, nint __);    
+    
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_row_get_child", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint _RowGetWidgetKey(nint row);    
 }
+
