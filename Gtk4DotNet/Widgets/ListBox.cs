@@ -23,13 +23,13 @@ public class ListBox : Widget
         Append(this, getWidget(builder));
     } 
     
-    public void SetHeaderFunc<THandle>(Action<THandle?, THandle?> onHeader) where THandle: Widget
+    public void SetHeaderFunc<THandle>(Action<ListBoxRow?, ListBoxRow?> onHeader)
     {
         ThreePointerDelegate threePointerDelegate = (p1, p2, p3) =>
         {
-            var currentItem = GetRegistered<THandle>(RowGetWidgetKey(p1));
-            var previousItem = GetRegistered<THandle>(RowGetWidgetKey(p2));
-            onHeader(currentItem, previousItem);
+            var currentRow = p1 != 0 ? new ListBoxRow(p1) : null;
+            var previousRow = p2 != 0 ? new ListBoxRow(p2) : null;
+            onHeader(currentRow, previousRow);
         };
         var key = GtkDelegates.GetKey();
         GtkDelegates.Add(key, threePointerDelegate);
@@ -47,8 +47,6 @@ public class ListBox : Widget
     
     public ListBox(Builder builder, string? name = null) : base(builder, name) { }
 
-    static nint RowGetWidgetKey(nint row) => row != 0 ? _RowGetWidgetKey(row) : 0;
-        
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_new", CallingConvention = CallingConvention.Cdecl)]
     extern static ListBox _New();
 
@@ -75,8 +73,5 @@ public class ListBox : Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_set_header_func", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetHeaderFunc(ListBox listbox, nint callback, nint _, nint __);    
-    
-    [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_row_get_child", CallingConvention = CallingConvention.Cdecl)]
-    extern static nint _RowGetWidgetKey(nint row);    
 }
 

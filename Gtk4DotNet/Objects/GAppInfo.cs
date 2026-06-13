@@ -5,47 +5,31 @@ using Gtk4DotNet.Extensions;
 
 namespace Gtk4DotNet;
 
-// TODO check
 public class GAppInfo : GObject
 {
     public bool ShouldShow { get => _ShouldShow(this); }
-    
-    public static DisposableEnumerable<GAppInfo> GetAllApps()
-    {
-        var list = GetALl();
-        var result = GetItems(list)
-            .ToArray()
-            .AsDisposable();
 
-        GList.Free(list);
-        return result;
+    public static GAppInfo GetDefault(string contentType, bool mustSupportUris = false)
+    {
+        var app = _GetDefault(contentType, mustSupportUris);
+        app.CheckDiagnostics();
+        return app;
     }
+
+    public static DisposableEnumerable<GAppInfo> GetAllApps()
+        => GetApps(GetAll());
 
     public static DisposableEnumerable<GAppInfo> GetAllApps(string contentType)
-    {
-        var list = GetALl(contentType);
-        var result = GetItems(list)
-            .ToArray()
-            .AsDisposable();
-
-        GList.Free(list);
-        return result;
-    }
+        => GetApps(GetAll(contentType));
 
     public static DisposableEnumerable<GAppInfo> GetRecommendedApps()
-    {
-        var list = _GetRecommended();
-        var result = GetItems(list)
-            .ToArray()
-            .AsDisposable();
-
-        GList.Free(list);
-        return result;
-    }
+        => GetApps(GetRecommended());
 
     public static DisposableEnumerable<GAppInfo> GetRecommendedApps(string contentType)
+        => GetApps(GetRecommended(contentType));
+
+    static DisposableEnumerable<GAppInfo> GetApps(nint list)
     {
-        var list = _GetRecommended(contentType);
         var result = GetItems(list)
             .ToArray()
             .AsDisposable();
@@ -60,7 +44,7 @@ public class GAppInfo : GObject
 
     public GIcon GetIcon()
     {
-        var icon = _GetIcon(this);
+        var icon = GetIcon(this);
         icon.CheckDiagnostics();
         icon.IsFloating = true;
         return icon;
@@ -86,17 +70,20 @@ public class GAppInfo : GObject
         CheckDiagnostics();
     }
 
+    [DllImport(Libs.LibGtk, EntryPoint = "g_app_info_get_default_for_type", CallingConvention = CallingConvention.Cdecl)]
+    extern static GAppInfo _GetDefault(string contentType, bool supportUris);
+
     [DllImport(Libs.LibGtk, EntryPoint = "g_app_info_get_all", CallingConvention = CallingConvention.Cdecl)]
-    extern static nint GetALl();
+    extern static nint GetAll();
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_app_info_get_all_for_type", CallingConvention = CallingConvention.Cdecl)]
-    extern static nint GetALl(string contentType);
-    
+    extern static nint GetAll(string contentType);
+
     [DllImport(Libs.LibGtk, EntryPoint = "g_app_info_get_recommended", CallingConvention = CallingConvention.Cdecl)]
-    extern static nint _GetRecommended();
+    extern static nint GetRecommended();
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_app_info_get_recommended_for_type", CallingConvention = CallingConvention.Cdecl)]
-    extern static nint _GetRecommended(string contentType);
+    extern static nint GetRecommended(string contentType);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_app_info_get_name", CallingConvention = CallingConvention.Cdecl)]
     extern static nint GetName(GAppInfo appInfo);
@@ -105,7 +92,7 @@ public class GAppInfo : GObject
     extern static nint GetExecutable(GAppInfo appInfo);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_app_info_get_icon", CallingConvention = CallingConvention.Cdecl)]
-    extern static GIcon _GetIcon(GAppInfo appInfo);
+    extern static GIcon GetIcon(GAppInfo appInfo);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_app_info_should_show", CallingConvention = CallingConvention.Cdecl)]
     extern static bool _ShouldShow(GAppInfo appInfo);

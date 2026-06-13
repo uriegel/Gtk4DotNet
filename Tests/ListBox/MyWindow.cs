@@ -1,9 +1,7 @@
 using System.Diagnostics;
 using Gtk4DotNet;
 
-// TODO Group items (like in Nautilus)
-// TODO ListBoxHeaderWidget
-// TODO SetHeader
+// TODO Header from template like Nautilus
 // TODO Test with Finalizer in ListItem
 class MyWindow : ApplicationWindow
 {
@@ -11,19 +9,24 @@ class MyWindow : ApplicationWindow
     {
         listbox.SetHeaderFunc<ListItem>((current, previous) =>
         {
-            Console.WriteLine($"{current?.Name}, {previous?.Name}");
-
-
-            //  if (previous == null)
-            //     SetHeader(r, Label.New("Das ist der tolle Hedder"));
-            // [DllImport("libgtk-4.so.1", EntryPoint = "gtk_list_box_row_set_header", CallingConvention = CallingConvention.Cdecl)]
-            // extern static void SetHeader(nint row, Widget header);
+            if (previous == null && current != null)
+                current.SetHeader(Label.New("Recommended Apps"));
+            var currentListitem = current?.GetChild<ListItem>();
+            var previousListitem = previous?.GetChild<ListItem>();
+            if (previousListitem?.IsRecommended == true && currentListitem?.IsRecommended == false)
+                current?.SetHeader(Label.New("All Apps"));
         });
 
         var stopuhr = new Stopwatch();
         stopuhr.Start();
-        using var appinfos = GAppInfo.GetAllApps();
-        foreach (var appinfo in appinfos.OrderBy(n => n.Name).Where(n => n.ShouldShow))
+        var contentType = Gio.GuessContentType(".html") ?? "none";
+        using var defaultApp = GAppInfo.GetDefault(contentType);
+        listbox.AppendFromTemplate("listitem", b => new ListItem(b, defaultApp.GetIcon(), defaultApp.Name, true).RegisterWidget());
+        using var recommendedApps = GAppInfo.GetRecommendedApps(contentType);
+        foreach (var appinfo in recommendedApps.OrderBy(n => n.Name).Where(n => n.ShouldShow && n.Name != defaultApp.Name))
+            listbox.AppendFromTemplate("listitem", b => new ListItem(b, appinfo.GetIcon(), appinfo.Name, true).RegisterWidget());
+        using var apps = GAppInfo.GetAllApps();
+        foreach (var appinfo in apps.OrderBy(n => n.Name).Where(n => n.ShouldShow))
             listbox.AppendFromTemplate("listitem", b => new ListItem(b, appinfo.GetIcon(), appinfo.Name).RegisterWidget());
         var ela = stopuhr.Elapsed;
         Console.WriteLine(ela);
