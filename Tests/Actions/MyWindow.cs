@@ -11,6 +11,4 @@ class MyWindow : AdwApplicationWindow
     }
 }
 
-// TODO 4 dangling Action delegates
-// TODO ActionHandle => SimpleAction
 // TODO one class for App, AppWin and ActionGroup

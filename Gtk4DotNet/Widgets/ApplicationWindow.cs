@@ -28,16 +28,3 @@ public static class ApplicationWindowExtensions
         where THandle : ApplicationWindow
         => win.SideEffect(win => win.AddActions(actions));
 }
-
-// TODO
-    // void FreeActions()
-    // {
-    //     foreach (var action in GetActionList())
-    //     {
-    //         GtkDelegates.Remove(action.DelegateId);
-    //         Gtk.SignalDisconnect(action.action, action.SignalId);
-    //         RemoveAction(GetInternalHandle(), action.Name);
-    //         actions.Remove(action.Name);
-    //         GObject.Unref(action.action);
-    //     }
-    // }
