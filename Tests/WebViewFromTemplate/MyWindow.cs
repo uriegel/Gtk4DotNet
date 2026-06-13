@@ -5,7 +5,7 @@ class MyWindow : AdwApplicationWindow
 {
     public MyWindow(WindowBuilder builder) : base(builder)
     {
-        this.AddActions([
+        this.AddActions(
             new("quit", CloseWindow, "<Ctrl>Q"),
             new("devtools", async () =>
             {
@@ -14,7 +14,7 @@ class MyWindow : AdwApplicationWindow
                 await Task.Delay(400);
                 inspector.Detach();
             }, "F12")
-        ]);
+        );
 
         webView.BackgroundColor(Color.Transparent);
         var settings = webView.GetSettings();

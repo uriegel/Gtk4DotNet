@@ -4,5 +4,5 @@
 <cambalache-project version="1.0.0" target_tk="gtk-4.0" depends="libadwaita-1">
   <ui filename="window.ui" sha256="b1866b1d175a0b68be4640aecd521537406e61824b671c23baef0c348d95f7e3"/>
   <ui filename="dialog.ui" sha256="c13be52d3adaf412c4ea5cd4d00bb23f813b532f445ece3f1aad67f5acd961ce"/>
-  <ui filename="appchooser.ui" sha256="3a3db8089c51b412357102f0d4aa683d22d302b810e22b68a85129e68a3ed39d"/>
+  <ui filename="appchooser.ui" sha256="927bd5b2b798fa1c67bfff1afb1d8222e8e045b1a92cee14ea43bec956caf4df"/>
 </cambalache-project>

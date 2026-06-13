@@ -1,7 +1,6 @@
 using Gtk4DotNet;
 
 // TODO set description from file name
-// TODO Mnemonics in Buttons
 // TODO Cancel Button 
 // TODO default action "Open File"
 // TODO AppChooserWidget in an AdwDialog
