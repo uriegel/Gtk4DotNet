@@ -52,24 +52,24 @@ public class GtkAction
         return Marshal.PtrToStringAuto(strptr) ?? "";
     }
 
-/*    public void SetBoolState(bool state)
-    {
-        if (action != IntPtr.Zero)
+    /*    public void SetBoolState(bool state)
         {
-            var var = Raw.Variant.NewBool(state);
-            Raw.GtkAction.ActionSetState(action, var);
+            if (action != IntPtr.Zero)
+            {
+                var var = Raw.Variant.NewBool(state);
+                Raw.GtkAction.ActionSetState(action, var);
+            }
         }
-    }
 
-    public void SetStringState(string state)
-    {
-        if (action != IntPtr.Zero)
+        public void SetStringState(string state)
         {
-            var var = Raw.Variant.NewString(state);
-            Raw.GtkAction.ActionSetState(action, var);
+            if (action != IntPtr.Zero)
+            {
+                var var = Raw.Variant.NewString(state);
+                Raw.GtkAction.ActionSetState(action, var);
+            }
         }
-    }
-*/
+    */
     internal IntPtr action { get; set; } = IntPtr.Zero;
 
     internal delegate void BoolStateChangedDelegate(bool newState);

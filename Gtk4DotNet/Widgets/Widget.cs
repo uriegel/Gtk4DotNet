@@ -185,6 +185,8 @@ public class Widget : FloatingObject
 
     public Widget GetRoot() => GetRoot(this);
 
+    public void InsertActionGroup(string name, SimpleActionGroup group) => InsertActionGroup(this, name, group);
+
     public void Register()
     {
         widgets.TryAdd(handle, this);
@@ -323,6 +325,9 @@ W A R N I N G
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_visible", CallingConvention = CallingConvention.Cdecl)]
     extern static bool GetVisible(Widget widget);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_insert_action_group", CallingConvention = CallingConvention.Cdecl)]
+    extern static void InsertActionGroup(Widget widget, string name, SimpleActionGroup group);
 }
 
 public static class WidgetExtensions
