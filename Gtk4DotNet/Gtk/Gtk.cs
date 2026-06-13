@@ -105,15 +105,11 @@ public static class Gtk
         var registeredWidgets = Widget.GetRegisteredWidgetCount();
         var asyncReadies = AsyncReady.GetDelegateCount();
         var delegates = GtkDelegates.GetDelegatesCount();
-        var actions = IActionMap.GetActionsCount();
-        if (registeredWidgets > 0)
             Console.WriteLine($"Dangling widgets: {registeredWidgets}");
         if (asyncReadies > 0)
             Console.WriteLine($"GFile AsyncReadies: {asyncReadies}");
         if (delegates > 0)
             Console.WriteLine($"Connected delegates: {delegates}");
-        if (actions > 0)
-            Console.WriteLine($"Connected actions: {actions}");
     }
 
     public static char KeyValToUnicode(int keyVal, int keyCode)

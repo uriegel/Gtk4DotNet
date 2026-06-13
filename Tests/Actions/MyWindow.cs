@@ -11,6 +11,5 @@ class MyWindow : AdwApplicationWindow
     }
 }
 
-// TODO Eliminate IActionMap
 // TODO ActionHandle => SimpleAction
 // TODO one class for App, AppWin and ActionGroup

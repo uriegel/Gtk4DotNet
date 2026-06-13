@@ -49,7 +49,6 @@ public class Application : GObject
     {
         var res = NewWindow(this);
         res.CheckDiagnostics();
-        res.AddWeakRef((res as IActionMap).FreeActions);
         return res;
     }
 
