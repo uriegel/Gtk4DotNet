@@ -43,9 +43,9 @@ public class ListBox : Widget
             var previousRow = p2 != 0 ? new ListBoxRow(p2) : null;
             onHeader(currentRow, previousRow);
         };
-        var key = GtkDelegates.GetKey();
-        GtkDelegates.Add(key, threePointerDelegate);
-        AddWeakRef(() => GtkDelegates.Remove(key));
+        var key = GtkDelegates.Instance.GetKey("ListBoxHeaderFunc");
+        GtkDelegates.Instance.Add(key, threePointerDelegate);
+        AddWeakRef(() => GtkDelegates.Instance.Remove(key.Key));
         SetHeaderFunc(this, Marshal.GetFunctionPointerForDelegate((Delegate)threePointerDelegate), 0, 0);
     }    
 

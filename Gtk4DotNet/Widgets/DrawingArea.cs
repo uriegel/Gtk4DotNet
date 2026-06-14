@@ -26,9 +26,9 @@ public class DrawingArea : Widget
 
     void SetDrawFunction(DrawFunctionDelegate draw)
     {
-        var key = GtkDelegates.GetKey();
-        GtkDelegates.Add(key, draw);
-        AddWeakRef(() => GtkDelegates.Remove(key));
+        var key = GtkDelegates.Instance.GetKey("DrawFunction");
+        GtkDelegates.Instance.Add(key, draw);
+        AddWeakRef(() => GtkDelegates.Instance.Remove(key.Key));
         SetDrawFunction(this, Marshal.GetFunctionPointerForDelegate((Delegate)draw), IntPtr.Zero, p => { });
     }
 

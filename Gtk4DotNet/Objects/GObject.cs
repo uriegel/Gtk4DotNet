@@ -9,6 +9,8 @@ public class GObject : BaseHandle
 {
     public bool IsFloating { get; set; }
 
+    internal static GtkDelegates GObjectsDiagnostics { get; } = new();
+
     public void OnFinalize(Action onFinalize) => AddWeakRef(onFinalize);
 
     /// <summary>
@@ -20,13 +22,13 @@ public class GObject : BaseHandle
     /// <param name="onDisposing">Is called, when the obeject is disposed</param>
     public void AddWeakRef(Action onDisposing)
     {
-        var key = GtkDelegates.GetKey();
+        var key = GtkDelegates.Instance.GetKey("WeakRef");
         TwoPointerDelegate callback = (_, ___) =>
         {
-            GtkDelegates.Remove(key);
+            GtkDelegates.Instance.Remove(key.Key);
             onDisposing();
         };
-        GtkDelegates.Add(key, callback);
+        GtkDelegates.Instance.Add(key, callback);
         _AddWeakRef(this, Marshal.GetFunctionPointerForDelegate(callback as Delegate), 0);
     }
 
@@ -147,27 +149,39 @@ public class GObject : BaseHandle
     internal void CheckDiagnostics()
     {
         if (!IsInvalid && Gtk.Diagnostics && !diagnosticsSet)
-        {
-            OnFinalize(OnFinalization);
-            diagnosticsSet = true;
-        }
+            SetDiagnostics();
     }
 
     internal void SignalConnect<TDelegate>(string name, TDelegate callback)
         where TDelegate : Delegate
     {
-        var key = GtkDelegates.GetKey();
-        GtkDelegates.Add(key, callback);
-        AddWeakRef(() => GtkDelegates.Remove(key));
+        var key = GtkDelegates.Instance.GetKey($"Signal: {name}");
+        GtkDelegates.Instance.Add(key, callback);
+        AddWeakRef(() => GtkDelegates.Instance.Remove(key.Key));
         SignalConnect(this, name, Marshal.GetFunctionPointerForDelegate((Delegate)callback), 0, 0);
     }
 
-    protected virtual void OnFinalization()
+    protected virtual void OnDiagnostics()
         => Console.WriteLine($"{GetType().Name} finalized");
 
     protected override bool ReleaseHandle()
          => IsFloating
              || true.SideEffectIf(!IsFloating, _ => Unref(handle));
+
+    void SetDiagnostics()
+    {
+        diagnosticsSet = true;
+        var key = GObjectsDiagnostics.GetKey("SetDiagnostics");
+        TwoPointerDelegate callback = (_, ___) =>
+        {
+            GObjectsDiagnostics.Remove(key.Key);
+            if (Gtk.GObjectTracing)
+                OnDiagnostics();
+        };
+        GObjectsDiagnostics.Add(key, callback);
+        _AddWeakRef(this, Marshal.GetFunctionPointerForDelegate(callback as Delegate), 0);
+    }
+
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_free", CallingConvention = CallingConvention.Cdecl)]
     internal extern static void Free(nint obj);

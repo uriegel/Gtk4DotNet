@@ -257,7 +257,7 @@ W A R N I N G
         }
     }
 
-    protected override void OnFinalization()
+    protected override void OnDiagnostics()
         => Console.WriteLine(Name != null ? $"{GetType().Name} {Name} finalized" : $"{GetType().Name} finalized");
 
     internal const string DATA_CONTEXT = "DATA_CONTEXT";

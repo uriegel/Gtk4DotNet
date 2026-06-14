@@ -23,9 +23,10 @@ public class Application : GObject
     public Application OnActivate(Action<Application> activate)
         => this.SideEffect(_ => SignalConnect<OnePointerDelegate>("activate", _ => activate(this)));
 
-    public Application WithDiagnostics()
+    public Application WithDiagnostics(bool gobjectTracing = false)
     {
         Gtk.Diagnostics = true;
+        Gtk.GObjectTracing = gobjectTracing;
         CheckDiagnostics();
         return this;
     }
@@ -75,13 +76,13 @@ public class Application : GObject
             if (action.Action != null)
             {
                 var simpleAction = NewAction(action.Name, null);
-                actionDelegateIds.Add(GtkDelegates.Add(action.Action));
+                actionDelegateIds.Add(GtkDelegates.Instance.Add(action.Action, "jiiuiuhiohiohkihkihhii"));
                 Gtk.SignalConnectAction(simpleAction, "activate", Marshal.GetFunctionPointerForDelegate(action.Action as Delegate), IntPtr.Zero, 0);
                 AddAction(this, simpleAction);
             }
             else
             {
-                // action.DelegateId = GtkDelegates.Add(action.StateChanged);
+                // action.DelegateId = GtkDelegates.Instance.Add(action.StateChanged);
                 // var state = action.StateParameterType == "s"
                 //     ? NewString(action.State as string ?? "")
                 //     : NewBool((bool?)action.State == true ? -1 : 0);
@@ -96,7 +97,7 @@ public class Application : GObject
         AddWeakRef(() =>
         {
             foreach (var id in actionDelegateIds)
-                GtkDelegates.Remove(id);
+                GtkDelegates.Instance.Remove(id);
         });
 
         var accelEntries =

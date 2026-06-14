@@ -38,16 +38,16 @@ public static class Gtk
             action?.Invoke();
         else
         {
-            var key = GtkDelegates.GetKey();
+            var key = GtkDelegates.Instance.GetKey("BeginInvoke");
             OnePointerBoolRetDelegate? mainFunction = _ =>
             {
                 action?.Invoke();
                 mainFunction = null;
                 action = null;
-                GtkDelegates.Remove(key);
+                GtkDelegates.Instance.Remove(key.Key);
                 return false;
             };
-            GtkDelegates.Add(key, mainFunction);
+            GtkDelegates.Instance.Add(key, mainFunction);
             var delegat = mainFunction as Delegate;
             var funcPtr = Marshal.GetFunctionPointerForDelegate(delegat);
             IdleAddFull(priority, funcPtr, IntPtr.Zero, IntPtr.Zero);
@@ -76,25 +76,31 @@ public static class Gtk
 
     public static void IdleAdd(int priority, Action action)
     {
-        // var key = GtkDelegates.GetKey();
+        // var key = GtkDelegates.Instance.GetKey();
         // OnePointerBoolRetDelegate? mainFunction = _ =>
         // {
         //     action.Invoke();
         //     // mainFunction = null;    
-        //     // GtkDelegates.Remove(key);
+        //     // GtkDelegates.Instance.Remove(key);
         //     return true;
         // };
-        // GtkDelegates.Add(key, mainFunction);
+        // GtkDelegates.Instance.Add(key, mainFunction);
         // var delegat = mainFunction as Delegate;
         // var funcPtr = Marshal.GetFunctionPointerForDelegate(delegat);
         // IdleAddFull(priority, funcPtr, IntPtr.Zero, IntPtr.Zero);
     }
 
-    public static bool Diagnostics
+    internal static bool Diagnostics
     {
         get;
         set;
     } 
+
+    public static bool GObjectTracing
+    {
+        get;
+        set;
+    }
 
     public static void ShowDiagnostics()
     {
@@ -104,13 +110,16 @@ public static class Gtk
 
         var registeredWidgets = Widget.GetRegisteredWidgetCount();
         var asyncReadies = AsyncReady.GetDelegateCount();
-        var delegates = GtkDelegates.GetDelegatesCount();
+        var delegates = GtkDelegates.Instance.Instances;
+        var gObjects = GObject.GObjectsDiagnostics.Instances;
         if (registeredWidgets > 0)
             Console.WriteLine($"Dangling widgets: {registeredWidgets}");
         if (asyncReadies > 0)
             Console.WriteLine($"GFile AsyncReadies: {asyncReadies}");
         if (delegates > 0)
             Console.WriteLine($"Connected delegates: {delegates}");
+        if (gObjects > 0)
+            Console.WriteLine($"Dangling GObjects: {gObjects}");
     }
 
     public static char KeyValToUnicode(int keyVal, int keyCode)

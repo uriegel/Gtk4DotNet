@@ -15,7 +15,7 @@ class GtkActions
                 : action.StringAction != null
                 ? NewString(action.InitialStringState ?? "")
                 : 0;
-            using var gAction = action.Action != null
+            /* TODO using*/ var gAction = action.Action != null
                                 ? NewAction(action.Name, null)
                                 : NewStatefulAction(action.Name, action.StringAction != null ? "s" : null, state);
 
@@ -42,11 +42,11 @@ class GtkActions
                 : null;
 
             var id = action.Action != null
-                ? GtkDelegates.Add(action.Action)
+                ? GtkDelegates.Instance.Add(action.Action, $"Action: {action.Name}")
                 : boolStateChanged != null
-                ? GtkDelegates.Add(boolStateChanged)
+                ? GtkDelegates.Instance.Add(boolStateChanged, $"Action: {action.Name}")
                 : stringStateChanged != null
-                ? GtkDelegates.Add(stringStateChanged)
+                ? GtkDelegates.Instance.Add(stringStateChanged, $"Action: {action.Name}")
                 : 0;
             delegateKeys.Add(id);
             if (action.Action != null)
@@ -76,7 +76,7 @@ class GtkActions
         foreach (var name in actionNames)
             RemoveAction(actionMap, name);
         foreach (var id in delegateKeys)
-            GtkDelegates.Remove(id);
+            GtkDelegates.Instance.Remove(id);
     }
 
     bool HandleBoolState(nint action, nint state)

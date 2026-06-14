@@ -26,35 +26,40 @@ delegate void PointerBoolDelegate(nint _, bool b);
 delegate void PointerIntDelegate(nint _, int i);
 delegate void AlertDialogResponseDelegate(nint p, string response, nint pp);
 
-static class GtkDelegates
+class GtkDelegates
 {
-    public static int Instances { get => delegates.Count; }
-    internal static long GetKey()
-        => Interlocked.Increment(ref delegateKey);
+    public static GtkDelegates Instance { get; } = new();
+    public int Instances { get => delegates.Count; }
+    internal KeyName GetKey(string name)
+        => new (Interlocked.Increment(ref delegateKey), name);
 
-    internal static long Add(Delegate delegat)
-        => Add(GetKey(), delegat);
+    internal long Add(Delegate delegat, string name) 
+        => Add(GetKey(name).Key, delegat, name);
+        
+    internal long Add(KeyName keyName, Delegate delegat) 
+        => Add(keyName.Key, delegat, keyName.Name);
 
-    internal static long Add(long key, Delegate delegat) 
+    internal long Add(long key, Delegate delegat, string name)
     {
-        delegates[key] = delegat;
+        delegates[key] = new DelegateInfo(delegat, name);
         return key;
-    } 
+    }
 
-    internal static void Remove(long key) 
+    internal void Remove(long key)
         => delegates.TryRemove(key, out var _);
 
-    internal static long Remove(Delegate delegat)
+    internal long Remove(Delegate delegat)
     {
-        var kvp = delegates.FirstOrDefault(n => n.Value == delegat);
-        return kvp.Value != null
+        var kvp = delegates.FirstOrDefault(n => n.Value.Delegate == delegat);
+        return kvp.Value.Delegate != null
             ? kvp.Key.SideEffect(Remove)
             : -1;
     }
 
-    static long delegateKey;
+    long delegateKey;
 
-    internal static int GetDelegatesCount() => delegates.Count;
-    static readonly ConcurrentDictionary<long, Delegate> delegates = [];
+    readonly ConcurrentDictionary<long, DelegateInfo> delegates = [];
 }
 
+record struct DelegateInfo(Delegate Delegate, string Name);
+record struct KeyName(long Key, string Name);

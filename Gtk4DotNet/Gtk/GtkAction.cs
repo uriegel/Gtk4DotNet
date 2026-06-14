@@ -39,7 +39,7 @@ public class GtkAction2 : FloatingObject
     public void Disconnect()
     {
         SignalDisconnect(this, signalId);
-        GtkDelegates.Remove(id);
+        GtkDelegates.Instance.Remove(id);
         IsFloating = false;
         Unref(GetInternalHandle());
         
@@ -48,7 +48,7 @@ public class GtkAction2 : FloatingObject
     void Initialize(string name, Action action, string? accelerator = null)
     {
         Initialize(name, accelerator);
-        id = GtkDelegates.Add(action);
+        id = GtkDelegates.Instance.Add(action, "jiiuiuhiohiohkihkihhii");
         signalId = SignalConnectAction(this, "activate", Marshal.GetFunctionPointerForDelegate(action as Delegate), 0, 0);
     }
 
@@ -61,7 +61,7 @@ public class GtkAction2 : FloatingObject
             stateChanged(state);
         };
 
-        id = GtkDelegates.Add(StateChanged);
+        id = GtkDelegates.Instance.Add(StateChanged, "jiiuiuhiohiohkihkihhii");
         signalId = SignalConnectAction(this, "change-state", Marshal.GetFunctionPointerForDelegate(StateChanged), 0, 0);
     }
 
@@ -74,7 +74,7 @@ public class GtkAction2 : FloatingObject
             stateChanged(state);
         };
 
-        id = GtkDelegates.Add(StateChanged);
+        id = GtkDelegates.Instance.Add(StateChanged, "jiiuiuhiohiohkihkihhii");
         signalId = SignalConnectAction(this, "change-state", Marshal.GetFunctionPointerForDelegate(StateChanged), 0, 0);
     }
 
@@ -83,7 +83,7 @@ public class GtkAction2 : FloatingObject
         Name = name;
         Accelerator = accelerator;
         AddWeakRef(() 
-            => GtkDelegates.Remove(id));
+            => GtkDelegates.Instance.Remove(id));
     }
 
     bool HandleBoolState(nint _, nint state)

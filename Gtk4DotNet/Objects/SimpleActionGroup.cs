@@ -19,13 +19,13 @@ public class SimpleActionGroup : FloatingObject
             if (action.Action != null)
             {
                 var simpleAction = NewAction(action.Name, null);
-                //action.DelegateId = GtkDelegates.Add(action.Action);
+                //action.DelegateId = GtkDelegates.Instance.Add(action.Action);
                 //action.SignalId = Gtk.SignalConnectAction(simpleAction, "activate", Marshal.GetFunctionPointerForDelegate(action.Action as Delegate), IntPtr.Zero, 0);
                 AddAction(this, simpleAction);
             }
             // else
             // {
-            //     action.DelegateId = GtkDelegates.Add(action.StateChanged);
+            //     action.DelegateId = GtkDelegates.Instance.Add(action.StateChanged);
             //     var state = action.StateParameterType == "s"
             //         ? NewString(action.State as string ?? "")
             //         : NewBool((bool?)action.State == true ? -1 : 0);

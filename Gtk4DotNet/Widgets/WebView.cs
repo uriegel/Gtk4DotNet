@@ -38,15 +38,15 @@ public class WebView : Widget
 
     public void RunJavascript(string script)
     {
-        var key = GtkDelegates.GetKey();
+        var key = GtkDelegates.Instance.GetKey("RunJavascript");
         ThreePointerDelegate callback = (_, result, ___) =>
         {
             var res = FinishJavascript(this, result, 0);
-            GtkDelegates.Remove(key);
+            GtkDelegates.Instance.Remove(key.Key);
             if (res != IntPtr.Zero && JscIsString(res))
                 Free(res);
         };
-        GtkDelegates.Add(key, callback);
+        GtkDelegates.Instance.Add(key, callback);
         EvaluateJavascript(this, script, -1, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, Marshal.GetFunctionPointerForDelegate(callback as Delegate), IntPtr.Zero);
     }
 
