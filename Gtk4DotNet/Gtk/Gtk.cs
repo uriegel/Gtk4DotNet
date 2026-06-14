@@ -154,16 +154,6 @@ public static class Gtk
             new GtkSynchronizationContext()
                 .SideEffect(_ => mainThreadId = Environment.CurrentManagedThreadId));
 
-    [DllImport(Libs.LibGtk, EntryPoint = "g_signal_connect_object", CallingConvention = CallingConvention.Cdecl)]
-    internal extern static long SignalConnectAction(nint action, string name, nint callback, nint obj, int n3);
-
-    // TODO eliminate
-    [DllImport(Libs.LibGtk, EntryPoint = "g_signal_connect_object", CallingConvention = CallingConvention.Cdecl)]
-    internal extern static long SignalConnectAction(ActionHandle action, string name, nint callback, nint obj, int n3);
-
-    [DllImport(Libs.LibGtk, EntryPoint = "g_signal_handler_disconnect", CallingConvention = CallingConvention.Cdecl)]
-    internal extern static void SignalDisconnect(nint action, long id);
-
     [DllImport(Libs.LibGtk, EntryPoint = "g_idle_add_full", CallingConvention = CallingConvention.Cdecl)]
     extern static void IdleAddFull(int priority, nint func, nint nil, nint nil2);
 
