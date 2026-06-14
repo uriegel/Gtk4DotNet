@@ -187,6 +187,20 @@ public class Widget : FloatingObject
 
     public void InsertActionGroup(string name, SimpleActionGroup group) => InsertActionGroup(this, name, group);
 
+    public void AddController(EventController controller)
+    {
+        controller.IsFloating = true;
+        AddController(this, controller);
+    } 
+
+    public void AddShortcuts(params Shortcut[] shortcuts)
+    {
+        var shortcutController = ShortcutController.New();
+        foreach (var shortcut in shortcuts)
+            shortcutController.AddShortcut(shortcut);
+        AddController(shortcutController);
+    }
+
     public void Register()
     {
         widgets.TryAdd(handle, this);
@@ -328,6 +342,9 @@ W A R N I N G
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_insert_action_group", CallingConvention = CallingConvention.Cdecl)]
     extern static void InsertActionGroup(Widget widget, string name, SimpleActionGroup group);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_add_controller", CallingConvention = CallingConvention.Cdecl)]
+    extern static void AddController(Widget widget, EventController controller);
 }
 
 public static class WidgetExtensions

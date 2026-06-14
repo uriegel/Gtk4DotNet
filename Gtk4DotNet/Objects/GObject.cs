@@ -7,7 +7,7 @@ namespace Gtk4DotNet;
 
 public class GObject : BaseHandle
 {
-    public bool IsFloating { get; set; }
+    public bool IsFloating { get; internal set; }
 
     internal static GtkDelegates GObjectsDiagnostics { get; } = new();
 
