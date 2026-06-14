@@ -10,51 +10,45 @@ class GtkActions
         this.actionMap = actionMap;
         foreach (var action in actions)
         {
-            var state = action.BoolAction != null
-                ? NewBool(action.InitialBoolState ? -1 : 0)
-                : action.StringAction != null
-                ? NewString(action.InitialStringState ?? "")
-                : 0;
-            using var gAction = action.Action != null
-                                ? NewAction(action.Name, null)
-                                : NewStatefulAction(action.Name, action.StringAction != null ? "s" : null, state);
-
-            // TODO free state
-            gAction.CheckDiagnostics();
-
-            AddAction(actionMap, gAction);
             actionNames.Add(action.Name);
-
-            StateChangedDelegate? boolStateChanged = action.BoolAction != null
-                ? (a, s) =>
+            if (action is SimpleAction simpleAction)
+            {
+                using var gAction = NewAction(simpleAction.Name, null);
+                gAction.CheckDiagnostics();
+                AddAction(actionMap, gAction);
+                delegateKeys.Add(GtkDelegates.Instance.Add(simpleAction.Action, $"Action: {simpleAction.Name}"));
+                SignalConnectAction(gAction, "activate", Marshal.GetFunctionPointerForDelegate(simpleAction.Action as Delegate), 0, 0);
+            }
+            else if (action is BoolAction boolAction)
+            {
+                var state = NewBool(boolAction.InitialState ? -1 : 0);
+                using var gAction = NewStatefulAction(action.Name, null, state);
+                // TODO free state
+                gAction.CheckDiagnostics();
+                AddAction(actionMap, gAction);
+                StateChangedDelegate boolStateChanged = (a, s) =>
                 {
                     var state = HandleBoolState(a, s);
-                    action.BoolAction(state);
-                }
-                : null;
-
-            StateChangedDelegate? stringStateChanged = action.StringAction != null
-                ? (a, s) =>
+                    boolAction.StateChanged(state);
+                };
+                delegateKeys.Add(GtkDelegates.Instance.Add(boolStateChanged, $"Action: {action.Name}"));
+                SignalConnectAction(gAction, "change-state", Marshal.GetFunctionPointerForDelegate(boolStateChanged), 0, 0);
+            }
+            else if (action is StringAction stringAction)
+            {
+                var state = NewString(stringAction.InitialState ?? "");
+                using var gAction = NewStatefulAction(action.Name, "s", state);
+                // TODO free state
+                gAction.CheckDiagnostics();
+                AddAction(actionMap, gAction);
+                StateChangedDelegate? stringStateChanged = (a, s) =>
                 {
                     var state = HandleStringState(a, s);
-                    action.StringAction(state);
-                }
-                : null;
-
-            var id = action.Action != null
-                ? GtkDelegates.Instance.Add(action.Action, $"Action: {action.Name}")
-                : boolStateChanged != null
-                ? GtkDelegates.Instance.Add(boolStateChanged, $"Action: {action.Name}")
-                : stringStateChanged != null
-                ? GtkDelegates.Instance.Add(stringStateChanged, $"Action: {action.Name}")
-                : 0;
-            delegateKeys.Add(id);
-            if (action.Action != null)
-                SignalConnectAction(gAction, "activate", Marshal.GetFunctionPointerForDelegate(action.Action as Delegate), 0, 0);
-            else if (boolStateChanged != null)
-                SignalConnectAction(gAction, "change-state", Marshal.GetFunctionPointerForDelegate(boolStateChanged), 0, 0);
-            else if (stringStateChanged != null)
+                    stringAction.StateChanged(state);
+                };
+                delegateKeys.Add(GtkDelegates.Instance.Add(stringStateChanged, $"Action: {action.Name}"));
                 SignalConnectAction(gAction, "change-state", Marshal.GetFunctionPointerForDelegate(stringStateChanged), 0, 0);        
+            }
         }
 
         actionMap.AddWeakRef(Cleanup);

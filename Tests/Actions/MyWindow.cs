@@ -5,8 +5,8 @@ class MyWindow : AdwApplicationWindow
     public MyWindow(WindowBuilder builder) : base(builder)
     {
         AddActions(
-            new("preview", false, show => Console.WriteLine($"Preview: {show}"), "F3"),
-            new("quit", CloseWindow, "<Ctrl>Q")
+            new BoolAction("preview", false, show => Console.WriteLine($"Preview: {show}"), "F3"),
+            new SimpleAction("quit", CloseWindow, "<Ctrl>Q")
         );
     }
 }

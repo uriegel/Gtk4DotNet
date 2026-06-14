@@ -6,8 +6,8 @@ class MyWindow : AdwApplicationWindow
     public MyWindow(WindowBuilder builder) : base(builder)
     {
         AddActions(
-            new("quit", CloseWindow, "<Ctrl>Q"),
-            new("devtools", async () =>
+            new SimpleAction("quit", CloseWindow, "<Ctrl>Q"),
+            new SimpleAction("devtools", async () =>
             {
                 var inspector = webView.GetInspector();
                 inspector.Show();
