@@ -1,12 +1,5 @@
 using Gtk4DotNet;
 
-// TODO refactor SimpleActions for Application and ApplicationWindow
-// TODO set description from file name
-// TODO Cancel Button 
-// TODO default action "Open File"
-// TODO AppChooserWidget in an AdwDialog
-// TODO open file
-
 class MyWindow : ApplicationWindow
 {
     public MyWindow(WindowBuilder builder) : base(builder)

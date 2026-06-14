@@ -1,9 +1,8 @@
 using System.Runtime.InteropServices;
-using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
-public class SimpleActionGroup : FloatingObject
+public class SimpleActionGroup : GObject
 {
     public static SimpleActionGroup New()
     {
