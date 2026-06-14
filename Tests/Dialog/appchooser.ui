@@ -12,12 +12,13 @@
             <property name="show-end-title-buttons">False</property>
             <child>
               <object class="GtkButton">
+                <property name="action-name">appchooser.cancel</property>
                 <property name="label">_Cancel</property>
                 <property name="use-underline">True</property>
               </object>
             </child>
             <child type="end">
-              <object class="GtkButton">
+              <object class="GtkButton" id="openBtn">
                 <property name="action-name">appchooser.openfile</property>
                 <property name="css-classes">suggested-action</property>
                 <property name="label">_Open</property>
