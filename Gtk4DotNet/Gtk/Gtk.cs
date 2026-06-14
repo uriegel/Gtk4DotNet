@@ -127,6 +127,7 @@ public static class Gtk
         {
             22 => (char)ConsoleKey.Backspace,
             23 => (char)ConsoleKey.Tab,
+            64 => (char)ConsoleKey.Enter,
             67 => (char)ConsoleKey.F1,
             68 => (char)ConsoleKey.F2,
             69 => (char)ConsoleKey.F3,

@@ -33,8 +33,8 @@ public class ListBox : Widget
     {
         using var builder = Builder.FromDotNetResource(template);
         Insert(this, getWidget(builder), position);
-    } 
-    
+    }
+
     public void SetHeaderFunc<THandle>(Action<ListBoxRow?, ListBoxRow?> onHeader)
     {
         ThreePointerDelegate threePointerDelegate = (p1, p2, p3) =>
@@ -48,6 +48,8 @@ public class ListBox : Widget
         AddWeakRef(() => GtkDelegates.Instance.Remove(key.Key));
         SetHeaderFunc(this, Marshal.GetFunctionPointerForDelegate((Delegate)threePointerDelegate), 0, 0);
     }    
+    
+    public void OnRowActivated(Action onActivated) => SignalConnect<ThreePointerDelegate>("row-activated", (_, nint, __) => onActivated());
 
     public void RemoveAll() => RemoveAll(this);
     public void Insert(Widget widget, int position = -1) => Insert(this, widget, position);

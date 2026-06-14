@@ -14,7 +14,6 @@ delegate void DrawFunctionDelegate(nint drawingArea, nint cairo, int width, int 
 delegate void DrawingAreaResizeDelegate(nint drawingArea, int width, int height, nint data);
 delegate void PressedGestureDelegate(nint _, int pressCount, double x, double y, nint __);
 delegate void DragGestureDelegate(nint _, double x, double y, nint __);
-//delegate bool KeyPressedDelegate(nint _, int key, int keyCode, KeyModifiers keyModifiers, nint __);
 //delegate void KeyReleasedDelegate(nint _, int key, int keyCode, KeyModifiers keyModifiers, nint __);
 //delegate void OnModifiersDelegate(nint _, KeyModifiers keyModifiers, nint __);
 delegate void TwoLongAndPtrCallback(long current, long total, nint zero);
@@ -25,18 +24,19 @@ delegate bool ThreePointerBoolRetDelegate(nint p, nint pp, nint ppp);
 delegate void PointerBoolDelegate(nint _, bool b);
 delegate void PointerIntDelegate(nint _, int i);
 delegate void AlertDialogResponseDelegate(nint p, string response, nint pp);
+delegate bool KeyPressedDelegate(nint _, int key, int keyCode, KeyModifiers keyModifiers, nint __);
 
 class GtkDelegates
 {
     public static GtkDelegates Instance { get; } = new();
     public int Instances { get => delegates.Count; }
     internal KeyName GetKey(string name)
-        => new (Interlocked.Increment(ref delegateKey), name);
+        => new(Interlocked.Increment(ref delegateKey), name);
 
-    internal long Add(Delegate delegat, string name) 
+    internal long Add(Delegate delegat, string name)
         => Add(GetKey(name).Key, delegat, name);
-        
-    internal long Add(KeyName keyName, Delegate delegat) 
+
+    internal long Add(KeyName keyName, Delegate delegat)
         => Add(keyName.Key, delegat, keyName.Name);
 
     internal long Add(long key, Delegate delegat, string name)

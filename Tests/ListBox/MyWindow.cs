@@ -1,5 +1,9 @@
 using System.Diagnostics;
+using CsTools.Extensions;
 using Gtk4DotNet;
+
+
+// TODO Enter Shortcut action for open selected: gtk_list_box_get_selected_row
 
 class MyWindow : ApplicationWindow
 {
@@ -15,17 +19,31 @@ class MyWindow : ApplicationWindow
                 current?.CreateHeader("All Apps");
         });
 
+        var keyController = KeyEventController.New();
+        keyController.OnKeyPressed((chr, mod) =>
+        {
+            Console.WriteLine($"Key: {chr} pressed");
+            return false;
+        });
+        AddController(keyController);
+
+        static EventController CreatePressed() => ClickGesture.New().SideEffect(c => c.OnPressed((n, x, y) 
+            => Console.WriteLine($"Row pressed: {n}")));
+
         var stopuhr = new Stopwatch();
         stopuhr.Start();
         var contentType = Gio.GuessContentType(".html") ?? "none";
         using var defaultApp = GAppInfo.GetDefault(contentType);
-        listbox.AppendFromTemplate("listitem", b => new ListItem(b, defaultApp.GetIcon(), defaultApp.Name, true).RegisterWidget());
+        listbox.AppendFromTemplate("listitem", b => new ListItem(b, defaultApp.GetIcon(), defaultApp.Name, true).RegisterWidget()
+            .SideEffect(lbi => lbi.AddController(CreatePressed())));
         using var recommendedApps = GAppInfo.GetRecommendedApps(contentType);
         foreach (var appinfo in recommendedApps.OrderBy(n => n.Name).Where(n => n.ShouldShow && n.Name != defaultApp.Name))
-            listbox.AppendFromTemplate("listitem", b => new ListItem(b, appinfo.GetIcon(), appinfo.Name, true).RegisterWidget());
+            listbox.AppendFromTemplate("listitem", b => new ListItem(b, appinfo.GetIcon(), appinfo.Name, true).RegisterWidget()
+                .SideEffect(lbi => lbi.AddController(CreatePressed())));
         using var apps = GAppInfo.GetAllApps();
         foreach (var appinfo in apps.OrderBy(n => n.Name).Where(n => n.ShouldShow))
-            listbox.AppendFromTemplate("listitem", b => new ListItem(b, appinfo.GetIcon(), appinfo.Name).RegisterWidget());
+            listbox.AppendFromTemplate("listitem", b => new ListItem(b, appinfo.GetIcon(), appinfo.Name).RegisterWidget()
+                .SideEffect(lbi => lbi.AddController(CreatePressed())));
         var ela = stopuhr.Elapsed;
         Console.WriteLine(ela);
     }
