@@ -15,7 +15,7 @@ class GtkActions
                 : action.StringAction != null
                 ? NewString(action.InitialStringState ?? "")
                 : 0;
-            /* TODO using*/ var gAction = action.Action != null
+            using var gAction = action.Action != null
                                 ? NewAction(action.Name, null)
                                 : NewStatefulAction(action.Name, action.StringAction != null ? "s" : null, state);
 

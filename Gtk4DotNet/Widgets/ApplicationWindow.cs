@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using CsTools.Extensions;
 
 namespace Gtk4DotNet;
@@ -19,7 +18,7 @@ public class ApplicationWindow : Window
     /// <param name="actions"></param>
     public void AddActions(params GtkAction[] actions) => this.actions.AddActions(this, GetApplication(), "win", actions);
 
-    GtkActions actions = new();
+    readonly GtkActions actions = new();
 }
 
 public static class ApplicationWindowExtensions
