@@ -10,5 +10,3 @@ class MyWindow : AdwApplicationWindow
         );
     }
 }
-
-// TODO one class for App, AppWin and ActionGroup

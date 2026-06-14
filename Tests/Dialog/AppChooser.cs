@@ -1,14 +1,10 @@
 using Gtk4DotNet;
 
-// TODO set description from file name
-// TODO AppChooserWidget 
-// TODO open file
-
 class AppChooser : AdwDialog
 {
     public AppChooser(Builder builder, string? name = null) : base(builder, name)
     {
-        description.Text = "Das muss hier noch <b>ein wenig</b> abgeändert werden!!!!!!!!";
+        description.Text = "Choose an Application to open &lt;b&gt;this file&lt;/b&gt;";
         SetDefaultWidget(openBtn);
 
         using var actiongroup = SimpleActionGroup.New("appchooser");

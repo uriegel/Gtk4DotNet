@@ -35,10 +35,19 @@
             <property name="margin-top">20</property>
             <property name="orientation">vertical</property>
             <property name="spacing">20</property>
+            <property name="vexpand">True</property>
             <child>
               <object class="GtkLabel" id="description">
                 <property name="label">Choose an Application to open &lt;b&gt;this file&lt;/b&gt;</property>
                 <property name="use-markup">True</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkAppChooserWidget" id="appChooser">
+                <property name="content-type">image/jpg</property>
+                <property name="show-all">True</property>
+                <property name="show-default">True</property>
+                <property name="vexpand">True</property>
               </object>
             </child>
           </object>
