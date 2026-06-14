@@ -88,7 +88,7 @@ public class Application : GObject
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_set_accels_for_action", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetAccelsForAction(Application app, string action, [In] string?[] accels);
 
-    readonly GtkActions actions = new(true);
+    readonly GtkActions actions = new(false);
 }
 
 public static class ApplicationExtensions

@@ -18,7 +18,7 @@ public class ApplicationWindow : Window
     /// <param name="actions"></param>
     public void AddActions(params GtkAction[] actions) => this.actions.AddActions(this, GetApplication(), "win", actions);
 
-    readonly GtkActions actions = new();
+    readonly GtkActions actions = new(true);
 }
 
 public static class ApplicationWindowExtensions

@@ -3,7 +3,7 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
-class GtkActions(bool fromApp = false)
+class GtkActions(bool freeActions)
 {
     public void AddActions(GObject actionMap, Application? app,  string groupName, params GtkAction[] actions)
     {
@@ -65,7 +65,7 @@ class GtkActions(bool fromApp = false)
 
     public void Cleanup()
     {
-        if (!fromApp)
+        if (freeActions)
             foreach (var name in actionNames)
                 RemoveAction(actionMap, name);
         foreach (var id in delegateKeys)

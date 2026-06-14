@@ -14,7 +14,7 @@ class AppChooser : AdwDialog
     {
         description.Text = "Das muss hier noch <b>ein wenig</b> abgeändert werden!!!!!!!!";
 
-        using var actiongroup = SimpleActionGroup.New();
+        using var actiongroup = SimpleActionGroup.New("appchooser");
         actiongroup.AddActions(new SimpleAction("openfile", () => Console.WriteLine("Öffne Datei")));
         InsertActionGroup("appchooser", actiongroup);
     }
