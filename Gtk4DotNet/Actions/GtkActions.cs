@@ -21,9 +21,8 @@ class GtkActions
             }
             else if (action is BoolAction boolAction)
             {
-                var state = NewBool(boolAction.InitialState ? -1 : 0);
+                var state = Variant.New(boolAction.InitialState);
                 using var gAction = NewStatefulAction(action.Name, null, state);
-                // TODO free state
                 gAction.CheckDiagnostics();
                 AddAction(actionMap, gAction);
                 StateChangedDelegate boolStateChanged = (a, s) =>
@@ -36,9 +35,8 @@ class GtkActions
             }
             else if (action is StringAction stringAction)
             {
-                var state = NewString(stringAction.InitialState ?? "");
+                var state = Variant.New(stringAction.InitialState);
                 using var gAction = NewStatefulAction(action.Name, "s", state);
-                // TODO free state
                 gAction.CheckDiagnostics();
                 AddAction(actionMap, gAction);
                 StateChangedDelegate? stringStateChanged = (a, s) =>
@@ -73,19 +71,16 @@ class GtkActions
             GtkDelegates.Instance.Remove(id);
     }
 
-    bool HandleBoolState(nint action, nint state)
+    static bool HandleBoolState(nint action, nint state)
     {
         ActionSetState(action, state);
-        return GetBool(state) != 0;
-        // TODO check free
+        return Variant.GetBool(state);
     }
 
     string HandleStringState(nint action, nint state)
     {
         ActionSetState(action, state);
-        var strptr = GetString(state, IntPtr.Zero);
-        return Marshal.PtrToStringAuto(strptr) ?? "";
-        // TODO check free
+        return Variant.GetString(state);
     }
 
     [DllImport(Libs.LibGio, EntryPoint = "g_action_map_add_action", CallingConvention = CallingConvention.Cdecl)]
@@ -98,25 +93,13 @@ class GtkActions
     extern static ActionHandle NewAction(string action, string? p);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_simple_action_new_stateful", CallingConvention = CallingConvention.Cdecl)]
-    extern static ActionHandle NewStatefulAction(string action, string? p, nint state);
+    extern static ActionHandle NewStatefulAction(string action, string? p, Variant state);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_signal_connect_object", CallingConvention = CallingConvention.Cdecl)]
     extern static long SignalConnectAction(ActionHandle action, string name, nint callback, nint obj, int n3);
 
-    [DllImport(Libs.LibGtk, EntryPoint = "g_variant_new_boolean", CallingConvention = CallingConvention.Cdecl)]
-    extern static nint NewBool(int value);
-
-    [DllImport(Libs.LibGtk, EntryPoint = "g_variant_new_string", CallingConvention = CallingConvention.Cdecl)]
-    internal extern static nint NewString(string value);
-
     [DllImport(Libs.LibGtk, EntryPoint = "g_simple_action_set_state", CallingConvention = CallingConvention.Cdecl)]
     extern static void ActionSetState(nint action, nint state);
-
-    [DllImport(Libs.LibGtk, EntryPoint = "g_variant_get_boolean", CallingConvention = CallingConvention.Cdecl)]
-    extern static int GetBool(nint value);
-
-    [DllImport(Libs.LibGtk, EntryPoint = "g_variant_get_string", CallingConvention = CallingConvention.Cdecl)]
-    extern static IntPtr GetString(nint value, nint size);
 
     delegate void StateChangedDelegate(nint action, nint state);
 
