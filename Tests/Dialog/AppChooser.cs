@@ -7,7 +7,7 @@ class AppChooser : AdwDialog
         description.Text = "Das muss hier noch <b>ein wenig</b> abgeändert werden!!!!!!!!";
 
         var actiongroup = SimpleActionGroup.New();
-        actiongroup.AddActions(new GtkAction1("openfile", () => Console.WriteLine("Öffne Datei")));
+        actiongroup.AddActions(new SimpleAction("openfile", () => Console.WriteLine("Öffne Datei")));
         InsertActionGroup("appchooser", actiongroup);
     }
 

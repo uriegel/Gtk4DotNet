@@ -69,46 +69,9 @@ public class Application : GObject
     /// </remarks>
     /// <param name="actions"></param>
     /// <returns></returns>
-    public void AddActions(params GtkAction1[] actions)
-    {
-        foreach (var action in actions)
-        {
-            if (action.Action != null)
-            {
-                var simpleAction = NewAction(action.Name, null);
-                actionDelegateIds.Add(GtkDelegates.Instance.Add(action.Action, "jiiuiuhiohiohkihkihhii"));
-                Gtk.SignalConnectAction(simpleAction, "activate", Marshal.GetFunctionPointerForDelegate(action.Action as Delegate), IntPtr.Zero, 0);
-                AddAction(this, simpleAction);
-            }
-            else
-            {
-                // action.DelegateId = GtkDelegates.Instance.Add(action.StateChanged);
-                // var state = action.StateParameterType == "s"
-                //     ? NewString(action.State as string ?? "")
-                //     : NewBool((bool?)action.State == true ? -1 : 0);
-                // var simpleAction = NewStatefulAction(action.Name, action.StateParameterType, state);
-                // action.action = simpleAction;
-                // action.SignalId = Gtk.SignalConnectAction(simpleAction, "change-state", Marshal.GetFunctionPointerForDelegate(action.StateChanged), IntPtr.Zero, 0);
-                // AddAction(GetInternalHandle(), simpleAction);
-                // IActionMap.actions.Add(action.Name, simpleAction);
-            }
-        }
+    public void AddActions(params GtkAction[] actions) => this.actions.AddActions(this, this, "app", actions);
 
-        AddWeakRef(() =>
-        {
-            foreach (var id in actionDelegateIds)
-                GtkDelegates.Instance.Remove(id);
-        });
-
-        var accelEntries =
-            actions
-            .Where(n => n.Accelerator != null)
-            .Select(n => new { Name = $"app.{n.Name}", n.Accelerator });
-        foreach (var accelEntry in accelEntries)
-            SetAccelsForAction(this, accelEntry.Name, [accelEntry.Accelerator, null]);
-    }
-
-    public void SetAccelsForAction(string action, [In] string?[] accels) => SetAccelsForAction(this, action, accels);
+    internal void SetAccelsForAction(string action, [In] string?[] accels) => SetAccelsForAction(this, action, accels);
 
     [DllImport(Libs.LibAdw, EntryPoint = "adw_application_new", CallingConvention = CallingConvention.Cdecl)]
     extern static Application _NewAdw(string id, int flags = 0);
@@ -125,18 +88,12 @@ public class Application : GObject
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_set_accels_for_action", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetAccelsForAction(Application app, string action, [In] string?[] accels);
 
-    [DllImport(Libs.LibGtk, EntryPoint = "g_simple_action_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static ActionHandle NewAction(string action, string? p);
-
-    [DllImport(Libs.LibGio, EntryPoint = "g_action_map_add_action", CallingConvention = CallingConvention.Cdecl)]
-    extern static void AddAction(Application application, ActionHandle action);
-
-    readonly List<long> actionDelegateIds = [];
+    readonly GtkActions actions = new(true);
 }
 
 public static class ApplicationExtensions
 {
-    public static THandle Actions<THandle>(this THandle app, params GtkAction1[] actions)
+    public static THandle Actions<THandle>(this THandle app, params GtkAction[] actions)
         where THandle : Application
         => app.SideEffect(app => app.AddActions(actions));
 }

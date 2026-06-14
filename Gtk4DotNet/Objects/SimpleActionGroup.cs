@@ -12,17 +12,17 @@ public class SimpleActionGroup : FloatingObject
         return group;
     }
 
-    public void AddActions(params GtkAction1[] actions)
+    public void AddActions(params GtkAction[] actions)
     {
         foreach (var action in actions)
         {
-            if (action.Action != null)
-            {
-                var simpleAction = NewAction(action.Name, null);
-                //action.DelegateId = GtkDelegates.Instance.Add(action.Action);
-                //action.SignalId = Gtk.SignalConnectAction(simpleAction, "activate", Marshal.GetFunctionPointerForDelegate(action.Action as Delegate), IntPtr.Zero, 0);
-                AddAction(this, simpleAction);
-            }
+            // if (action.Action != null)
+            // {
+            //     var simpleAction = NewAction(action.Name, null);
+            //     //action.DelegateId = GtkDelegates.Instance.Add(action.Action);
+            //     //action.SignalId = Gtk.SignalConnectAction(simpleAction, "activate", Marshal.GetFunctionPointerForDelegate(action.Action as Delegate), IntPtr.Zero, 0);
+            //     AddAction(this, simpleAction);
+            // }
             // else
             // {
             //     action.DelegateId = GtkDelegates.Instance.Add(action.StateChanged);

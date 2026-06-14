@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace Gtk4DotNet;
 
+// TODO Check leaking
 public static class GValue
 {
     [DllImport(Libs.LibGtk, EntryPoint = "g_value_init", CallingConvention = CallingConvention.Cdecl)]
@@ -15,7 +16,7 @@ public static class GValue
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_value_get_string", CallingConvention = CallingConvention.Cdecl)]
     extern static nint _GetString(nint gvalue);
-    
+
     [DllImport(Libs.LibGtk, EntryPoint = "g_value_set_boolean", CallingConvention = CallingConvention.Cdecl)]
     public extern static void SetBool(nint gvalue, bool value);
 
