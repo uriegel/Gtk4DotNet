@@ -61,6 +61,7 @@ public class Widget : FloatingObject
         set => SetTooltipText(this, value);
     }
 
+    // TODO g_object_set_qdata_full
     public INotifyPropertyChanged? DataContext
     {
         get

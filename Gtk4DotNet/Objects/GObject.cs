@@ -125,6 +125,25 @@ public class GObject : BaseHandle
     public void BindProperty(string property, GObject target, string targetProperty, BindingFlags flags)
         => BindProperty(this, property, target, targetProperty, flags);
 
+    public void SetManagedData(string key, object obj)
+    {
+        var dkey = GtkDelegates.Instance.GetKey("SetManagedData");
+        OnePointerDelegate callback = (nint data) =>
+        {
+            GCHandle.FromIntPtr(data).Free();
+            GtkDelegates.Instance.Remove(dkey.Key);
+        };
+        GtkDelegates.Instance.Add(dkey, callback);
+        SetQDataFull(this, GetQuark(key), GCHandle.ToIntPtr(GCHandle.Alloc(obj)), Marshal.GetFunctionPointerForDelegate(callback as Delegate));
+    }
+
+    public T? GetManagedData<T>(string key)
+    {
+        var p = GetQData(this, GetQuark(key));
+        var handle = GCHandle.FromIntPtr(p);
+        return (T?)handle.Target;
+    }
+
     public void SetString(string name, string? value)
         => SetString(this, name, value ?? "", 0);
 
@@ -136,13 +155,13 @@ public class GObject : BaseHandle
 
     public void SetBool(string name, bool value)
         => SetBool(this, name, value, 0);
-    
+
     public bool GetBool(string name)
     {
         GetBool(this, name, out var value, 0);
         return value;
     }
-
+    
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_get_type", CallingConvention = CallingConvention.Cdecl)]
     public static extern GType Type();
 
@@ -221,6 +240,15 @@ public class GObject : BaseHandle
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_get", CallingConvention = CallingConvention.Cdecl)]
     extern static bool GetBool(GObject obj, string name, out bool value, nint end);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_set_qdata_full", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetQDataFull(GObject obj, int quark, nint p, nint destroyNotify);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_get_qdata", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint GetQData(GObject obj, int quark);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_quark_from_string", CallingConvention = CallingConvention.Cdecl)]
+    extern static int GetQuark(string quark);
 
     bool diagnosticsSet;
 }

@@ -27,26 +27,36 @@ class MyWindow : ApplicationWindow
         });
         AddController(keyController);
 
-        static EventController CreatePressed() => ClickGesture.New().SideEffect(c => c.OnPressed((n, x, y) 
+        static EventController CreatePressed() => ClickGesture.New().SideEffect(c => c.OnPressed((n, x, y)
             => Console.WriteLine($"Row pressed: {n}")));
 
         var stopuhr = new Stopwatch();
         stopuhr.Start();
         var contentType = Gio.GuessContentType(".html") ?? "none";
         using var defaultApp = GAppInfo.GetDefault(contentType);
-        listbox.AppendFromTemplate("listitem", b => new ListItem(b, defaultApp.GetIcon(), defaultApp.Name, true).RegisterWidget()
-            .SideEffect(lbi => lbi.AddController(CreatePressed())));
+        listbox.AppendFromTemplate("listitem", b => new ListItem(b, defaultApp.GetIcon(), defaultApp.Name, true)
+            .RegisterWidget()
+            .SideEffect(n => AttachData(n, defaultApp.Executable)));
         using var recommendedApps = GAppInfo.GetRecommendedApps(contentType);
         foreach (var appinfo in recommendedApps.OrderBy(n => n.Name).Where(n => n.ShouldShow && n.Name != defaultApp.Name))
-            listbox.AppendFromTemplate("listitem", b => new ListItem(b, appinfo.GetIcon(), appinfo.Name, true).RegisterWidget()
-                .SideEffect(lbi => lbi.AddController(CreatePressed())));
+            listbox.AppendFromTemplate("listitem", b => new ListItem(b, appinfo.GetIcon(), appinfo.Name, true)
+                .RegisterWidget()
+                .SideEffect(n => AttachData(n, appinfo.Executable)));
         using var apps = GAppInfo.GetAllApps();
         foreach (var appinfo in apps.OrderBy(n => n.Name).Where(n => n.ShouldShow))
-            listbox.AppendFromTemplate("listitem", b => new ListItem(b, appinfo.GetIcon(), appinfo.Name).RegisterWidget()
-                .SideEffect(lbi => lbi.AddController(CreatePressed())));
+            listbox.AppendFromTemplate("listitem", b => new ListItem(b, appinfo.GetIcon(), appinfo.Name)
+                .RegisterWidget()
+                .SideEffect(n => AttachData(n, appinfo.Executable)));
         var ela = stopuhr.Elapsed;
         Console.WriteLine(ela);
+
+        void AttachData(ListItem listItem, string? executable)
+        {
+            listItem.AddController(CreatePressed());
+            listItem.SetManagedData("data", executable ?? "");
+        }
     }
+    
 
     [Widget]
     readonly ListBox listbox = null!;
