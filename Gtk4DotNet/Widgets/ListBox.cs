@@ -34,8 +34,12 @@ public class ListBox : Widget
         using var builder = Builder.FromDotNetResource(template);
         Insert(this, getWidget(builder), position);
     }
+
+    public ListBoxRow GetSelectedRow() => GetSelectedRow(this);
+
+    public ListBoxRow GetRowAtIndex(int index) => GetRowAtIndex(this, index);    
     
-    public ListBoxRow GetSelectedRow() => GetSelectedRow(this);    
+    public void SelectRow(ListBoxRow row) => SelectRow(this, row);    
 
     public void SetHeaderFunc<THandle>(Action<ListBoxRow?, ListBoxRow?> onHeader)
     {
@@ -88,9 +92,15 @@ public class ListBox : Widget
     extern static SelectionMode GetSelectionMode(ListBox listbox);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_set_header_func", CallingConvention = CallingConvention.Cdecl)]
-    extern static void SetHeaderFunc(ListBox listbox, nint callback, nint _, nint __);    
+    extern static void SetHeaderFunc(ListBox listbox, nint callback, nint _, nint __);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_get_selected_row", CallingConvention = CallingConvention.Cdecl)]
-    extern static ListBoxRow GetSelectedRow(ListBox listbox);    
+    extern static ListBoxRow GetSelectedRow(ListBox listbox);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_get_row_at_index", CallingConvention = CallingConvention.Cdecl)]
+    extern static ListBoxRow GetRowAtIndex(ListBox listbox, int index);    
+    
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_select_row", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SelectRow(ListBox listbox, ListBoxRow row);    
 }
 
