@@ -27,13 +27,15 @@ public class ListBox : Widget
     {
         using var builder = Builder.FromDotNetResource(template);
         Append(this, getWidget(builder));
-    } 
+    }
 
-    public void InsertFromTemplate(string template, Func<Builder, Widget> getWidget, int position = -1)  
+    public void InsertFromTemplate(string template, Func<Builder, Widget> getWidget, int position = -1)
     {
         using var builder = Builder.FromDotNetResource(template);
         Insert(this, getWidget(builder), position);
     }
+    
+    public ListBoxRow GetSelectedRow() => GetSelectedRow(this);    
 
     public void SetHeaderFunc<THandle>(Action<ListBoxRow?, ListBoxRow?> onHeader)
     {
@@ -87,5 +89,8 @@ public class ListBox : Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_set_header_func", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetHeaderFunc(ListBox listbox, nint callback, nint _, nint __);    
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_get_selected_row", CallingConvention = CallingConvention.Cdecl)]
+    extern static ListBoxRow GetSelectedRow(ListBox listbox);    
 }
 

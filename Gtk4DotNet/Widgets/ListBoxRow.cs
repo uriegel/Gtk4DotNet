@@ -9,6 +9,8 @@ public class ListBoxRow : Widget
     public TWidget? GetChild<TWidget>() where TWidget : Widget
         => GetRegistered<TWidget>(RowGetWidgetKey(handle));
 
+    public ListBoxRow() : base() { }
+    
     internal ListBoxRow(nint raw) : base()
     {
         SetInternalHandle(raw);

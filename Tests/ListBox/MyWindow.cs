@@ -2,9 +2,6 @@ using System.Diagnostics;
 using CsTools.Extensions;
 using Gtk4DotNet;
 
-
-// TODO Enter Shortcut action for open selected: gtk_list_box_get_selected_row
-
 class MyWindow : ApplicationWindow
 {
     public MyWindow(WindowBuilder builder) : base(builder)
@@ -22,13 +19,20 @@ class MyWindow : ApplicationWindow
         var keyController = KeyEventController.New();
         keyController.OnKeyPressed((chr, mod) =>
         {
-            Console.WriteLine($"Key: {chr} pressed");
+            var row = listbox.GetSelectedRow().GetChild<Box>();
+            Console.WriteLine($"Open file with {row?.GetManagedData<string>("data")}");
             return false;
         });
         AddController(keyController);
 
-        static EventController CreatePressed() => ClickGesture.New().SideEffect(c => c.OnPressed((n, x, y)
-            => Console.WriteLine($"Row pressed: {n}")));
+        EventController CreatePressed() => ClickGesture.New().SideEffect(c => c.OnPressed((n, x, y) =>
+        {
+            if (n == 2)
+            {
+                var row = listbox.GetSelectedRow().GetChild<Box>();
+                Console.WriteLine($"Open file with {row?.GetManagedData<string>("data")}");
+            }
+        }));
 
         var stopuhr = new Stopwatch();
         stopuhr.Start();
@@ -56,7 +60,7 @@ class MyWindow : ApplicationWindow
             listItem.SetManagedData("data", executable ?? "");
         }
     }
-    
+
 
     [Widget]
     readonly ListBox listbox = null!;
