@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Created with Cambalache 1.0.2 -->
+<interface>
+  <!-- interface-name window.ui -->
+  <requires lib="gtk" version="4.20"/>
+  <object class="GtkWindow" id="window">
+    <property name="title">Volume Monitoring👍</property>
+  </object>
+</interface>

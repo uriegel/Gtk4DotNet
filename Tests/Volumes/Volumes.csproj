@@ -11,4 +11,10 @@
     <ProjectReference Include="../../Gtk4DotNet/Gtk4DotNet.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="./window.ui">
+      <LogicalName>window</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>
