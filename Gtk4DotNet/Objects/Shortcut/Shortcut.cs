@@ -19,6 +19,6 @@ public class Shortcut : GObject
         return shortcut;
     }
     
-    [DllImport(Libs.LibGtk, EntryPoint = "gtk_shortcut_new_with_arguments", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_shortcut_new", CallingConvention = CallingConvention.Cdecl)]
     extern static Shortcut _New(ShortcutTrigger trigger, ShortcutAction action);
 }
