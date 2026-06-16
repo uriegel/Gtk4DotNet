@@ -36,7 +36,7 @@ public class VolumeMonitor : GObject
     public void OnVolumeChanged(Action onChanged)
         => volumeChangedId = SignalConnect<ThreePointerDelegate>("volume-changed", (_, _, _) => onChanged(), true);
     public void OnVolumeRemoved(Action onChanged)
-        => volumeRemovedId = SignalConnect<ThreePointerDelegate>("Volume-removed", (_, _, _) => onChanged(), true);
+        => volumeRemovedId = SignalConnect<ThreePointerDelegate>("volume-removed", (_, _, _) => onChanged(), true);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_volume_monitor_get", CallingConvention = CallingConvention.Cdecl)]
     extern static VolumeMonitor _Get();
