@@ -15,12 +15,15 @@ public class VolumeMonitor : GObject
 
     public void OnDriveChanged(Action onChanged)
         => driveChangeId = SignalConnect<ThreePointerDelegate>("drive-changed", (_, _, _) => onChanged(), true);
+    public void OnDriveConnected(Action onChanged)
+        => driveConnectedId = SignalConnect<ThreePointerDelegate>("drive-connected", (_, _, _) => onChanged(), true);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_volume_monitor_get", CallingConvention = CallingConvention.Cdecl)]
     extern static VolumeMonitor _Get();
 
     DelegateId? driveChangeId = null;
-
+    DelegateId? driveConnectedId = null;
+    
     #region IDisposable
 
     protected override void Dispose(bool disposing)
@@ -32,6 +35,8 @@ public class VolumeMonitor : GObject
             // Verwalteten Zustand (verwaltete Objekte) bereinigen
             if (driveChangeId.HasValue)
                 SignalDisconnect(driveChangeId.Value);
+            if (driveConnectedId.HasValue)
+                SignalDisconnect(driveConnectedId.Value);
 
             // Nicht verwaltete Ressourcen (nicht verwaltete Objekte) freigeben und Finalizer überschreiben
             // Große Felder auf NULL setzen

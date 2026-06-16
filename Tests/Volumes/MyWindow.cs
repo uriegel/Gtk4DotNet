@@ -12,6 +12,7 @@ class MyWindow : ApplicationWindow
         var refcount = root?.GetRefCount();
         monitor = VolumeMonitor.Get();
         monitor.OnDriveChanged(() => WriteLine("Drive changed"));
+        monitor.OnDriveConnected(() => WriteLine("Drive connected"));
 
         OnFinalize(monitor.Dispose);
     }
