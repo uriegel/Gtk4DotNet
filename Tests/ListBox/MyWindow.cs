@@ -19,8 +19,12 @@ class MyWindow : ApplicationWindow
         var keyController = KeyEventController.New();
         keyController.OnKeyPressed((chr, mod) =>
         {
-            var row = listbox.GetSelectedRow().GetChild<Box>();
-            Console.WriteLine($"Open file with {row?.GetManagedData<string>("data")}");
+            if (chr == 13)
+            {
+                var row = listbox.GetSelectedRow().GetChild<Box>();
+                Console.WriteLine($"Open file with {row?.GetManagedData<string>("data")}");
+                return true;
+            }
             return false;
         });
         AddController(keyController);
@@ -34,15 +38,16 @@ class MyWindow : ApplicationWindow
             }
         }));
 
-        var stopuhr = new Stopwatch();
-        stopuhr.Start();
         var contentType = Gio.GuessContentType(".html") ?? "none";
         using var defaultApp = GAppInfo.GetDefault(contentType);
-        listbox.AppendFromTemplate("listitem", b => new ListItem(b, defaultApp.GetIcon(), defaultApp.Name, true)
-            .RegisterWidget()
-            .SideEffect(n => AttachData(n, defaultApp.Executable)));
+        if (defaultApp != null)
+        {
+            listbox.AppendFromTemplate("listitem", b => new ListItem(b, defaultApp.GetIcon(), defaultApp.Name, true)
+                .RegisterWidget()
+                .SideEffect(n => AttachData(n, defaultApp.Executable)));
+        }
         using var recommendedApps = GAppInfo.GetRecommendedApps(contentType);
-        foreach (var appinfo in recommendedApps.OrderBy(n => n.Name).Where(n => n.ShouldShow && n.Name != defaultApp.Name))
+        foreach (var appinfo in recommendedApps.OrderBy(n => n.Name).Where(n => n.ShouldShow && n.Name != defaultApp?.Name))
             listbox.AppendFromTemplate("listitem", b => new ListItem(b, appinfo.GetIcon(), appinfo.Name, true)
                 .RegisterWidget()
                 .SideEffect(n => AttachData(n, appinfo.Executable)));
@@ -51,8 +56,6 @@ class MyWindow : ApplicationWindow
             listbox.AppendFromTemplate("listitem", b => new ListItem(b, appinfo.GetIcon(), appinfo.Name)
                 .RegisterWidget()
                 .SideEffect(n => AttachData(n, appinfo.Executable)));
-        var ela = stopuhr.Elapsed;
-        Console.WriteLine(ela);
 
         void AttachData(ListItem listItem, string? executable)
         {

@@ -11,6 +11,10 @@ public class KeyEventController : EventController
         return controller;
     }
 
+    /// <summary>
+    /// Installing a callback that triggers when a key is pressed. Return true, if the key was handled
+    /// </summary>
+    /// <param name="onKeyPressed">callback that triggers when a key is pressed. Return true, if the key was handled</param>
     public void OnKeyPressed(Func<char, KeyModifiers, bool> onKeyPressed)
         => SignalConnect<KeyPressedDelegate>("key-pressed",
             (nint _, int key, int keyCode, KeyModifiers modifiers, nint __) => onKeyPressed(Gtk.KeyValToUnicode(key, keyCode), modifiers));

@@ -9,9 +9,11 @@ public class GAppInfo : GObject
 {
     public bool ShouldShow { get => _ShouldShow(this); }
 
-    public static GAppInfo GetDefault(string contentType, bool mustSupportUris = false)
+    public static GAppInfo? GetDefault(string contentType, bool mustSupportUris = false)
     {
         var app = _GetDefault(contentType, mustSupportUris);
+        if (app.IsInvalid)
+            return null;
         app.CheckDiagnostics();
         return app;
     }
