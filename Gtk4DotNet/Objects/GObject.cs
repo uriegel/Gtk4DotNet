@@ -5,6 +5,11 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
+// TODO Mount
+// TODO Volume
+// TODO VolumeMonitor
+// TODO VolumeMonitor many signals
+
 public class GObject : BaseHandle
 {
     public bool IsFloating { get; internal set; }
@@ -91,25 +96,25 @@ public class GObject : BaseHandle
             GetProperty(this, propertyName, gv);
             result = GValue.GetBool(gv);
         }
-        else if (type.Name == "UInt32") 
+        else if (type.Name == "UInt32")
         {
             GValue.Init(gv, GTypes.UInt);
             GetProperty(this, propertyName, gv);
             result = GValue.GetUInt(gv);
         }
-        else if (type.Name == "Int32") 
+        else if (type.Name == "Int32")
         {
             GValue.Init(gv, GTypes.Int);
             GetProperty(this, propertyName, gv);
             result = GValue.GetInt(gv);
         }
-        else if (type.Name == "Double") 
+        else if (type.Name == "Double")
         {
             GValue.Init(gv, GTypes.Double);
             GetProperty(this, propertyName, gv);
             result = GValue.GetDouble(gv);
         }
-        else if (type.Name == "Float") 
+        else if (type.Name == "Float")
         {
             GValue.Init(gv, GTypes.Float);
             GetProperty(this, propertyName, gv);
@@ -161,7 +166,7 @@ public class GObject : BaseHandle
         GetBool(this, name, out var value, 0);
         return value;
     }
-    
+
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_get_type", CallingConvention = CallingConvention.Cdecl)]
     public static extern GType Type();
 
@@ -229,7 +234,7 @@ public class GObject : BaseHandle
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_bind_property", CallingConvention = CallingConvention.Cdecl)]
     static extern nint BindProperty(GObject source, string property, GObject target, string targetProperty, BindingFlags flags);
 
-     [DllImport(Libs.LibGtk, EntryPoint = "g_object_set", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_set", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetString(GObject obj, string name, string value, nint end);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_get", CallingConvention = CallingConvention.Cdecl)]
