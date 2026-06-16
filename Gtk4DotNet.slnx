@@ -13,6 +13,7 @@
     <Project Path="Tests/WebViewFromTemplate/WebViewFromTemplate.csproj" />
     <Project Path="Tests/FileCopy/FileCopy.csproj" />
     <Project Path="Tests/ListBox/ListBox.csproj" />
+    <Project Path="Tests/Volumes/Volumes.csproj" />
   </Folder>
   <Project Path="Gtk4DotNet/Gtk4DotNet.csproj" />
 </Solution>

@@ -61,6 +61,17 @@ public class GFile : GObject
         return info;
     }
 
+    public Mount? FindEnclosingMount()
+    {
+        var mount = FindEnclosingMount(this, 0, 0);
+        if (mount.IsInvalid)
+            return null;
+        // Do not call this, because mount is a living reference
+        //mount.CheckDiagnostics();
+        return mount;
+    }
+
+
     /// <summary>
     /// Copies a GFile to destination (you have to specify the destination file name!).
     /// W A R N I N G: If you cancel the copy operation, the target file might remain as partial file!
@@ -194,6 +205,6 @@ public class GFile : GObject
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_query_info", CallingConvention = CallingConvention.Cdecl)]
     extern static GFileInfo _QueryInfo(GFile file, string attributes, int flags, nint nil, nint nil2);
 
-    // [DllImport(Libs.LibGtk, EntryPoint = "g_file_find_enclosing_mount", CallingConvention = CallingConvention.Cdecl)]
-    // extern static MountHandle FindEnclosingMount(GFile file, nint _, nint __);
+    [DllImport(Libs.LibGtk, EntryPoint = "g_file_find_enclosing_mount", CallingConvention = CallingConvention.Cdecl)]
+    extern static Mount FindEnclosingMount(GFile file, nint _, nint __);
 }
