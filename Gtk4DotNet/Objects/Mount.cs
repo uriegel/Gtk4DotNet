@@ -1,6 +1,5 @@
 using System.Runtime.InteropServices;
 using Gtk4DotNet.Extensions;
-using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
@@ -11,7 +10,8 @@ public class Mount : GObject
     public GFile GetRoot()
     {
         var res = GetRoot(this);
-        res.CheckDiagnostics();
+        // Mount a living object:
+        // res.CheckDiagnostics();
         return res;
     }
 

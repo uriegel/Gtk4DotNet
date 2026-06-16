@@ -14,6 +14,8 @@ public class GObject : BaseHandle
 {
     public bool IsFloating { get; internal set; }
 
+    public bool HasFloatingRef { get => _HasFloatingRef(this); }
+
     internal static GtkDelegates GObjectsDiagnostics { get; } = new();
 
     public void OnFinalize(Action onFinalize) => AddWeakRef(onFinalize);
@@ -35,6 +37,24 @@ public class GObject : BaseHandle
         };
         GtkDelegates.Instance.Add(key, callback);
         _AddWeakRef(this, Marshal.GetFunctionPointerForDelegate(callback as Delegate), 0);
+    }
+
+    public void AddToggleRef(Action onDisposing)
+    {
+        var key = GtkDelegates.Instance.GetKey("ToggleRef");
+        TwoPointerBoolDelegate callback = (_, _, _) =>
+        {
+            GtkDelegates.Instance.Remove(key.Key);
+            onDisposing();
+        };
+        GtkDelegates.Instance.Add(key, callback);
+        _AddToggleRef(this, Marshal.GetFunctionPointerForDelegate(callback as Delegate), 0);
+    }
+
+    public int GetRefCount()
+    {
+        var obj = Marshal.PtrToStructure<GObjectStruct>(GetInternalHandle());
+        return obj.RefCount;
     }
 
     public void SetData(string key, nint data) => SetData(this, key, data);
@@ -176,13 +196,21 @@ public class GObject : BaseHandle
             SetDiagnostics();
     }
 
-    internal void SignalConnect<TDelegate>(string name, TDelegate callback)
+    internal DelegateId SignalConnect<TDelegate>(string name, TDelegate callback, bool manualFreeing = false)
         where TDelegate : Delegate
     {
         var key = GtkDelegates.Instance.GetKey($"Signal: {name}");
         GtkDelegates.Instance.Add(key, callback);
-        AddWeakRef(() => GtkDelegates.Instance.Remove(key.Key));
-        SignalConnect(this, name, Marshal.GetFunctionPointerForDelegate((Delegate)callback), 0, 0);
+        if (!manualFreeing)
+            AddWeakRef(() => GtkDelegates.Instance.Remove(key.Key));
+        key.SignalId = SignalConnect(this, name, Marshal.GetFunctionPointerForDelegate((Delegate)callback), 0, 0);
+        return key;
+    }
+
+    public void SignalDisconnect(DelegateId id)
+    {
+        SignalDisconnect(this, id.SignalId);
+        GtkDelegates.Instance.Remove(id.Key);
     }
 
     protected virtual void OnDiagnostics()
@@ -216,8 +244,14 @@ public class GObject : BaseHandle
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_weak_ref", CallingConvention = CallingConvention.Cdecl)]
     extern internal static void _AddWeakRef(GObject obj, nint finalizer, nint zero);
 
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_add_toggle_ref", CallingConvention = CallingConvention.Cdecl)]
+    extern internal static void _AddToggleRef(GObject obj, nint finalizer, nint zero);
+
     [DllImport(Libs.LibGtk, EntryPoint = "g_signal_connect_object", CallingConvention = CallingConvention.Cdecl)]
-    protected extern static long SignalConnect(GObject widget, string name, IntPtr callback, IntPtr obj, int n3);
+    protected extern static long SignalConnect(GObject obj, string name, nint callback, nint o, int n3);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_signal_handler_disconnect", CallingConvention = CallingConvention.Cdecl)]
+    protected extern static void SignalDisconnect(GObject obj, long signalId);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_set_data", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetData(GObject obj, string key, nint data);
@@ -255,6 +289,9 @@ public class GObject : BaseHandle
     [DllImport(Libs.LibGtk, EntryPoint = "g_quark_from_string", CallingConvention = CallingConvention.Cdecl)]
     extern static int GetQuark(string quark);
 
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_is_floating", CallingConvention = CallingConvention.Cdecl)]
+    extern static bool _HasFloatingRef(GObject obj);
+   
     bool diagnosticsSet;
 }
 

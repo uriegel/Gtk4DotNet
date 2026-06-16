@@ -9,6 +9,7 @@ delegate void SoupMessageHeadersDelegate(string name, string value);
 
 delegate void OnePointerDelegate(nint p);
 delegate void TwoPointerDelegate(nint p, nint pp);
+delegate void TwoPointerBoolDelegate(nint p, nint pp, bool b);
 delegate void ThreePointerDelegate(nint p, nint pp, nint ppp);
 delegate void DrawFunctionDelegate(nint drawingArea, nint cairo, int width, int height, nint data);
 delegate void DrawingAreaResizeDelegate(nint drawingArea, int width, int height, nint data);
@@ -30,13 +31,13 @@ class GtkDelegates
 {
     public static GtkDelegates Instance { get; } = new();
     public int Instances { get => delegates.Count; }
-    internal KeyName GetKey(string name)
+    internal DelegateId GetKey(string name)
         => new(Interlocked.Increment(ref delegateKey), name);
 
     internal long Add(Delegate delegat, string name)
         => Add(GetKey(name).Key, delegat, name);
 
-    internal long Add(KeyName keyName, Delegate delegat)
+    internal long Add(DelegateId keyName, Delegate delegat)
         => Add(keyName.Key, delegat, keyName.Name);
 
     internal long Add(long key, Delegate delegat, string name)
@@ -62,4 +63,17 @@ class GtkDelegates
 }
 
 record struct DelegateInfo(Delegate Delegate, string Name);
-record struct KeyName(long Key, string Name);
+
+public struct DelegateId
+{
+    internal DelegateId(long key, string name, long signalId = 0)
+    {
+        Key = key;
+        Name = name;
+        SignalId = signalId;
+    }
+    
+    internal long Key { get; }
+    internal string Name { get; }
+    internal long SignalId { get; set; }
+}
