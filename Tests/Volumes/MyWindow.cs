@@ -13,6 +13,7 @@ class MyWindow : ApplicationWindow
         monitor = VolumeMonitor.Get();
         monitor.OnDriveChanged(() => WriteLine("Drive changed"));
         monitor.OnDriveConnected(() => WriteLine("Drive connected"));
+        monitor.OnDriveDisconnected(() => WriteLine("Drive disconnected"));
 
         OnFinalize(monitor.Dispose);
     }

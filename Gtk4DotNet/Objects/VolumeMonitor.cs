@@ -17,12 +17,15 @@ public class VolumeMonitor : GObject
         => driveChangeId = SignalConnect<ThreePointerDelegate>("drive-changed", (_, _, _) => onChanged(), true);
     public void OnDriveConnected(Action onChanged)
         => driveConnectedId = SignalConnect<ThreePointerDelegate>("drive-connected", (_, _, _) => onChanged(), true);
+    public void OnDriveDisconnected(Action onChanged)
+        => driveDisconnectedId = SignalConnect<ThreePointerDelegate>("drive-disconnected", (_, _, _) => onChanged(), true);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_volume_monitor_get", CallingConvention = CallingConvention.Cdecl)]
     extern static VolumeMonitor _Get();
 
     DelegateId? driveChangeId = null;
     DelegateId? driveConnectedId = null;
+    DelegateId? driveDisconnectedId = null;
     
     #region IDisposable
 
@@ -37,6 +40,8 @@ public class VolumeMonitor : GObject
                 SignalDisconnect(driveChangeId.Value);
             if (driveConnectedId.HasValue)
                 SignalDisconnect(driveConnectedId.Value);
+            if (driveDisconnectedId.HasValue)
+                SignalDisconnect(driveDisconnectedId.Value);
 
             // Nicht verwaltete Ressourcen (nicht verwaltete Objekte) freigeben und Finalizer überschreiben
             // Große Felder auf NULL setzen
