@@ -3,7 +3,7 @@ using Gtk4DotNet;
 
 Application
     .NewAdwaita("de.uriegel.gtk4dotnet")
-    .WithDiagnostics()
+    .WithDiagnostics(true)
     .OnActivate(app => app
         .NewWindow()
         .Title("Hello WebView👍")

@@ -6,10 +6,7 @@ using Gtk4DotNet.Internals;
 namespace Gtk4DotNet;
 
 // TODO Mount
-// TODO Volume
-// TODO VolumeMonitor
-// TODO VolumeMonitor many signals
-
+// TODO WebView native leaking 1 delegate
 public class GObject : BaseHandle
 {
     public bool IsFloating { get; internal set; }
@@ -291,7 +288,7 @@ public class GObject : BaseHandle
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_is_floating", CallingConvention = CallingConvention.Cdecl)]
     extern static bool _HasFloatingRef(GObject obj);
-   
+
     bool diagnosticsSet;
 }
 

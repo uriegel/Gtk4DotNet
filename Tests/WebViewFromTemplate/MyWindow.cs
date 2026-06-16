@@ -9,7 +9,7 @@ class MyWindow : AdwApplicationWindow
             new SimpleAction("quit", CloseWindow, "<Ctrl>Q"),
             new SimpleAction("devtools", async () =>
             {
-                var inspector = webView.GetInspector();
+                using var inspector = webView.GetInspector();
                 inspector.Show();
                 await Task.Delay(400);
                 inspector.Detach();

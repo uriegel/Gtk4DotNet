@@ -10,6 +10,11 @@ class MyWindow : ApplicationWindow
         using var mount = probeFile.FindEnclosingMount();
         using var root = mount?.GetRoot();
         var refcount = root?.GetRefCount();
+
+
+        settings = GSettings.New("org.gnome.desktop.interface");
+        settings.OnChanged("gtk-theme", () => WriteLine($"Thema, {settings.GetString("gtk-theme")}"));
+
         monitor = VolumeMonitor.Get();
         monitor.OnDriveChanged(() => WriteLine("Drive changed"));
         monitor.OnDriveConnected(() => WriteLine("Drive connected"));
@@ -24,8 +29,13 @@ class MyWindow : ApplicationWindow
         monitor.OnVolumeChanged(() => WriteLine("Volume changed"));
         monitor.OnVolumeRemoved(() => WriteLine("Volume removed"));
 
-        OnFinalize(monitor.Dispose);
+        OnFinalize(() =>
+        {
+            monitor.Dispose();
+            settings.Dispose();
+        });
     }
 
     VolumeMonitor monitor;
+    GSettings settings;
 }
