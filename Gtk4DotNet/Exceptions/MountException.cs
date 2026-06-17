@@ -1,0 +1,27 @@
+
+namespace Gtk4DotNet.Exceptions;
+
+public class MountException : GtkException
+{
+    public VolumeError ErrorType { get; }
+
+    public string? Name { get; }
+    public string? UnixDevice { get; }
+
+    // TODO
+
+    internal MountException(string message, string? name, string? unixDevice, GErrorStruct error)
+        : base(message)
+    {
+        Name = name;
+        UnixDevice = unixDevice;
+        ErrorType = error.Domain switch
+        {
+            236 or 232 or 205 or 202 => error.Code switch
+            {
+                _ => VolumeError.General,
+            },
+            _ => VolumeError.General,
+        };
+    }
+}

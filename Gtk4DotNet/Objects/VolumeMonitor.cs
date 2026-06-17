@@ -1,4 +1,6 @@
 using System.Runtime.InteropServices;
+using CsTools;
+using CsTools.Extensions;
 using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
@@ -11,6 +13,42 @@ public class VolumeMonitor : GObject
         // Shared object
         //vm.CheckDiagnostics();
         return vm;
+    }
+
+    public DisposableEnumerable<Volume> GetVolumes()
+    {
+        var volumes = _GetVolumes(this);
+        nint current = volumes;
+        var list = new List<Volume>();
+        while (current != 0)
+        {
+            var glist = Marshal.PtrToStructure<GList>(current);
+            var volume = new Volume();
+            list.Add(volume);
+            volume.SetInternalHandle(glist.Data);
+            // volume.CheckDiagnostics();
+            current = glist.Next;
+        }
+        GList.Free(volumes);
+        return list.AsDisposable();
+    }
+
+    public DisposableEnumerable<Drive> GetConnectedDrives()
+    {
+        var drives = _GetDrives(this);
+        nint current = drives;
+        var list = new List<Drive>();
+        while (current != 0)
+        {
+            var glist = Marshal.PtrToStructure<GList>(current);
+            var drive = new Drive();
+            list.Add(drive);
+            drive.SetInternalHandle(glist.Data);
+            drive.CheckDiagnostics();
+            current = glist.Next;
+        }
+        GList.Free(drives);
+        return list.AsDisposable();
     }
 
     public void OnDriveChanged(Action onChanged)
@@ -41,6 +79,12 @@ public class VolumeMonitor : GObject
     [DllImport(Libs.LibGtk, EntryPoint = "g_volume_monitor_get", CallingConvention = CallingConvention.Cdecl)]
     extern static VolumeMonitor _Get();
 
+    [DllImport(Libs.LibGio, EntryPoint = "g_volume_monitor_get_volumes", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint _GetVolumes(VolumeMonitor volumeMonitor);
+
+    [DllImport(Libs.LibGio, EntryPoint = "g_volume_monitor_get_connected_drives", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint _GetDrives(VolumeMonitor volumeMonitor);
+    
     DelegateId? driveChangeId = null;
     DelegateId? driveConnectedId = null;
     DelegateId? driveDisconnectedId = null;
@@ -53,7 +97,7 @@ public class VolumeMonitor : GObject
     DelegateId? volumeAddedId = null;
     DelegateId? volumeChangedId = null;
     DelegateId? volumeRemovedId = null;
-    
+
     #region IDisposable
 
     protected override void Dispose(bool disposing)
@@ -95,7 +139,7 @@ public class VolumeMonitor : GObject
         }
         base.Dispose(disposing);
     }
-
+    
     bool disposedValue;
 
     #endregion

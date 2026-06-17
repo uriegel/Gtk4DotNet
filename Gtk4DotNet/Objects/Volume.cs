@@ -17,6 +17,15 @@ public class Volume : GObject
 
     public bool CanEject { get => _CanEject(this); }
 
+    public Mount? GetMount()
+    {
+        var mount = GetMount(this);
+        if (mount.IsInvalid)
+            return null;
+        mount.CheckDiagnostics();
+        return mount;
+    }
+
     public Task EjectAsync(bool force = false)
     {
         var tcs = new TaskCompletionSource();
@@ -24,7 +33,7 @@ public class Volume : GObject
         var asyncReady = new ThreePointerDelegate(AsyncReadyCallback);
         AsyncReady.Callbacks[id] = asyncReady;
         using var mo = MountOperation.New();
-        Eject(this, force ? UnmountFlags.Force: UnmountFlags.None, mo, 0, asyncReady, 0);
+        Eject(this, force ? UnmountFlags.Force : UnmountFlags.None, mo, 0, asyncReady, 0);
         return tcs.Task;
 
         async void AsyncReadyCallback(nint _, nint result, nint __)
@@ -50,9 +59,6 @@ public class Volume : GObject
     [DllImport(Libs.LibGio, EntryPoint = "g_volume_can_eject", CallingConvention = CallingConvention.Cdecl)]
     extern static bool _CanEject(Volume volume);
 
-    [DllImport(Libs.LibGio, EntryPoint = "g_volume_eject_with_operation_finish", CallingConvention = CallingConvention.Cdecl)]
-    extern static bool EjectFinish(Volume volume, nint result, ref nint error);
-
     [DllImport(Libs.LibGio, EntryPoint = "g_volume_get_name", CallingConvention = CallingConvention.Cdecl)]
     extern static nint _GetName(Volume volume);
 
@@ -62,8 +68,14 @@ public class Volume : GObject
     [DllImport(Libs.LibGio, EntryPoint = "g_volume_get_uuid", CallingConvention = CallingConvention.Cdecl)]
     extern static nint _GetUuid(Volume volume);
 
+    [DllImport(Libs.LibGio, EntryPoint = "g_volume_get_mount", CallingConvention = CallingConvention.Cdecl)]
+    extern static Mount GetMount(Volume volume);
+
     [DllImport(Libs.LibGio, EntryPoint = "g_volume_eject_with_operation", CallingConvention = CallingConvention.Cdecl)]
     extern static void Eject(Volume volume, UnmountFlags flags, MountOperation mountOperation, nint _, ThreePointerDelegate cb, nint __);
+
+    [DllImport(Libs.LibGio, EntryPoint = "g_volume_eject_with_operation_finish", CallingConvention = CallingConvention.Cdecl)]
+    extern static bool EjectFinish(Volume volume, nint result, ref nint error);
 
     [DllImport(Libs.LibGio, EntryPoint = "g_volume_get_icon", CallingConvention = CallingConvention.Cdecl)]
     extern static GIcon _GetIcon(Volume volume);
