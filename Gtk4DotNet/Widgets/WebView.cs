@@ -66,6 +66,31 @@ public class WebView : Widget
         return insp;
     }
 
+    public void ShowInspector()
+    {
+        try
+        {
+            Gtk.BeginInvoke(200, () =>
+            {
+                var inspector = GetInspector();
+                inspector.Show();
+                GrabFocus();
+                DetachInspector();
+
+                async void DetachInspector()
+                {
+                    await Task.Delay(TimeSpan.FromMilliseconds(600));
+                    inspector.Detach();
+                    inspector.Dispose();
+                }
+            });
+        }
+        catch (Exception e)
+        {
+            Console.Error.WriteLine($"Could not show devtools: {e}");
+        }
+    }
+
     public WebView() : base() { }
 
     public WebView(Builder builder, string? name = null) : base(builder, name) { }

@@ -17,6 +17,13 @@ public class Mount : GObject
         return res;
     }
 
+    public Volume GetVolume()
+    {
+        var volume = GetVolume(this);
+        volume.CheckDiagnostics();      
+        return volume;
+    }
+
     public Task UnmountAsync(bool force = false)
     {
         var tcs = new TaskCompletionSource();

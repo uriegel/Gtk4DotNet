@@ -5,7 +5,6 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
-// TODO Mount
 // TODO WebView native leaking 1 delegate
 public class GObject : BaseHandle
 {

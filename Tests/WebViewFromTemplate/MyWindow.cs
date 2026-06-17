@@ -7,19 +7,14 @@ class MyWindow : AdwApplicationWindow
     {
         AddActions(
             new SimpleAction("quit", CloseWindow, "<Ctrl>Q"),
-            new SimpleAction("devtools", async () =>
-            {
-                using var inspector = webView.GetInspector();
-                inspector.Show();
-                await Task.Delay(400);
-                inspector.Detach();
-            }, "F12")
+            new SimpleAction("devtools", webView.ShowInspector, "F12")
         );
 
         webView.BackgroundColor(Color.Transparent);
         var settings = webView.GetSettings();
         settings.EnableDeveloperExtras = true;
         webView.DisableContextMenu();
+        webView.OnAlert((_,_) => Console.WriteLine("Tst"));
         webView.LoadUri("https://github.com/uriegel/Gtk4DotNet");
     }
 
