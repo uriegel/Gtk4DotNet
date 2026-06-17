@@ -26,18 +26,29 @@ public class Volume : GObject
         return mount;
     }
 
+    public Drive? GetDrive()
+    {
+        var drive = GetDrive(this);
+        if (drive.IsInvalid)
+            return null;
+        drive.CheckDiagnostics();
+        return drive;
+    }
+
     public Task EjectAsync(bool force = false)
     {
         var tcs = new TaskCompletionSource();
         var id = AsyncReady.GetId();
+        var mo = MountOperation.New();
+        mo.OnAskQuestion(() => Console.WriteLine("Frage Frage"));
         var asyncReady = new ThreePointerDelegate(AsyncReadyCallback);
         AsyncReady.Callbacks[id] = asyncReady;
-        using var mo = MountOperation.New();
         Eject(this, force ? UnmountFlags.Force : UnmountFlags.None, mo, 0, asyncReady, 0);
         return tcs.Task;
 
         async void AsyncReadyCallback(nint _, nint result, nint __)
         {
+            mo.Dispose();
             AsyncReady.Callbacks.Remove(id, out var _);
             var error = IntPtr.Zero;
             if (!EjectFinish(this, result, ref error))
@@ -71,6 +82,9 @@ public class Volume : GObject
     [DllImport(Libs.LibGio, EntryPoint = "g_volume_get_mount", CallingConvention = CallingConvention.Cdecl)]
     extern static Mount GetMount(Volume volume);
 
+    [DllImport(Libs.LibGio, EntryPoint = "g_volume_get_drive", CallingConvention = CallingConvention.Cdecl)]
+    extern static Drive GetDrive(Volume volume);
+    
     [DllImport(Libs.LibGio, EntryPoint = "g_volume_eject_with_operation", CallingConvention = CallingConvention.Cdecl)]
     extern static void Eject(Volume volume, UnmountFlags flags, MountOperation mountOperation, nint _, ThreePointerDelegate cb, nint __);
 

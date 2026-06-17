@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using CsTools.Functional;
 using Gtk4DotNet;
 
@@ -51,7 +52,13 @@ class MyWindow : ApplicationWindow
                     using var mount = newVolume.GetMount();
                     if (mount != null)
                         await mount.UnmountAsync(true);
-                    await newVolume.EjectAsync(true);
+
+                    using var drive = newVolume.GetDrive();
+                    if (drive?.CanStop == true)
+                        await drive.StopAsync(true);
+
+                    if (newVolume.CanEject)
+                        await newVolume.EjectAsync(true);
                 }
                     
             }
