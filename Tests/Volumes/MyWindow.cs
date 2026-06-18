@@ -5,6 +5,8 @@ using Gtk4DotNet;
 
 using static System.Console;
 
+// TODO react on mount change (in Nautilus, mount a drive)
+
 class MyWindow : ApplicationWindow
 {
     public MyWindow(WindowBuilder builder) : base(builder)
@@ -15,7 +17,7 @@ class MyWindow : ApplicationWindow
         using var mount = probeFile.FindEnclosingMount();
         using var vol = mount?.GetVolume();
 
-// TODO ============================
+        // TODO ============================
         Renne();
         async void Renne()
         {
@@ -39,7 +41,7 @@ class MyWindow : ApplicationWindow
             }
         }
 
-// TODO ============================        
+        // TODO ============================        
         using var root = mount?.GetRoot();
 
         settings = GSettings.New("org.gnome.desktop.interface");
@@ -89,7 +91,7 @@ class MyWindow : ApplicationWindow
             //         if (newVolume.CanEject)
             //             await newVolume.EjectAsync(true);
             //     }
-                    
+
             // }
             // catch (Exception e)
             // {
