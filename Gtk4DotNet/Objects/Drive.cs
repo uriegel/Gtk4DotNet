@@ -8,13 +8,10 @@ namespace Gtk4DotNet;
 public class Drive : GObject
 {
     public bool CanEject { get => _CanEject(this); }
-
     public bool CanStart { get => _CanStart(this); }
-
     public bool CanStop { get => _CanStop(this); }
-
+    public bool IsRemovable { get => _IsRemovable(this); }
     public string? Name { get => _GetName(this).PtrToString(true); }
-
     public string? UnixDevice { get => _GetIdentifier(this, "unix-device").PtrToString(true); }
 
     public Task StopAsync(bool force = false)
@@ -22,7 +19,7 @@ public class Drive : GObject
         var tcs = new TaskCompletionSource();
         var id = AsyncReady.GetId();
         var mo = MountOperation.New();
-        mo.OnAskQuestion(() => Console.WriteLine("Frage Frage"));
+        mo.OnAskQuestion(() => Console.WriteLine("Question from stop drive"));
         var asyncReady = new ThreePointerDelegate(AsyncReadyCallback);
         AsyncReady.Callbacks[id] = asyncReady;
         Stop(this, force ? UnmountFlags.Force : UnmountFlags.None, mo, 0, asyncReady, 0);
@@ -61,6 +58,9 @@ public class Drive : GObject
 
     [DllImport(Libs.LibGio, EntryPoint = "g_drive_can_eject", CallingConvention = CallingConvention.Cdecl)]
     extern static bool _CanEject(Drive drive);
+
+    [DllImport(Libs.LibGio, EntryPoint = "g_drive_is_removable", CallingConvention = CallingConvention.Cdecl)]
+    extern static bool _IsRemovable(Drive drive);
 
     [DllImport(Libs.LibGio, EntryPoint = "g_drive_stop", CallingConvention = CallingConvention.Cdecl)]
     extern static void Stop(Drive drive, UnmountFlags flags, MountOperation mo, nint _, ThreePointerDelegate cb, nint __);

@@ -31,19 +31,22 @@ delegate bool KeyPressedDelegate(nint _, int key, int keyCode, KeyModifiers keyM
 class GtkDelegates
 {
     public static GtkDelegates Instance { get; } = new();
-    public int Instances { get => delegates.Count; }
+    public DelegateInfo[] GetInfos() => [.. delegates.Values]; 
     internal DelegateId GetKey(string name)
         => new(Interlocked.Increment(ref delegateKey), name);
 
     internal long Add(Delegate delegat, string name)
         => Add(GetKey(name).Key, delegat, name);
 
-    internal long Add(DelegateId keyName, Delegate delegat)
-        => Add(keyName.Key, delegat, keyName.Name);
+    internal long Add(DelegateId keyName, Delegate delegat, string? typeName = null)
+        => Add(keyName.Key, delegat, keyName.Name, typeName);
 
-    internal long Add(long key, Delegate delegat, string name)
+    internal long Add(long key, Delegate delegat, string name, string? typeName = null)
     {
-        delegates[key] = new DelegateInfo(delegat, name);
+        delegates[key] = new DelegateInfo(delegat, name)
+        {
+            TypeName = typeName
+        };
         return key;
     }
 
@@ -63,7 +66,10 @@ class GtkDelegates
     readonly ConcurrentDictionary<long, DelegateInfo> delegates = [];
 }
 
-record struct DelegateInfo(Delegate Delegate, string Name);
+record struct DelegateInfo(Delegate Delegate, string Name)
+{
+    public string? TypeName { get; set; }
+}
 
 public struct DelegateId
 {

@@ -106,20 +106,36 @@ public static class Gtk
     {
         GC.Collect();
         GC.Collect();
+        Console.WriteLine($"=========================================================================================");
         Console.WriteLine($"Total memory: {System.Diagnostics.Process.GetCurrentProcess().WorkingSet64:N0}, managed: {GC.GetTotalMemory(true):N0}");
 
         var registeredWidgets = Widget.GetRegisteredWidgetCount();
         var asyncReadies = AsyncReady.GetDelegateCount();
-        var delegates = GtkDelegates.Instance.Instances;
-        var gObjects = GObject.GObjectsDiagnostics.Instances;
+        var delegates = GtkDelegates.Instance.GetInfos();
+        var gObjects = GObject.GObjectsDiagnostics.GetInfos();
+        if (gObjects.Length > 0)
+        {
+            Console.WriteLine();
+            foreach (var n in gObjects)
+                Console.WriteLine($"Dangling GObjects: {n}");
+        }
+        if (delegates.Length > 0)
+        {
+            Console.WriteLine();
+            foreach (var n in delegates)
+                Console.WriteLine($"Connected delegates: {n}");
+        }
         if (registeredWidgets > 0)
+        {
+            Console.WriteLine();
             Console.WriteLine($"Dangling widgets: {registeredWidgets}");
+        }
         if (asyncReadies > 0)
+        {
+            Console.WriteLine();
             Console.WriteLine($"GFile AsyncReadies: {asyncReadies}");
-        if (delegates > 0)
-            Console.WriteLine($"Connected delegates: {delegates}");
-        if (gObjects > 0)
-            Console.WriteLine($"Dangling GObjects: {gObjects}");
+        }
+        Console.WriteLine($"=========================================================================================");                
     }
 
     public static char KeyValToUnicode(int keyVal, int keyCode)

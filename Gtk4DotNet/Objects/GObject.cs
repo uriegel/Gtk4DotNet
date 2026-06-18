@@ -31,7 +31,7 @@ public class GObject : BaseHandle
             GtkDelegates.Instance.Remove(key.Key);
             onDisposing();
         };
-        GtkDelegates.Instance.Add(key, callback);
+        GtkDelegates.Instance.Add(key, callback, GetType().FullName);
         _AddWeakRef(this, Marshal.GetFunctionPointerForDelegate(callback as Delegate), 0);
     }
 
@@ -196,7 +196,7 @@ public class GObject : BaseHandle
         where TDelegate : Delegate
     {
         var key = GtkDelegates.Instance.GetKey($"Signal: {name}");
-        GtkDelegates.Instance.Add(key, callback);
+        GtkDelegates.Instance.Add(key, callback, GetType().FullName);
         if (!manualFreeing)
             AddWeakRef(() => GtkDelegates.Instance.Remove(key.Key));
         key.SignalId = SignalConnect(this, name, Marshal.GetFunctionPointerForDelegate((Delegate)callback), 0, 0);
@@ -226,7 +226,7 @@ public class GObject : BaseHandle
             if (Gtk.GObjectTracing)
                 OnDiagnostics();
         };
-        GObjectsDiagnostics.Add(key, callback);
+        GObjectsDiagnostics.Add(key, callback, GetType().FullName);
         _AddWeakRef(this, Marshal.GetFunctionPointerForDelegate(callback as Delegate), 0);
     }
 
