@@ -12,6 +12,7 @@ public class WebKitWebContext : FloatingObject
     {
         foreach (var scheme in uriSchemes)
             GtkDelegates.Instance.Remove(scheme);
+        uriSchemes.Clear();
     }
 
     public void RegisterUriScheme(string scheme, Action<WebkitUriSchemeRequest> callback)
