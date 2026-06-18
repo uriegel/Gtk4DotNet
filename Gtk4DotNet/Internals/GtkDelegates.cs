@@ -23,6 +23,7 @@ delegate bool OnePointerBoolRetDelegate(nint p);
 delegate bool TwoPointerBoolRetDelegate(nint p, nint pp);
 delegate bool ThreePointerBoolRetDelegate(nint p, nint pp, nint ppp);
 delegate void FourPointerDelegate(nint p1, nint p2, nint p3, nint p4);
+delegate void FivePointerDelegate(nint p1, nint p2, nint p3, nint p4, nint p5);
 delegate void PointerBoolDelegate(nint _, bool b);
 delegate void PointerIntDelegate(nint _, int i);
 delegate void AlertDialogResponseDelegate(nint p, string response, nint pp);

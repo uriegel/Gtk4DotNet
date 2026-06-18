@@ -42,6 +42,7 @@ public class Drive : GObject
         var id = AsyncReady.GetId();
         var mo = MountOperation.New();
         mo.OnAskQuestion(() => Console.WriteLine("Question from stop drive"));
+        mo.OnShowProcesses((msg, choices, _) => Console.WriteLine($"Question from stop drive: {msg}"));
         var asyncReady = new ThreePointerDelegate(AsyncReadyCallback);
         AsyncReady.Callbacks[id] = asyncReady;
         Stop(this, force ? UnmountFlags.Force : UnmountFlags.None, mo, 0, asyncReady, 0);

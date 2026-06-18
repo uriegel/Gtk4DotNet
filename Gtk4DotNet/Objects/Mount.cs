@@ -31,6 +31,8 @@ public class Mount : GObject
         var asyncReady = new ThreePointerDelegate(AsyncReadyCallback);
         AsyncReady.Callbacks[id] = asyncReady;
         using var mo = MountOperation.New();
+        mo.OnAskQuestion(() => Console.WriteLine("Question from stop drive"));
+        mo.OnShowProcesses((msg, choices, pnames) => Console.WriteLine($"Question from stop drive: {msg} {string.Join(" - ", pnames)}"));
         Unmount(this, force ? UnmountFlags.Force: UnmountFlags.None, mo, 0, asyncReady, 0);
         return tcs.Task;
 

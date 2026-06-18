@@ -1,4 +1,6 @@
+using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Gtk4DotNet.Extensions;
 using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
@@ -14,6 +16,43 @@ public class MountOperation : GObject
 
     public void OnAskQuestion(Action onChanged)
         => SignalConnect<FourPointerDelegate>("ask-question", (_, _, _, _) => onChanged());
+    public void OnShowProcesses(Action<string?, string[], string[]> onChanged)
+        => SignalConnect<FivePointerDelegate>("show-processes", (_, msg, pids, cptr, _) =>
+        {
+            var text = msg.PtrToString(false);
+            var choices = ReadNullTerminatedStringArray(cptr);
+            var ints = ReadInts(pids);
+            var processNames = ints.Select(n => Process.GetProcessById(n).ProcessName).ToArray();
+            onChanged(text, choices, processNames);           
+        });
+
+    static string[] ReadNullTerminatedStringArray(nint ptr)
+    {
+        var result = new List<string>();
+
+        int offset = 0;
+        while (true)
+        {
+            var strPtr = Marshal.ReadIntPtr(ptr, offset);
+
+            if (strPtr == IntPtr.Zero)
+                break;
+
+            result.Add(Marshal.PtrToStringUTF8(strPtr)!);
+            offset += IntPtr.Size;
+        }
+
+        return [.. result];
+    }        
+
+    static int[] ReadInts(nint intPtr)
+    {
+        var array = Marshal.PtrToStructure<GArray>(intPtr);
+        var pids = new int[array.Len];
+        for (int i = 0; i < array.Len; i++)
+            pids[i] = Marshal.ReadInt32(array.Data, i * sizeof(int));
+        return pids;
+    }
 
     [DllImport(Libs.LibGio, EntryPoint = "g_mount_operation_new", CallingConvention = CallingConvention.Cdecl)]
     extern static MountOperation _New();

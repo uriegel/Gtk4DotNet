@@ -10,7 +10,8 @@ class MyWindow : ApplicationWindow
     public MyWindow(WindowBuilder builder) : base(builder)
     {
         //using var probeFile = GFile.New("/media/uwe/Daten/Bilder/Fotos/1965/Bild001.jpg");
-        using var probeFile = GFile.New("/media/uwe/Ubuntu 25.10 amd64");
+        //using var probeFile = GFile.New("/media/uwe/Ubuntu 25.10 amd64");
+        using var probeFile = GFile.New("/media/uwe/Videos/videos");
         using var mount = probeFile.FindEnclosingMount();
         using var vol = mount?.GetVolume();
 
@@ -18,15 +19,24 @@ class MyWindow : ApplicationWindow
         Renne();
         async void Renne()
         {
-            using var driv = vol?.GetDrive();
-            using var mounts = driv?.GetVolumes().SelectFilterNull(n => n.GetMount()).AsDisposable();
-            if (mounts != null)
-                foreach (var mount in mounts)
-                {
-                    await mount.UnmountAsync(true);
-                }
-            if (driv != null)
-                await driv.EjectAsync();
+            try
+            {
+                using var driv = vol?.GetDrive();
+                using var mounts = driv?.GetVolumes().SelectFilterNull(n => n.GetMount()).AsDisposable();
+                if (mounts != null)
+                    foreach (var mount in mounts)
+                    {
+                        await mount.UnmountAsync();
+                    }
+                if (driv != null && driv.CanEject)
+                    await driv.EjectAsync();
+                if (driv != null && driv.CanStop)
+                    await driv.StopAsync();
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine(e);
+            }
         }
 
 // TODO ============================        
@@ -56,35 +66,35 @@ class MyWindow : ApplicationWindow
 
         async void DriveConnected()
         {
-            try
-            {
-                using var volumes = monitor.GetVolumes();
-                using var newVolume = volumes.FirstOrDefault(n => !volumeNames.Contains(n.Name));
-                if (newVolume != null)
-                    WriteLine($"Drive connected: {newVolume.Name}, {newVolume.UnixDevice}, {newVolume.Uuid}");
+            // try
+            // {
+            //     using var volumes = monitor.GetVolumes();
+            //     using var newVolume = volumes.FirstOrDefault(n => !volumeNames.Contains(n.Name));
+            //     if (newVolume != null)
+            //         WriteLine($"Drive connected: {newVolume.Name}, {newVolume.UnixDevice}, {newVolume.Uuid}");
 
-                await Task.Delay(10_000);
+            //     await Task.Delay(10_000);
 
-                WriteLine("Ejecting newly connected drive");
-                if (newVolume != null)
-                {
-                    using var mount = newVolume.GetMount();
-                    if (mount != null)
-                        await mount.UnmountAsync(true);
+            //     WriteLine("Ejecting newly connected drive");
+            //     if (newVolume != null)
+            //     {
+            //         using var mount = newVolume.GetMount();
+            //         if (mount != null)
+            //             await mount.UnmountAsync(true);
 
-                    using var drive = newVolume.GetDrive();
-                    if (drive?.CanStop == true)
-                        await drive.StopAsync(true);
+            //         using var drive = newVolume.GetDrive();
+            //         if (drive?.CanStop == true)
+            //             await drive.StopAsync(true);
 
-                    if (newVolume.CanEject)
-                        await newVolume.EjectAsync(true);
-                }
+            //         if (newVolume.CanEject)
+            //             await newVolume.EjectAsync(true);
+            //     }
                     
-            }
-            catch (Exception e)
-            {
-                Error.WriteLine($"Could not eject: {e}");
-            }
+            // }
+            // catch (Exception e)
+            // {
+            //     Error.WriteLine($"Could not eject: {e}");
+            // }
         }
 
         OnFinalize(() =>

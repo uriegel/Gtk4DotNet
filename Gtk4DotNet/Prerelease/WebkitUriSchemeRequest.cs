@@ -5,11 +5,8 @@ namespace Gtk4DotNet;
 
 public class WebkitUriSchemeRequest : BaseHandle
 {
-    // TODO Leaking!
     public WebkitUriSchemeRequest(nint nativeHandle) : base()
-    {
-        SetInternalHandle(nativeHandle);
-    }
+        => SetInternalHandle(nativeHandle);
 
     public string GetUri() => _GetUri(this).PtrToString(false) ?? "";
 
