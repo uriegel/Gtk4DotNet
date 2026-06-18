@@ -8,12 +8,18 @@ public class WebKitWebContext : FloatingObject
     // Do not call CheckDiagnostics because app hangs indefinetely
     public static WebKitWebContext GetDefault() => _GetDefault();
 
+    public static void DisposeUriSchemes()
+    {
+        foreach (var scheme in uriSchemes)
+            GtkDelegates.Instance.Remove(scheme);
+    }
+
     public void RegisterUriScheme(string scheme, Action<WebkitUriSchemeRequest> callback)
         => RegisterUriScheme(scheme, request => callback(new WebkitUriSchemeRequest(request)));
 
     void RegisterUriScheme(string scheme, CustomSchemeRequestDelegate callback)
     {
-        GtkDelegates.Instance.Add(callback, "UriScheme");
+        uriSchemes.Add(GtkDelegates.Instance.Add(callback, "UriScheme"));
         RegisterUriScheme(this, scheme, Marshal.GetFunctionPointerForDelegate((Delegate)callback));
     }
 
@@ -24,7 +30,9 @@ public class WebKitWebContext : FloatingObject
 
     // [DllImport(Libs.LibWebKit, EntryPoint = "webkit_web_context_get_security_manager", CallingConvention = CallingConvention.Cdecl)]
     // extern static WebKitSecurityManagerHandle GetSecurityManager(this WebKitWebContextHandle context);
-                        
+
     [DllImport(Libs.LibWebKit, EntryPoint = "webkit_web_context_register_uri_scheme", CallingConvention = CallingConvention.Cdecl)]
     extern static void RegisterUriScheme(WebKitWebContext context, string scheme, IntPtr callback, nint _ = 0, nint __ = 0);
+
+    static List<long> uriSchemes = [];
 }
