@@ -1,10 +1,12 @@
 using System.Runtime.InteropServices;
-using Gtk4DotNet.Exceptions;
+using CsTools;
+using CsTools.Extensions;
 using Gtk4DotNet.Extensions;
 using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
+// TODO show-processes
 public class Drive : GObject
 {
     public bool CanEject { get => _CanEject(this); }
@@ -13,6 +15,26 @@ public class Drive : GObject
     public bool IsRemovable { get => _IsRemovable(this); }
     public string? Name { get => _GetName(this).PtrToString(true); }
     public string? UnixDevice { get => _GetIdentifier(this, "unix-device").PtrToString(true); }
+
+    public DisposableEnumerable<Volume> GetVolumes()
+    {
+        var volumes = _GetVolumes(this);
+        nint current = volumes;
+        var list = new List<Volume>();
+        while (current != 0)
+        {
+            var glist = Marshal.PtrToStructure<GList>(current);
+            var volume = new Volume();
+            list.Add(volume);
+            volume.SetInternalHandle(glist.Data);
+            // TODO
+            // volume.CheckDiagnostics();
+            current = glist.Next;
+        }
+        GList.Free(volumes);
+        return list.AsDisposable();
+    }
+
 
     public Task StopAsync(bool force = false)
     {
@@ -30,17 +52,33 @@ public class Drive : GObject
             mo.Dispose();
             AsyncReady.Callbacks.Remove(id, out var _);
             var error = IntPtr.Zero;
-            if (!StopFinish(this, result, ref error))
-            {
-                var gerror = new GErrorStruct(error);
-
-                // TODO
-                var message = gerror.Message;
-                Console.WriteLine("Eject failed: " + message);
-                tcs.TrySetException(new VolumeException(message, Name, UnixDevice, gerror));
-            }
-            else
+            if (StopFinish(this, result, ref error))
                 tcs.TrySetResult();
+            else
+                tcs.TrySetException(GtkException.Get(error, true));
+        }
+    }
+
+    public Task EjectAsync(bool force = false)
+    {
+        var tcs = new TaskCompletionSource();
+        var id = AsyncReady.GetId();
+        var mo = MountOperation.New();
+        mo.OnAskQuestion(() => Console.WriteLine("Question from Drive eject"));
+        var asyncReady = new ThreePointerDelegate(AsyncReadyCallback);
+        AsyncReady.Callbacks[id] = asyncReady;
+        Eject(this, force ? UnmountFlags.Force : UnmountFlags.None, mo, 0, asyncReady, 0);
+        return tcs.Task;
+
+        async void AsyncReadyCallback(nint _, nint result, nint __)
+        {
+            mo.Dispose();
+            AsyncReady.Callbacks.Remove(id, out var _);
+            var error = IntPtr.Zero;
+            if (EjectFinish(this, result, ref error))
+                tcs.TrySetResult();
+            else
+                tcs.TrySetException(GtkException.Get(error, true));
         }
     }
 
@@ -67,4 +105,13 @@ public class Drive : GObject
 
     [DllImport(Libs.LibGio, EntryPoint = "g_drive_stop_finish", CallingConvention = CallingConvention.Cdecl)]
     extern static bool StopFinish(Drive drive, nint result, ref nint error);
+
+    [DllImport(Libs.LibGio, EntryPoint = "g_drive_eject_with_operation", CallingConvention = CallingConvention.Cdecl)]
+    extern static void Eject(Drive drive, UnmountFlags flags, MountOperation mountOperation, nint _, ThreePointerDelegate cb, nint __);
+
+    [DllImport(Libs.LibGio, EntryPoint = "g_drive_eject_with_operation_finish", CallingConvention = CallingConvention.Cdecl)]
+    extern static bool EjectFinish(Drive drive, nint result, ref nint error);
+
+    [DllImport(Libs.LibGio, EntryPoint = "g_drive_get_volumes", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint _GetVolumes(Drive drive);
 }

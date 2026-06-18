@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
-using Gtk4DotNet.Exceptions;
+using Gtk4DotNet.ErrorHandling;
+using Gtk4DotNet.ErrorHandling.ErrorCodes;
 using Gtk4DotNet.Extensions;
 using Gtk4DotNet.Internals;
 
@@ -7,10 +8,11 @@ namespace Gtk4DotNet;
 
 public class GFile : GObject
 {
-    public string? Path
-    {
-        get => GetPath(this).PtrToString(true);
-    }
+    public string? Path { get => GetPath(this).PtrToString(true); }
+
+    public bool Exists { get => _Exists(this, 0); }
+
+    public string? GetBasename() => GetBasename(this).PtrToString(true);
 
     public static GFile New(string path)
     {
@@ -18,8 +20,6 @@ public class GFile : GObject
         file.CheckDiagnostics();
         return file;
     }
-
-    public string? GetBasename() => GetBasename(this).PtrToString(true);
 
     public string? LoadStringContents()
     {
@@ -45,10 +45,7 @@ public class GFile : GObject
             if (TrashFinish(this, result, ref error))
                 tcs.TrySetResult();
             else
-            {
-                var gerror = new GErrorStruct(error);
-                tcs.TrySetException(new GFileException(Path, gerror));
-            }
+                tcs.TrySetException(GtkException.Get(error, true));
         }
     }
 
@@ -135,8 +132,8 @@ public class GFile : GObject
                 tcs.TrySetResult();
             else
             {
-                var gerror = new GErrorStruct(error);
-                if (createTargetPath && gerror.Domain == 232 && gerror.Code == 1 && File.Exists(Path))
+                var gerror = GError.Get(error, true);
+                if (createTargetPath && gerror?.Domain == Quarks.Gio && gerror.Code == (int)IO.NotFound && Exists)
                 {
                     var fi = new FileInfo(destination);
                     var destPath = fi.Directory;
@@ -146,22 +143,21 @@ public class GFile : GObject
                     }
                     catch (UnauthorizedAccessException)
                     {
-                        tcs.TrySetException(new GFileException(Path, new GErrorStruct(232, 14, "Access Denied")));
+                        tcs.TrySetException(new GioException(Quarks.Gio, IO.PermissionDenied, "Access Denied"));
                     }
                     catch
                     {
-                        tcs.TrySetException(new GFileException(Path, new GErrorStruct(0, 0, "General Exception")));
+                        tcs.TrySetException(new Exception("General Exception"));
                     }
 
                     await CopyAsync(destination, flags, true, cb, cancellation);
                 }
                 else
                 {
-                    var e = new GFileException(Path, gerror);
-                    if (e.ErrorType == GFileError.Canceled)
+                    if (gerror?.Domain == Quarks.Gio && gerror.Code == (int)IO.Cancelled)
                         tcs.TrySetCanceled();
                     else
-                        tcs.TrySetException(e);
+                        tcs.TrySetException(gerror?.Domain == Quarks.Gio ? new GioException(gerror, this) : GtkException.Get(gerror));
                 }
             }
         }
@@ -207,4 +203,8 @@ public class GFile : GObject
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_find_enclosing_mount", CallingConvention = CallingConvention.Cdecl)]
     extern static Mount FindEnclosingMount(GFile file, nint _, nint __);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_file_query_exists", CallingConvention = CallingConvention.Cdecl)]
+    extern static bool _Exists(GFile file, nint _);
+    
 }

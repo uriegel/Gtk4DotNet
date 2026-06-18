@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices;
-using Gtk4DotNet.Exceptions;
 using Gtk4DotNet.Extensions;
 using Gtk4DotNet.Internals;
 
@@ -22,7 +21,8 @@ public class Volume : GObject
         var mount = GetMount(this);
         if (mount.IsInvalid)
             return null;
-        mount.CheckDiagnostics();
+        // DO not
+        //mount.CheckDiagnostics();
         return mount;
     }
 
@@ -31,7 +31,8 @@ public class Volume : GObject
         var drive = GetDrive(this);
         if (drive.IsInvalid)
             return null;
-        drive.CheckDiagnostics();
+        // Do not call this
+        // drive.CheckDiagnostics();
         return drive;
     }
 
@@ -51,16 +52,10 @@ public class Volume : GObject
             mo.Dispose();
             AsyncReady.Callbacks.Remove(id, out var _);
             var error = IntPtr.Zero;
-            if (!EjectFinish(this, result, ref error))
-            {
-                var gerror = new GErrorStruct(error);
-
-                var message = gerror.Message;
-                Console.WriteLine("Eject failed: " + message);
-                tcs.TrySetException(new VolumeException(message, Name, UnixDevice, gerror));
-            }
-            else
+            if (EjectFinish(this, result, ref error))
                 tcs.TrySetResult();
+            else
+                tcs.TrySetException(GtkException.Get(error, true));
         }
     }
 

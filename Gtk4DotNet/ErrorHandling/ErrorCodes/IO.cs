@@ -1,0 +1,32 @@
+namespace Gtk4DotNet.ErrorHandling.ErrorCodes;
+
+public enum IO
+{
+    Failed = 0,
+    NotFound = 1,
+    Exists = 2,
+    IsDirectory = 3,
+    NotDirectory = 4,
+    NotEmpty = 5,
+    NotRegularFile = 6,
+    NotSymbolicLink = 7,
+    NotMountableFile = 8,
+    FilenameTooLong = 9,
+    InvalidFilename = 10,
+    TooManyLinks = 11,
+    NoSpace = 12,
+    InvalidArgument = 13,
+    PermissionDenied = 14,
+    NotSupported = 15,
+    NotMounted = 16,
+    AlreadyMounted = 17,
+    Closed = 18,
+    Cancelled = 19,
+    Pending = 20,
+    ReadOnly = 21,
+    CantCreateBackup = 22,
+    WrongEtag = 23,
+    TimedOut = 24,
+    WouldRecurse = 25,
+    Busy = 26,
+}

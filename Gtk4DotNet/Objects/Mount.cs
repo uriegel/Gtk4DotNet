@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices;
-using Gtk4DotNet.Exceptions;
 using Gtk4DotNet.Extensions;
 using Gtk4DotNet.Internals;
 
@@ -20,7 +19,8 @@ public class Mount : GObject
     public Volume GetVolume()
     {
         var volume = GetVolume(this);
-        volume.CheckDiagnostics();      
+        // Do not call
+        //volume.CheckDiagnostics();      
         return volume;
     }
 
@@ -38,16 +38,10 @@ public class Mount : GObject
         {
             AsyncReady.Callbacks.Remove(id, out var _);
             var error = IntPtr.Zero;
-            if (!UnmountFinish(this, result, ref error))
-            {
-                var gerror = new GErrorStruct(error);
-
-                var message = gerror.Message;
-                Console.WriteLine("Eject failed: " + message);
-                tcs.TrySetException(new MountException(message, Name, "to be filled", gerror));
-            }
-            else
+            if (UnmountFinish(this, result, ref error))
                 tcs.TrySetResult();
+            else
+                tcs.TrySetException(GtkException.Get(error, true));
         }
     }
 

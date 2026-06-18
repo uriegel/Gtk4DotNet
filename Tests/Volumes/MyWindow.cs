@@ -1,4 +1,5 @@
-using System.Security.Cryptography;
+using System.Runtime.CompilerServices;
+using CsTools.Extensions;
 using CsTools.Functional;
 using Gtk4DotNet;
 
@@ -8,10 +9,28 @@ class MyWindow : ApplicationWindow
 {
     public MyWindow(WindowBuilder builder) : base(builder)
     {
-        using var probeFile = GFile.New("/media/uwe/Daten/Bilder/Fotos/1965/Bild001.jpg");
+        //using var probeFile = GFile.New("/media/uwe/Daten/Bilder/Fotos/1965/Bild001.jpg");
+        using var probeFile = GFile.New("/media/uwe/Ubuntu 25.10 amd64");
         using var mount = probeFile.FindEnclosingMount();
+        using var vol = mount?.GetVolume();
+
+// TODO ============================
+        Renne();
+        async void Renne()
+        {
+            using var driv = vol?.GetDrive();
+            using var mounts = driv?.GetVolumes().SelectFilterNull(n => n.GetMount()).AsDisposable();
+            if (mounts != null)
+                foreach (var mount in mounts)
+                {
+                    await mount.UnmountAsync(true);
+                }
+            if (driv != null)
+                await driv.EjectAsync();
+        }
+
+// TODO ============================        
         using var root = mount?.GetRoot();
-        var refcount = root?.GetRefCount();
 
         settings = GSettings.New("org.gnome.desktop.interface");
         settings.OnChanged("gtk-theme", () => WriteLine($"Thema, {settings.GetString("gtk-theme")}"));
