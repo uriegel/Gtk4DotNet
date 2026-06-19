@@ -39,7 +39,7 @@ public class Drive : GObject
     {
         while (true)
         {
-            var tcs = new TaskCompletionSource<bool>();
+            TaskCompletionSource<bool>? tcs = null;
             Task? showProcessesTask = null;
             try
             {
@@ -51,14 +51,20 @@ public class Drive : GObject
 
                 void ShowProcesses(string? msg, string[] choices, Process[] processes)
                 {
+                    tcs = new TaskCompletionSource<bool>();
                     showProcessesTask = Run();
                     async Task Run() => tcs.TrySetResult(await showProcesses(msg, choices, processes));
                 }
             }
             catch (Exception)
             {
-                var goOn = await tcs.Task;
-                if (!goOn)
+                if (tcs != null)
+                {
+                    var goOn = await tcs.Task;
+                    if (!goOn)
+                        throw;
+                }
+                else
                     throw;
             }
         }
@@ -71,6 +77,7 @@ public class Drive : GObject
         mo.OnAskQuestion(() => Console.WriteLine("Question from mount operation not implemented"));
         if (showProcesses != null)
             mo.OnShowProcesses(showProcesses);
+        mo.ShowUnmountProgress();
         var asyncReady = new ThreePointerDelegate(AsyncReadyCallback);
         AsyncReady.Callbacks[id] = asyncReady;
         Stop(this, force ? UnmountFlags.Force : UnmountFlags.None, mo, 0, asyncReady, 0);
@@ -96,6 +103,7 @@ public class Drive : GObject
         mo.OnAskQuestion(() => Console.WriteLine("Question from mount operation not implemented"));
         if (showProcesses != null)
             mo.OnShowProcesses(showProcesses);
+        mo.ShowUnmountProgress();
         var asyncReady = new ThreePointerDelegate(AsyncReadyCallback);
         AsyncReady.Callbacks[id] = asyncReady;
         Eject(this, force ? UnmountFlags.Force : UnmountFlags.None, mo, 0, asyncReady, 0);

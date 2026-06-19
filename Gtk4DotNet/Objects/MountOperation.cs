@@ -23,7 +23,13 @@ public class MountOperation : GObject
             var choices = ReadNullTerminatedStringArray(cptr);
             var ints = ReadInts(pids);
             var processes = ints.Select(n => Process.GetProcessById(n)).ToArray();
-            onChanged(text, choices, processes);           
+            onChanged(text, choices, processes);
+        });
+    public void ShowUnmountProgress()
+        => SignalConnect<ShowUnmountProgressDelgate>("show-unmount-progress", (_, msg, pids, cptr, _) =>
+        {
+            var text = msg.PtrToString(false);
+            Console.WriteLine(text);
         });
 
     static string[] ReadNullTerminatedStringArray(nint ptr)
@@ -43,7 +49,7 @@ public class MountOperation : GObject
         }
 
         return [.. result];
-    }        
+    }
 
     static int[] ReadInts(nint intPtr)
     {
@@ -56,5 +62,6 @@ public class MountOperation : GObject
 
     [DllImport(Libs.LibGio, EntryPoint = "g_mount_operation_new", CallingConvention = CallingConvention.Cdecl)]
     extern static MountOperation _New();
-   
 }
+
+delegate void ShowUnmountProgressDelgate(nint _, nint msg, long timeLeft, long bytesLeft, nint __);

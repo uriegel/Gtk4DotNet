@@ -8,8 +8,8 @@ class MyWindow : ApplicationWindow
     public MyWindow(WindowBuilder builder) : base(builder)
     {
         //using var probeFile = GFile.New("/media/uwe/Daten/Bilder/Fotos/1965/Bild001.jpg");
-        //using var probeFile = GFile.New("/media/uwe/Ubuntu 25.10 amd64");
-        using var probeFile = GFile.New("/media/uwe/Videos/videos");
+        using var probeFile = GFile.New("/media/uwe/Ubuntu 25.10 amd64");
+        //using var probeFile = GFile.New("/media/uwe/Videos/videos");
         using var mount = probeFile.FindEnclosingMount();
         using var vol = mount?.GetVolume();
 
