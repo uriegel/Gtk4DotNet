@@ -1,11 +1,7 @@
-using System.Runtime.CompilerServices;
-using CsTools.Extensions;
 using CsTools.Functional;
 using Gtk4DotNet;
 
 using static System.Console;
-
-// TODO react on mount change (in Nautilus, mount a drive)
 
 class MyWindow : ApplicationWindow
 {
@@ -17,31 +13,37 @@ class MyWindow : ApplicationWindow
         using var mount = probeFile.FindEnclosingMount();
         using var vol = mount?.GetVolume();
 
-        // TODO ============================
-        Renne();
-        async void Renne()
+        TestEjectOrStop();
+
+        async void TestEjectOrStop()
         {
             try
             {
                 using var driv = vol?.GetDrive();
-                using var mounts = driv?.GetVolumes().SelectFilterNull(n => n.GetMount()).AsDisposable();
-                if (mounts != null)
-                    foreach (var mount in mounts)
+                // using var mounts = driv?.GetVolumes().SelectFilterNull(n => n.GetMount()).AsDisposable();
+                // if (mounts != null)
+                //     foreach (var mount in mounts)
+                //         await mount.UnmountAsync(OnShowProcesses);
+                // static void OnShowProcesses(string? msg, string[] _, Process[] processes)
+                //     => WriteLine($"{msg} {string.Join(" - ", processes.Select(n => n.ProcessName))}");
+                if (driv != null)
+                    await driv.StopOrEjectAsync(async (msg, _, processes) =>
                     {
-                        await mount.UnmountAsync();
-                    }
-                if (driv != null && driv.CanEject)
-                    await driv.EjectAsync();
-                if (driv != null && driv.CanStop)
-                    await driv.StopAsync();
+                        var dialog = AdwAlertDialog.New("Cannot unmount", $"{msg}\n{string.Join("\n", processes.Select(n => n.ProcessName))}");
+                        dialog.SetResponses([
+                                new("retry", "Retry", Default: true, Appearance: AdwResponseAppearance.Suggested),
+                                new("cancel", "_Cancel", Cancel: true)
+                            ]);
+                        var res = await dialog.PresentAsync(this);
+                        return res == "retry";
+                    });
             }
             catch (Exception e)
             {
-                Console.Error.WriteLine(e);
+                Error.WriteLine(e);
             }
         }
 
-        // TODO ============================        
         using var root = mount?.GetRoot();
 
         settings = GSettings.New("org.gnome.desktop.interface");

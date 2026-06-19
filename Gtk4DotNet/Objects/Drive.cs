@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using CsTools;
 using CsTools.Extensions;
@@ -6,7 +7,6 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
-// TODO show-processes
 public class Drive : GObject
 {
     public bool CanEject { get => _CanEject(this); }
@@ -35,14 +35,41 @@ public class Drive : GObject
         return list.AsDisposable();
     }
 
+    public async Task StopOrEjectAsync(Func<string?, string[], Process[], Task<bool>> showProcesses)
+    {
+        while (true)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+            Task? showProcessesTask = null;
+            try
+            {
+                if (CanEject)
+                    await EjectAsync(ShowProcesses);
+                else if (CanStop)
+                    await StopAsync(ShowProcesses);
 
-    public Task StopAsync(bool force = false)
+                void ShowProcesses(string? msg, string[] choices, Process[] processes)
+                {
+                    showProcessesTask = Run();
+                    async Task Run() => tcs.TrySetResult(await showProcesses(msg, choices, processes));
+                }
+            }
+            catch (Exception)
+            {
+                var goOn = await tcs.Task;
+                if (!goOn)
+                    throw;
+            }
+        }
+    }
+    public Task StopAsync(Action<string?, string[], Process[]>? showProcesses = null, bool force = false)
     {
         var tcs = new TaskCompletionSource();
         var id = AsyncReady.GetId();
         var mo = MountOperation.New();
-        mo.OnAskQuestion(() => Console.WriteLine("Question from stop drive"));
-        mo.OnShowProcesses((msg, choices, _) => Console.WriteLine($"Question from stop drive: {msg}"));
+        mo.OnAskQuestion(() => Console.WriteLine("Question from mount operation not implemented"));
+        if (showProcesses != null)
+            mo.OnShowProcesses(showProcesses);
         var asyncReady = new ThreePointerDelegate(AsyncReadyCallback);
         AsyncReady.Callbacks[id] = asyncReady;
         Stop(this, force ? UnmountFlags.Force : UnmountFlags.None, mo, 0, asyncReady, 0);
@@ -60,12 +87,14 @@ public class Drive : GObject
         }
     }
 
-    public Task EjectAsync(bool force = false)
+    public Task EjectAsync(Action<string?, string[], Process[]>? showProcesses = null, bool force = false)
     {
         var tcs = new TaskCompletionSource();
         var id = AsyncReady.GetId();
         var mo = MountOperation.New();
-        mo.OnAskQuestion(() => Console.WriteLine("Question from Drive eject"));
+        mo.OnAskQuestion(() => Console.WriteLine("Question from mount operation not implemented"));
+        if (showProcesses != null)
+            mo.OnShowProcesses(showProcesses);
         var asyncReady = new ThreePointerDelegate(AsyncReadyCallback);
         AsyncReady.Callbacks[id] = asyncReady;
         Eject(this, force ? UnmountFlags.Force : UnmountFlags.None, mo, 0, asyncReady, 0);

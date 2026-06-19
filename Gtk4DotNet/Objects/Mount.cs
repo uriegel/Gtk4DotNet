@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Gtk4DotNet.Extensions;
 using Gtk4DotNet.Internals;
@@ -24,15 +25,16 @@ public class Mount : GObject
         return volume;
     }
 
-    public Task UnmountAsync(bool force = false)
+    public Task UnmountAsync(Action<string?, string[], Process[]>? showProcesses = null, bool force = false)
     {
         var tcs = new TaskCompletionSource();
         var id = AsyncReady.GetId();
         var asyncReady = new ThreePointerDelegate(AsyncReadyCallback);
         AsyncReady.Callbacks[id] = asyncReady;
         using var mo = MountOperation.New();
-        mo.OnAskQuestion(() => Console.WriteLine("Question from stop drive"));
-        mo.OnShowProcesses((msg, choices, pnames) => Console.WriteLine($"Question from stop drive: {msg} {string.Join(" - ", pnames)}"));
+        mo.OnAskQuestion(() => Console.WriteLine("Question from mount operation not implemented"));
+        if (showProcesses != null)
+            mo.OnShowProcesses(showProcesses);
         Unmount(this, force ? UnmountFlags.Force: UnmountFlags.None, mo, 0, asyncReady, 0);
         return tcs.Task;
 

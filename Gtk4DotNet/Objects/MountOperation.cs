@@ -16,14 +16,14 @@ public class MountOperation : GObject
 
     public void OnAskQuestion(Action onChanged)
         => SignalConnect<FourPointerDelegate>("ask-question", (_, _, _, _) => onChanged());
-    public void OnShowProcesses(Action<string?, string[], string[]> onChanged)
+    public void OnShowProcesses(Action<string?, string[], Process[]> onChanged)
         => SignalConnect<FivePointerDelegate>("show-processes", (_, msg, pids, cptr, _) =>
         {
             var text = msg.PtrToString(false);
             var choices = ReadNullTerminatedStringArray(cptr);
             var ints = ReadInts(pids);
-            var processNames = ints.Select(n => Process.GetProcessById(n).ProcessName).ToArray();
-            onChanged(text, choices, processNames);           
+            var processes = ints.Select(n => Process.GetProcessById(n)).ToArray();
+            onChanged(text, choices, processes);           
         });
 
     static string[] ReadNullTerminatedStringArray(nint ptr)
