@@ -25,11 +25,11 @@ public class MountOperation : GObject
             var processes = ints.Select(n => Process.GetProcessById(n)).ToArray();
             onChanged(text, choices, processes);
         });
-    public void ShowUnmountProgress()
-        => SignalConnect<ShowUnmountProgressDelgate>("show-unmount-progress", (_, msg, pids, cptr, _) =>
+    public void ShowUnmountProgress(Action<string?, string?, ulong, ulong> onProgress)
+        => SignalConnect<ShowUnmountProgressDelgate>("show-unmount-progress", (_, msg, tleft, bleft, _) =>
         {
-            var text = msg.PtrToString(false);
-            Console.WriteLine(text);
+            var msgs = msg.PtrToString(false)?.Split('\n') ?? [];
+            onProgress(msgs.FirstOrDefault(), msgs.Skip(1).FirstOrDefault(), tleft, bleft);
         });
 
     static string[] ReadNullTerminatedStringArray(nint ptr)
@@ -64,4 +64,4 @@ public class MountOperation : GObject
     extern static MountOperation _New();
 }
 
-delegate void ShowUnmountProgressDelgate(nint _, nint msg, long timeLeft, long bytesLeft, nint __);
+delegate void ShowUnmountProgressDelgate(nint _, nint msg, ulong timeLeft, ulong bytesLeft, nint __);

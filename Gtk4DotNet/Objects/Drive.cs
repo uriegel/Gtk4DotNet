@@ -35,7 +35,7 @@ public class Drive : GObject
         return list.AsDisposable();
     }
 
-    public async Task StopOrEjectAsync(Func<string?, string[], Process[], Task<bool>> showProcesses)
+    public async Task StopOrEjectAsync(Func<string?, string[], Process[], Task<bool>> showProcesses, Action<string?, string?, ulong, ulong> showProgress)
     {
         while (true)
         {
@@ -44,9 +44,9 @@ public class Drive : GObject
             try
             {
                 if (CanEject)
-                    await EjectAsync(ShowProcesses);
+                    await EjectAsync(ShowProcesses, showProgress);
                 else if (CanStop)
-                    await StopAsync(ShowProcesses);
+                    await StopAsync(ShowProcesses, showProgress);
                 break;
 
                 void ShowProcesses(string? msg, string[] choices, Process[] processes)
@@ -69,7 +69,7 @@ public class Drive : GObject
             }
         }
     }
-    public Task StopAsync(Action<string?, string[], Process[]>? showProcesses = null, bool force = false)
+    public Task StopAsync(Action<string?, string[], Process[]>? showProcesses = null, Action<string?, string?, ulong, ulong>? onProgress = null, bool force = false)
     {
         var tcs = new TaskCompletionSource();
         var id = AsyncReady.GetId();
@@ -77,7 +77,8 @@ public class Drive : GObject
         mo.OnAskQuestion(() => Console.WriteLine("Question from mount operation not implemented"));
         if (showProcesses != null)
             mo.OnShowProcesses(showProcesses);
-        mo.ShowUnmountProgress();
+        if (onProgress != null)
+            mo.ShowUnmountProgress(onProgress);
         var asyncReady = new ThreePointerDelegate(AsyncReadyCallback);
         AsyncReady.Callbacks[id] = asyncReady;
         Stop(this, force ? UnmountFlags.Force : UnmountFlags.None, mo, 0, asyncReady, 0);
@@ -95,7 +96,7 @@ public class Drive : GObject
         }
     }
 
-    public Task EjectAsync(Action<string?, string[], Process[]>? showProcesses = null, bool force = false)
+    public Task EjectAsync(Action<string?, string[], Process[]>? showProcesses = null, Action<string?, string?, ulong, ulong>? onProgress = null, bool force = false)
     {
         var tcs = new TaskCompletionSource();
         var id = AsyncReady.GetId();
@@ -103,7 +104,8 @@ public class Drive : GObject
         mo.OnAskQuestion(() => Console.WriteLine("Question from mount operation not implemented"));
         if (showProcesses != null)
             mo.OnShowProcesses(showProcesses);
-        mo.ShowUnmountProgress();
+        if (onProgress != null)
+            mo.ShowUnmountProgress(onProgress);
         var asyncReady = new ThreePointerDelegate(AsyncReadyCallback);
         AsyncReady.Callbacks[id] = asyncReady;
         Eject(this, force ? UnmountFlags.Force : UnmountFlags.None, mo, 0, asyncReady, 0);
