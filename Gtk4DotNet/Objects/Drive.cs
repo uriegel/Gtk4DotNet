@@ -47,6 +47,7 @@ public class Drive : GObject
                     await EjectAsync(ShowProcesses);
                 else if (CanStop)
                     await StopAsync(ShowProcesses);
+                break;
 
                 void ShowProcesses(string? msg, string[] choices, Process[] processes)
                 {
