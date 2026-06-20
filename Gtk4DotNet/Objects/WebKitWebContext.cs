@@ -3,10 +3,15 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
-public class WebKitWebContext : FloatingObject
+public class WebKitWebContext : GObject
 {
     // Do not call CheckDiagnostics because app hangs indefinetely
-    public static WebKitWebContext GetDefault() => _GetDefault();
+    public static WebKitWebContext GetDefault() 
+    {
+        var res = GetDefault();
+        res.AutoDestroyed = true;
+        return res;
+    }
 
     public static void DisposeUriSchemes()
     {

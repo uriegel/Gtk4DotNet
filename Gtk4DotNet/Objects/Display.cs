@@ -2,11 +2,21 @@ using System.Runtime.InteropServices;
 
 namespace Gtk4DotNet;
 
-public class Display : FloatingObject
+public class Display : GObject
 {
-    public static Display GetDefault() => _GetDefault();
+    public static Display GetDefault()
+    {
+        var res = _GetDefault();
+        res.AutoDestroyed = true;
+        return res;
+    }
 
-    public IconTheme GetIconTheme() => GetIconTheme(this);
+    public IconTheme GetIconTheme ()
+    {
+        var res = GetIconTheme(this);
+        res.AutoDestroyed = true;
+        return res;
+    }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_icon_theme_get_for_display", CallingConvention = CallingConvention.Cdecl)]
     extern static IconTheme GetIconTheme(Display display);

@@ -1,6 +1,6 @@
 using Gtk4DotNet;
 
-public class WebViewSettings : FloatingObject
+public class WebViewSettings : GObject
 {
     public bool AllowModalDialogs
     {

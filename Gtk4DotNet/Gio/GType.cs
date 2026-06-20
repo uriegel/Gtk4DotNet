@@ -1,14 +1,16 @@
 namespace Gtk4DotNet;
 
-public class GType : FloatingObject
+public class GType : GObject
 {
     public static GType Get(GTypeEnum type)
     {
-        return type switch
+        var res = type switch
         {
             GTypeEnum.GObject => Type(),
             GTypeEnum.WebKitWebView => WebView.Type(),
             _ => Type(),
         };
+        res.AutoDestroyed = true;
+        return res;
     }
 }

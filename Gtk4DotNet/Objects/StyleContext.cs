@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace Gtk4DotNet;
 
-public class StyleContext : FloatingObject
+public class StyleContext : GObject
 {
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_style_context_add_provider_for_display", CallingConvention = CallingConvention.Cdecl)]
     public extern static void AddProviderForDisplay(Display display, CssProvider provider, StyleProviderPriority priority);

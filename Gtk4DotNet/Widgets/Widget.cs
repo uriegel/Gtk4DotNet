@@ -179,7 +179,12 @@ public class Widget : GObject
             Console.Error.WriteLine($"Binding to css not possible: DataContext not set");
     }
 
-    public StyleContext GetStyleContext() => GetStyleContext(this);
+    public StyleContext GetStyleContext()
+    {
+        var res = GetStyleContext(this);
+        res.AutoDestroyed = true;
+        return res;
+    } 
 
     public void QueueDraw() => QueueDraw(this);
 

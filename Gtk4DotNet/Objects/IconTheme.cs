@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace Gtk4DotNet;
 
-public class IconTheme : FloatingObject
+public class IconTheme : GObject
 {
     // TODO check options
     // TODO check fallbacks

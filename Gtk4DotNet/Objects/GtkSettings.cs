@@ -2,12 +2,14 @@ using System.Runtime.InteropServices;
 
 namespace Gtk4DotNet;
 
-public class GtkSettings : FloatingObject
+public class GtkSettings : GObject
 {
-    [DllImport(Libs.LibGtk, EntryPoint = "gtk_settings_get_default", CallingConvention = CallingConvention.Cdecl)]
-    public extern static GtkSettings GetDefault();
-
-    public GtkSettings() : base() {}
+    public static GtkSettings GetDefault()
+    {
+        var res = _GetDefault();
+        res.AutoDestroyed = true;
+        return res;
+    }
 
     // color-hash
     // alternative-button-order
@@ -75,7 +77,7 @@ public class GtkSettings : FloatingObject
     // show-unicode-menu
     // sound-theme-name
     // split-cursor
-    public string? ThemeName { get => GetString("gtk-theme-name"); } 
+    public string? ThemeName { get => GetString("gtk-theme-name"); }
     // timeout-expand
     // timeout-initial
     // timeout-repeat
@@ -95,4 +97,7 @@ public class GtkSettings : FloatingObject
     // xft-hinting
     // xft-hintstyle
     // xft-rgba
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_settings_get_default", CallingConvention = CallingConvention.Cdecl)]
+    extern static GtkSettings _GetDefault();
 }

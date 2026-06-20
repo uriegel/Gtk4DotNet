@@ -50,7 +50,12 @@ public class WebView : Widget
         EvaluateJavascript(this, script, -1, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, Marshal.GetFunctionPointerForDelegate(callback as Delegate), IntPtr.Zero);
     }
 
-    public WebViewSettings GetSettings() => GetSettings(this);
+    public WebViewSettings GetSettings()
+    {
+        var res = GetSettings(this);
+        res.AutoDestroyed = true;
+        return res;  
+    } 
 
     public WebView BackgroundColor(Color color)
     {
@@ -62,6 +67,7 @@ public class WebView : Widget
     public WebInspector GetInspector()
     {
         var insp = GetInspector(this);
+        insp.AutoDestroyed = true;
         insp.CheckDiagnostics();
         return insp;
     }

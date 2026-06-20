@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
 using Gtk4DotNet;
 
-public class WebInspector : FloatingObject
+public class WebInspector : GObject
 {
     public void Show() => Show(this);
 
