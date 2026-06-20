@@ -10,7 +10,7 @@ public class ListBoxRow : Widget
         => GetRegistered<TWidget>(RowGetWidgetKey(handle));
 
     public ListBoxRow() : base() { }
-    
+
     internal ListBoxRow(nint raw) : base()
     {
         SetInternalHandle(raw);
@@ -23,6 +23,6 @@ public class ListBoxRow : Widget
     extern static void SetHeader(ListBoxRow row, Widget header);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_row_get_child", CallingConvention = CallingConvention.Cdecl)]
-    extern static nint _RowGetWidgetKey(nint row);    
+    extern static nint _RowGetWidgetKey(nint row);
 }
 

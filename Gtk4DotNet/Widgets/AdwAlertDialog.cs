@@ -4,6 +4,8 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
+// TODO Release ready
+
 public class AdwAlertDialog : AdwDialog
 {
     public static AdwAlertDialog New(string? heading = null, string? body = null)
@@ -46,7 +48,7 @@ public class AdwAlertDialog : AdwDialog
 
     protected AdwAlertDialog(Builder builder, string? name = null) : base(builder, name) { }
 
-    AdwAlertDialog() : base() {}
+    AdwAlertDialog() : base() { }
 
     void OnResponse(Action<string> onResponse)
         => SignalConnect<AlertDialogResponseDelegate>("response", (_, response, __) => onResponse(response));

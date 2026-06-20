@@ -4,6 +4,8 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
+// TODO Release ready
+
 public class CheckButton : Widget
 {
     public bool IsActive

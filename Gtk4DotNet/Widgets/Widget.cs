@@ -7,8 +7,11 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
-// TODO Release ready
+// Release ready
 
+/// <summary>
+/// Base class for all Gtk4 Widgets
+/// </summary>
 public class Widget : GObject
 {
     /// <summary>
@@ -224,6 +227,8 @@ public class Widget : GObject
         return res;
     }
 
+    public void SetSizeRequest(int width, int height) => SetSizeRequest(this, width, height);
+
     public void QueueDraw() => QueueDraw(this);
 
     public Widget GetRoot() => GetRoot(this);
@@ -273,7 +278,7 @@ public class Widget : GObject
     public static TWidget? GetRegistered<TWidget>(nint widgetKey) where TWidget : Widget
         => widgets.TryGetValue(widgetKey, out var val) ? val as TWidget : null;
 
-    public Widget() : base() 
+    public Widget() : base()
         => AutoDestroyed = true;
 
     public Widget(Builder builder, string? name = null) : this()
@@ -343,6 +348,9 @@ W A R N I N G
     internal static int GetRegisteredWidgetCount() => widgets.Count;
 
     static readonly Dictionary<nint, Widget> widgets = [];
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_insert_after", CallingConvention = CallingConvention.Cdecl)]
+    internal extern static void InsertAfter(Widget widget, Widget parent, Widget? previous);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_show", CallingConvention = CallingConvention.Cdecl)]
     extern static void Show(Widget widget);
@@ -415,7 +423,7 @@ W A R N I N G
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_set_valign", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetVAlign(Widget widget, Align align);
-    
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_halign", CallingConvention = CallingConvention.Cdecl)]
     extern static Align GetHAlign(Widget widget);
 
@@ -427,6 +435,12 @@ W A R N I N G
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_set_opacity", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetOpacity(Widget widget, double opacity);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_hide", CallingConvention = CallingConvention.Cdecl)]
+    public extern static void Hide(Widget widget);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_set_size_request", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetSizeRequest(Widget widget, int width, int height);
 }
 
 public static class WidgetExtensions
@@ -468,13 +482,13 @@ public static class WidgetExtensions
         where THandle : Widget
         => widget.SideEffect(w => w.Visible = value);
 
-     /// <summary>
+    /// <summary>
     /// Sets a binding between this widget and a value in a given and attached DataContext. The DataContext can be set in a parent widget
     /// </summary>
-   public static THandle Binding<THandle>(this THandle target, string targetProperty, string property, BindingFlags bindingFlags = BindingFlags.Default,
-        Func<object?, object?>? converter = null)
-            where THandle : Widget
-        => target.SideEffect(t => t.SetBinding(targetProperty, property, bindingFlags, converter));
+    public static THandle Binding<THandle>(this THandle target, string targetProperty, string property, BindingFlags bindingFlags = BindingFlags.Default,
+         Func<object?, object?>? converter = null)
+             where THandle : Widget
+         => target.SideEffect(t => t.SetBinding(targetProperty, property, bindingFlags, converter));
 
     /// <summary>
     /// Adds a css class to this widget
@@ -496,4 +510,14 @@ public static class WidgetExtensions
     public static THandle Realize<THandle>(this THandle widget, Action action)
         where THandle : Widget
         => widget.SideEffect(w => w.OnRealize(action));
+
+    public static THandle SizeRequest<THandle>(this THandle widget, int width, int height)
+        where THandle : Widget
+        => widget.SideEffect(w => w.SetSizeRequest(width, height));
+
+    public static THandle InsertAfter<THandle>(this THandle widget, Widget child, Widget? previous = null)
+        where THandle : Widget
+        => widget.SideEffect(w => Widget.InsertAfter(child, w, previous ?? new Widget()));
 }
+
+

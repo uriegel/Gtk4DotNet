@@ -2,6 +2,8 @@ using CsTools.Extensions;
 
 namespace Gtk4DotNet;
 
+// TODO Release ready
+
 public class ApplicationWindow : Window
 {
     public ApplicationWindow() : base() { }

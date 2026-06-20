@@ -4,6 +4,7 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
+// TODO Release ready
 public class Application : GObject
 {
     public static Application New(string id, int flags = 0)

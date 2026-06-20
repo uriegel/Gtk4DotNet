@@ -3,6 +3,8 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
+// TODO Release ready
+
 public class ListBox : Widget
 {
     public SelectionMode SelectionMode
@@ -37,9 +39,9 @@ public class ListBox : Widget
 
     public ListBoxRow GetSelectedRow() => GetSelectedRow(this);
 
-    public ListBoxRow GetRowAtIndex(int index) => GetRowAtIndex(this, index);    
-    
-    public void SelectRow(ListBoxRow row) => SelectRow(this, row);    
+    public ListBoxRow GetRowAtIndex(int index) => GetRowAtIndex(this, index);
+
+    public void SelectRow(ListBoxRow row) => SelectRow(this, row);
 
     public void SetHeaderFunc<THandle>(Action<ListBoxRow?, ListBoxRow?> onHeader)
     {
@@ -53,8 +55,8 @@ public class ListBox : Widget
         GtkDelegates.Instance.Add(key, threePointerDelegate);
         AddWeakRef(() => GtkDelegates.Instance.Remove(key.Key));
         SetHeaderFunc(this, Marshal.GetFunctionPointerForDelegate((Delegate)threePointerDelegate), 0, 0);
-    }    
-    
+    }
+
     public void OnRowActivated(Action onActivated) => SignalConnect<ThreePointerDelegate>("row-activated", (_, nint, __) => onActivated());
 
     public void RemoveAll() => RemoveAll(this);
@@ -64,7 +66,7 @@ public class ListBox : Widget
     public void Remove(Widget widget) => Remove(this, widget);
 
     public ListBox() : base() { }
-    
+
     public ListBox(Builder builder, string? name = null) : base(builder, name) { }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_new", CallingConvention = CallingConvention.Cdecl)]
@@ -73,13 +75,13 @@ public class ListBox : Widget
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_remove_all", CallingConvention = CallingConvention.Cdecl)]
     extern static void RemoveAll(ListBox listbox);
 
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_list_box_insert", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_insert", CallingConvention = CallingConvention.Cdecl)]
     extern static void Insert(ListBox listbox, Widget widget, int position);
-    
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_list_box_prepend", CallingConvention = CallingConvention.Cdecl)]
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_prepend", CallingConvention = CallingConvention.Cdecl)]
     extern static void Prepend(ListBox listbox, Widget widget);
 
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_list_box_append", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_append", CallingConvention = CallingConvention.Cdecl)]
     extern static void Append(ListBox listbox, Widget widget);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_remove", CallingConvention = CallingConvention.Cdecl)]
@@ -98,9 +100,9 @@ public class ListBox : Widget
     extern static ListBoxRow GetSelectedRow(ListBox listbox);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_get_row_at_index", CallingConvention = CallingConvention.Cdecl)]
-    extern static ListBoxRow GetRowAtIndex(ListBox listbox, int index);    
-    
+    extern static ListBoxRow GetRowAtIndex(ListBox listbox, int index);
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_select_row", CallingConvention = CallingConvention.Cdecl)]
-    extern static void SelectRow(ListBox listbox, ListBoxRow row);    
+    extern static void SelectRow(ListBox listbox, ListBoxRow row);
 }
 

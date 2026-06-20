@@ -2,6 +2,8 @@ using System.Runtime.InteropServices;
 
 namespace Gtk4DotNet;
 
+// TODO Release ready
+
 public class AdwDialog : Widget
 {
     public static void PresentFromTemplate(string template, string name, Widget parent, Func<Builder, string, AdwDialog>? ctor = null)
@@ -17,7 +19,7 @@ public class AdwDialog : Widget
 
     public void CloseDialog() => Close(this);
 
-    public AdwDialog() : base() {}
+    public AdwDialog() : base() { }
 
     protected AdwDialog(Builder builder, string? name = null) : base(builder, name) { }
 
@@ -29,5 +31,5 @@ public class AdwDialog : Widget
 
     [DllImport(Libs.LibAdw, EntryPoint = "adw_dialog_set_default_widget", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetDefaultWidget(AdwDialog dialog, Widget widget);
-    
+
 }

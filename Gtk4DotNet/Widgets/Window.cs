@@ -6,6 +6,8 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
+// TODO Release ready
+
 public class Window : Widget
 {
     public string? Title
@@ -33,7 +35,7 @@ public class Window : Widget
             GetSize(this, out var w, out var h);
             return new(w, h);
         }
-    } 
+    }
     public int Width { get => Size.Width; }
     public int Height { get => Size.Height; }
 
@@ -71,7 +73,7 @@ public class Window : Widget
     public Window(Builder builder, string? name = null) : base(builder, name) { }
 
     public Window() : base() { }
-    
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_application", CallingConvention = CallingConvention.Cdecl)]
     internal extern static void SetApplication(Window window, Application application);
 

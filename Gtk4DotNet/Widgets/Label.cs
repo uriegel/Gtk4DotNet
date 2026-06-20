@@ -4,6 +4,8 @@ using Gtk4DotNet.Extensions;
 
 namespace Gtk4DotNet;
 
+// TODO Release ready
+
 public class Label : Widget
 {
     public string? Text
@@ -11,7 +13,7 @@ public class Label : Widget
         get => _GetLabel(this).PtrToString(false);
         set => _Set(this, value);
     }
-    
+
     public bool Selectable
     {
         get => GetSelectable(this);
@@ -25,7 +27,7 @@ public class Label : Widget
         return res;
     }
 
-    public static Label New(string? text) 
+    public static Label New(string? text)
     {
         var res = _New(text ?? "");
         res.CheckDiagnostics();

@@ -4,6 +4,8 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
+// TODO Release ready
+
 public class AdwBanner : Widget
 {
     public string? Title
@@ -17,20 +19,20 @@ public class AdwBanner : Widget
         get => GetButtonLabel(this).PtrToString(false);
         set => SetButtonLabel(this, value ?? "");
     }
-    
+
     public bool IsRevealed
     {
         get => GetRevealed(this);
         set => SetRevealed(this, value);
     }
-    
+
     public static AdwBanner New(string title)
     {
         var banner = _New(title);
         banner.CheckDiagnostics();
         return banner;
     }
-    
+
     public AdwBanner OnButtonClicked(Action click)
     {
         SignalConnect<TwoPointerDelegate>("button-clicked", (_, __) => click());
