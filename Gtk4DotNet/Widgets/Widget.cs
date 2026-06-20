@@ -6,7 +6,7 @@ using Gtk4DotNet.Extensions;
 
 namespace Gtk4DotNet;
 
-public class Widget : FloatingObject
+public class Widget : GObject
 {
     public string? Name
     {
@@ -189,7 +189,7 @@ public class Widget : FloatingObject
 
     public void AddController(EventController controller)
     {
-        controller.IsFloating = true;
+        controller.AutoDestroyed = true;
         AddController(this, controller);
     } 
 
@@ -210,9 +210,12 @@ public class Widget : FloatingObject
     public static TWidget? GetRegistered<TWidget>(nint widgetKey) where TWidget : Widget
         => widgets.TryGetValue(widgetKey, out var val) ? val as TWidget : null;
 
-    public Widget() : base() { }
+    public Widget() : base()
+    {
+        AutoDestroyed = true;
+    }
 
-    public Widget(Builder builder, string? name = null) : base()
+    public Widget(Builder builder, string? name = null) : this()
     {
         if (name != null)
         {

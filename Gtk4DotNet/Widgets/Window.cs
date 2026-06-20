@@ -66,7 +66,7 @@ public class Window : Widget
         });
 
     public Application GetApplication()
-        => _GetApplication(this).SideEffect(a => a.IsFloating = true);
+        => _GetApplication(this).SideEffect(a => a.AutoDestroyed = true);
 
     public Window(Builder builder, string? name = null) : base(builder, name) { }
 

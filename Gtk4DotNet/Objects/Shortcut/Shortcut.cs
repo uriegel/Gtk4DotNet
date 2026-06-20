@@ -12,8 +12,8 @@ public class Shortcut : GObject
 
     public static Shortcut New(ShortcutTrigger trigger, ShortcutAction action)
     {
-        trigger.IsFloating = true;
-        action.IsFloating = true;
+        trigger.AutoDestroyed = true;
+        action.AutoDestroyed = true;
         var shortcut = _New(trigger, action);
         shortcut.CheckDiagnostics();
         return shortcut;

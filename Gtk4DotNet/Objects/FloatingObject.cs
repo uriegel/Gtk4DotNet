@@ -2,7 +2,7 @@ namespace Gtk4DotNet;
 
 public abstract class FloatingObject : GObject
 {
-    public FloatingObject() : base() => IsFloating = true;
+    public FloatingObject() : base() => AutoDestroyed = true;
 
-    internal void RefSink() => IsFloating = false;
+    internal void RefSink() => AutoDestroyed = false;
 }

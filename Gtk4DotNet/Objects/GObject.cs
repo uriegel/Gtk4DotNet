@@ -7,7 +7,7 @@ namespace Gtk4DotNet;
 
 public class GObject : BaseHandle
 {
-    public bool IsFloating { get; internal set; }
+    public bool AutoDestroyed { get; internal set; }
 
     public bool HasFloatingRef { get => _HasFloatingRef(this); }
 
@@ -212,8 +212,11 @@ public class GObject : BaseHandle
         => Console.WriteLine($"{GetType().Name} finalized");
 
     protected override bool ReleaseHandle()
-         => IsFloating
-             || true.SideEffectIf(!IsFloating, _ => Unref(handle));
+    {
+        if (!AutoDestroyed)
+            Unref(handle);
+        return true;         
+    }
 
     void SetDiagnostics()
     {

@@ -48,7 +48,7 @@ public class GAppInfo : GObject
     {
         var icon = GetIcon(this);
         icon.CheckDiagnostics();
-        icon.IsFloating = true;
+        icon.AutoDestroyed = true;
         return icon;
     }
 
