@@ -6,14 +6,22 @@ using Gtk4DotNet.Extensions;
 
 namespace Gtk4DotNet;
 
+// TODO Release ready
+
 public class Widget : GObject
 {
+    /// <summary>
+    /// When built from a template.ui, then this is the name this object is given in the template
+    /// </summary>
     public string? Name
     {
         get;
         private set;
     }
 
+    /// <summary>
+    /// Sets all 4 Margins at once
+    /// </summary>
     public int Margin
     {
         set
@@ -61,6 +69,9 @@ public class Widget : GObject
         set => SetTooltipText(this, value);
     }
 
+    /// <summary>
+    /// A DataContext object that can be used for bindings
+    /// </summary>
     public INotifyPropertyChanged? DataContext
     {
         get
@@ -83,6 +94,11 @@ public class Widget : GObject
 
     public Widget GetParent() => GetParent(this);
 
+    /// <summary>
+    /// Adds (or removes if add = false) a css class to this widget
+    /// </summary>
+    /// <param name="cssClass"></param>
+    /// <param name="add">Adds the css class if true, otherwise removes the css class</param>
     public void AddCssClass(string cssClass, bool add = true)
     {
         if (add)
@@ -92,7 +108,14 @@ public class Widget : GObject
     }
 
     public void GrabFocus() => GrabFocus(this);
-    
+
+    /// <summary>
+    /// Sets a binding between this widget and a value in a given and attached DataContext. The DataContext can be set in a parent widget
+    /// </summary>
+    /// <param name="targetProperty"></param>
+    /// <param name="property"></param>
+    /// <param name="bindingFlags"></param>
+    /// <param name="converter"></param>
     public void SetBinding(string targetProperty, string property,
         BindingFlags bindingFlags = BindingFlags.Default, Func<object?, object?>? converter = null)
     {
@@ -138,6 +161,12 @@ public class Widget : GObject
             Console.Error.WriteLine("Binding not possible: DataContext not set");
     }
 
+    /// <summary>
+    /// Sets a binding from a value in a given and attached DataContext to a css class of this object. The DataContext can be set in a parent widget
+    /// </summary>
+    /// <param name="cssClass"></param>
+    /// <param name="property"></param>
+    /// <param name="converter"></param>
     public void SetBindingToCss(string cssClass, string property, Func<object?, bool>? converter = null)
     {
         var dataContext = DataContext;
@@ -165,12 +194,16 @@ public class Widget : GObject
             Console.Error.WriteLine($"Binding to css not possible: DataContext not set");
     }
 
+    /// <summary>
+    /// Gets the style Context of this widget
+    /// </summary>
+    /// <returns></returns>
     public StyleContext GetStyleContext()
     {
         var res = GetStyleContext(this);
         res.AutoDestroyed = true;
         return res;
-    } 
+    }
 
     public void QueueDraw() => QueueDraw(this);
 
@@ -178,12 +211,20 @@ public class Widget : GObject
 
     public void InsertActionGroup(string name, SimpleActionGroup group) => InsertActionGroup(this, name, group);
 
+    /// <summary>
+    /// Adds an event controller to this widget
+    /// </summary>
+    /// <param name="controller"></param>
     public void AddController(EventController controller)
     {
         controller.AutoDestroyed = true;
         AddController(this, controller);
-    } 
+    }
 
+    /// <summary>
+    /// Add shotcuts to this widget. It attaches a ShortcutController to achieve this
+    /// </summary>
+    /// <param name="shortcuts"></param>
     public void AddShortcuts(params Shortcut[] shortcuts)
     {
         var shortcutController = ShortcutController.New();
@@ -192,19 +233,26 @@ public class Widget : GObject
         AddController(shortcutController);
     }
 
+    /// <summary>
+    /// Used to register a widget so it can be found by its Gtk handle value. Used for example in a ListBox, when callbacks delivering handles
+    /// </summary>
     public void Register()
     {
         widgets.TryAdd(handle, this);
         AddWeakRef(() => widgets.Remove(handle));
     }
 
+    /// <summary>
+    /// Gets a registered widgets by its Gtk handle
+    /// </summary>
+    /// <typeparam name="TWidget"></typeparam>
+    /// <param name="widgetKey"></param>
+    /// <returns></returns>
     public static TWidget? GetRegistered<TWidget>(nint widgetKey) where TWidget : Widget
         => widgets.TryGetValue(widgetKey, out var val) ? val as TWidget : null;
 
-    public Widget() : base()
-    {
-        AutoDestroyed = true;
-    }
+    public Widget() : base() 
+        => AutoDestroyed = true;
 
     public Widget(Builder builder, string? name = null) : this()
     {
@@ -341,6 +389,7 @@ W A R N I N G
     extern static void AddController(Widget widget, EventController controller);
 }
 
+// TODO descriptions from instance methods
 public static class WidgetExtensions
 {
     public static THandle Margin<THandle>(this THandle widget, int margin)
@@ -378,6 +427,12 @@ public static class WidgetExtensions
         where THandle : Widget
         => widget.SideEffect(w => w.AddCssClass(cssClass));
 
+    /// <summary>
+    /// Used to register a widget so it can be found by its Gtk handle value. Used for example in a ListBox, when callbacks delivering handles
+    /// </summary>
+    /// <typeparam name="THandle"></typeparam>
+    /// <param name="widget"></param>
+    /// <returns></returns>
     public static THandle RegisterWidget<THandle>(this THandle widget)
         where THandle : Widget
         => widget.SideEffect(w => w.Register());

@@ -33,6 +33,11 @@ public class GObject : BaseHandle
     /// </summary>
     public int RefCount { get => Marshal.PtrToStructure<GObjectStruct>(GetInternalHandle()).RefCount; }
 
+    /// <summary>
+    /// Sets a property to this object (Gtk4DotNet.GTypes types are supperted)
+    /// </summary>
+    /// <param name="propertyName"></param>
+    /// <param name="value"></param>
     public void SetProperty(string propertyName, object? value)
     {
         var gval = new GValue(value);
@@ -40,6 +45,12 @@ public class GObject : BaseHandle
         gval.Unset();
     }
 
+    /// <summary>
+    /// Gets a previously set property
+    /// </summary>
+    /// <param name="propertyName"></param>
+    /// <param name="type"></param>
+    /// <returns></returns>
     public object? GetProperty(string propertyName, Type type)
     {
         var gval = new GValue();
@@ -57,9 +68,21 @@ public class GObject : BaseHandle
         return result;
     }
 
+    /// <summary>
+    /// Set a notification callback in the form of 'notify::property'
+    /// </summary>
+    /// <param name="property">Property name without 'notify::'</param>
+    /// <param name="onNotify"></param>
     public void OnNotify(string property, Action onNotify)
         => SignalConnect<ThreePointerDelegate>($"notify::{property}", (nint _, nint __, nint ___) => onNotify());
 
+    /// <summary>
+    /// Set a binding between this object and another GObject 'target'
+    /// </summary>
+    /// <param name="property"></param>
+    /// <param name="target"></param>
+    /// <param name="targetProperty"></param>
+    /// <param name="flags"></param>
     public void BindProperty(string property, GObject target, string targetProperty, BindingFlags flags)
         => BindProperty(this, property, target, targetProperty, flags);
 
@@ -92,25 +115,43 @@ public class GObject : BaseHandle
         var p = GetQData(this, GetQuark(key));
         return p != 0 ? (T?)GCHandle.FromIntPtr(p).Target : (T?)(object?)null;
     }
-
+    
+    /// <summary>
+    /// Sets a string to this object
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="value"></param>
     public void SetString(string name, string? value)
         => SetString(this, name, value ?? "", 0);
 
+    /// <summary>
+    /// Gets the string which is attached to this object
+    /// </summary>
     public string? GetString(string name)
     {
         GetString(this, name, out var value, 0);
         return value.PtrToString(true);
     }
 
+    /// <summary>
+    /// Sets a bool value to this object
+    /// </summary>
     public void SetBool(string name, bool value)
         => SetBool(this, name, value, 0);
 
+    /// <summary>
+    /// Gets the bool value which is attached to this object
+    /// </summary>
     public bool GetBool(string name)
     {
         GetBool(this, name, out var value, 0);
         return value;
     }
 
+    /// <summary>
+    /// Gets the GType of this GObject
+    /// </summary>
+    /// <returns></returns>
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_get_type", CallingConvention = CallingConvention.Cdecl)]
     public static extern GType Type();
 
@@ -254,10 +295,25 @@ public static class GObjectExtensions
         where THandle : GObject, new()
         => (THandle)obj.SideEffect(o => o.AddWeakRef(onDisposing));
 
+    /// <summary>
+    /// Set a notification callback in the form of 'notify::property'
+    /// </summary>
+    /// <typeparam name="THandle"></typeparam>
+    /// <param name="obj"></param>
+    /// <param name="property">Property name without 'notify::'</param>
+    /// <param name="onNotify"></param>
+    /// <returns></returns>
     public static THandle Notify<THandle>(this THandle obj, string property, Action onNotify)
         where THandle : GObject
         => obj.SideEffect(o => o.OnNotify(property, onNotify));
 
+    /// <summary>
+    /// Add a notification action to notify when this instance is destroyed
+    /// </summary>
+    /// <typeparam name="THandle"></typeparam>
+    /// <param name="obj"></param>
+    /// <param name="onFinalize"></param>
+    /// <returns></returns>
     public static THandle Finalize<THandle>(this THandle obj, Action onFinalize)
         where THandle : GObject
         => obj.SideEffect(o => o.OnFinalize(onFinalize));

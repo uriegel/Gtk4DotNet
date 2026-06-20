@@ -2,14 +2,16 @@ using Microsoft.Win32.SafeHandles;
 
 namespace Gtk4DotNet;
 
+// Release ready
+
 public abstract class BaseHandle : SafeHandleZeroOrMinusOneIsInvalid
 {
     public BaseHandle()
         : base(ownsHandle: true) { }
 
-    public nint GetInternalHandle() => handle;
+    internal nint GetInternalHandle() => handle;
 
-    public void SetInternalHandle(nint handle) => this.handle = handle;
+    internal void SetInternalHandle(nint handle) => this.handle = handle;
 
     /// <summary>
     /// Always override this method!
@@ -18,8 +20,8 @@ public abstract class BaseHandle : SafeHandleZeroOrMinusOneIsInvalid
     protected override bool ReleaseHandle()
     {
         Console.Error.WriteLine("You have to override 'ReleaseHandle' in a from BaseHandle inherited object");
-        return false;  
-    } 
+        return false;
+    }
     //     => NativeMethods.CloseHandle(handle);
 
     // - There is no need to implement a finalizer, MySafeHandle already has one
