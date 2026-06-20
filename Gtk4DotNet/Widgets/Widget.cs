@@ -68,29 +68,15 @@ public class Widget : GObject
             var w = this;
             while (true)
             {
-                var ptr = w.GetData(DATA_CONTEXT);
-                if (ptr != 0)
-                {
-                    var gcHandle = GCHandle.FromIntPtr(ptr);
-                    return gcHandle.Target as INotifyPropertyChanged;
-                }
+                var val = w.GetManagedData<INotifyPropertyChanged>(DATA_CONTEXT);
+                if (val != null)
+                    return val;
                 w = w.GetParent();
                 if (w.IsInvalid)
                     return null;
             }
         }
-        set
-        {
-            var gchandle = GCHandle.Alloc(value, GCHandleType.Normal);
-            var ptr = GCHandle.ToIntPtr(gchandle);
-            SetData(DATA_CONTEXT, ptr);
-            AddWeakRef(() =>
-            {
-                var ptr = GetData(DATA_CONTEXT);
-                var gcHandle = GCHandle.FromIntPtr(ptr);
-                gcHandle.Free();
-            });
-        }
+        set => SetManagedData(DATA_CONTEXT, value);
     }
 
     public void Show() => Show(this);

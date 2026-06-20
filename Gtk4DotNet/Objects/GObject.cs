@@ -1,3 +1,5 @@
+using System.Reflection.Metadata;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.InteropServices;
 using CsTools.Extensions;
 using Gtk4DotNet.Extensions;
@@ -33,100 +35,27 @@ public class GObject : BaseHandle
     /// </summary>
     public int RefCount { get => Marshal.PtrToStructure<GObjectStruct>(GetInternalHandle()).RefCount; }
 
-    /// <summary>
-    /// Sets a pointer value to this object
-    /// </summary>
-    /// <param name="key"></param>
-    /// <param name="data"></param>
-    public void SetData(string key, nint data) => SetData(this, key, data);
-
-    /// <summary>
-    /// Gets the pointer data previously set 
-    /// </summary>
-    /// <param name="key"></param>
-    /// <returns></returns>
-    public nint GetData(string key) => GetData(this, key);
-
     public void SetProperty(string propertyName, object? value)
     {
-        var gv = GValue.Allocate();
-        if (value is string s)
-        {
-            GValue.Init(gv, GTypes.String);
-            GValue.SetString(gv, s);
-        }
-        else if (value is bool b)
-        {
-            GValue.Init(gv, GTypes.Boolean);
-            GValue.SetBool(gv, b);
-        }
-        else if (value is int n)
-        {
-            GValue.Init(gv, GTypes.Int);
-            GValue.SetInt(gv, n);
-        }
-        else if (value is uint u)
-        {
-            GValue.Init(gv, GTypes.UInt);
-            GValue.SetUInt(gv, u);
-        }
-        else if (value is double d)
-        {
-            GValue.Init(gv, GTypes.Double);
-            GValue.SetDouble(gv, d);
-        }
-        else if (value is float f)
-        {
-            GValue.Init(gv, GTypes.Float);
-            GValue.SetFloat(gv, f);
-        }
-        else
-            GValue.Init(gv, GTypes.String);
-        SetProperty(this, propertyName, gv);
-        GValue.Free(gv);
+        var gval = new GValue(value);
+        SetProperty(this, propertyName, ref gval);
+        gval.Unset();
     }
 
     public object? GetProperty(string propertyName, Type type)
     {
-        var gv = GValue.Allocate();
-        object? result = null;
-        if (type.Name == "String")
+        var gval = new GValue();
+        object? result = type.Name switch
         {
-            GValue.Init(gv, GTypes.String);
-            GetProperty(this, propertyName, gv);
-            result = GValue.GetString(gv);
-        }
-        else if (type.Name == "Boolean")
-        {
-            GValue.Init(gv, GTypes.Boolean);
-            GetProperty(this, propertyName, gv);
-            result = GValue.GetBool(gv);
-        }
-        else if (type.Name == "UInt32")
-        {
-            GValue.Init(gv, GTypes.UInt);
-            GetProperty(this, propertyName, gv);
-            result = GValue.GetUInt(gv);
-        }
-        else if (type.Name == "Int32")
-        {
-            GValue.Init(gv, GTypes.Int);
-            GetProperty(this, propertyName, gv);
-            result = GValue.GetInt(gv);
-        }
-        else if (type.Name == "Double")
-        {
-            GValue.Init(gv, GTypes.Double);
-            GetProperty(this, propertyName, gv);
-            result = GValue.GetDouble(gv);
-        }
-        else if (type.Name == "Float")
-        {
-            GValue.Init(gv, GTypes.Float);
-            GetProperty(this, propertyName, gv);
-            result = GValue.GetFloat(gv);
-        }
-        GValue.Free(gv);
+            "String" => gval.Init(GTypes.String).GetProperty(this, propertyName).GetString(),
+            "Boolean" => gval.Init(GTypes.Boolean).GetProperty(this, propertyName).GetBool(),
+            "UInt32" => gval.Init(GTypes.Boolean).GetProperty(this, propertyName).GetUInt(),
+            "Int32" => gval.Init(GTypes.Boolean).GetProperty(this, propertyName).GetInt(),
+            "Double" => gval.Init(GTypes.Boolean).GetProperty(this, propertyName).GetDouble(),
+            "Float" => gval.Init(GTypes.Boolean).GetProperty(this, propertyName).GetFloat(),
+            _ => null
+        };
+        gval.Unset();
         return result;
     }
 
@@ -136,23 +65,34 @@ public class GObject : BaseHandle
     public void BindProperty(string property, GObject target, string targetProperty, BindingFlags flags)
         => BindProperty(this, property, target, targetProperty, flags);
 
-    public void SetManagedData(string key, object obj)
+    /// <summary>
+    /// Sets a managed object to this GObject instance
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="obj"></param>
+    public void SetManagedData(string key, object? obj)
     {
         var dkey = GtkDelegates.Instance.GetKey("SetManagedData");
-        OnePointerDelegate callback = (nint data) =>
+        OnePointerDelegate callback = data =>
         {
             GCHandle.FromIntPtr(data).Free();
             GtkDelegates.Instance.Remove(dkey.Key);
         };
         GtkDelegates.Instance.Add(dkey, callback);
-        SetQDataFull(this, GetQuark(key), GCHandle.ToIntPtr(GCHandle.Alloc(obj)), Marshal.GetFunctionPointerForDelegate(callback as Delegate));
+        SetQDataFull(this, GetQuark(key), GCHandle.ToIntPtr(GCHandle.Alloc(obj, GCHandleType.Normal)),
+            Marshal.GetFunctionPointerForDelegate(callback as Delegate));
     }
 
+    /// <summary>
+    /// Gets the previously set managed data  
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="key"></param>
+    /// <returns></returns>
     public T? GetManagedData<T>(string key)
     {
         var p = GetQData(this, GetQuark(key));
-        var handle = GCHandle.FromIntPtr(p);
-        return (T?)handle.Target;
+        return p != 0 ? (T?)GCHandle.FromIntPtr(p).Target : (T?)(object?)null;
     }
 
     public void SetString(string name, string? value)
@@ -270,10 +210,7 @@ public class GObject : BaseHandle
     extern static nint GetData(GObject obj, string key);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_set_property", CallingConvention = CallingConvention.Cdecl)]
-    static extern void SetProperty(GObject obj, string name, nint value);
-
-    [DllImport(Libs.LibGtk, EntryPoint = "g_object_get_property", CallingConvention = CallingConvention.Cdecl)]
-    static extern void GetProperty(GObject obj, string name, nint value);
+    static extern void SetProperty(GObject obj, string name, ref GValue value);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_bind_property", CallingConvention = CallingConvention.Cdecl)]
     static extern nint BindProperty(GObject source, string property, GObject target, string targetProperty, BindingFlags flags);
