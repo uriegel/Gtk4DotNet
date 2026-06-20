@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using CsTools.Extensions;
 using Gtk4DotNet.Extensions;
+using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
@@ -57,10 +58,28 @@ public class Widget : GObject
         set => SetMarginBottom(this, value);
     }
 
+    public Align HAlign
+    {
+        get => GetHAlign(this);
+        set => SetHAlign(this, value);
+    }
+
+    public Align VAlign
+    {
+        get => GetVAlign(this);
+        set => SetVAlign(this, value);
+    }
+
     public bool Visible
     {
         get => GetVisible(this);
         set => SetVisible(this, value);
+    }
+
+    public double Opacity
+    {
+        get => GetOpacity(this);
+        set => SetOpacity(this, value);
     }
 
     public string TooltipText
@@ -233,6 +252,9 @@ public class Widget : GObject
         AddController(shortcutController);
     }
 
+    public void OnRealize(Action action)
+        => SignalConnect<TwoPointerDelegate>("realize", (_, __) => action());
+
     /// <summary>
     /// Used to register a widget so it can be found by its Gtk handle value. Used for example in a ListBox, when callbacks delivering handles
     /// </summary>
@@ -387,11 +409,31 @@ W A R N I N G
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_add_controller", CallingConvention = CallingConvention.Cdecl)]
     extern static void AddController(Widget widget, EventController controller);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_set_halign", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetHAlign(Widget widget, Align align);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_set_valign", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetVAlign(Widget widget, Align align);
+    
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_halign", CallingConvention = CallingConvention.Cdecl)]
+    extern static Align GetHAlign(Widget widget);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_valign", CallingConvention = CallingConvention.Cdecl)]
+    extern static Align GetVAlign(Widget widget);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_opacity", CallingConvention = CallingConvention.Cdecl)]
+    extern static double GetOpacity(Widget widget);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_set_opacity", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetOpacity(Widget widget, double opacity);
 }
 
-// TODO descriptions from instance methods
 public static class WidgetExtensions
 {
+    /// <summary>
+    /// Sets all 4 Margins at once
+    /// </summary>
     public static THandle Margin<THandle>(this THandle widget, int margin)
         where THandle : Widget
         => widget.SideEffect(w => w.Margin = margin);
@@ -410,6 +452,14 @@ public static class WidgetExtensions
     public static THandle MarginBottom<THandle>(this THandle widget, int margin)
         where THandle : Widget
         => widget.SideEffect(w => w.MarginBottom = margin);
+    public static THandle HAlign<THandle>(this THandle widget, Align align)
+        where THandle : Widget
+        => widget.SideEffect(w => w.HAlign = align);
+
+    public static THandle VAlign<THandle>(this THandle widget, Align align)
+        where THandle : Widget
+        => widget.SideEffect(w => w.VAlign = align);
+
     public static THandle Tooltip<THandle>(this THandle widget, string text)
         where THandle : Widget
         => widget.SideEffect(w => w.TooltipText = text);
@@ -418,11 +468,17 @@ public static class WidgetExtensions
         where THandle : Widget
         => widget.SideEffect(w => w.Visible = value);
 
-    public static THandle Binding<THandle>(this THandle target, string targetProperty, string property, BindingFlags bindingFlags = BindingFlags.Default,
+     /// <summary>
+    /// Sets a binding between this widget and a value in a given and attached DataContext. The DataContext can be set in a parent widget
+    /// </summary>
+   public static THandle Binding<THandle>(this THandle target, string targetProperty, string property, BindingFlags bindingFlags = BindingFlags.Default,
         Func<object?, object?>? converter = null)
             where THandle : Widget
         => target.SideEffect(t => t.SetBinding(targetProperty, property, bindingFlags, converter));
 
+    /// <summary>
+    /// Adds a css class to this widget
+    /// </summary>
     public static THandle CssClass<THandle>(this THandle widget, string cssClass)
         where THandle : Widget
         => widget.SideEffect(w => w.AddCssClass(cssClass));
@@ -436,4 +492,8 @@ public static class WidgetExtensions
     public static THandle RegisterWidget<THandle>(this THandle widget)
         where THandle : Widget
         => widget.SideEffect(w => w.Register());
+
+    public static THandle Realize<THandle>(this THandle widget, Action action)
+        where THandle : Widget
+        => widget.SideEffect(w => w.OnRealize(action));
 }
