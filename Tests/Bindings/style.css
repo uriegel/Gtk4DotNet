@@ -3,6 +3,11 @@ button {
     background-color: lightblue;
 }
 
+button.warning {
+    color: white;
+    background-color: red;
+}
+
 button:hover {
     color: darkblue;
     background-color: rgb(220, 236, 241);

@@ -1,5 +1,3 @@
-using System.Reflection.Metadata;
-using System.Reflection.Metadata.Ecma335;
 using System.Runtime.InteropServices;
 using CsTools.Extensions;
 using Gtk4DotNet.Extensions;

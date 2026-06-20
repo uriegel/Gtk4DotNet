@@ -29,8 +29,14 @@
               </object>
             </child>
             <child>
-              <object class="GtkButton" id="buttonNull">
+              <object class="GtkButton" id="buttonEmpty">
                 <property name="label">Reset text</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="buttonNull">
+                <property name="css-classes">warning</property>
+                <property name="label">!!! Set to Null !!!</property>
               </object>
             </child>
           </object>

@@ -18,7 +18,8 @@ class MyWindow : ApplicationWindow
             await Task.Delay(2000);
             dataContext.Name = "Name was changed back to URiegel";
         });
-        buttonNull.OnClicked(() => dataContext.Name = null);
+        buttonEmpty.OnClicked(() => dataContext.Name = "");
+        buttonNull.OnClicked(() => dataContext.Name = null!);
         label2.SetBinding("label", nameof(WindowDataContext.Active));
         label3
             .Binding("label", nameof(WindowDataContext.Active), converter: b => (bool)b! ? "true" : "false")
@@ -49,6 +50,9 @@ class MyWindow : ApplicationWindow
     readonly Button button1 = null!;
 
     [Widget]
+    readonly Button buttonEmpty = null!;
+
+    [Widget]
     readonly Button buttonNull = null!;
 
     [Widget(Name = "chk_1")]
@@ -66,9 +70,9 @@ class MyWindow : ApplicationWindow
 
 class WindowDataContext : INotifyPropertyChanged
 {
-    public string? Name
+    public string Name
     {
-        get;
+        get => field ?? "";
         set
         {
             field = value;
