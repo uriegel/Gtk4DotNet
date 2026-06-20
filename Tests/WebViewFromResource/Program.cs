@@ -15,7 +15,7 @@ Application
             .SideEffect(webview =>
             {
                 WebKitWebContext.GetDefault().RegisterUriScheme("res", OnResRequest);
-                webview.AddWeakRef(() => WebKitWebContext.DisposeUriSchemes());
+                webview.OnFinalize(WebKitWebContext.DisposeUriSchemes);
             })
             .BackgroundColor(Color.Transparent)
             .LoadUri("res://"))

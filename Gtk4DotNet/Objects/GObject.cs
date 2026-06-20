@@ -5,58 +5,46 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
+// Release ready
+
 /// <summary>
 /// The base type system and object class for Gtk4
 /// </summary>
 public class GObject : BaseHandle
 {
+    /// <summary>
+    /// The Object is owned by a parent or Gtk and is not being unreffed by this instance
+    /// </summary>
     public bool AutoDestroyed { get; internal set; }
 
+    /// <summary>
+    /// Do this object has a fGtk floating ref
+    /// </summary>
     public bool HasFloatingRef { get => _HasFloatingRef(this); }
 
-    internal static GtkDelegates GObjectsDiagnostics { get; } = new();
-
+    /// <summary>
+    /// Add a notification action to notify when this instance is destroyed
+    /// </summary>
+    /// <param name="onFinalize"></param>
     public void OnFinalize(Action onFinalize) => AddWeakRef(onFinalize);
 
     /// <summary>
-    /// Adds a weak reference callback to an object. Weak references are used for notification when an object is disposed. They are called “weak references” 
-    /// because they allow you to safely hold a pointer to an object without calling g_object_ref() (g_object_ref() adds a strong reference, that is, 
-    /// forces the object to stay alive).
-    /// Note that the weak references created by this method are not thread-safe: they cannot safely be used in one thread if the object’s last g_object_unref() might happen in another thread. Use GWeakRef if thread-safety is required.
+    /// The object's RefCount
     /// </summary>
-    /// <param name="onDisposing">Is called, when the obeject is disposed</param>
-    public void AddWeakRef(Action onDisposing)
-    {
-        var key = GtkDelegates.Instance.GetKey("WeakRef");
-        TwoPointerDelegate callback = (_, ___) =>
-        {
-            GtkDelegates.Instance.Remove(key.Key);
-            onDisposing();
-        };
-        GtkDelegates.Instance.Add(key, callback, GetType().FullName);
-        _AddWeakRef(this, Marshal.GetFunctionPointerForDelegate(callback as Delegate), 0);
-    }
+    public int RefCount { get => Marshal.PtrToStructure<GObjectStruct>(GetInternalHandle()).RefCount; }
 
-    public void AddToggleRef(Action onDisposing)
-    {
-        var key = GtkDelegates.Instance.GetKey("ToggleRef");
-        TwoPointerBoolDelegate callback = (_, _, _) =>
-        {
-            GtkDelegates.Instance.Remove(key.Key);
-            onDisposing();
-        };
-        GtkDelegates.Instance.Add(key, callback);
-        _AddToggleRef(this, Marshal.GetFunctionPointerForDelegate(callback as Delegate), 0);
-    }
-
-    public int GetRefCount()
-    {
-        var obj = Marshal.PtrToStructure<GObjectStruct>(GetInternalHandle());
-        return obj.RefCount;
-    }
-
+    /// <summary>
+    /// Sets a pointer value to this object
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="data"></param>
     public void SetData(string key, nint data) => SetData(this, key, data);
 
+    /// <summary>
+    /// Gets the pointer data previously set 
+    /// </summary>
+    /// <param name="key"></param>
+    /// <returns></returns>
     public nint GetData(string key) => GetData(this, key);
 
     public void SetProperty(string propertyName, object? value)
@@ -188,6 +176,27 @@ public class GObject : BaseHandle
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_get_type", CallingConvention = CallingConvention.Cdecl)]
     public static extern GType Type();
 
+    /// <summary>
+    /// Adds a weak reference callback to an object. Weak references are used for notification when an object is disposed. They are called “weak references” 
+    /// because they allow you to safely hold a pointer to an object without calling g_object_ref() (g_object_ref() adds a strong reference, that is, 
+    /// forces the object to stay alive).
+    /// Note that the weak references created by this method are not thread-safe: they cannot safely be used in one thread if the object’s last g_object_unref() might happen in another thread. Use GWeakRef if thread-safety is required.
+    /// </summary>
+    /// <param name="onDisposing">Is called, when the obeject is disposed</param>
+    internal void AddWeakRef(Action onDisposing)
+    {
+        var key = GtkDelegates.Instance.GetKey("WeakRef");
+        TwoPointerDelegate callback = (_, ___) =>
+        {
+            GtkDelegates.Instance.Remove(key.Key);
+            onDisposing();
+        };
+        GtkDelegates.Instance.Add(key, callback, GetType().FullName);
+        _AddWeakRef(this, Marshal.GetFunctionPointerForDelegate(callback as Delegate), 0);
+    }
+
+    internal static GtkDelegates GObjectsDiagnostics { get; } = new();
+
     internal void CheckDiagnostics()
     {
         if (!IsInvalid && Gtk.Diagnostics && !diagnosticsSet)
@@ -205,7 +214,7 @@ public class GObject : BaseHandle
         return key;
     }
 
-    public void SignalDisconnect(DelegateId id)
+    internal void SignalDisconnect(DelegateId id)
     {
         SignalDisconnect(this, id.SignalId);
         GtkDelegates.Instance.Remove(id.Key);
