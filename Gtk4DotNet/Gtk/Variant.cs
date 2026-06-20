@@ -6,22 +6,22 @@ namespace Gtk4DotNet;
 
 public class Variant : BaseHandle
 {
-    public bool IsFloating { get; set; }
+    public bool AutoDestroyed { get; set; }
 
     public static bool GetBool(nint variant) => GetRawBool(variant) != 0;
     public static string GetString(nint variant) => GetRawString(variant, 0).PtrToString(false) ?? "";
 
-    public static Variant New(string value, bool isFloating = true)
+    public static Variant New(string value, bool autoDestroyed = true)
     {
         var res = _New(value ?? "");
-        res.IsFloating = isFloating;
+        res.AutoDestroyed = autoDestroyed;
         return res;
     }
 
-    public static Variant New(bool value, bool isFloating = true)
+    public static Variant New(bool value, bool autoDestroyed = true)
     {
         var res = NewBool(value ? -1 : 0);
-        res.IsFloating = isFloating;
+        res.AutoDestroyed = autoDestroyed;
         return res;
     }
 
@@ -30,8 +30,11 @@ public class Variant : BaseHandle
     public bool GetBool() => GetBool(this) != 0;
 
     protected override bool ReleaseHandle()
-         => IsFloating
-             || true.SideEffectIf(!IsFloating, _ => Unref(handle));
+    {
+        if (!AutoDestroyed)
+            Unref(handle);
+        return true;
+    }
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_variant_new_string", CallingConvention = CallingConvention.Cdecl)]
     extern static Variant _New(string value);

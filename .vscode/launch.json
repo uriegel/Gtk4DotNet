@@ -197,7 +197,23 @@
             },
             "console": "internalConsole"
         }, {
-            "name": "WebView fromTemplate",
+            "name": "WebView from Resource",
+            "type": "coreclr",
+            "request": "launch",
+            "requireExactSource": true, 
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Tests/WebViewFromResource/bin/Debug/net10.0/WebViewFromResource.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Tests/WebViewFromResource",
+            "stopAtEntry": false,
+            "justMyCode": false,
+            "enableStepFiltering": true,
+            "env": {
+//                "DOTNET_EnableDiagnostics": "0" // <- optional
+            },
+            "console": "internalConsole"
+        }, {
+            "name": "WebView from Template",
             "type": "coreclr",
             "request": "launch",
             "requireExactSource": true, 

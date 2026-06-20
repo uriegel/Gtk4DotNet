@@ -3,10 +3,14 @@ using Gtk4DotNet.Extensions;
 
 namespace Gtk4DotNet;
 
-public class WebkitUriSchemeRequest : BaseHandle
+public class WebkitUriSchemeRequest : GObject
 {
     public WebkitUriSchemeRequest(nint nativeHandle) : base()
-        => SetInternalHandle(nativeHandle);
+    {
+        SetInternalHandle(nativeHandle);
+        CheckDiagnostics();
+        AutoDestroyed = true;
+    }
 
     public string GetUri() => _GetUri(this).PtrToString(false) ?? "";
 

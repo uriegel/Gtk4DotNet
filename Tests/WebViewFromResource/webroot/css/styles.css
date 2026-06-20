@@ -1,0 +1,29 @@
+body {
+    background-color: beige;
+}
+
+#dragzone {
+    background-color: chartreuse;
+    color: black;
+    width: 200px;
+    height: 100px;
+}
+
+#dropzone {
+    background-color: chartreuse;
+    color: black;
+    margin-top: 20px;
+    width: 200px;
+    height: 100px;
+}
+
+body:focus-within h1 {
+    background-color: chartreuse;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: rgb(56, 56, 56);
+        color: lightgray;
+    }
+}

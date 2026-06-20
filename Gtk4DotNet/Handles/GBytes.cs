@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 using CsTools.Extensions;
 
 namespace Gtk4DotNet;
+
 public class GBytes : BaseHandle
 {
     public static GBytes New(string str)
@@ -25,7 +26,10 @@ public class GBytes : BaseHandle
     public GBytes() : base() { }
 
     protected override bool ReleaseHandle()
-        => true.SideEffect(_ => Unref(handle));
+    {
+        Unref(handle);
+        return true;
+    }
 
     [DllImport(Libs.LibGtk, EntryPoint="g_bytes_get_data", CallingConvention = CallingConvention.Cdecl)]
     extern static IntPtr GetData(GBytes bytes, out long size);

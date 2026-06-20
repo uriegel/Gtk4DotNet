@@ -5,6 +5,9 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
+/// <summary>
+/// The base type system and object class for Gtk4
+/// </summary>
 public class GObject : BaseHandle
 {
     public bool AutoDestroyed { get; internal set; }
@@ -215,7 +218,7 @@ public class GObject : BaseHandle
     {
         if (!AutoDestroyed)
             Unref(handle);
-        return true;         
+        return true;
     }
 
     void SetDiagnostics()

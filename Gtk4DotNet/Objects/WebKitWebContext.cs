@@ -8,7 +8,7 @@ public class WebKitWebContext : GObject
     // Do not call CheckDiagnostics because app hangs indefinetely
     public static WebKitWebContext GetDefault() 
     {
-        var res = GetDefault();
+        var res = _GetDefault();
         res.AutoDestroyed = true;
         return res;
     }
@@ -23,14 +23,14 @@ public class WebKitWebContext : GObject
     public void RegisterUriScheme(string scheme, Action<WebkitUriSchemeRequest> callback)
         => RegisterUriScheme(scheme, request => callback(new WebkitUriSchemeRequest(request)));
 
+    public WebKitWebContext() : base() { }
+    
     void RegisterUriScheme(string scheme, CustomSchemeRequestDelegate callback)
     {
         uriSchemes.Add(GtkDelegates.Instance.Add(callback, "UriScheme"));
         RegisterUriScheme(this, scheme, Marshal.GetFunctionPointerForDelegate((Delegate)callback));
     }
 
-    public WebKitWebContext() : base() { }
-    
     [DllImport(Libs.LibWebKit, EntryPoint = "webkit_web_context_get_default", CallingConvention = CallingConvention.Cdecl)]
     extern static WebKitWebContext _GetDefault();
 

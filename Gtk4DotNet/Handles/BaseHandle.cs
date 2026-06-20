@@ -7,14 +7,19 @@ public abstract class BaseHandle : SafeHandleZeroOrMinusOneIsInvalid
     public BaseHandle()
         : base(ownsHandle: true) { }
 
-    // public BaseHandle(nint handle)
-    //     : base(ownsHandle: true) => this.handle = handle;
-
     public nint GetInternalHandle() => handle;
 
     public void SetInternalHandle(nint handle) => this.handle = handle;
 
-    protected override bool ReleaseHandle() => true;
+    /// <summary>
+    /// Always override this method!
+    /// </summary>
+    /// <returns></returns>
+    protected override bool ReleaseHandle()
+    {
+        Console.Error.WriteLine("You have to override 'ReleaseHandle' in a from BaseHandle inherited object");
+        return false;  
+    } 
     //     => NativeMethods.CloseHandle(handle);
 
     // - There is no need to implement a finalizer, MySafeHandle already has one

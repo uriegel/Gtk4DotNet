@@ -29,3 +29,5 @@ Tests/ListBox/bin
 Tests/ListBox/obj
 Tests/Volumes/bin
 Tests/Volumes/obj
+Tests/WebViewFromResource/bin
+Tests/WebViewFromResource/obj
