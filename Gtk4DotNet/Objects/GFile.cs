@@ -8,11 +8,11 @@ namespace Gtk4DotNet;
 
 public class GFile : GObject
 {
-    public string? Path { get => GetPath(this).PtrToString(true); }
+    public string Path { get => GetPath(this).PtrToString(true) ?? ""; }
 
     public bool Exists { get => _Exists(this, 0); }
 
-    public string? GetBasename() => GetBasename(this).PtrToString(true);
+    public string GetBasename() => GetBasename(this).PtrToString(true) ?? "";
 
     public static GFile New(string path)
     {
@@ -167,7 +167,7 @@ public class GFile : GObject
     extern static GFile _New(string path);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_load_contents", CallingConvention = CallingConvention.Cdecl)]
-    extern static bool LoadContents(GFile gFile, Cancellable cancellable, out IntPtr content, out int length, IntPtr etagOut, IntPtr error);
+    extern static bool LoadContents(GFile gFile, Cancellable cancellable, out nint content, out int length, nint etagOut, nint error);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_copy_async", CallingConvention = CallingConvention.Cdecl)]
     extern static void CopyAsync(GFile source, GFile destination, FileCopyFlags flags, int priority, Cancellable cancellable,

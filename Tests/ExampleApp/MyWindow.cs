@@ -8,6 +8,15 @@ class MyWindow : ApplicationWindow
     {
         Instance = this;
     }
+
+    public void OnOpen(GFile file)
+    {
+        var label = Label.New(file.Path);
+        stack.AddTitled(label, file.GetBasename(), file.GetBasename());
+    }
+
+    [Widget]
+    Stack stack = null!;
 }
 
 class MyButton : Button
