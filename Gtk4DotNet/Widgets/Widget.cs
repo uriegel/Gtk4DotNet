@@ -7,13 +7,13 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
-// Release ready
-
 /// <summary>
 /// Base class for all Gtk4 Widgets
 /// </summary>
 public class Widget : GObject
 {
+    #region Properties
+
     /// <summary>
     /// When built from a template.ui, then this is the name this object is given in the template
     /// </summary>
@@ -112,7 +112,12 @@ public class Widget : GObject
         set => SetManagedData(DATA_CONTEXT, value);
     }
 
+    #endregion
+
+    #region Methods
+
     public void Show() => Show(this);
+    public void Hide() => Hide(this);
 
     public Widget GetParent() => GetParent(this);
 
@@ -233,6 +238,11 @@ public class Widget : GObject
 
     public Widget GetRoot() => GetRoot(this);
 
+    /// <summary>
+    /// Inserts a <see cref="SimpleActionGroup"/> to this Widgets to attach Actions to it.
+    /// </summary>
+    /// <param name="name">The name of the group</param>
+    /// <param name="group">The <see cref="SimpleActionGroup"/> to be included</param>
     public void InsertActionGroup(string name, SimpleActionGroup group) => InsertActionGroup(this, name, group);
 
     /// <summary>
@@ -246,7 +256,7 @@ public class Widget : GObject
     }
 
     /// <summary>
-    /// Add shotcuts to this widget. It attaches a ShortcutController to achieve this
+    /// Adds shotcuts to this widget. It attaches a ShortcutController to achieve this
     /// </summary>
     /// <param name="shortcuts"></param>
     public void AddShortcuts(params Shortcut[] shortcuts)
@@ -277,6 +287,10 @@ public class Widget : GObject
     /// <returns></returns>
     public static TWidget? GetRegistered<TWidget>(nint widgetKey) where TWidget : Widget
         => widgets.TryGetValue(widgetKey, out var val) ? val as TWidget : null;
+
+#endregion
+
+    #region Constructor
 
     public Widget() : base()
         => AutoDestroyed = true;
@@ -340,6 +354,10 @@ W A R N I N G
         }
     }
 
+    #endregion
+
+    #region Internals
+    
     protected override void OnDiagnostics()
         => Console.WriteLine(Name != null ? $"{GetType().Name} {Name} finalized" : $"{GetType().Name} finalized");
 
@@ -348,6 +366,10 @@ W A R N I N G
     internal static int GetRegisteredWidgetCount() => widgets.Count;
 
     static readonly Dictionary<nint, Widget> widgets = [];
+
+    #endregion
+
+    #region P/Invoke
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_insert_after", CallingConvention = CallingConvention.Cdecl)]
     internal extern static void InsertAfter(Widget widget, Widget parent, Widget? previous);
@@ -437,10 +459,12 @@ W A R N I N G
     extern static void SetOpacity(Widget widget, double opacity);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_hide", CallingConvention = CallingConvention.Cdecl)]
-    public extern static void Hide(Widget widget);
+    extern static void Hide(Widget widget);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_set_size_request", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetSizeRequest(Widget widget, int width, int height);
+
+    #endregion
 }
 
 public static class WidgetExtensions

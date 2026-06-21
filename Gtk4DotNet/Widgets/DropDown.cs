@@ -2,10 +2,11 @@ using System.Runtime.InteropServices;
 
 namespace Gtk4DotNet;
 
-// TODO Release ready
-
 public class DropDown : Widget
 {
+    /// <summary>
+    /// The index of the selected DropDown.
+    /// </summary>
     public int SelectedPos
     {
         get => GetSelected(this);

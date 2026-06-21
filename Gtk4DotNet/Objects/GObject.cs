@@ -233,20 +233,11 @@ public class GObject : BaseHandle
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_weak_ref", CallingConvention = CallingConvention.Cdecl)]
     extern internal static void _AddWeakRef(GObject obj, nint finalizer, nint zero);
 
-    [DllImport(Libs.LibGtk, EntryPoint = "g_object_add_toggle_ref", CallingConvention = CallingConvention.Cdecl)]
-    extern internal static void _AddToggleRef(GObject obj, nint finalizer, nint zero);
-
     [DllImport(Libs.LibGtk, EntryPoint = "g_signal_connect_object", CallingConvention = CallingConvention.Cdecl)]
     protected extern static long SignalConnect(GObject obj, string name, nint callback, nint o, int n3);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_signal_handler_disconnect", CallingConvention = CallingConvention.Cdecl)]
     protected extern static void SignalDisconnect(GObject obj, long signalId);
-
-    [DllImport(Libs.LibGtk, EntryPoint = "g_object_set_data", CallingConvention = CallingConvention.Cdecl)]
-    extern static void SetData(GObject obj, string key, nint data);
-
-    [DllImport(Libs.LibGtk, EntryPoint = "g_object_get_data", CallingConvention = CallingConvention.Cdecl)]
-    extern static nint GetData(GObject obj, string key);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_set_property", CallingConvention = CallingConvention.Cdecl)]
     static extern void SetProperty(GObject obj, string name, ref GValue value);
@@ -289,8 +280,10 @@ public static class GObjectExtensions
     /// forces the object to stay alive).
     /// Note that the weak references created by this method are not thread-safe: they cannot safely be used in one thread if the object’s last g_object_unref() might happen in another thread. Use GWeakRef if thread-safety is required.
     /// </summary>
+    /// <typeparam name="THandle"></typeparam>
     /// <param name="obj">The GObject instance</param>
     /// <param name="onDisposing">Is called, when the obeject is disposed</param>
+    /// <returns>The GObject for chaining calls</returns>
     public static THandle AddWeakRef<THandle>(this GObject obj, Action onDisposing)
         where THandle : GObject, new()
         => (THandle)obj.SideEffect(o => o.AddWeakRef(onDisposing));
@@ -302,7 +295,7 @@ public static class GObjectExtensions
     /// <param name="obj"></param>
     /// <param name="property">Property name without 'notify::'</param>
     /// <param name="onNotify"></param>
-    /// <returns></returns>
+    /// <returns>The GObject for chaining calls</returns>
     public static THandle Notify<THandle>(this THandle obj, string property, Action onNotify)
         where THandle : GObject
         => obj.SideEffect(o => o.OnNotify(property, onNotify));
@@ -313,7 +306,7 @@ public static class GObjectExtensions
     /// <typeparam name="THandle"></typeparam>
     /// <param name="obj"></param>
     /// <param name="onFinalize"></param>
-    /// <returns></returns>
+    /// <returns>The GObject for chaining calls</returns>
     public static THandle Finalize<THandle>(this THandle obj, Action onFinalize)
         where THandle : GObject
         => obj.SideEffect(o => o.OnFinalize(onFinalize));

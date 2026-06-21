@@ -10,7 +10,7 @@ public class ProgressBar : Widget
         res.CheckDiagnostics();
         return res;
     }
-    
+
     public bool ShowText
     {
         set => SetShowText(this, value);

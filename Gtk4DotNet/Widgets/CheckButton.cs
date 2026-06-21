@@ -4,18 +4,23 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
-// TODO Release ready
-
 public class CheckButton : Widget
 {
+    /// <summary>
+    /// Is the button checked?
+    /// </summary>
     public bool IsActive
     {
         get => GetIsActive(this);
         set => SetIsActive(this, value);
     }
 
-    [DllImport(Libs.LibGtk, EntryPoint = "gtk_check_button_new_with_label", CallingConvention = CallingConvention.Cdecl)]
-    public extern static CheckButton NewWithLabel(string label);
+    public static CheckButton NewWithLabel(string label)
+    {
+        var res = _NewWithLabel(label);
+        res.CheckDiagnostics();
+        return res;
+    }
 
     public CheckButton() : base() { }
 
@@ -23,6 +28,9 @@ public class CheckButton : Widget
 
     public CheckButton OnToggled(Action<bool> onToggle)
         => this.SideEffect(_ => SignalConnect<TwoPointerDelegate>("toggled", (_, __) => onToggle(IsActive)));
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_check_button_new_with_label", CallingConvention = CallingConvention.Cdecl)]
+    extern static CheckButton _NewWithLabel(string label);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_check_button_get_active", CallingConvention = CallingConvention.Cdecl)]
     extern static bool GetIsActive(CheckButton button);

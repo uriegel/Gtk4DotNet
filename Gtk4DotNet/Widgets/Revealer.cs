@@ -13,7 +13,7 @@ public class Revealer : Widget
     }
 
     public Revealer() : base() { }
-    
+
     public Revealer(Builder builder, string? name = null) : base(builder, name) { }
 
     public Revealer Child(Widget child) =>

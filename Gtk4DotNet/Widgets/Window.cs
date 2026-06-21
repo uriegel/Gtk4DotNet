@@ -6,8 +6,12 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
-// TODO Release ready
-
+/// <summary>
+/// A Gtk Window. 
+/// </summary>
+/// <remarks>
+/// It is recommended to build a window from a .NET resource template.ui.
+/// </remarks>
 public class Window : Widget
 {
     public string? Title
@@ -39,16 +43,26 @@ public class Window : Widget
     public int Width { get => Size.Width; }
     public int Height { get => Size.Height; }
 
+    public void Present() => Present(this);
+
     public void CloseWindow() => CloseWindow(this);
 
     public void SetDefaultSize(int width, int height) => SetDefaultSize(this, width, height);
 
     public void SetChild(Widget child) => SetChild(this, child);
 
+    /// <summary>
+    /// Installs a callback that is being called when the window is about to close. You can prevent it by returning true in  the callback.
+    /// </summary>
+    /// <param name="preventClosing"></param>
     public void OnClose(Func<Window, bool> preventClosing)
         => SignalConnect<TwoPointerBoolRetDelegate>("close-request", (_, ___) => preventClosing(this));
 
-    public void OnCloseAsync(Func<Window, Task<bool>> preventClosing)
+    /// <summary>
+    /// Installs an asynchronous callback that is being called when the window is about to close. You can prevent it by returning true in  the callback.
+    /// </summary>
+    /// <param name="preventClosing"></param>
+    public void OnClose(Func<Window, Task<bool>> preventClosing)
         => SignalConnect<TwoPointerBoolRetDelegate>("close-request", (_, ___) =>
         {
             if (forceClose)
@@ -67,8 +81,23 @@ public class Window : Widget
             }
         });
 
+    /// <summary>
+    /// Gets the application that this window belongs to.
+    /// </summary>
+    /// <returns></returns>
     public Application GetApplication()
         => _GetApplication(this).SideEffect(a => a.AutoDestroyed = true);
+
+    /// <summary>
+    /// Creates a new Window. This window should be added to the <see cref="Application"/> with the help of <see cref="Application.AddWindow(Window)"/> 
+    /// </summary>
+    /// <returns>A newly created Window</returns>
+    public static Window New()
+    {
+        var res = _New();
+        res.CheckDiagnostics();
+        return res;
+    }
 
     public Window(Builder builder, string? name = null) : base(builder, name) { }
 
@@ -107,6 +136,12 @@ public class Window : Widget
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_get_default_size", CallingConvention = CallingConvention.Cdecl)]
     extern static void GetSize(Window window, out int width, out int height);
 
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_new", CallingConvention = CallingConvention.Cdecl)]
+    extern static Window _New();
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_present", CallingConvention = CallingConvention.Cdecl)]
+    extern static void Present(Window window);
+
     bool forceClose;
 }
 
@@ -128,9 +163,9 @@ public static class WindowExtensions
         where THandle : Window
         => window.SideEffect(a => window.OnClose((Window win) => preventClosing(win)));
 
-    public static THandle ClosingAsync<THandle>(this THandle window, Func<Window, Task<bool>> preventClosing)
+    public static THandle Closing<THandle>(this THandle window, Func<Window, Task<bool>> preventClosing)
         where THandle : Window
-        => window.SideEffect(a => window.OnCloseAsync((Window win) => preventClosing(win)));
+        => window.SideEffect(a => window.OnClose((Window win) => preventClosing(win)));
 }
 
 

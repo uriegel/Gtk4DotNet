@@ -7,7 +7,7 @@ class MyWindow : ApplicationWindow
         dialogFromCode.OnClicked(OnDialog);
         dialogFromResource.OnClicked(OnDialogFromResource);
         dialogAppChooser.OnClicked(OnAppChoser);
-        OnCloseAsync(PreventClosing);
+        OnClose(PreventClosing);
     }
 
     async void OnDialog()

@@ -4,6 +4,8 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
+// TODO: All Widgets are release ready
+
 public static class Gtk
 {
     public static Task InvokeAsync(Action action, bool highPriority = false)
@@ -94,7 +96,7 @@ public static class Gtk
     {
         get;
         set;
-    } 
+    }
 
     public static bool GObjectTracing
     {
@@ -135,7 +137,7 @@ public static class Gtk
             Console.WriteLine();
             Console.WriteLine($"GFile AsyncReadies: {asyncReadies}");
         }
-        Console.WriteLine($"=========================================================================================");                
+        Console.WriteLine($"=========================================================================================");
     }
 
     public static char KeyValToUnicode(int keyVal, int keyCode)

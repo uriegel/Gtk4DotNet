@@ -2,8 +2,12 @@ using CsTools.Extensions;
 
 namespace Gtk4DotNet;
 
-// TODO Release ready
-
+/// <summary>
+/// A <see cref="Window"/> subclass that integrates with <see cref="Application"/>.
+/// </summary>
+/// <remarks>
+/// It is recommended to build a window from a .NET resource template.ui.
+/// </remarks>
 public class ApplicationWindow : Window
 {
     public ApplicationWindow() : base() { }
@@ -25,6 +29,13 @@ public class ApplicationWindow : Window
 
 public static class ApplicationWindowExtensions
 {
+    /// <summary>
+    /// Adds actions to this ActionMap.
+    /// </summary>
+    /// <typeparam name="THandle"></typeparam>
+    /// <param name="win"></param>
+    /// <param name="actions"></param>
+    /// <returns>The ApplicationWindow for chaining method calls</returns>
     public static THandle Actions<THandle>(this THandle win, params GtkAction[] actions)
         where THandle : ApplicationWindow
         => win.SideEffect(win => win.AddActions(actions));

@@ -3,8 +3,6 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
-// TODO Release ready
-
 public class ListBox : Widget
 {
     public SelectionMode SelectionMode
@@ -19,31 +17,66 @@ public class ListBox : Widget
         return listbox;
     }
 
+    /// <summary>
+    /// Inserts a listbox item from a .NET resource template.ui at the first position
+    /// </summary>
+    /// <param name="template">The resource name of the template.ui</param>
+    /// <param name="getWidget">CTor to create a listbox item from the template builder. <see cref="ListBox"/> will automatically wrap its children in a <see cref="ListBoxRow"/> when necessary.</param>
     public void PrependFromTemplate(string template, Func<Builder, Widget> getWidget)
     {
         using var builder = Builder.FromDotNetResource(template);
         Prepend(this, getWidget(builder));
     }
 
+    /// <summary>
+    /// Appends a listbox item from a .NET resource template.ui
+    /// </summary>
+    /// <param name="template">The resource name of the template.ui</param>
+    /// <param name="getWidget">CTor to create a listbox item from the template builder. <see cref="ListBox"/> will automatically wrap its children in a <see cref="ListBoxRow"/> when necessary.</param>
     public void AppendFromTemplate(string template, Func<Builder, Widget> getWidget)
     {
         using var builder = Builder.FromDotNetResource(template);
         Append(this, getWidget(builder));
     }
 
+    /// <summary>
+    /// Inserts a listbox item from a .NET resource template.ui
+    /// </summary>
+    /// <param name="template">The resource name of the template.ui</param>
+    /// <param name="getWidget">CTor to create a listbox item from the template builder. <see cref="ListBox"/> will automatically wrap its children in a <see cref="ListBoxRow"/> when necessary.</param>
+    /// <param name="position">Position at which the newly created listbox item is to be inserted.</param>
     public void InsertFromTemplate(string template, Func<Builder, Widget> getWidget, int position = -1)
     {
         using var builder = Builder.FromDotNetResource(template);
         Insert(this, getWidget(builder), position);
     }
 
+    /// <summary>
+    /// Returns the selected listbox item. The returned <see cref="ListBoxRow"/>
+    /// </summary>
+    /// <returns>A newly created <see cref="ListBoxRow"/> containig the listbox row handle and the attached managed data, if previously set</returns>
     public ListBoxRow GetSelectedRow() => GetSelectedRow(this);
 
+    /// <summary>
+    /// Returns the listbox item at the specified position. The returned <see cref="ListBoxRow"/>
+    /// </summary>
+    /// <param name="index"></param>
+    /// <returns>A newly created <see cref="ListBoxRow"/> containing the listbox row handle and the attached managed data, if previously set</returns>
     public ListBoxRow GetRowAtIndex(int index) => GetRowAtIndex(this, index);
 
+    /// <summary>
+    /// Select the listbox row at the specified position.
+    /// </summary>
+    /// <param name="row"></param>
     public void SelectRow(ListBoxRow row) => SelectRow(this, row);
 
-    public void SetHeaderFunc<THandle>(Action<ListBoxRow?, ListBoxRow?> onHeader)
+    /// <summary>
+    /// Sets a header function.
+    /// By setting a header function on the box one can dynamically add headers in front of rows, depending on the contents of the row and its position in the list.
+    /// For instance, one could use it to add headers in front of the first item of a new kind, in a list sorted by the kind.
+    /// </summary>
+    /// <param name="onHeader">Callback that is called for each listbox row and its predecessor, if available. With the help of <see cref="ListBoxRow.SetHeader(Widget)"/> you can set a header if the sonditions are right. </param>
+    public void SetHeaderFunc(Action<ListBoxRow?, ListBoxRow?> onHeader)
     {
         ThreePointerDelegate threePointerDelegate = (p1, p2, p3) =>
         {
@@ -57,12 +90,39 @@ public class ListBox : Widget
         SetHeaderFunc(this, Marshal.GetFunctionPointerForDelegate((Delegate)threePointerDelegate), 0, 0);
     }
 
+    /// <summary>
+    /// Installs a callback that is being called on listbox row activation
+    /// </summary>
+    /// <param name="onActivated"></param>
     public void OnRowActivated(Action onActivated) => SignalConnect<ThreePointerDelegate>("row-activated", (_, nint, __) => onActivated());
 
+    /// <summary>
+    /// Removes all items of this ListBox
+    /// </summary>
     public void RemoveAll() => RemoveAll(this);
+
+    /// <summary>
+    /// </summary>
+    /// <param name="widget">The listbox item to insert. <see cref="ListBox"/> will automatically wrap its children in a <see cref="ListBoxRow"/> when necessary.</param>
+    /// <param name="position">Position at which the listbox item is to be inserted.</param>
     public void Insert(Widget widget, int position = -1) => Insert(this, widget, position);
+
+    /// <summary>
+    /// Inserts a listbox item at the first position
+    /// </summary>
+    /// <param name="widget">The listbox item to insert. <see cref="ListBox"/> will automatically wrap its children in a <see cref="ListBoxRow"/> when necessary.</param>
     public void Prepend(Widget widget) => Prepend(this, widget);
+
+    /// <summary>
+    /// Appends listbox item
+    /// </summary>
+    /// <param name="widget">The listbox item to append. <see cref="ListBox"/> will automatically wrap its children in a <see cref="ListBoxRow"/> when necessary.</param>
     public void Append(Widget widget) => Append(this, widget);
+
+    /// <summary>
+    /// Removes a listbox item from the ListBox
+    /// </summary>
+    /// <param name="widget"></param>
     public void Remove(Widget widget) => Remove(this, widget);
 
     public ListBox() : base() { }

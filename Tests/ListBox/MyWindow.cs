@@ -6,7 +6,7 @@ class MyWindow : ApplicationWindow
 {
     public MyWindow(WindowBuilder builder) : base(builder)
     {
-        listbox.SetHeaderFunc<ListItem>((current, previous) =>
+        listbox.SetHeaderFunc((current, previous) =>
         {
             var currentListitem = current?.GetChild<ListItem>();
             var previousListitem = previous?.GetChild<ListItem>();

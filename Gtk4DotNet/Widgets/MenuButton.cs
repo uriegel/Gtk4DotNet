@@ -4,6 +4,9 @@ using Gtk4DotNet.Extensions;
 
 namespace Gtk4DotNet;
 
+/// <summary>
+/// A Gtk Menubutton. It is recommended to create the button in a teamplteate.ui .NET resource if the available methods and properties are not sufficient.
+/// </summary>
 public class MenuButton : Widget
 {
     public Arrow Direction
@@ -49,10 +52,6 @@ public class MenuButton : Widget
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_menu_button_set_direction", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetDirection(MenuButton menuButton, Arrow arrow);
 
-    // TODO     
-    // [DllImport(Libs.LibGtk, EntryPoint = "gtk_menu_button_set_menu_model", CallingConvention = CallingConvention.Cdecl)]
-    // extern static void SetModel(MenuButton menuButton, Menu menuModel);
-
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_menu_button_set_icon_name", CallingConvention = CallingConvention.Cdecl)]
     extern static nint GetIconName(MenuButton menuButton);
 
@@ -61,10 +60,6 @@ public class MenuButton : Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_menu_button_set_child", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetChild(MenuButton menuButton, Widget child);
-
-    // TODO     
-    // [DllImport(Libs.LibGtk, EntryPoint="gtk_menu_button_set_popover", CallingConvention = CallingConvention.Cdecl)]
-    // extern static void SetPopover(MenuButton menuButton, Popover popover);
 }
 
 public static class MenuButtonExtensions
@@ -72,17 +67,11 @@ public static class MenuButtonExtensions
     public static MenuButton Direction(this MenuButton menuButton, Arrow arrow)
         => menuButton.SideEffect(b => b.Direction = arrow);
 
-    // public static MenuButton Model(MenuButton menuButton, MenuHandle menuModel)
-    //     => menuButton.SideEffect(b => b.SetModel(menuModel));
-
     public static MenuButton IconName(this MenuButton menuButton, string name)
         => menuButton.SideEffect(b => b.IconName = name);
 
     public static MenuButton Child(this MenuButton menuButton, Widget child)
         => menuButton.SideEffect(b => b.SetChild(child));
-
-    // public static MenuButton Popover(MenuButton menuButton, PopoverHandle popover)
-    //     => menuButton.SideEffect(b => b.SetPopover(popover));
 }
 
 

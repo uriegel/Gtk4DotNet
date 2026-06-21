@@ -5,16 +5,22 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
-// TODO Release ready
-
 public class Button : Widget
 {
+    /// <summary>
+    /// A button can contain an icon by name
+    /// </summary>
     public string IconName
     {
         get => GetIconName(this).PtrToString(false) ?? "";
         set => SetIconName(this, value);
     }
     
+    /// <summary>
+    /// Creates a new button with a label.
+    /// </summary>
+    /// <param name="label"></param>
+    /// <returns></returns>
     public static Button NewWithLabel(string label)
     {
         var res = _NewWithLabel(label);
@@ -22,6 +28,10 @@ public class Button : Widget
         return res;
     }
 
+    /// <summary>
+    /// Callback when the button is being clicked
+    /// </summary>
+    /// <param name="click"></param>
     public void OnClicked(Action click) => SignalConnect<TwoPointerDelegate>("clicked", (_, __) => click());
 
     public Button() : base() { }
@@ -40,13 +50,26 @@ public class Button : Widget
 
 public static class ButtonExtensions
 {
+    /// <summary>
+    /// Callback when the button is being clicked
+    /// </summary>
+    /// <typeparam name="THandle"></typeparam>
+    /// <param name="button"></param>
+    /// <param name="click"></param>
+    /// <returns>This button so that chained method calls are possible</returns>
     public static THandle Clicked<THandle>(this THandle button, Action click)
         where THandle : Button
         => button.SideEffect(a => a.OnClicked(click));
 
+    /// <summary>
+    /// A button can contain an icon by name
+    /// </summary>
+    /// <typeparam name="THandle"></typeparam>
+    /// <param name="button"></param>
+    /// <param name="iconName"></param>
+    /// <returns>This button so that chained method calls are possible</returns>
     public static THandle IconName<THandle>(this THandle button, string iconName)
-        where THandle : Button    
+        where THandle : Button
         => button.SideEffect(b => b.IconName = iconName);
-
 }
 

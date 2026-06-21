@@ -3,8 +3,6 @@ using CsTools.Extensions;
 
 namespace Gtk4DotNet;
 
-// TODO Release ready
-
 public class Box : Widget
 {
     public int Spacing
@@ -33,7 +31,7 @@ public class Box : Widget
         => this.SideEffect(_ => SetSpacing(this, spacing));
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_box_new", CallingConvention = CallingConvention.Cdecl)]
-    public extern static Box _New(Orientation orientation, int spacing = 0);
+    extern static Box _New(Orientation orientation, int spacing = 0);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_box_append", CallingConvention = CallingConvention.Cdecl)]
     extern static void Append(Box box, Widget widget);
