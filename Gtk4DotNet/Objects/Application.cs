@@ -4,7 +4,7 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
-// Release ready
+// TODO OnCommandLine
 
 /// <summary>
 /// The GTK Application. 
@@ -15,10 +15,11 @@ public class Application : GObject
     /// Creates a new GtkApplication. It is not neccessary to call Gtk.Init
     /// </summary>
     /// <param name="applicationId">The Gtk Application ID this appltcation is connected to</param>
+    /// <param name="flags"></param>
     /// <returns>Application for chaining calls</returns>
-    public static Application New(string applicationId)
+    public static Application New(string applicationId, ApplicationFlags flags = ApplicationFlags.None)
     {
-        var app = _New(applicationId, 0);
+        var app = _New(applicationId, flags);
         Gtk.Init();
         return app;
     }
@@ -27,10 +28,11 @@ public class Application : GObject
     /// Creates a new Adwaita application
     /// </summary>
     /// <param name="applicationId">The Gtk Application ID this application is connected to</param>
+    /// <param name="flags"></param>
     /// <returns>Application for chaining calls</returns>
-    public static Application NewAdwaita(string applicationId)
+    public static Application NewAdwaita(string applicationId, ApplicationFlags flags = ApplicationFlags.None)
     {
-        var app = _NewAdw(applicationId, 0);
+        var app = _NewAdw(applicationId, flags);
         Gtk.Init();
         return app;
     }
@@ -42,6 +44,25 @@ public class Application : GObject
     /// <returns>Application for chaining calls</returns>
     public Application OnActivate(Action<Application> activate)
         => this.SideEffect(_ => SignalConnect<OnePointerDelegate>("activate", _ => activate(this)));
+
+    public Application OnOpen(Action<Application, GFile[]> onOpen)
+    {
+        SignalConnect<FivePointerDelegate>("open", (_, filesPtr, n, _, _) =>
+        {
+            var files = Enumerable.Range(0, (int)n).Select(n =>
+            {
+                var p = Marshal.ReadIntPtr(filesPtr, n * IntPtr.Size);
+                var gfile = new GFile();
+                gfile.SetInternalHandle(p);
+                gfile.AutoDestroyed = true;
+                gfile.CheckDiagnostics();
+                return gfile;
+
+            }).ToArray();
+            onOpen(this, files);
+        });
+        return this;
+    }
 
     /// <summary>
     /// When Diagnostics are switched on, a report of probably not released delegates or object is displayed in the console. This mehtod has to called before other GObject base types are created.
@@ -72,7 +93,21 @@ public class Application : GObject
     /// <returns>Exit status</returns>
     public int Run()
     {
-        var result = _Run(this, 0, 0);
+        var args = Environment.GetCommandLineArgs();
+        // Allocate argv array
+        var argvPtrs = new IntPtr[args.Length];
+        for (int i = 0; i < args.Length; i++)
+            argvPtrs[i] = Marshal.StringToHGlobalAnsi(args[i]);
+        var argv = Marshal.AllocHGlobal(IntPtr.Size * args.Length);
+        for (int i = 0; i < args.Length; i++)
+            Marshal.WriteIntPtr(argv, i * IntPtr.Size, argvPtrs[i]);
+        var result = _Run(this, args.Length, argv);
+
+        // Cleanup
+        for (int i = 0; i < args.Length; i++)
+            Marshal.FreeHGlobal(argvPtrs[i]);
+        Marshal.FreeHGlobal(argv);
+
         Dispose();
         if (Gtk.Diagnostics)
             Gtk.ShowDiagnostics();
@@ -129,10 +164,10 @@ public class Application : GObject
     internal void SetAccelsForAction(string action, [In] string?[] accels) => SetAccelsForAction(this, action, accels);
 
     [DllImport(Libs.LibAdw, EntryPoint = "adw_application_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static Application _NewAdw(string id, int flags = 0);
+    extern static Application _NewAdw(string id, ApplicationFlags flags);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static Application _New(string id, int flags = 0);
+    extern static Application _New(string id, ApplicationFlags flags);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_application_run", CallingConvention = CallingConvention.Cdecl)]
     extern static int _Run(Application app, int c, nint a);
@@ -148,7 +183,7 @@ public class Application : GObject
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_remove_window", CallingConvention = CallingConvention.Cdecl)]
     extern static void RemoveWindow(Application app, Window window);
-    
+
     readonly GtkActions actions = new(false);
 }
 

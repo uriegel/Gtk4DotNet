@@ -31,3 +31,5 @@ Tests/Volumes/bin
 Tests/Volumes/obj
 Tests/WebViewFromResource/bin
 Tests/WebViewFromResource/obj
+Tests/ExampleApp/bin
+Tests/ExampleApp/obj

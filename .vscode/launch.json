@@ -37,22 +37,6 @@
             },
             "console": "internalConsole"
         }, {
-            "name": "Copy File",
-            "type": "coreclr",
-            "request": "launch",
-            "requireExactSource": true, 
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Tests/FileCopy/bin/Debug/net10.0/FileCopy.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}/Tests/FileCopy",
-            "stopAtEntry": false,
-            "justMyCode": false,
-            "enableStepFiltering": true,
-            "env": {
-//                "DOTNET_EnableDiagnostics": "0" // <- optional
-            },
-            "console": "internalConsole"
-        }, {
             "name": "Builder",
             "type": "coreclr",
             "request": "launch",
@@ -149,22 +133,6 @@
             },
             "console": "internalConsole"
         }, {
-            "name": "Icons",
-            "type": "coreclr",
-            "request": "launch",
-            "requireExactSource": true, 
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Tests/Icons/bin/Debug/net10.0/Icons.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}/Tests/Icons",
-            "stopAtEntry": false,
-            "justMyCode": false,
-            "enableStepFiltering": true,
-            "env": {
-//                "DOTNET_EnableDiagnostics": "0" // <- optional
-            },
-            "console": "internalConsole"
-        }, {
             "name": "ListBox",
             "type": "coreclr",
             "request": "launch",
@@ -229,6 +197,39 @@
             },
             "console": "internalConsole"
         }, {
+            "name": "Gtk4 Example",
+            "type": "coreclr",
+            "request": "launch",
+            "requireExactSource": true, 
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Tests/ExampleApp/bin/Debug/net10.0/ExampleApp.dll",
+            // "args": ["Program.cs", "MyWindow.cs"],
+            "args": [],
+            "cwd": "${workspaceFolder}/Tests/ExampleApp",
+            "stopAtEntry": false,
+            "justMyCode": false,
+            "enableStepFiltering": true,
+            "env": {
+//                "DOTNET_EnableDiagnostics": "0" // <- optional
+            },
+            "console": "internalConsole"
+        }, {
+            "name": "Copy File",
+            "type": "coreclr",
+            "request": "launch",
+            "requireExactSource": true, 
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Tests/FileCopy/bin/Debug/net10.0/FileCopy.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Tests/FileCopy",
+            "stopAtEntry": false,
+            "justMyCode": false,
+            "enableStepFiltering": true,
+            "env": {
+//                "DOTNET_EnableDiagnostics": "0" // <- optional
+            },
+            "console": "internalConsole"
+        }, {
             "name": "Volume Monitoring",
             "type": "coreclr",
             "request": "launch",
@@ -237,6 +238,22 @@
             "program": "${workspaceFolder}/Tests/Volumes/bin/Debug/net10.0/Volumes.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Tests/Volumes",
+            "stopAtEntry": false,
+            "justMyCode": false,
+            "enableStepFiltering": true,
+            "env": {
+//                "DOTNET_EnableDiagnostics": "0" // <- optional
+            },
+            "console": "internalConsole"
+        }, {
+            "name": "Icons",
+            "type": "coreclr",
+            "request": "launch",
+            "requireExactSource": true, 
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Tests/Icons/bin/Debug/net10.0/Icons.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Tests/Icons",
             "stopAtEntry": false,
             "justMyCode": false,
             "enableStepFiltering": true,
