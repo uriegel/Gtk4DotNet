@@ -4,7 +4,7 @@
   <!-- interface-name window.ui -->
   <requires lib="gio" version="2.0"/>
   <requires lib="gtk" version="4.20"/>
-  <object class="GtkWindow" id="window">
+  <object class="GtkApplicationWindow" id="window">
     <property name="default-height">400</property>
     <property name="default-width">600</property>
     <property name="title" translatable="yes">Example Application👍</property>
@@ -18,22 +18,7 @@
         <child type="end">
           <object class="GtkMenuButton" id="gears">
             <property name="direction">none</property>
-            <property name="menu-model">
-              <menu>
-                <section>
-                  <item>
-                    <attribute name="action">app.preferences</attribute>
-                    <attribute name="label" translatable="yes">_Preferences</attribute>
-                  </item>
-                </section>
-                <section>
-                  <item>
-                    <attribute name="action">app.quit</attribute>
-                    <attribute name="label" translatable="yes">_Quit</attribute>
-                  </item>
-                </section>
-              </menu>
-            </property>
+            <property name="menu-model">main-menu</property>
           </object>
         </child>
       </object>
@@ -49,4 +34,18 @@
       </object>
     </child>
   </object>
+  <menu id="main-menu">
+    <section>
+      <item>
+        <attribute name="action">app.preferences</attribute>
+        <attribute name="label" translatable="yes">_Preferences</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="action">win.quit</attribute>
+        <attribute name="label" translatable="yes">_Quit</attribute>
+      </item>
+    </section>
+  </menu>
 </interface>

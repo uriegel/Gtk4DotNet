@@ -7,6 +7,10 @@ class MyWindow : ApplicationWindow
     public MyWindow(WindowBuilder builder) : base(builder)
     {
         Instance = this;
+        AddActions(
+            new SimpleAction("quit", CloseWindow, "<Ctrl>Q")
+        );
+
     }
 
     public void OnOpen(GFile file)
