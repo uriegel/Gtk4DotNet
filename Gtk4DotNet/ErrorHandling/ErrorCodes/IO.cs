@@ -1,5 +1,8 @@
 namespace Gtk4DotNet.ErrorHandling.ErrorCodes;
 
+/// <summary>
+/// All Gio error codes
+/// </summary>
 public enum IO
 {
     Failed = 0,

@@ -4,7 +4,14 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
-// TODO: All Widgets are release ready
+// TODO: Folder Widgets is release ready
+// TODO: Folder Actions is release ready
+// TODO: Folder Attributes is release ready
+// TODO: Folder Enums is release ready
+// TODO: Folder ErrorHandling is release ready
+// TODO: Folder Extensions is release ready
+// TODO: Folder Gestures is release ready
+// TODO: Folder Gio is release ready
 
 public static class Gtk
 {
@@ -20,6 +27,26 @@ public static class Gtk
             {
                 action();
                 tcs.TrySetResult();
+            }
+            catch (Exception e)
+            {
+                tcs.TrySetException(e);
+            }
+        });
+        return tcs.Task;
+    }
+
+    public static Task<T> InvokeAsync<T>(Func<T> action, bool highPriority = false)
+        => InvokeAsync(action, highPriority ? 100 : 200);
+
+    public static Task<T> InvokeAsync<T>(Func<T> action, int priority)
+    {
+        var tcs = new TaskCompletionSource<T>(TaskCreationOptions.RunContinuationsAsynchronously);
+        BeginInvoke(priority, () =>
+        {
+            try
+            {
+                tcs.TrySetResult(action());
             }
             catch (Exception e)
             {
@@ -56,26 +83,6 @@ public static class Gtk
         }
     }
 
-    public static Task<T> InvokeAsync<T>(Func<T> action, bool highPriority = false)
-        => InvokeAsync(action, highPriority ? 100 : 200);
-
-    public static Task<T> InvokeAsync<T>(Func<T> action, int priority)
-    {
-        var tcs = new TaskCompletionSource<T>(TaskCreationOptions.RunContinuationsAsynchronously);
-        BeginInvoke(priority, () =>
-        {
-            try
-            {
-                tcs.TrySetResult(action());
-            }
-            catch (Exception e)
-            {
-                tcs.TrySetException(e);
-            }
-        });
-        return tcs.Task;
-    }
-
     public static void IdleAdd(int priority, Action action)
     {
         // var key = GtkDelegates.Instance.GetKey();
@@ -90,12 +97,6 @@ public static class Gtk
         // var delegat = mainFunction as Delegate;
         // var funcPtr = Marshal.GetFunctionPointerForDelegate(delegat);
         // IdleAddFull(priority, funcPtr, IntPtr.Zero, IntPtr.Zero);
-    }
-
-    internal static bool Diagnostics
-    {
-        get;
-        set;
     }
 
     public static bool GObjectTracing
@@ -140,7 +141,13 @@ public static class Gtk
         Console.WriteLine($"=========================================================================================");
     }
 
-    public static char KeyValToUnicode(int keyVal, int keyCode)
+    internal static bool Diagnostics
+    {
+        get;
+        set;
+    }
+
+    internal static char KeyValToUnicode(int keyVal, int keyCode)
         => keyCode switch
         {
             22 => (char)ConsoleKey.Backspace,
@@ -166,7 +173,7 @@ public static class Gtk
             _ => (char)_KeyValToUnicode(keyVal)
         };
 
-    public static char RawKeyValToUnicode(int keyVal) => (char)_KeyValToUnicode(keyVal);
+    internal static char RawKeyValToUnicode(int keyVal) => (char)_KeyValToUnicode(keyVal);
 
     internal static void Init() =>
         SynchronizationContext.SetSynchronizationContext(

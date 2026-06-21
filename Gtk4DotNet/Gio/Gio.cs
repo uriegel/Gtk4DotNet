@@ -5,6 +5,11 @@ namespace Gtk4DotNet;
 
 public static class Gio
 {
+    /// <summary>
+    /// Gets the content type of a file
+    /// </summary>
+    /// <param name="filename"></param>
+    /// <returns>The guessed content type</returns>
     public static string? GuessContentType(string filename)
         => GuessContentType(filename, 0, 0, 0).PtrToString(true);
 

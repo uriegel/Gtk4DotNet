@@ -2,10 +2,19 @@ using Gtk4DotNet.ErrorHandling;
 
 namespace Gtk4DotNet;
 
+/// <summary>
+/// Base class of all Gtk exceptions
+/// </summary>
 public class GtkException : Exception
 {
+    /// <summary>
+    /// The Gtk error domain
+    /// </summary>
     public string Domain { get; }
 
+    /// <summary>
+    /// The error code that belongs to <see cref="Domain"/>
+    /// </summary>
     public int Code { get; }
 
     internal static Exception Get(nint gerror, bool free)
@@ -26,7 +35,7 @@ public class GtkException : Exception
         Code = error.Code;
     }
 
-    internal GtkException(string domain, int code, string message)  
+    internal GtkException(string domain, int code, string message)
         : base(message)
     {
         Domain = domain;
