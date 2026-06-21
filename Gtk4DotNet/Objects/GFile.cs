@@ -21,12 +21,12 @@ public class GFile : GObject
         return file;
     }
 
-    public string? LoadStringContents()
+    public string LoadStringContents()
     {
         var result = LoadContents(this, Cancellable.None(), out var content, out var length, IntPtr.Zero, IntPtr.Zero);
         return result
             ? content.PtrToString(true) ?? ""
-            : null;
+            : "";
     }
 
     public Task TrashAsync()

@@ -4,9 +4,9 @@
   <!-- interface-name window.ui -->
   <requires lib="gtk" version="4.20"/>
   <object class="GtkWindow" id="window">
-    <property name="title" translatable="yes">Example Application👍</property>
-    <property name="default-width">600</property>
     <property name="default-height">400</property>
+    <property name="default-width">600</property>
+    <property name="title" translatable="yes">Example Application👍</property>
     <child type="titlebar">
       <object class="GtkHeaderBar" id="header">
         <child type="title">
@@ -20,7 +20,9 @@
       <object class="GtkBox" id="content_box">
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkStack" id="stack"/>
+          <object class="GtkStack" id="stack">
+            <property name="vexpand">True</property>
+          </object>
         </child>
       </object>
     </child>

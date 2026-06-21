@@ -15,6 +15,9 @@
     <EmbeddedResource Include="./window.ui">
       <LogicalName>window</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="./fileview.ui">
+      <LogicalName>fileview</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

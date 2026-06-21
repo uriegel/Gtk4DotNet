@@ -11,8 +11,9 @@ class MyWindow : ApplicationWindow
 
     public void OnOpen(GFile file)
     {
-        var label = Label.New(file.Path);
-        stack.AddTitled(label, file.GetBasename(), file.GetBasename());
+        using var builder = Builder.FromDotNetResource("fileview");
+        using var fileView = new FileView(file.LoadStringContents(), builder, "fileview");
+        stack.AddTitled(fileView, file.GetBasename(), file.GetBasename());
     }
 
     [Widget]
