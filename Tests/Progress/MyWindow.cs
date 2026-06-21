@@ -13,8 +13,8 @@ class MyWindow : ApplicationWindow
             StyleProviderPriority.Application);
     }
 
-    // TODO to REAMDME.md
-    [SuppressMessage("Compiler", "CS0414", Justification = "Bound from GtkBuilder template")]
+    // TODO to README.md
+    #pragma warning disable 0414
     [Widget]
     readonly ProgressDisplay revealer = null!;
 }
