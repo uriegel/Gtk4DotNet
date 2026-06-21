@@ -1,7 +1,7 @@
 ﻿using Gtk4DotNet;
 
 Application
-    .NewAdwaita("de.uriegel.gtk4dotnet", ApplicationFlags.HandlesOpen)
+    .NewAdwaita("de.uriegel.gtk4dotnet.example", ApplicationFlags.HandlesOpen)
     .WithDiagnostics(true)
     .OnOpen((app, files) =>
     {
