@@ -83,9 +83,16 @@ public class GObject : BaseHandle
     /// <param name="target"></param>
     /// <param name="targetProperty"></param>
     /// <param name="flags"></param>
-    public void BindProperty(string property, GObject target, string targetProperty, BindingFlags flags)
+    public void BindProperty(string property, GObject target, string targetProperty, BindingFlags flags = BindingFlags.Default)
         => BindProperty(this, property, target, targetProperty, flags);
 
+    public PropertyAction CreatePropertyAction(string name, string propertyName, string? accelerator = null)
+    {
+        var action = NewPropertyAction(name, this, propertyName);
+        action.CheckDiagnostics();
+        return new(name, action, accelerator);
+    }
+         
     /// <summary>
     /// Sets a managed object to this GObject instance
     /// </summary>
@@ -268,6 +275,10 @@ public class GObject : BaseHandle
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_is_floating", CallingConvention = CallingConvention.Cdecl)]
     extern static bool _HasFloatingRef(GObject obj);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_property_action_new", CallingConvention = CallingConvention.Cdecl)]
+    extern static ActionHandle NewPropertyAction(string name, GObject obj, string propertyName);
+
 
     bool diagnosticsSet;
 }

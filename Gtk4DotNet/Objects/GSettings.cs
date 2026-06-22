@@ -13,7 +13,7 @@ public class GSettings : GObject
         return settings;
     }
 
-    public void Bind(string key, GObject obj, string property, BindFlags flags) => Bind(this, key, obj, property, flags);
+    public void Bind(string key, GObject obj, string property, BindFlags flags = BindFlags.Default) => Bind(this, key, obj, property, flags);
 
     public bool SchemaHasKey(string key)
     {

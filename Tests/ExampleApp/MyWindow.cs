@@ -11,10 +11,11 @@ class MyWindow : ApplicationWindow
         sidebarRevealer.IsRevealed = true;
 
         using var settings = GSettings.New(Globals.ApplicationId);
-        settings.Bind("transition", stack, "transition-type", BindFlags.Default);
-        settings.Bind("show-words", sidebarRevealer, "reveal-child", BindFlags.Default);
+        settings.Bind("transition", stack, "transition-type");
+        settings.Bind("show-words", sidebarRevealer, "reveal-child");
         searchEntry.OnSearchChanged(SearchTextChanged);
         search.BindProperty("active", searchbar, "search-mode-enabled", BindingFlags.Bidirectional);
+        lines.BindProperty("visible", linesLabel, "visible");
         stack.OnNotify("visible-child", () =>
         {
             searchbar.SearchMode = false;
@@ -24,7 +25,8 @@ class MyWindow : ApplicationWindow
         AddActions(
             new SimpleAction("preferences", ShowPreferences),
             new SimpleAction("quit", CloseWindow, "<Ctrl>Q"),
-                settings.CreateAction("show-words", "<Ctrl>W")
+            settings.CreateAction("show-words", "<Ctrl>W"),
+            lines.CreatePropertyAction("show-lines", "visible", "<Ctrl>L")
         );
     }
 
@@ -96,22 +98,28 @@ class MyWindow : ApplicationWindow
     }
 
     [Widget]
-    Stack stack = null!;
+    readonly Stack stack = null!;
 
     [Widget]
-    Widget search = null!;
+    readonly Widget search = null!;
 
     [Widget]
-    SearchEntry searchEntry = null!;
+    readonly SearchEntry searchEntry = null!;
 
     [Widget]
-    SearchBar searchbar = null!;
+    readonly SearchBar searchbar = null!;
 
     [Widget]
-    Revealer sidebarRevealer = null!;
+    readonly Revealer sidebarRevealer = null!;
 
     [Widget]
-    ListBox words = null!;
+    readonly ListBox words = null!;
+
+    [Widget]
+    readonly Label lines = null!;
+
+    [Widget]
+    readonly Label linesLabel = null!;
 }
 
 class MyButton : Button

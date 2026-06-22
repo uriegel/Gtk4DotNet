@@ -10,6 +10,17 @@
     <property name="title" translatable="yes">Example Application👍</property>
     <child type="titlebar">
       <object class="GtkHeaderBar" id="header">
+        <child>
+          <object class="GtkLabel" id="linesLabel">
+            <property name="visible">0</property>
+            <property name="label" translatable="yes">Lines:</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel" id="lines">
+            <property name="visible">0</property>
+          </object>
+        </child>
         <child type="title">
           <object class="GtkStackSwitcher" id="tabs">
             <property name="stack">stack</property>
@@ -71,6 +82,10 @@
       <item>
         <attribute name="action">win.show-words</attribute>
         <attribute name="label" translatable="yes">_Words</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Lines</attribute>
+        <attribute name="action">win.show-lines</attribute>
       </item>
       <item>
         <attribute name="action">win.preferences</attribute>

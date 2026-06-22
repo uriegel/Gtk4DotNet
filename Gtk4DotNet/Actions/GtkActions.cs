@@ -52,6 +52,11 @@ class GtkActions(bool freeActions)
                 AddAction(actionMap, settingsAction.Action);
                 settingsActions.Add(settingsAction.Action);
             }
+            else if (action is PropertyAction propertyAction)
+            {
+                AddAction(actionMap, propertyAction.Action);
+                settingsActions.Add(propertyAction.Action);
+            }
         }
 
         actionMap.AddWeakRef(Cleanup);
