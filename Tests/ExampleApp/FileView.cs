@@ -9,7 +9,7 @@ class FileView : ScrolledWindow
         using var buffer = textview.GetBuffer();
         buffer.SetText(text);
         var tag = buffer.CreateTag(null, null);
-        using var settings = GSettings.New(Globals.ApplicationId);
+        using var settings = GSettings.New(Globals.ApplicationId, true);
         settings.Bind("font", tag, "font", BindFlags.Default);
         buffer.ApplyTag(tag, buffer.GetStartIter(), buffer.GetEndIter());
     }

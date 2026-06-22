@@ -5,11 +5,12 @@ namespace Gtk4DotNet;
 
 public class GSettings : GObject
 {
-    public static GSettings New(string schemaId)
+    public static GSettings New(string schemaId, bool dontCheckDiagnostics = false)
     {
         var settings = _New(schemaId);
         settings.SchemaId = schemaId;
-        settings.CheckDiagnostics();
+        if (!dontCheckDiagnostics)
+            settings.CheckDiagnostics();
         return settings;
     }
 

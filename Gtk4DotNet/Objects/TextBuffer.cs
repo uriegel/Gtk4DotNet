@@ -16,7 +16,9 @@ public class TextBuffer : GObject
     {
         var res = CreateTag(this, name, firstProperty);
         res.AutoDestroyed = true;
-        res.CheckDiagnostics();
+
+        // Do not call this because TextBuffer leaks when a range was set
+        // res.CheckDiagnostics();
         return res;
     }
 

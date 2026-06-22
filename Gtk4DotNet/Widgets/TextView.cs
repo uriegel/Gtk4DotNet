@@ -18,7 +18,8 @@ public class TextView : Widget
     {
         var buffer = GetBuffer(this);
         buffer.AutoDestroyed = true;
-        buffer.CheckDiagnostics();
+        // Don't call this because TextBuffer can leak when a range is set
+        //buffer.CheckDiagnostics();
         return buffer;
     }
 
