@@ -13,13 +13,17 @@ class MyWindow : ApplicationWindow
         settings.Bind("show-words", sidebarRevealer, "reveal-child", BindFlags.Default);
         searchEntry.OnSearchChanged(SearchTextChanged);
         search.BindProperty("active", searchbar, "search-mode-enabled", BindingFlags.Bidirectional);
-        stack.OnNotify("visible-child", () => searchbar.SearchMode = false);
+        stack.OnNotify("visible-child", () =>
+        {
+            searchbar.SearchMode = false;
+            UpdateWords();
+        });
+        sidebarRevealer.OnNotify("reveal-child", UpdateWords);
         AddActions(
             new SimpleAction("preferences", ShowPreferences),
             new SimpleAction("quit", CloseWindow, "<Ctrl>Q"),
-            settings.CreateAction("show-words", "<Ctrl>W")
+                settings.CreateAction("show-words", "<Ctrl>W")
         );
-        // TODO settings and actionhandle not released
     }
 
     public void OnOpen(GFile file)
@@ -28,6 +32,7 @@ class MyWindow : ApplicationWindow
         using var fileView = new FileView(file.LoadStringContents(), builder, "fileview");
         stack.AddTitled(fileView, file.GetBasename(), file.GetBasename());
         search.Sensitive = true;
+        UpdateWords();
     }
 
     void ShowPreferences()
@@ -41,7 +46,7 @@ class MyWindow : ApplicationWindow
     {
         var text = searchEntry.AsEditable().GetText();
         var textview = stack.GetVisibleChild<ScrolledWindow>()?.GetChild<TextView>();
-        var buffer = textview?.GetBuffer();
+        using var buffer = textview?.GetBuffer();
         if (textview == null || buffer == null)
             return;
         var startIter = buffer.GetStartIter();
@@ -49,6 +54,42 @@ class MyWindow : ApplicationWindow
         {
             buffer.SelectRange(range.Value);
             textview.ScrollToIter(range.Value.Start);
+        }
+    }
+
+    void UpdateWords()
+    {
+        var textview = stack.GetVisibleChild<ScrolledWindow>()?.GetChild<TextView>();
+        var buffer = textview?.GetBuffer();
+        if (textview == null || buffer == null)
+            return;
+
+        var wordHash = GetWords(buffer).ToHashSet();
+        words.RemoveAll();
+        foreach (var word in wordHash)
+        {
+            var item = Label.New(word);
+            words.Append(item);
+        }
+    }
+
+    static IEnumerable<string> GetWords(TextBuffer buffer)
+    {
+
+        var start = buffer.GetStartIter();
+        var end = new TextIter();
+        while (!start.IsEnd())
+        {
+            while (!start.StartsWord())
+            {
+                if (!start.ForwardChar())
+                    yield break;
+            }
+            end = start;
+            if (!end.ForwardWordEnd())
+                yield break;
+            yield return buffer.GetText(start, end, false);
+            start = end;
         }
     }
 
@@ -66,6 +107,9 @@ class MyWindow : ApplicationWindow
 
     [Widget]
     Revealer sidebarRevealer = null!;
+
+    [Widget]
+    ListBox words = null!;
 }
 
 class MyButton : Button

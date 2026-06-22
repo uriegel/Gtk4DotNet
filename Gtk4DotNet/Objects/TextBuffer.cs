@@ -1,10 +1,14 @@
 using System.Runtime.InteropServices;
+using Gtk4DotNet.Extensions;
 
 namespace Gtk4DotNet;
 
 public class TextBuffer : GObject
 {
     public void SetText(string text) => SetText(this, text, text.Length);
+
+    public string GetText(TextIter start, TextIter end, bool includeHiddenChars)
+        => GetText(this, ref start, ref end, includeHiddenChars).PtrToString(true) ?? "";
 
     public TextTag CreateTag(string? name, string? firstProperty)
     {
@@ -65,4 +69,7 @@ public class TextBuffer : GObject
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_text_buffer_get_iter_at_offset", CallingConvention = CallingConvention.Cdecl)]
     extern static void GetIterAtOffset(TextBuffer buffer, ref TextIter iter, int offset);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_text_buffer_get_text", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint GetText(TextBuffer buffer, ref TextIter start, ref TextIter end, bool includeHiddenChars);
 }

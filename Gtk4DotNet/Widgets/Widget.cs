@@ -276,6 +276,9 @@ public class Widget : GObject
     public void OnRealize(Action action)
         => SignalConnect<TwoPointerDelegate>("realize", (_, __) => action());
 
+    public void OnUnrealize(Action action)
+        => SignalConnect<TwoPointerDelegate>("unrealize", (_, __) => action());
+
     /// <summary>
     /// Used to register a widget so it can be found by its Gtk handle value. Used for example in a ListBox, when callbacks delivering handles
     /// </summary>
