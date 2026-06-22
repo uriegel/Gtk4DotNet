@@ -11,6 +11,7 @@ class MyWindow : ApplicationWindow
         settings.Bind("transition", stack, "transition-type", BindFlags.Default);
         searchEntry.OnSearchChanged(SearchTextChanged);
         search.BindProperty("active", searchbar, "search-mode-enabled", BindingFlags.Bidirectional);
+        stack.OnNotify("visible-child", () => searchbar.SearchMode = false);
 
         AddActions(
             new SimpleAction("preferences", ShowPreferences),
@@ -36,6 +37,16 @@ class MyWindow : ApplicationWindow
     void SearchTextChanged()
     {
         var text = searchEntry.AsEditable().GetText();
+        var textview = stack.GetVisibleChild<ScrolledWindow>()?.GetChild<TextView>();
+        var buffer = textview?.GetBuffer();
+        if (textview == null || buffer == null)
+            return;
+        var startIter = buffer.GetStartIter();
+        if (startIter.ForwardSearch(text, SearchFlags.CaseInsensitive) is var range && range.HasValue)
+        {
+            buffer.SelectRange(range.Value);
+            textview.ScrollToIter(range.Value.Start);
+        }
     }
 
     [Widget]
@@ -48,7 +59,7 @@ class MyWindow : ApplicationWindow
     SearchEntry searchEntry = null!;
 
     [Widget]
-    Widget searchbar = null!;
+    SearchBar searchbar = null!;
 }
 
 class MyButton : Button

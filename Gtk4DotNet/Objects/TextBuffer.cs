@@ -2,8 +2,6 @@ using System.Runtime.InteropServices;
 
 namespace Gtk4DotNet;
 
-// TODO Release ready
-
 public class TextBuffer : GObject
 {
     public void SetText(string text) => SetText(this, text, text.Length);
@@ -18,7 +16,7 @@ public class TextBuffer : GObject
 
     public void ApplyTag(TextTag tag, TextIter startIter, TextIter endIter)
         => ApplyTag(this, tag, ref startIter, ref endIter);
-    
+
     public TextIter GetStartIter()
     {
         GetStartIter(this, out var res);
@@ -31,6 +29,22 @@ public class TextBuffer : GObject
         return res;
     }
 
+    public void SelectRange(int startPos, int endPos)
+    {
+        var start = new TextIter();
+        GetIterAtOffset(this, ref start, startPos);
+        var end = new TextIter();
+        GetIterAtOffset(this, ref end, endPos);
+        SelectRange(this, ref start, ref end);
+    }
+
+    public void SelectRange(RangeIter range)
+    {
+        var s = range.Start;
+        var e = range.End;
+        SelectRange(this, ref s, ref e);
+    }
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_text_buffer_set_text", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetText(TextBuffer buffer, string text, int length);
 
@@ -39,10 +53,16 @@ public class TextBuffer : GObject
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_text_buffer_apply_tag", CallingConvention = CallingConvention.Cdecl)]
     extern static void ApplyTag(TextBuffer buffer, TextTag tag, ref TextIter startIter, ref TextIter endIter);
-    
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_text_buffer_get_start_iter", CallingConvention = CallingConvention.Cdecl)]
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_text_buffer_get_start_iter", CallingConvention = CallingConvention.Cdecl)]
     extern static void GetStartIter(TextBuffer buffer, out TextIter startIter);
 
-    [DllImport(Libs.LibGtk, EntryPoint="gtk_text_buffer_get_end_iter", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_text_buffer_get_end_iter", CallingConvention = CallingConvention.Cdecl)]
     extern static void GetEndIter(TextBuffer buffer, out TextIter endIter);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_text_buffer_select_range", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SelectRange(TextBuffer buffer, ref TextIter matchStart, ref TextIter matchEnd);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_text_buffer_get_iter_at_offset", CallingConvention = CallingConvention.Cdecl)]
+    extern static void GetIterAtOffset(TextBuffer buffer, ref TextIter iter, int offset);
 }

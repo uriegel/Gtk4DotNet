@@ -18,6 +18,19 @@ public class Stack : Widget
     /// <param name="name"></param>
     /// <param name="title"></param>
     public void AddTitled(Widget child, string name, string title) => AddTitled(this, child, name, title);
+
+    public T? GetVisibleChild<T>()
+        where T: Widget, new() 
+    {
+        var t = new T();
+        var ptr = GetVisibleChild(this);
+        if (ptr == 0)
+            return null;
+        t.SetInternalHandle(ptr);
+        t.CheckDiagnostics();
+        t.AutoDestroyed = true;
+        return t;
+    }
     
     public Stack() : base() { }
 
@@ -25,4 +38,7 @@ public class Stack : Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_stack_add_titled", CallingConvention = CallingConvention.Cdecl)]
     extern static void AddTitled(Stack stack, Widget child, string name, string title);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_stack_get_visible_child", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint GetVisibleChild(Stack stack);
 }
