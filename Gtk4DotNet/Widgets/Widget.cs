@@ -79,6 +79,12 @@ public class Widget : GObject
         set => SetVisible(this, value);
     }
 
+    public bool Sensitive
+    {
+        get => GetSensitive(this);
+        set => SetSensitive(this, value);
+    }
+
     public double Opacity
     {
         get => GetOpacity(this);
@@ -288,7 +294,7 @@ public class Widget : GObject
     public static TWidget? GetRegistered<TWidget>(nint widgetKey) where TWidget : Widget
         => widgets.TryGetValue(widgetKey, out var val) ? val as TWidget : null;
 
-#endregion
+    #endregion
 
     #region Constructor
 
@@ -357,7 +363,7 @@ W A R N I N G
     #endregion
 
     #region Internals
-    
+
     protected override void OnDiagnostics()
         => Console.WriteLine(Name != null ? $"{GetType().Name} {Name} finalized" : $"{GetType().Name} finalized");
 
@@ -463,6 +469,12 @@ W A R N I N G
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_set_size_request", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetSizeRequest(Widget widget, int width, int height);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_sensitive", CallingConvention = CallingConvention.Cdecl)]
+    extern static bool GetSensitive(Widget widget);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_set_sensitive", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetSensitive(Widget widget, bool value);
 
     #endregion
 }

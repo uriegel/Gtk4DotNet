@@ -6,7 +6,7 @@ namespace Gtk4DotNet;
 /// A single-line text entry widget for use as a search entry.
 /// The main API for interacting with a SearchEntry as entry is the Editable interface.
 /// </summary>
-public class SearchEntry : Widget, Editable
+public class SearchEntry : Widget
 {
     /// <summary>
     /// Emitted with a delay. The length of the delay can be changed with the GtkSearchEntry:search-delay property.
@@ -14,7 +14,7 @@ public class SearchEntry : Widget, Editable
     /// <param name="changed"></param>
     public void OnSearchChanged(Action changed) => SignalConnect<TwoPointerDelegate>("search-changed", (_, __) => changed());
 
-    public nint GetHandle() => GetInternalHandle();
+    public Editable AsEditable() => new Editable(GetInternalHandle());
 
     public SearchEntry() : base() { }
 

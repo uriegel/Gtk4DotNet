@@ -23,7 +23,7 @@ class MyWindow : ApplicationWindow
         using var builder = Builder.FromDotNetResource("fileview");
         using var fileView = new FileView(file.LoadStringContents(), builder, "fileview");
         stack.AddTitled(fileView, file.GetBasename(), file.GetBasename());
-        // TODO search.Sensitive = true
+        search.Sensitive = true;
     }
 
     void ShowPreferences()
@@ -35,7 +35,7 @@ class MyWindow : ApplicationWindow
 
     void SearchTextChanged()
     {
-        var text = (searchEntry as Editable).GetText();
+        var text = searchEntry.AsEditable().GetText();
     }
 
     [Widget]
