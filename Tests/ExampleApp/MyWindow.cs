@@ -6,13 +6,14 @@ class MyWindow : ApplicationWindow
     public MyWindow(WindowBuilder builder) : base(builder)
     {
         Instance = this;
+        sidebarRevealer.IsRevealed = true;
 
         using var settings = GSettings.New(Globals.ApplicationId);
         settings.Bind("transition", stack, "transition-type", BindFlags.Default);
+        settings.Bind("show-words", sidebarRevealer, "reveal-child", BindFlags.Default);
         searchEntry.OnSearchChanged(SearchTextChanged);
         search.BindProperty("active", searchbar, "search-mode-enabled", BindingFlags.Bidirectional);
         stack.OnNotify("visible-child", () => searchbar.SearchMode = false);
-
         AddActions(
             new SimpleAction("preferences", ShowPreferences),
             new SimpleAction("quit", CloseWindow, "<Ctrl>Q"),
@@ -62,6 +63,9 @@ class MyWindow : ApplicationWindow
 
     [Widget]
     SearchBar searchbar = null!;
+
+    [Widget]
+    Revealer sidebarRevealer = null!;
 }
 
 class MyButton : Button

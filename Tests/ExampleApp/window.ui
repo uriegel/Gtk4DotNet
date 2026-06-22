@@ -62,16 +62,16 @@
               </object>
             </child>
           </object>
-        </child>        
+        </child>
       </object>
     </child>
   </object>
   <menu id="main-menu">
     <section>
       <item>
-        <attribute name="label" translatable="yes">_Words</attribute>
         <attribute name="action">win.show-words</attribute>
-      </item>    
+        <attribute name="label" translatable="yes">_Words</attribute>
+      </item>
       <item>
         <attribute name="action">win.preferences</attribute>
         <attribute name="label" translatable="yes">_Preferences</attribute>
