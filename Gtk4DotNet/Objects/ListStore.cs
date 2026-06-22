@@ -8,6 +8,7 @@ public class ListStore : GObject
     {
         var res = New(GObject.Type());
         res.CheckDiagnostics();
+        res.AutoDestroyed = true;
         return res;
     }
 
