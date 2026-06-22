@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using Gtk4DotNet;
 
 class MyWindow : ApplicationWindow
@@ -7,6 +6,10 @@ class MyWindow : ApplicationWindow
     public MyWindow(WindowBuilder builder) : base(builder)
     {
         Instance = this;
+
+        using var settings = GSettings.New(Globals.ApplicationId);
+        settings.Bind("transition", stack, "transition-type", BindFlags.Default);
+
         AddActions(
             new SimpleAction("preferences", ShowPreferences),
             new SimpleAction("quit", CloseWindow, "<Ctrl>Q")

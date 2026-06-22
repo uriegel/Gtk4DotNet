@@ -6,8 +6,12 @@ class FileView : ScrolledWindow
 
     public FileView(string text, Builder builder, string? name = null) : base(builder, name)
     {
-        var buffer = textview.GetBuffer();
+        using var buffer = textview.GetBuffer();
         buffer.SetText(text);
+        var tag = buffer.CreateTag(null, null);
+        using var settings = GSettings.New(Globals.ApplicationId);
+        settings.Bind("font", tag, "font", BindFlags.Default);
+        buffer.ApplyTag(tag, buffer.GetStartIter(), buffer.GetEndIter());
     }
 
     [Widget]

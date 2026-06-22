@@ -8,6 +8,41 @@ public class TextBuffer : GObject
 {
     public void SetText(string text) => SetText(this, text, text.Length);
 
+    public TextTag CreateTag(string? name, string? firstProperty)
+    {
+        var res = CreateTag(this, name, firstProperty);
+        res.AutoDestroyed = true;
+        res.CheckDiagnostics();
+        return res;
+    }
+
+    public void ApplyTag(TextTag tag, TextIter startIter, TextIter endIter)
+        => ApplyTag(this, tag, ref startIter, ref endIter);
+    
+    public TextIter GetStartIter()
+    {
+        GetStartIter(this, out var res);
+        return res;
+    }
+
+    public TextIter GetEndIter()
+    {
+        GetEndIter(this, out var res);
+        return res;
+    }
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_text_buffer_set_text", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetText(TextBuffer buffer, string text, int length);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_text_buffer_create_tag", CallingConvention = CallingConvention.Cdecl)]
+    extern static TextTag CreateTag(TextBuffer buffer, string? name, string? firstProperty);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_text_buffer_apply_tag", CallingConvention = CallingConvention.Cdecl)]
+    extern static void ApplyTag(TextBuffer buffer, TextTag tag, ref TextIter startIter, ref TextIter endIter);
+    
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_text_buffer_get_start_iter", CallingConvention = CallingConvention.Cdecl)]
+    extern static void GetStartIter(TextBuffer buffer, out TextIter startIter);
+
+    [DllImport(Libs.LibGtk, EntryPoint="gtk_text_buffer_get_end_iter", CallingConvention = CallingConvention.Cdecl)]
+    extern static void GetEndIter(TextBuffer buffer, out TextIter endIter);
 }
