@@ -49,7 +49,7 @@ public class GSettings : GObject
     {
         var res = CreateAction(this, key);
         res.CheckDiagnostics();
-        return new("", res);
+        return new(key, res);
     }
 
 

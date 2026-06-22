@@ -50,6 +50,7 @@ class GtkActions(bool freeActions)
             else if (action is SettingsAction settingsAction)
             {
                 AddAction(actionMap, settingsAction.Action);
+                settingsActions.Add(settingsAction.Action);
             }
         }
 
@@ -74,6 +75,9 @@ class GtkActions(bool freeActions)
                 RemoveAction(actionMap, name);
         foreach (var id in delegateKeys)
             GtkDelegates.Instance.Remove(id);
+        foreach (var action in settingsActions)
+            action.Dispose();
+        settingsActions.Clear();
     }
 
     static bool HandleBoolState(nint action, nint state)
@@ -109,6 +113,7 @@ class GtkActions(bool freeActions)
     delegate void StateChangedDelegate(nint action, nint state);
 
     GObject actionMap = null!;
+    readonly List<ActionHandle> settingsActions = [];
     readonly List<string> actionNames = [];
     readonly List<long> delegateKeys = [];
 }
