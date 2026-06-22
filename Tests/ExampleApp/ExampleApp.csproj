@@ -18,6 +18,9 @@
     <EmbeddedResource Include="./fileview.ui">
       <LogicalName>fileview</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="./preferences.ui">
+      <LogicalName>preferences</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

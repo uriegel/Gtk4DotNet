@@ -8,6 +8,7 @@ class MyWindow : ApplicationWindow
     {
         Instance = this;
         AddActions(
+            new SimpleAction("preferences", ShowPreferences),
             new SimpleAction("quit", CloseWindow, "<Ctrl>Q")
         );
 
@@ -18,6 +19,13 @@ class MyWindow : ApplicationWindow
         using var builder = Builder.FromDotNetResource("fileview");
         using var fileView = new FileView(file.LoadStringContents(), builder, "fileview");
         stack.AddTitled(fileView, file.GetBasename(), file.GetBasename());
+    }
+
+    void ShowPreferences()
+    {
+        using var builder = Builder.FromDotNetResource("preferences");
+        var prefs = new Preferences(this, builder, "preferences");
+        prefs.Present();
     }
 
     [Widget]

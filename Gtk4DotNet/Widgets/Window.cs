@@ -52,6 +52,15 @@ public class Window : Widget
     public void SetChild(Widget child) => SetChild(this, child);
 
     /// <summary>
+    /// Sets a transient parent for the window.
+    /// Dialog windows should be set transient for the main application window they were spawned from. 
+    /// This allows window managers to e.g. keep the dialog on top of the main window, or center the dialog over the main window. 
+    /// Passing null for parent unsets the current transient window.
+    /// </summary>
+    /// <param name="parent"></param>
+    public void TransientFor(Window parent) => TransientFor(this, parent);
+
+    /// <summary>
     /// Installs a callback that is being called when the window is about to close. You can prevent it by returning true in  the callback.
     /// </summary>
     /// <param name="preventClosing"></param>
@@ -141,6 +150,9 @@ public class Window : Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_present", CallingConvention = CallingConvention.Cdecl)]
     extern static void Present(Window window);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_transient_for", CallingConvention = CallingConvention.Cdecl)]
+    extern static void TransientFor(Window window, Window parent);
 
     bool forceClose;
 }

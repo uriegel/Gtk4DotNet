@@ -2,7 +2,7 @@
 <!-- Created with Cambalache 1.0.2 -->
 <interface>
   <requires lib="gtk" version="4.0"/>
-  <object class="GtkDialog">
+  <object class="GtkDialog" id="preferences">
    <property name="title" translatable="yes">Preferences</property>
     <property name="resizable">0</property>
     <property name="modal">1</property>

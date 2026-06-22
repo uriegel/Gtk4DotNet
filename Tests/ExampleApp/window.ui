@@ -37,7 +37,7 @@
   <menu id="main-menu">
     <section>
       <item>
-        <attribute name="action">app.preferences</attribute>
+        <attribute name="action">win.preferences</attribute>
         <attribute name="label" translatable="yes">_Preferences</attribute>
       </item>
     </section>
