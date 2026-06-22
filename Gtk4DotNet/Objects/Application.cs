@@ -83,7 +83,7 @@ public class Application : GObject
     /// <returns>Application for chaining calls</returns>
     public Application WithWebKit()
     {
-        GType.Get(GTypeEnum.WebKitWebView);
+        var t = WebView.Type();
         return this;
     }
 

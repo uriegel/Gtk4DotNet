@@ -13,6 +13,7 @@
     <Project Path="Tests/WebViewFromTemplate/WebViewFromTemplate.csproj" />
     <Project Path="Tests/FileCopy/FileCopy.csproj" />
     <Project Path="Tests/ListBox/ListBox.csproj" />
+    <Project Path="Tests/ListView/ListView.csproj" />
     <Project Path="Tests/Volumes/Volumes.csproj" />
     <Project Path="Tests/WebViewFromResource/WebViewFromResource.csproj" />
     <Project Path="Tests/ExampleApp/ExampleApp.csproj" />

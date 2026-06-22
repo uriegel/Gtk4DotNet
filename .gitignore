@@ -33,3 +33,5 @@ Tests/WebViewFromResource/bin
 Tests/WebViewFromResource/obj
 Tests/ExampleApp/bin
 Tests/ExampleApp/obj
+Tests/ListView/bin
+Tests/ListView/obj

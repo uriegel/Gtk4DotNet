@@ -48,7 +48,7 @@ public class WebView : Widget
         => this.SideEffect(a => SignalConnect<Action>("context-menu", () => contextMenu(this)));
 
     [DllImport(Libs.LibWebKit, EntryPoint = "webkit_web_view_get_type", CallingConvention = CallingConvention.Cdecl)]
-    public static extern new GType Type();
+    public static extern new nint Type();
 
     /// <summary>
     /// Calls a javascript function in the WebView. The action is started as an asyncronous process 

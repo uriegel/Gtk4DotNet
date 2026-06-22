@@ -33,6 +33,13 @@ public class GObject : BaseHandle
     /// </summary>
     public int RefCount { get => Marshal.PtrToStructure<GObjectStruct>(GetInternalHandle()).RefCount; }
 
+    public static GObject NewObject()
+    {
+        var g = New(GObject.Type(), 0);
+        g.CheckDiagnostics();
+        return g;
+    }
+
     /// <summary>
     /// Sets a property to this object (Gtk4DotNet.GTypes types are supperted)
     /// </summary>
@@ -160,7 +167,7 @@ public class GObject : BaseHandle
     /// </summary>
     /// <returns></returns>
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_get_type", CallingConvention = CallingConvention.Cdecl)]
-    public static extern GType Type();
+    public static extern nint Type();
 
     /// <summary>
     /// Adds a weak reference callback to an object. Weak references are used for notification when an object is disposed. They are called “weak references” 
@@ -279,6 +286,8 @@ public class GObject : BaseHandle
     [DllImport(Libs.LibGtk, EntryPoint = "g_property_action_new", CallingConvention = CallingConvention.Cdecl)]
     extern static ActionHandle NewPropertyAction(string name, GObject obj, string propertyName);
 
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_new", CallingConvention = CallingConvention.Cdecl)]
+    public static extern GObject New(nint type, nint _);
 
     bool diagnosticsSet;
 }

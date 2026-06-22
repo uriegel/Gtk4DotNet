@@ -149,6 +149,22 @@
             },
             "console": "internalConsole"
         }, {
+            "name": "ListView",
+            "type": "coreclr",
+            "request": "launch",
+            "requireExactSource": true, 
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Tests/ListView/bin/Debug/net10.0/ListView.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Tests/ListView",
+            "stopAtEntry": false,
+            "justMyCode": false,
+            "enableStepFiltering": true,
+            "env": {
+//                "DOTNET_EnableDiagnostics": "0" // <- optional
+            },
+            "console": "internalConsole"
+        }, {
             "name": "WebView",
             "type": "coreclr",
             "request": "launch",
