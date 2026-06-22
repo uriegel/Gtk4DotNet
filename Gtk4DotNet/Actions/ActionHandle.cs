@@ -1,3 +1,3 @@
 namespace Gtk4DotNet;
 
-class ActionHandle : GObject { }
+public class ActionHandle : GObject { }

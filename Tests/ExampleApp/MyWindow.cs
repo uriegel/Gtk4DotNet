@@ -15,8 +15,10 @@ class MyWindow : ApplicationWindow
 
         AddActions(
             new SimpleAction("preferences", ShowPreferences),
-            new SimpleAction("quit", CloseWindow, "<Ctrl>Q")
+            new SimpleAction("quit", CloseWindow, "<Ctrl>Q"),
+            settings.CreateAction("show-words")
         );
+        // TODO settings and actionhandle not released
     }
 
     public void OnOpen(GFile file)

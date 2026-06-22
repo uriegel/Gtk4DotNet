@@ -5,7 +5,7 @@ namespace Gtk4DotNet;
 
 class GtkActions(bool freeActions)
 {
-    public void AddActions(GObject actionMap, Application? app,  string groupName, params GtkAction[] actions)
+    public void AddActions(GObject actionMap, Application? app, string groupName, params GtkAction[] actions)
     {
         this.actionMap = actionMap;
         foreach (var action in actions)
@@ -45,7 +45,11 @@ class GtkActions(bool freeActions)
                     stringAction.StateChanged(state);
                 };
                 delegateKeys.Add(GtkDelegates.Instance.Add(stringStateChanged, $"Action: {action.Name}"));
-                SignalConnectAction(gAction, "change-state", Marshal.GetFunctionPointerForDelegate(stringStateChanged), 0, 0);        
+                SignalConnectAction(gAction, "change-state", Marshal.GetFunctionPointerForDelegate(stringStateChanged), 0, 0);
+            }
+            else if (action is SettingsAction settingsAction)
+            {
+                AddAction(actionMap, settingsAction.Action);
             }
         }
 
