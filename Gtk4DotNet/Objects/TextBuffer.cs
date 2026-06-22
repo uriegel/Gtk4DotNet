@@ -5,6 +5,8 @@ namespace Gtk4DotNet;
 
 public class TextBuffer : GObject
 {
+    public int LineCount { get => GetLineCount(this); }
+    
     public void SetText(string text) => SetText(this, text, text.Length);
 
     public string GetText(TextIter start, TextIter end, bool includeHiddenChars)
@@ -72,4 +74,7 @@ public class TextBuffer : GObject
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_text_buffer_get_text", CallingConvention = CallingConvention.Cdecl)]
     extern static nint GetText(TextBuffer buffer, ref TextIter start, ref TextIter end, bool includeHiddenChars);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_text_buffer_get_line_count", CallingConvention = CallingConvention.Cdecl)]
+    extern static int GetLineCount(TextBuffer buffer);
 }

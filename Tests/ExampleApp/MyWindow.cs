@@ -20,6 +20,7 @@ class MyWindow : ApplicationWindow
         {
             searchbar.SearchMode = false;
             UpdateWords();
+            UpdateLines();
         });
         sidebarRevealer.OnNotify("reveal-child", UpdateWords);
         AddActions(
@@ -37,6 +38,7 @@ class MyWindow : ApplicationWindow
         stack.AddTitled(fileView, file.GetBasename(), file.GetBasename());
         search.Sensitive = true;
         UpdateWords();
+        UpdateLines();
     }
 
     void ShowPreferences()
@@ -75,6 +77,15 @@ class MyWindow : ApplicationWindow
             var item = Label.New(word);
             words.Append(item);
         }
+    }
+
+    void UpdateLines()
+    {
+        var textview = stack.GetVisibleChild<ScrolledWindow>()?.GetChild<TextView>();
+        var buffer = textview?.GetBuffer();
+        if (buffer == null)
+            return;
+        lines.Text = $"{buffer.LineCount}";       
     }
 
     static IEnumerable<string> GetWords(TextBuffer buffer)
