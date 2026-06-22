@@ -1,5 +1,7 @@
 using Gtk4DotNet;
 
+// TODO leaking when selecting via search, i a simple C program too!
+
 class MyWindow : ApplicationWindow
 {
     public static MyWindow? Instance { get; private set; }
