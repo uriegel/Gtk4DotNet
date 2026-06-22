@@ -44,12 +44,11 @@ public class GSettings : GObject
     public new bool SetBool(string key, bool value)
         => ValidateKey(key)?._SetBool(key, value) ?? false;
 
-    // TODO accelerator
-    public SettingsAction CreateAction(string key)
+    public SettingsAction CreateAction(string key, string? accelerator = null)
     {
         var res = CreateAction(this, key);
         res.CheckDiagnostics();
-        return new(key, res);
+        return new(key, res, accelerator);
     }
 
     public int? GetInt(string key) 

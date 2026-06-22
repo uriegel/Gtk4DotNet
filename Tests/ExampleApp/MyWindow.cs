@@ -16,7 +16,7 @@ class MyWindow : ApplicationWindow
         AddActions(
             new SimpleAction("preferences", ShowPreferences),
             new SimpleAction("quit", CloseWindow, "<Ctrl>Q"),
-            settings.CreateAction("show-words")
+            settings.CreateAction("show-words", "<Ctrl>W")
         );
         // TODO settings and actionhandle not released
     }
