@@ -52,7 +52,6 @@ public class GSettings : GObject
         return new(key, res);
     }
 
-
     public int? GetInt(string key) 
         => ValidateKey(key)
             ?._GetInt(key);
@@ -65,9 +64,6 @@ public class GSettings : GObject
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_settings_bind", CallingConvention = CallingConvention.Cdecl)]
     extern static void Bind(GSettings settings, string key, GObject obj, string property, BindFlags flags);
-
-    // [DllImport(Libs.LibGtk, EntryPoint = "g_settings_bind", CallingConvention = CallingConvention.Cdecl)]
-    // extern static void Bind(GSettings settings, string key, nint tag, string property, BindFlags flags);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_settings_new", CallingConvention = CallingConvention.Cdecl)]
     extern static GSettings _New(string schemaId);
