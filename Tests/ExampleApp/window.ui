@@ -21,11 +21,24 @@
             <property name="menu-model">main-menu</property>
           </object>
         </child>
+        <child type="end">
+          <object class="GtkToggleButton" id="search">
+            <property name="icon-name">edit-find-symbolic</property>
+            <property name="sensitive">0</property>
+          </object>
+        </child>
       </object>
     </child>
     <child>
       <object class="GtkBox" id="content_box">
         <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkSearchBar" id="searchbar">
+            <child>
+              <object class="GtkSearchEntry" id="searchEntry"/>
+            </child>
+          </object>
+        </child>
         <child>
           <object class="GtkStack" id="stack">
             <property name="vexpand">True</property>

@@ -9,12 +9,13 @@ class MyWindow : ApplicationWindow
 
         using var settings = GSettings.New(Globals.ApplicationId);
         settings.Bind("transition", stack, "transition-type", BindFlags.Default);
+        searchEntry.OnSearchChanged(SearchTextChanged);
+        search.BindProperty("active", searchbar, "search-mode-enabled", BindingFlags.Bidirectional);
 
         AddActions(
             new SimpleAction("preferences", ShowPreferences),
             new SimpleAction("quit", CloseWindow, "<Ctrl>Q")
         );
-
     }
 
     public void OnOpen(GFile file)
@@ -22,6 +23,7 @@ class MyWindow : ApplicationWindow
         using var builder = Builder.FromDotNetResource("fileview");
         using var fileView = new FileView(file.LoadStringContents(), builder, "fileview");
         stack.AddTitled(fileView, file.GetBasename(), file.GetBasename());
+        // TODO search.Sensitive = true
     }
 
     void ShowPreferences()
@@ -31,8 +33,22 @@ class MyWindow : ApplicationWindow
         prefs.Present();
     }
 
+    void SearchTextChanged()
+    {
+        var text = (searchEntry as Editable).GetText();
+    }
+
     [Widget]
     Stack stack = null!;
+
+    [Widget]
+    Widget search = null!;
+
+    [Widget]
+    SearchEntry searchEntry = null!;
+
+    [Widget]
+    Widget searchbar = null!;
 }
 
 class MyButton : Button
