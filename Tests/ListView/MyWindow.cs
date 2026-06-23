@@ -28,10 +28,7 @@ class MyWindow : ApplicationWindow
         // var model = SingleSelection.New(SortListModel.New(FilterListModel.New(store, filter), sorter));
 
         var factory = SignalListItemFactory.New();
-        factory.Setup(listitem =>
-        {
-            listitem.SetChild(Label.New());
-        });
+        factory.Setup(listitem => listitem.SetChild(Label.New()));
         factory.Bind(listitem =>
         {
             var label = listitem.GetChild<Label>();

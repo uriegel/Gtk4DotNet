@@ -11,13 +11,16 @@ class MyWindow : ApplicationWindow
         var factory = SignalListItemFactory.New();
         factory.Setup(listitem =>
         {
-            listitem.SetChild(Label.New());
+            using var builder = Builder.FromDotNetResource("taskrow");
+            var taskRow = new TaskRow(builder, "taskrow") ?? throw new Exception("TaskRow is null");
+            listitem.SetManagedChild(taskRow);
         });
         factory.Bind(listitem =>
         {
-            var label = listitem.GetChild<Label>();
+            var taskRow = listitem.GetManagedChild<TaskRow>();
             var item = listitem.GetItem<Task>();
-            label.Text = $"Item #{item?.Content}";
+            if (item != null)
+                taskRow?.SetTask(item);
         });
 
         tasksList.SetModel(model);

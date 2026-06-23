@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using CsTools.Extensions;
 using Gtk4DotNet;
 
