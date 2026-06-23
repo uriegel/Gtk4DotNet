@@ -4,6 +4,9 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
+// TODO StringListModel
+// TODO ToDoApp with Adwaita
+
 // TODO: Folder Widgets is release ready
 // TODO: Folder Actions is release ready
 // TODO: Folder Attributes is release ready
