@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using CsTools.Extensions;
 
 namespace Gtk4DotNet;
@@ -23,6 +24,11 @@ public class ApplicationWindow : Window
     /// </remarks>
     /// <param name="actions"></param>
     public void AddActions(params GtkAction[] actions) => this.actions.AddActions(this, GetApplication(), "win", actions);
+
+    public void SetHelpOverlay(Window window) => SetHelpOverlay(this, window);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_window_set_help_overlay", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetHelpOverlay(ApplicationWindow app, Window window);
 
     readonly GtkActions actions = new(true);
 }

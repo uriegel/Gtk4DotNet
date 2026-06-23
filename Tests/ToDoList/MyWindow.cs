@@ -7,6 +7,10 @@ class MyWindow : ApplicationWindow
     {
         entry.OnActivate(NewTask);
 
+        using var shortcutsBuilder = Builder.FromDotNetResource("shortcuts");
+        var shortcuts = new Window(shortcutsBuilder, "help_overlay");
+        SetHelpOverlay(shortcuts);
+
         store = ListStore.New();
         var factory = SignalListItemFactory.New();
         factory.Setup(listitem =>
@@ -67,14 +71,13 @@ class MyWindow : ApplicationWindow
             store.Remove(pos);
     }
 
-    CustomFilter? GetFilter(GSettings settings)
+    static CustomFilter? GetFilter(GSettings settings)
         => settings.GetString("filter") switch
         {
             "Open" => CustomFilter.New<TaskItem>(item => item?.Completed != true),
             "Done" => CustomFilter.New<TaskItem>(item => item?.Completed == true),
             _ => null
         };
-
 
     [Widget]
     readonly ListView tasksList = null!;
