@@ -1,3 +1,4 @@
+using CsTools.HttpRequest;
 using Gtk4DotNet;
 
 class MyWindow : ApplicationWindow
@@ -7,7 +8,6 @@ class MyWindow : ApplicationWindow
         entry.OnActivate(NewTask);
 
         store = ListStore.New();
-        var model = SingleSelection.New(store);
         var factory = SignalListItemFactory.New();
         factory.Setup(listitem =>
         {
@@ -23,17 +23,24 @@ class MyWindow : ApplicationWindow
                 taskRow?.SetTask(item);
         });
 
+        settings = GSettings.New(Globals.ApplicationId);
+        filterListModel = FilterListModel.New(store, GetFilter(settings));
+        var model = SingleSelection.New(filterListModel);
         tasksList.SetModel(model);
         tasksList.SetFactory(factory);
 
+        settings.OnChanged("filter", () => filterListModel.SetFilter(GetFilter(settings)));
+
         AddActions(
-            new SimpleAction("remove-done-tasks", RemoveDoneTasks)
+            new SimpleAction("remove-done-tasks", RemoveDoneTasks),
+            settings.CreateAction("filter")
         );
 
         OnFinalize(() =>
         {
             factory.Dispose();
             model.Dispose();
+            settings.Dispose();
         });
     }
 
@@ -54,8 +61,20 @@ class MyWindow : ApplicationWindow
             .Select((n, i) => (Task: n, Pos: i))
             .Where(n => n.Task.Completed)
             .Select(n => n.Pos)
+            .Reverse()
             .ToArray();
+        foreach (var pos in donePositions)
+            store.Remove(pos);
     }
+
+    CustomFilter? GetFilter(GSettings settings)
+        => settings.GetString("filter") switch
+        {
+            "Open" => CustomFilter.New<TaskItem>(item => item?.Completed != true),
+            "Done" => CustomFilter.New<TaskItem>(item => item?.Completed == true),
+            _ => null
+        };
+
 
     [Widget]
     readonly ListView tasksList = null!;
@@ -64,6 +83,10 @@ class MyWindow : ApplicationWindow
     readonly Entry entry = null!;
 
     readonly ListStore store;
+
+    readonly GSettings settings;
+
+    FilterListModel filterListModel = null!;
 }
 
 record TaskItem(string Content)

@@ -20,11 +20,16 @@ public class ListStore : ListModel
         Append(this, obj);
     }
 
+    public void Remove(int position) => Remove(this, position);
+
     [DllImport(Libs.LibGtk, EntryPoint = "g_list_store_new", CallingConvention = CallingConvention.Cdecl)]
     extern static ListStore New(nint type);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_list_store_append", CallingConvention = CallingConvention.Cdecl)]
     extern static void Append(ListStore store, GObject obj);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_list_store_remove", CallingConvention = CallingConvention.Cdecl)]
+    extern static void Remove(ListStore store, int position);
 
     internal const string DATA = "DATA";
 }

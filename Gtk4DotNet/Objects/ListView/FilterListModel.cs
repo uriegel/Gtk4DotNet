@@ -11,7 +11,21 @@ public class FilterListModel : ListModel
         filter?.AutoDestroyed = true;
         return res;
     }
-        
+
+    public void SetFilter(Filter? filter)
+    {
+        var ptr = filter?.GetInternalHandle() ?? 0;
+        SetFilter(this, ptr);
+        if (ptr != 0)
+            Unref(ptr);
+        filter?.CheckDiagnostics();
+        filter?.AutoDestroyed = true;
+    }
+    
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_filter_list_model_new", CallingConvention = CallingConvention.Cdecl)]
     extern static FilterListModel New(ListStore model, nint filter);
+    
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_filter_list_model_set_filter", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetFilter(FilterListModel model, nint filter);
 }
