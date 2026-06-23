@@ -1,6 +1,7 @@
 using System.Drawing;
 using System.Runtime.InteropServices;
 using CsTools.Extensions;
+using Gtk4DotNet.Extensions;
 using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
@@ -29,9 +30,9 @@ public class WebView : Widget
     /// </summary>
     /// <param name="alert"></param>
     /// <returns>This instance for function chaining</returns>
-    public WebView OnAlert(Action<WebView, string?> alert)
+    public WebView OnAlert(Action<WebView, string> alert)
         => this.SideEffect(a => SignalConnect<TwoPointerDelegate>("script-dialog",
-            (nint _, nint s) => alert(this, Marshal.PtrToStringUTF8(ScriptDialogGetMessage(s)))));
+            (nint _, nint s) => alert(this, ScriptDialogGetMessage(s).PtrToString(false) ?? "")));
 
     /// <summary>
     /// Disables the default context menu.

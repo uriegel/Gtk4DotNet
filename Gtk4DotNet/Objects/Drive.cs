@@ -13,8 +13,8 @@ public class Drive : GObject
     public bool CanStart { get => _CanStart(this); }
     public bool CanStop { get => _CanStop(this); }
     public bool IsRemovable { get => _IsRemovable(this); }
-    public string? Name { get => _GetName(this).PtrToString(true); }
-    public string? UnixDevice { get => _GetIdentifier(this, "unix-device").PtrToString(true); }
+    public string Name { get => _GetName(this).PtrToString(true) ?? ""; }
+    public string UnixDevice { get => _GetIdentifier(this, "unix-device").PtrToString(true) ?? ""; }
 
     public DisposableEnumerable<Volume> GetVolumes()
     {

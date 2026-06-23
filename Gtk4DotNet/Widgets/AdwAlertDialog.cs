@@ -45,7 +45,7 @@ public class AdwAlertDialog : AdwDialog
     /// </summary>
     /// <param name="responses"></param>
     /// <param name="onResponse"></param>
-    public void SetResponses(IEnumerable<AlertDialogResponse> responses, Action<string?>? onResponse = null)
+    public void SetResponses(IEnumerable<AlertDialogResponse> responses, Action<string>? onResponse = null)
     {
         foreach (var response in responses.Reverse())
         {
@@ -58,7 +58,7 @@ public class AdwAlertDialog : AdwDialog
                 SetResponseAppearance(this, response.Id, response.Appearance.Value);
         }
         if (onResponse != null)
-            SignalConnect<ThreePointerDelegate>("response", (_, id, ___) => onResponse(id.PtrToString(false)));
+            SignalConnect<ThreePointerDelegate>("response", (_, id, ___) => onResponse(id.PtrToString(false) ?? ""));
     }
 
     /// <summary>

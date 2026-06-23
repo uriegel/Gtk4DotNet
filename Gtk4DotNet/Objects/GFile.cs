@@ -8,11 +8,11 @@ namespace Gtk4DotNet;
 
 public class GFile : GObject
 {
-    public string Path { get => GetPath(this).PtrToString(true) ?? ""; }
+    public string? Path { get => GetPath(this).PtrToString(true); }
 
     public bool Exists { get => _Exists(this, 0); }
 
-    public string GetBasename() => GetBasename(this).PtrToString(true) ?? "";
+    public string? GetBasename() => GetBasename(this).PtrToString(true);
 
     public static GFile New(string path)
     {

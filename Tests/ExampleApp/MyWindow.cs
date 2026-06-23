@@ -33,7 +33,7 @@ class MyWindow : ApplicationWindow
     {
         using var builder = Builder.FromDotNetResource("fileview");
         using var fileView = new FileView(file.LoadStringContents(), builder, "fileview");
-        stack.AddTitled(fileView, file.GetBasename(), file.GetBasename());
+        stack.AddTitled(fileView, file.GetBasename() ?? "", file.GetBasename() ?? "");
         search.Sensitive = true;
         UpdateWords();
         UpdateLines();

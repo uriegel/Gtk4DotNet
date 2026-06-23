@@ -40,7 +40,7 @@ public class GAppInfo : GObject
         return result;
     }
 
-    public string? Name { get => GetName(this).PtrToString(false); }
+    public string Name { get => GetName(this).PtrToString(false) ?? ""; }
 
     public string? Executable { get => GetExecutable(this).PtrToString(false); }
 

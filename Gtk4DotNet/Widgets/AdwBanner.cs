@@ -12,19 +12,19 @@ public class AdwBanner : Widget
     /// <summary>
     /// The title that is shown in the banner. The title will be shown centered or left-aligned depending on available space.
     /// </summary>
-    public string? Title
+    public string Title
     {
-        get => GetTitle(this).PtrToString(false);
-        set => SetTitle(this, value ?? "");
+        get => GetTitle(this).PtrToString(false) ?? "";
+        set => SetTitle(this, value);
     }
 
     /// <summary>
     /// The label of the button
     /// </summary>
-    public string? ButtonLabel
+    public string ButtonLabel
     {
-        get => GetButtonLabel(this).PtrToString(false);
-        set => SetButtonLabel(this, value ?? "");
+        get => GetButtonLabel(this).PtrToString(false) ?? "";
+        set => SetButtonLabel(this, value);
     }
 
     /// <summary>

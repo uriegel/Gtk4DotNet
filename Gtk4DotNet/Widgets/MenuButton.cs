@@ -15,10 +15,10 @@ public class MenuButton : Widget
         set => SetDirection(this, value);
     }
 
-    public string? IconName
+    public string IconName
     {
-        get => GetIconName(this).PtrToString(false);
-        set => SetIconName(this, value ?? "");
+        get => GetIconName(this).PtrToString(false) ?? "";
+        set => SetIconName(this, value);
     }
 
     public static MenuButton New()

@@ -149,6 +149,22 @@
             },
             "console": "internalConsole"
         }, {
+            "name": "String ListView",
+            "type": "coreclr",
+            "request": "launch",
+            "requireExactSource": true, 
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Tests/StringListView/bin/Debug/net10.0/StringListView.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Tests/StringListView",
+            "stopAtEntry": false,
+            "justMyCode": false,
+            "enableStepFiltering": true,
+            "env": {
+//                "DOTNET_EnableDiagnostics": "0" // <- optional
+            },
+            "console": "internalConsole"
+        }, {
             "name": "ListView",
             "type": "coreclr",
             "request": "launch",

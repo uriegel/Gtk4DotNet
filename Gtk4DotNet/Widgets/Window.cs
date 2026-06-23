@@ -14,10 +14,10 @@ namespace Gtk4DotNet;
 /// </remarks>
 public class Window : Widget
 {
-    public string? Title
+    public string Title
     {
-        get => GetTitle(this).PtrToString(false);
-        set => SetTitle(this, value ?? "");
+        get => GetTitle(this).PtrToString(false) ?? "";
+        set => SetTitle(this, value);
     }
 
     public bool IsMaximized

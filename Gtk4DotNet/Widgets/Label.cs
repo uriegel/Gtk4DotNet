@@ -9,9 +9,9 @@ public class Label : Widget
     /// <summary>
     /// The text of this label
     /// </summary>
-    public string? Text
+    public string Text
     {
-        get => _GetLabel(this).PtrToString(false);
+        get => _GetLabel(this).PtrToString(false) ?? "";
         set => _Set(this, value);
     }
 

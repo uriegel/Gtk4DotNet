@@ -6,7 +6,7 @@
   <object class="GtkWindow" id="window">
     <property name="default-height">800</property>
     <property name="default-width">600</property>
-    <property name="title">"Hello ListBox👍"</property>
+    <property name="title">Hello ListBox👍</property>
     <child>
       <object class="GtkBox">
         <property name="margin-bottom">20</property>

@@ -6,7 +6,7 @@ class ListItem : Box
 
     public bool IsRecommended { get; }
 
-    public ListItem(Builder builder, GIcon icon, string? text, bool isRecommended = false) : base(builder, "listitem")
+    public ListItem(Builder builder, GIcon icon, string text, bool isRecommended = false) : base(builder, "listitem")
     {
         IsRecommended = isRecommended;
         image.SetIcon(icon);
