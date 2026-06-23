@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace Gtk4DotNet;
 
-public class ListStore : GObject
+public class ListStore : ListModel
 {
     public static ListStore New()
     {

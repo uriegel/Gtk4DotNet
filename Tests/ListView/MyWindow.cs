@@ -14,6 +14,10 @@ class MyWindow : ApplicationWindow
             store.Append(item);
 
         var model = SingleSelection.New(store);
+
+        // var filter = CustomFilter.New<Item>(item => (item?.Number ?? 0)  % 2 == 0);
+        // var model = SingleSelection.New(FilterListModel.New(store, filter));
+
         var factory = SignalListItemFactory.New();
         factory.Setup(listitem =>
         {
@@ -40,4 +44,7 @@ class MyWindow : ApplicationWindow
     readonly ListView listview = null!;
 }
 
-record Item(int Number);
+record Item(int Number)
+{
+    // ~Item() => Console.WriteLine("Item destroyed");
+}

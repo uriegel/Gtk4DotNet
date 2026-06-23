@@ -3,7 +3,7 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
-public class SignalListItemFactory : GObject
+public class SignalListItemFactory : ListItemFactory
 {
     public static SignalListItemFactory New()
     {
