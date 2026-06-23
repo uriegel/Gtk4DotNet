@@ -51,8 +51,9 @@ class MyWindow : ApplicationWindow
     {
         var donePositions = store
             .GetItems<TaskItem>()
-            .Where(n => n.Completed)
-            .Select((_, i) => i)
+            .Select((n, i) => (Task: n, Pos: i))
+            .Where(n => n.Task.Completed)
+            .Select(n => n.Pos)
             .ToArray();
     }
 
@@ -65,4 +66,8 @@ class MyWindow : ApplicationWindow
     readonly ListStore store;
 }
 
-record TaskItem(bool Completed, string Content);
+record TaskItem(string Content)
+{
+    public TaskItem(bool completed, string content) : this(content) => Completed = completed;
+    public bool Completed { get; set; }
+}

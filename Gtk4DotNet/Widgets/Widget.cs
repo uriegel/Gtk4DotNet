@@ -273,10 +273,10 @@ public class Widget : GObject
         AddController(shortcutController);
     }
 
-    public void OnRealize(Action action)
+    public DelegateId OnRealize(Action action)
         => SignalConnect<TwoPointerDelegate>("realize", (_, __) => action());
 
-    public void OnUnrealize(Action action)
+    public DelegateId OnUnrealize(Action action)
         => SignalConnect<TwoPointerDelegate>("unrealize", (_, __) => action());
 
     /// <summary>

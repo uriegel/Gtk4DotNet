@@ -94,7 +94,7 @@ public class ListBox : Widget
     /// Installs a callback that is being called on listbox row activation
     /// </summary>
     /// <param name="onActivated"></param>
-    public void OnRowActivated(Action onActivated) => SignalConnect<ThreePointerDelegate>("row-activated", (_, nint, __) => onActivated());
+    public DelegateId OnRowActivated(Action onActivated) => SignalConnect<ThreePointerDelegate>("row-activated", (_, nint, __) => onActivated());
 
     /// <summary>
     /// Removes all items of this ListBox

@@ -8,6 +8,9 @@ class TaskRow : Box
     {
         completedButton.IsActive = task.Completed;
         contentLabel.Text = task.Content;
+        if (delegateId.HasValue)
+            completedButton.SignalDisconnect(delegateId.Value);
+        delegateId = completedButton.OnToggled(state => task.Completed = state);
     }
 
     [Widget]
@@ -15,4 +18,6 @@ class TaskRow : Box
 
     [Widget]
     readonly Label contentLabel = null!;
+
+    DelegateId? delegateId;
 }

@@ -9,7 +9,7 @@ public class Entry : Widget
 {
     public Editable AsEditable() => new Editable(GetInternalHandle());
 
-    public void OnActivate(Action onActivate) => SignalConnect<TwoPointerDelegate>("activate", (_, __) => onActivate());
+    public DelegateId OnActivate(Action onActivate) => SignalConnect<TwoPointerDelegate>("activate", (_, __) => onActivate());
 
     public Entry() : base() { }
 

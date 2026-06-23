@@ -32,7 +32,7 @@ public class Button : Widget
     /// Callback when the button is being clicked
     /// </summary>
     /// <param name="click"></param>
-    public void OnClicked(Action click) => SignalConnect<TwoPointerDelegate>("clicked", (_, __) => click());
+    public DelegateId OnClicked(Action click) => SignalConnect<TwoPointerDelegate>("clicked", (_, __) => click());
 
     public Button() : base() { }
 

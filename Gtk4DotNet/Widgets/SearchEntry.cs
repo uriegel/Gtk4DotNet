@@ -12,7 +12,7 @@ public class SearchEntry : Widget
     /// Emitted with a delay. The length of the delay can be changed with the GtkSearchEntry:search-delay property.
     /// </summary>
     /// <param name="changed"></param>
-    public void OnSearchChanged(Action changed) => SignalConnect<TwoPointerDelegate>("search-changed", (_, __) => changed());
+    public DelegateId OnSearchChanged(Action changed) => SignalConnect<TwoPointerDelegate>("search-changed", (_, __) => changed());
 
     public Editable AsEditable() => new Editable(GetInternalHandle());
 

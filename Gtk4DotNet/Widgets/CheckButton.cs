@@ -26,8 +26,8 @@ public class CheckButton : Widget
 
     public CheckButton(Builder builder, string? name = null) : base(builder, name) { }
 
-    public CheckButton OnToggled(Action<bool> onToggle)
-        => this.SideEffect(_ => SignalConnect<TwoPointerDelegate>("toggled", (_, __) => onToggle(IsActive)));
+    public DelegateId OnToggled(Action<bool> onToggle)
+            => SignalConnect<TwoPointerDelegate>("toggled", (_, __) => onToggle(IsActive));
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_check_button_new_with_label", CallingConvention = CallingConvention.Cdecl)]
     extern static CheckButton _NewWithLabel(string label);

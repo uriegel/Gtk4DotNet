@@ -207,7 +207,7 @@ public class GObject : BaseHandle
         return key;
     }
 
-    internal void SignalDisconnect(DelegateId id)
+    public void SignalDisconnect(DelegateId id)
     {
         SignalDisconnect(this, id.SignalId);
         GtkDelegates.Instance.Remove(id.Key);
