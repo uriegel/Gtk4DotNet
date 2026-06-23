@@ -162,7 +162,7 @@ public class Application : GObject
     /// <param name="window">The window to remove from the application</param>
     public void RemoveWindow(Window window) => RemoveWindow(this, window);
 
-    internal void SetAccelsForAction(string action, [In] string?[] accels) => SetAccelsForAction(this, action, accels);
+    public void SetAccelsForAction(string action, [In] string?[] accels) => SetAccelsForAction(this, action, accels);
 
     [DllImport(Libs.LibAdw, EntryPoint = "adw_application_new", CallingConvention = CallingConvention.Cdecl)]
     extern static Application _NewAdw(string id, ApplicationFlags flags);
@@ -200,9 +200,13 @@ public static class ApplicationExtensions
     /// <param name="app"></param>
     /// <param name="actions">An array of <see cref="GtkAction"/> to be added to the application</param>
     /// <returns>Application for chaining calls</returns>
-    public static THandle Actions<THandle>(this THandle app, params GtkAction[] actions)
-        where THandle : Application
+    public static TApplication Actions<TApplication>(this TApplication app, params GtkAction[] actions)
+        where TApplication : Application
         => app.SideEffect(app => app.AddActions(actions));
+
+    public static TApplication AccelsForAction<TApplication>(this TApplication app, string action, string?[] accels)
+        where TApplication : Application
+        => app.SideEffect(app => app.SetAccelsForAction(action, accels));
 }
 
 /// <summary>
