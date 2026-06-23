@@ -229,6 +229,18 @@
             },
             "console": "internalConsole"
         }, {
+            "name": "ToDo List",
+            "type": "coreclr",
+            "request": "launch",
+            "requireExactSource": true, 
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Tests/ToDoList/bin/Debug/net10.0/ToDoList.dll",
+            "cwd": "${workspaceFolder}/Tests/ToDoList",
+            "stopAtEntry": false,
+            "justMyCode": false,
+            "enableStepFiltering": true,
+            "console": "internalConsole"
+        }, {
             "name": "Copy File",
             "type": "coreclr",
             "request": "launch",

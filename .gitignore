@@ -35,5 +35,5 @@ Tests/ExampleApp/bin
 Tests/ExampleApp/obj
 Tests/ListView/bin
 Tests/ListView/obj
-Tests/StringListView/bin
-Tests/StringListView/obj
+Tests/ToDoList/bin
+Tests/ToDoList/obj
