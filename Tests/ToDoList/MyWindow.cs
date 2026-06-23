@@ -18,13 +18,17 @@ class MyWindow : ApplicationWindow
         factory.Bind(listitem =>
         {
             var taskRow = listitem.GetManagedChild<TaskRow>();
-            var item = listitem.GetItem<Task>();
+            var item = listitem.GetItem<TaskItem>();
             if (item != null)
                 taskRow?.SetTask(item);
         });
 
         tasksList.SetModel(model);
         tasksList.SetFactory(factory);
+
+        AddActions(
+            new SimpleAction("remove-done-tasks", RemoveDoneTasks)
+        );
 
         OnFinalize(() =>
         {
@@ -40,7 +44,16 @@ class MyWindow : ApplicationWindow
         if (text == "")
             return;
         editable.Text = "";
-        store.Append(new Task(false, text));
+        store.Append(new TaskItem(false, text));
+    }
+
+    void RemoveDoneTasks()
+    {
+        var donePositions = store
+            .GetItems<TaskItem>()
+            .Where(n => n.Completed)
+            .Select((_, i) => i)
+            .ToArray();
     }
 
     [Widget]
@@ -52,4 +65,4 @@ class MyWindow : ApplicationWindow
     readonly ListStore store;
 }
 
-record Task(bool Completed, string Content);
+record TaskItem(bool Completed, string Content);

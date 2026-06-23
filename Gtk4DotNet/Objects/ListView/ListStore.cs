@@ -6,7 +6,7 @@ public class ListStore : ListModel
 {
     public static ListStore New()
     {
-        var res = New(GObject.Type());
+        var res = New(Type());
         res.CheckDiagnostics();
         res.AutoDestroyed = true;
         return res;
@@ -15,7 +15,7 @@ public class ListStore : ListModel
     public void Append<T>(T t)
         where T : class
     {
-        using var obj = GObject.NewObject();
+        using var obj = NewObject();
         obj.SetManagedData(DATA, t);
         Append(this, obj);
     }
