@@ -74,6 +74,7 @@ public class Application : GObject
         Gtk.Diagnostics = true;
         Gtk.GObjectTracing = gobjectTracing;
         CheckDiagnostics();
+        Console.WriteLine($"Running process: {Environment.ProcessId}");
         return this;
     }
 

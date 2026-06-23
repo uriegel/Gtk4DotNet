@@ -112,6 +112,8 @@ public static class Gtk
     {
         GC.Collect();
         GC.Collect();
+        GC.WaitForPendingFinalizers();
+        GC.Collect();
         Console.WriteLine($"=========================================================================================");
         Console.WriteLine($"Total memory: {System.Diagnostics.Process.GetCurrentProcess().WorkingSet64:N0}, managed: {GC.GetTotalMemory(true):N0}");
 
