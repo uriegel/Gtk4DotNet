@@ -48,7 +48,7 @@ class MyWindow : ApplicationWindow
 
     void SearchTextChanged()
     {
-        var text = searchEntry.AsEditable().GetText();
+        var text = searchEntry.AsEditable().Text;
         var textview = stack.GetVisibleChild<ScrolledWindow>()?.GetChild<TextView>();
         using var buffer = textview?.GetBuffer();
         if (textview == null || buffer == null)

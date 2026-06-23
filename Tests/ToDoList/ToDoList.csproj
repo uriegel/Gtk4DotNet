@@ -15,6 +15,9 @@
     <EmbeddedResource Include="./window.ui">
       <LogicalName>window</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="./taskrow.ui">
+      <LogicalName>taskrow</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

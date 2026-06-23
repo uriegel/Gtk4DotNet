@@ -11,7 +11,11 @@ namespace Gtk4DotNet;
 /// </summary>
 public struct Editable
 {
-    public string GetText() => GetText(editable).PtrToString(false) ?? "";
+    public string Text
+    {
+        get => GetText(editable).PtrToString(false) ?? "";
+        set => SetText(editable, value);
+    }
 
     internal Editable(nint editable) => this.editable = editable;
 
@@ -19,5 +23,8 @@ public struct Editable
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_editable_get_text", CallingConvention = CallingConvention.Cdecl)]
     extern static nint GetText(nint editable);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_editable_set_text", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetText(nint editable, string text);
 }
 

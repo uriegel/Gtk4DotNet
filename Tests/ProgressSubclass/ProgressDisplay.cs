@@ -54,10 +54,10 @@ class ProgressDisplay : Revealer
     }
 
     [Widget(Name = "progress_bar")]
-    ProgressBar progressBar = null!;
+    readonly ProgressBar progressBar = null!;
 
     [Widget(Name = "progress_area")]
-    DrawingArea drawingArea = null!;
+    readonly DrawingArea drawingArea = null!;
     
     float progress = 0.0f;
     bool closing;

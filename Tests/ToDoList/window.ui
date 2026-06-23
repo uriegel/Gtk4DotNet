@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!-- Created with Cambalache 1.0.2 -->
+<!-- Created with Cambalache 1.0.3 -->
 <interface>
   <!-- interface-name window.ui -->
   <requires lib="gtk" version="4.20"/>
@@ -8,11 +8,11 @@
     <property name="width-request">360</property>
     <child>
       <object class="GtkBox">
-        <property name="orientation">vertical</property>
-        <property name="margin-top">12</property>
         <property name="margin-bottom">12</property>
-        <property name="margin-start">12</property>
         <property name="margin-end">12</property>
+        <property name="margin-start">12</property>
+        <property name="margin-top">12</property>
+        <property name="orientation">vertical</property>
         <property name="spacing">6</property>
         <child>
           <object class="GtkEntry" id="entry">
@@ -26,13 +26,13 @@
             <property name="min-content-height">360</property>
             <property name="vexpand">true</property>
             <child>
-              <object class="GtkListView" id="tasks_list">
+              <object class="GtkListView" id="tasksList">
                 <property name="valign">start</property>
               </object>
             </child>
           </object>
         </child>
       </object>
-    </child>    
+    </child>
   </object>
 </interface>
