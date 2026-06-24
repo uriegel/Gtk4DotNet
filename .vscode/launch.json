@@ -16,25 +16,19 @@
             "stopAtEntry": false,
             "justMyCode": false,
             "enableStepFiltering": true,
-            "env": {
-//                "DOTNET_EnableDiagnostics": "0" // <- optional
-            },
             "console": "internalConsole"
         }, {
-            "name": "First Widget",
+            "name": "Pack Buttons",
             "type": "coreclr",
             "request": "launch",
             "requireExactSource": true, 
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Tests/FirstWidget/bin/Debug/net10.0/FirstWidget.dll",
+            "program": "${workspaceFolder}/Tests/PackButtons/bin/Debug/net10.0/PackButtons.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/Tests/FirstWidget",
+            "cwd": "${workspaceFolder}/Tests/PackButtons",
             "stopAtEntry": false,
             "justMyCode": false,
             "enableStepFiltering": true,
-            "env": {
-//                "DOTNET_EnableDiagnostics": "0" // <- optional
-            },
             "console": "internalConsole"
         }, {
             "name": "Builder",

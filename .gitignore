@@ -2,8 +2,8 @@ Gtk4DotNet/bin
 Gtk4DotNet/obj
 Tests/HelloWorld/bin
 Tests/HelloWorld/obj
-Tests/FirstWidget/bin
-Tests/FirstWidget/obj
+Tests/PackButtons/bin
+Tests/PackButtons/obj
 Tests/Builder/bin
 Tests/Builder/obj
 Tests/Bindings/bin
