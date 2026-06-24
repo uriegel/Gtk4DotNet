@@ -11,9 +11,8 @@ Application
         .NewWindow()
         .Title("Hello Icons👍")
         .DefaultSize(600, 200)
-        .Child(Label
-            .New("Open website on http://localhost:9865")
-            .Selectable())
+        .Child(LinkButton
+            .New("http://localhost:9865", "Open Website to show Icons"))
         .SideEffect(_ => WebServer
                             .New()
                             .Logging(LogLevel.Info)

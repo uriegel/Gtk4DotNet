@@ -7,9 +7,7 @@ namespace Gtk4DotNet;
 // TODO When using builder, ref the Widget
 // TODO ToDoApp with Adwaita
 // TODO Perhaps ColumnView/GridView
-// TODO Include C samples
 // TODO DrawView
-// TODO FirstWidgets => PackButtons,one with maximize
 
 // TODO: Folder Widgets is release ready
 // TODO: Folder Actions is release ready

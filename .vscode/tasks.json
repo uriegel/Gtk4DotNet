@@ -19,6 +19,14 @@
                 "reveal": "silent"
             },
             "problemMatcher": "$msCompile"
+        }, {
+            "label": "build first.cpp",
+            "type": "shell",
+            "command": "g++ -g -O0 $(pkg-config --cflags gtk4) -o C-Code/first C-Code/first.cpp $(pkg-config --libs gtk4)"
+        }, {
+            "label": "build listview.cpp",
+            "type": "shell",
+            "command": "g++ -g -O0 $(pkg-config --cflags gtk4) -o C-Code/listview C-Code/listview.cpp $(pkg-config --libs gtk4)"
         }
     ]
 }
