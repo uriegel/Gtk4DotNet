@@ -20,6 +20,13 @@ public class ListStore : ListModel
         Append(this, obj);
     }
 
+    public void Initialize<T>(IEnumerable<T> items)
+        where T : class
+    {
+        foreach (var item in items)
+            Append(item);
+    }
+
     public void Remove(int position) => Remove(this, position);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_list_store_new", CallingConvention = CallingConvention.Cdecl)]

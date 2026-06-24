@@ -1,4 +1,4 @@
-using CsTools.HttpRequest;
+using CsTools.Extensions;
 using Gtk4DotNet;
 
 class MyWindow : ApplicationWindow
@@ -12,6 +12,8 @@ class MyWindow : ApplicationWindow
         SetHelpOverlay(shortcuts);
 
         store = ListStore.New();
+        store.Initialize(Persistence.Retrieve());
+
         var factory = SignalListItemFactory.New();
         factory.Setup(listitem =>
         {
@@ -39,6 +41,8 @@ class MyWindow : ApplicationWindow
             new SimpleAction("remove-done-tasks", RemoveDoneTasks),
             settings.CreateAction("filter")
         );
+
+        OnClose(_ => false.SideEffect(_ => Persistence.Save(store.GetItems<TaskItem>())));
 
         OnFinalize(() =>
         {
@@ -94,6 +98,7 @@ class MyWindow : ApplicationWindow
 
 record TaskItem(string Content)
 {
+    public TaskItem() : this("") {}
     public TaskItem(bool completed, string content) : this(content) => Completed = completed;
     public bool Completed { get; set; }
 }
