@@ -20,7 +20,7 @@ public class Widget : GObject
     public string? Name
     {
         get;
-        private set;
+        internal set;
     }
 
     /// <summary>
@@ -383,6 +383,9 @@ W A R N I N G
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_insert_after", CallingConvention = CallingConvention.Cdecl)]
     internal extern static void InsertAfter(Widget widget, Widget parent, Widget? previous);
 
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_set_name", CallingConvention = CallingConvention.Cdecl)]
+    internal extern static void SetWidgetName(Widget widget, string name);
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_show", CallingConvention = CallingConvention.Cdecl)]
     extern static void Show(Widget widget);
 
@@ -484,6 +487,10 @@ W A R N I N G
 
 public static class WidgetExtensions
 {
+    public static THandle SetName<THandle>(this THandle widget, string name)
+        where THandle : Widget
+        => widget.SideEffect(w => Widget.SetWidgetName(w, name));
+
     /// <summary>
     /// Sets all 4 Margins at once
     /// </summary>

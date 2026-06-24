@@ -1,10 +1,11 @@
 <Solution>
   <Folder Name="/Tests/">
     <Project Path="Tests/HelloWorld/HelloWorld.csproj" />
+    <Project Path="Tests/PackButtons/PackButtons.csproj" />
     <Project Path="Tests/Bindings/Bindings.csproj" />
+    <Project Path="Tests/WithStyle/WithStyle.csproj" />
     <Project Path="Tests/Builder/Builder.csproj" />
     <Project Path="Tests/Dialog/Dialog.csproj" />
-    <Project Path="Tests/PackButtons/PackButtons.csproj" />
     <Project Path="Tests/Progress/Progress.csproj" />
     <Project Path="Tests/ProgressSubclass/ProgressSubclass.csproj" />
     <Project Path="Tests/Actions/Actions.csproj" />

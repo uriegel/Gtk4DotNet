@@ -30,6 +30,7 @@ public class Box : Widget
     public Box SetSpacing(int spacing)
         => this.SideEffect(_ => SetSpacing(this, spacing));
 
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_box_new", CallingConvention = CallingConvention.Cdecl)]
     extern static Box _New(Orientation orientation, int spacing = 0);
 

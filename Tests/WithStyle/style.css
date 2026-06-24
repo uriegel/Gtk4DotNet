@@ -1,0 +1,16 @@
+button.button-1 {
+  color: cyan;
+}
+
+button#button-2 {
+    color: red;
+}
+
+button#button-2:hover {
+  color: magenta;
+  background: yellow;
+}
+
+menubutton arrow {
+  color: magenta;
+}

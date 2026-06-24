@@ -37,3 +37,5 @@ Tests/ListView/bin
 Tests/ListView/obj
 Tests/ToDoList/bin
 Tests/ToDoList/obj
+Tests/WithStyle/bin
+Tests/WithStyle/obj

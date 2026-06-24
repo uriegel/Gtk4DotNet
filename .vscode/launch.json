@@ -47,14 +47,27 @@
             },
             "console": "internalConsole"
         }, {
-            "name": "Bindings",
+            "name": "With Style",
             "type": "coreclr",
             "request": "launch",
             "requireExactSource": true, 
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Tests/Bindings/bin/Debug/net10.0/Bindings.dll",
+            "program": "${workspaceFolder}/Tests/WithStyle/bin/Debug/net10.0/WithStyle.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/Tests/Bindings",
+            "cwd": "${workspaceFolder}/Tests/WithStyle",
+            "stopAtEntry": false,
+            "justMyCode": false,
+            "enableStepFiltering": true,
+            "console": "internalConsole"
+        }, {
+            "name": "Actions",
+            "type": "coreclr",
+            "request": "launch",
+            "requireExactSource": true, 
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Tests/Actions/bin/Debug/net10.0/Actions.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Tests/Actions",
             "stopAtEntry": false,
             "justMyCode": false,
             "enableStepFiltering": true,
@@ -63,14 +76,14 @@
             },
             "console": "internalConsole"
         }, {
-            "name": "Dialog",
+            "name": "Bindings",
             "type": "coreclr",
             "request": "launch",
             "requireExactSource": true, 
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Tests/Dialog/bin/Debug/net10.0/Dialog.dll",
+            "program": "${workspaceFolder}/Tests/Bindings/bin/Debug/net10.0/Bindings.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/Tests/Dialog",
+            "cwd": "${workspaceFolder}/Tests/Bindings",
             "stopAtEntry": false,
             "justMyCode": false,
             "enableStepFiltering": true,
@@ -111,22 +124,6 @@
             },
             "console": "internalConsole"
         }, {
-            "name": "Actions",
-            "type": "coreclr",
-            "request": "launch",
-            "requireExactSource": true, 
-            "preLaunchTask": "build",
-            "program": "${workspaceFolder}/Tests/Actions/bin/Debug/net10.0/Actions.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}/Tests/Actions",
-            "stopAtEntry": false,
-            "justMyCode": false,
-            "enableStepFiltering": true,
-            "env": {
-//                "DOTNET_EnableDiagnostics": "0" // <- optional
-            },
-            "console": "internalConsole"
-        }, {
             "name": "ListBox",
             "type": "coreclr",
             "request": "launch",
@@ -151,6 +148,22 @@
             "program": "${workspaceFolder}/Tests/ListView/bin/Debug/net10.0/ListView.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Tests/ListView",
+            "stopAtEntry": false,
+            "justMyCode": false,
+            "enableStepFiltering": true,
+            "env": {
+//                "DOTNET_EnableDiagnostics": "0" // <- optional
+            },
+            "console": "internalConsole"
+        }, {
+            "name": "Dialog",
+            "type": "coreclr",
+            "request": "launch",
+            "requireExactSource": true, 
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Tests/Dialog/bin/Debug/net10.0/Dialog.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Tests/Dialog",
             "stopAtEntry": false,
             "justMyCode": false,
             "enableStepFiltering": true,

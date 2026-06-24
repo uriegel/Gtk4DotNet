@@ -6,7 +6,7 @@ using Gtk4DotNet.Extensions;
 
 Application
     .New("de.uriegel.gtk4dotnet")
-    .WithDiagnostics()
+    .WithDiagnostics(true)
     .OnActivate(app => app
         .NewWindow()
         .Title("Hello Icons👍")
