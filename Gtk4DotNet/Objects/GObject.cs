@@ -196,6 +196,12 @@ public class GObject : BaseHandle
             SetDiagnostics();
     }
 
+    static internal T? GetManagedData<T>(nint obj, string key)
+    {
+        var p = GetQData(obj, GetQuark(key));
+        return p != 0 ? (T?)GCHandle.FromIntPtr(p).Target : (T?)(object?)null;
+    }
+
     internal DelegateId SignalConnect<TDelegate>(string name, TDelegate callback, bool manualFreeing = false)
         where TDelegate : Delegate
     {
@@ -222,6 +228,8 @@ public class GObject : BaseHandle
             Unref(handle);
         return true;
     }
+
+    internal void Ref () => Ref(this);
 
     void SetDiagnostics()
     {
@@ -277,6 +285,9 @@ public class GObject : BaseHandle
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_get_qdata", CallingConvention = CallingConvention.Cdecl)]
     extern static nint GetQData(GObject obj, int quark);
 
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_get_qdata", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint GetQData(nint obj, int quark);
+
     [DllImport(Libs.LibGtk, EntryPoint = "g_quark_from_string", CallingConvention = CallingConvention.Cdecl)]
     extern static int GetQuark(string quark);
 
@@ -287,7 +298,10 @@ public class GObject : BaseHandle
     extern static ActionHandle NewPropertyAction(string name, GObject obj, string propertyName);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_new", CallingConvention = CallingConvention.Cdecl)]
-    public static extern GObject New(nint type, nint _);
+    static extern GObject New(nint type, nint _);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_ref", CallingConvention = CallingConvention.Cdecl)]
+    static extern nint Ref(GObject obj);
 
     bool diagnosticsSet;
 }

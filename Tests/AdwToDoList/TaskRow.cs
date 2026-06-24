@@ -2,15 +2,13 @@ using Gtk4DotNet;
 
 class TaskRow : Box
 {
-    public TaskRow(Builder builder, string name) : base(builder, name) { }
+    public TaskRow(Builder builder, string name) : base(builder, name) {}
 
     public void SetTask(TaskItem task)
     {
         completedButton.IsActive = task.Completed;
         contentLabel.Text = task.Content;
-        if (delegateId.HasValue)
-            completedButton.SignalDisconnect(delegateId.Value);
-        delegateId = completedButton.OnToggled(state => task.Completed = state);
+        completedButton.OnToggled(state => task.Completed = state);
     }
 
     [Widget]
@@ -18,6 +16,4 @@ class TaskRow : Box
 
     [Widget]
     readonly Label contentLabel = null!;
-
-    DelegateId? delegateId;
 }

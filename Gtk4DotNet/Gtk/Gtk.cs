@@ -4,6 +4,8 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
+// TODO eliminate NewGObject 
+// TODO When using builder, ref the Widget
 // TODO ToDoApp with Adwaita
 // TODO Perhaps ColumnView/GridView
 // TODO Include C samples

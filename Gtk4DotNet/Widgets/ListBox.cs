@@ -125,6 +125,36 @@ public class ListBox : Widget
     /// <param name="widget"></param>
     public void Remove(Widget widget) => Remove(this, widget);
 
+    public void BindModel<T>(ListModel model, Func<T?, Widget> onCreate)
+        where T : class
+    {
+        CreateItemDelegate callback = (item, _) =>
+        {
+            var obj = NewObject();
+            obj.SetInternalHandle(item);
+            obj.AutoDestroyed = true;
+            var t = obj.GetManagedData<T>(ListStore.DATA);
+            var widget = onCreate(t);
+            return widget.GetInternalHandle();
+        };
+        BindModel(this, model, Marshal.GetFunctionPointerForDelegate((Delegate)callback), 0, 0);
+    }
+
+    public void BindModel<T>(ListModel model, string template, Func<Builder, T?, Widget> onCreate)
+        where T : class
+    {
+        List<Builder> builders = [];
+        CreateItemDelegate callback = (item, _) =>
+        {
+            using var builder = Builder.FromDotNetResource(template);
+            var t = GetManagedData<T>(item, ListStore.DATA);
+            var widget = onCreate(builder, t);
+            widget.Ref();
+            return widget.GetInternalHandle();
+        };
+        BindModel(this, model, Marshal.GetFunctionPointerForDelegate((Delegate)callback), 0, 0);
+    }
+
     public ListBox() : base() { }
 
     public ListBox(Builder builder, string? name = null) : base(builder, name) { }
@@ -164,5 +194,10 @@ public class ListBox : Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_select_row", CallingConvention = CallingConvention.Cdecl)]
     extern static void SelectRow(ListBox listbox, ListBoxRow row);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_bind_model", CallingConvention = CallingConvention.Cdecl)]
+    extern static void BindModel(ListBox listbox, ListModel model, nint onCallback, nint _, nint onDestroy);
 }
+
+delegate nint CreateItemDelegate(nint item, nint _);
 

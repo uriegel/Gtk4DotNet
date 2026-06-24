@@ -1,4 +1,3 @@
-using CsTools.Extensions;
 using Gtk4DotNet;
 
 class MyWindow : ApplicationWindow
@@ -14,42 +13,35 @@ class MyWindow : ApplicationWindow
         store = ListStore.New();
         store.Initialize(Persistence.Retrieve());
 
-        var factory = SignalListItemFactory.New();
-        factory.Setup(listitem =>
-        {
-            using var builder = Builder.FromDotNetResource("taskrow");
-            var taskRow = new TaskRow(builder, "taskrow") ?? throw new Exception("TaskRow is null");
-            listitem.SetManagedChild(taskRow);
-        });
-        factory.Bind(listitem =>
-        {
-            var taskRow = listitem.GetManagedChild<TaskRow>();
-            var item = listitem.GetItem<TaskItem>();
-            if (item != null)
-                taskRow?.SetTask(item);
-        });
-
         settings = GSettings.New(Globals.ApplicationId);
         filterListModel = FilterListModel.New(store, GetFilter(settings));
-        var model = SingleSelection.New(filterListModel);
-        tasksList.SetModel(model);
-        tasksList.SetFactory(factory);
+        var model = NoSelection.New(filterListModel);
 
-        settings.OnChanged("filter", () => filterListModel.SetFilter(GetFilter(settings)));
+tasksList.Visible = true;        
+        tasksList.BindModel<TaskItem>(model, "taskrow", CreateTaskRow);
 
-        AddActions(
-            new SimpleAction("remove-done-tasks", RemoveDoneTasks),
-            settings.CreateAction("filter")
-        );
+        // settings.OnChanged("filter", () => filterListModel.SetFilter(GetFilter(settings)));
 
-        OnClose(_ => false.SideEffect(_ => Persistence.Save(store.GetItems<TaskItem>())));
+        // AddActions(
+        //     new SimpleAction("remove-done-tasks", RemoveDoneTasks),
+        //     settings.CreateAction("filter")
+        // );
+
+        // OnClose(_ => false.SideEffect(_ => Persistence.Save(store.GetItems<TaskItem>())));
 
         OnFinalize(() =>
         {
-            factory.Dispose();
             model.Dispose();
             settings.Dispose();
         });
+    }
+
+    Widget CreateTaskRow(Builder builder, TaskItem? item)
+    {
+        var taskRow = new TaskRow(builder, "taskrow") ?? throw new Exception("TaskRow is null");
+        if (item != null)
+            taskRow.SetTask(item);
+        return taskRow;
     }
 
     void NewTask()
@@ -84,7 +76,7 @@ class MyWindow : ApplicationWindow
         };
 
     [Widget]
-    readonly ListView tasksList = null!;
+    readonly ListBox tasksList = null!;
 
     [Widget]
     readonly Entry entry = null!;
