@@ -19,6 +19,7 @@
     <Project Path="Tests/WebViewFromResource/WebViewFromResource.csproj" />
     <Project Path="Tests/ExampleApp/ExampleApp.csproj" />
     <Project Path="Tests/ToDoList/ToDoList.csproj" />
+    <Project Path="Tests/AdwToDoList/AdwToDoList.csproj" />
   </Folder>
   <Project Path="Gtk4DotNet/Gtk4DotNet.csproj" />
 </Solution>

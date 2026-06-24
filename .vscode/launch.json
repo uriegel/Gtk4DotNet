@@ -231,9 +231,6 @@
             "stopAtEntry": false,
             "justMyCode": false,
             "enableStepFiltering": true,
-            "env": {
-//                "DOTNET_EnableDiagnostics": "0" // <- optional
-            },
             "console": "internalConsole"
         }, {
             "name": "ToDo List",
@@ -243,6 +240,18 @@
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/Tests/ToDoList/bin/Debug/net10.0/ToDoList.dll",
             "cwd": "${workspaceFolder}/Tests/ToDoList",
+            "stopAtEntry": false,
+            "justMyCode": false,
+            "enableStepFiltering": true,
+            "console": "internalConsole"
+        }, {
+            "name": "ToDo List (Adwaita)",
+            "type": "coreclr",
+            "request": "launch",
+            "requireExactSource": true, 
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Tests/AdwToDoList/bin/Debug/net10.0/AdwToDoList.dll",
+            "cwd": "${workspaceFolder}/Tests/AdwToDoList",
             "stopAtEntry": false,
             "justMyCode": false,
             "enableStepFiltering": true,
