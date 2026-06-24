@@ -12,16 +12,16 @@ class MyWindow : ApplicationWindow
         SetHelpOverlay(shortcuts);
 
         store = ListStore.New();
-        store.Initialize(Persistence.Retrieve());
+        store.OnItemsChanged((p, r, a) => tasksList.Visible = store.GetItems() > 0);
 
         settings = GSettings.New(Globals.ApplicationId);
         filterListModel = FilterListModel.New(store, GetFilter(settings));
         var model = NoSelection.New(filterListModel);
 
-tasksList.Visible = true;        
         tasksList.BindModel<TaskItem>(model, "taskrow", CreateTaskRow);
 
         settings.OnChanged("filter", () => filterListModel.SetFilter(GetFilter(settings)));
+        store.Initialize(Persistence.Retrieve());
 
         AddActions(
             new SimpleAction("remove-done-tasks", RemoveDoneTasks),

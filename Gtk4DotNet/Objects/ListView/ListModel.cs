@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
@@ -16,7 +17,7 @@ public abstract class ListModel : GObject
             yield return item;
         }
     }
-    
+
     public T? GetItem<T>(int position) where T : class
     {
         using var obj = GetItem(this, position);
@@ -25,6 +26,18 @@ public abstract class ListModel : GObject
         return obj.GetManagedData<T>(ListStore.DATA);
     }
 
+    public int GetItems() => GetItems(this);
+    
+    public void OnItemsChanged(OnItemsChangedDelegate onItemsChanged)
+        => SignalConnect<OnItemsChangedRawDelegate>("items-changed", (_, position, removed, added, _) => onItemsChanged(position, removed, added));
+
     [DllImport(Libs.LibGtk, EntryPoint = "g_list_model_get_item", CallingConvention = CallingConvention.Cdecl)]
     extern static GObject GetItem(ListModel model, int position);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_list_model_get_n_items", CallingConvention = CallingConvention.Cdecl)]
+    extern static int GetItems(ListModel model);
 }
+
+public delegate void OnItemsChangedDelegate(int position, int removed, int added);
+
+delegate void OnItemsChangedRawDelegate(nint _, int position, int removed, int added, nint __);
