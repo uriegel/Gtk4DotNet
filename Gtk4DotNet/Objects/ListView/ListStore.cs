@@ -15,9 +15,10 @@ public class ListStore : ListModel
     public void Append<T>(T t)
         where T : class
     {
-        using var obj = NewObject();
-        obj.SetManagedData(DATA, t);
+        var obj = NewObject(Type(), 0);
+        SetManagedData(obj, DATA, t);
         Append(this, obj);
+        Unref(obj);
     }
 
     public void Initialize<T>(IEnumerable<T> items)
@@ -33,10 +34,13 @@ public class ListStore : ListModel
     extern static ListStore New(nint type);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_list_store_append", CallingConvention = CallingConvention.Cdecl)]
-    extern static void Append(ListStore store, GObject obj);
+    extern static void Append(ListStore store, nint obj);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_list_store_remove", CallingConvention = CallingConvention.Cdecl)]
     extern static void Remove(ListStore store, int position);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_new", CallingConvention = CallingConvention.Cdecl)]
+    static extern nint NewObject(nint type, nint _);
 
     internal const string DATA = "DATA";
 }

@@ -130,10 +130,7 @@ public class ListBox : Widget
     {
         CreateItemDelegate callback = (item, _) =>
         {
-            var obj = NewObject();
-            obj.SetInternalHandle(item);
-            obj.AutoDestroyed = true;
-            var t = obj.GetManagedData<T>(ListStore.DATA);
+            var t = GetManagedData<T>(item, ListStore.DATA);
             var widget = onCreate(t);
             return widget.GetInternalHandle();
         };

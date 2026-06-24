@@ -33,13 +33,6 @@ public class GObject : BaseHandle
     /// </summary>
     public int RefCount { get => Marshal.PtrToStructure<GObjectStruct>(GetInternalHandle()).RefCount; }
 
-    public static GObject NewObject()
-    {
-        var g = New(GObject.Type(), 0);
-        g.CheckDiagnostics();
-        return g;
-    }
-
     /// <summary>
     /// Sets a property to this object (Gtk4DotNet.GTypes types are supperted)
     /// </summary>
@@ -196,6 +189,19 @@ public class GObject : BaseHandle
             SetDiagnostics();
     }
 
+    static internal void SetManagedData(nint obj, string key, object? data)
+    {
+        var dkey = GtkDelegates.Instance.GetKey("SetManagedData");
+        OnePointerDelegate callback = data =>
+        {
+            GCHandle.FromIntPtr(data).Free();
+            GtkDelegates.Instance.Remove(dkey.Key);
+        };
+        GtkDelegates.Instance.Add(dkey, callback);
+        SetQDataFull(obj, GetQuark(key), GCHandle.ToIntPtr(GCHandle.Alloc(data, GCHandleType.Normal)),
+            Marshal.GetFunctionPointerForDelegate(callback as Delegate));
+    }
+
     static internal T? GetManagedData<T>(nint obj, string key)
     {
         var p = GetQData(obj, GetQuark(key));
@@ -282,6 +288,9 @@ public class GObject : BaseHandle
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_set_qdata_full", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetQDataFull(GObject obj, int quark, nint p, nint destroyNotify);
 
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_set_qdata_full", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetQDataFull(nint obj, int quark, nint p, nint destroyNotify);
+
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_get_qdata", CallingConvention = CallingConvention.Cdecl)]
     extern static nint GetQData(GObject obj, int quark);
 
@@ -296,9 +305,6 @@ public class GObject : BaseHandle
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_property_action_new", CallingConvention = CallingConvention.Cdecl)]
     extern static ActionHandle NewPropertyAction(string name, GObject obj, string propertyName);
-
-    [DllImport(Libs.LibGtk, EntryPoint = "g_object_new", CallingConvention = CallingConvention.Cdecl)]
-    static extern GObject New(nint type, nint _);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_ref", CallingConvention = CallingConvention.Cdecl)]
     static extern nint Ref(GObject obj);
