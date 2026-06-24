@@ -1,3 +1,4 @@
+using CsTools.Extensions;
 using Gtk4DotNet;
 
 class MyWindow : ApplicationWindow
@@ -20,14 +21,14 @@ class MyWindow : ApplicationWindow
 tasksList.Visible = true;        
         tasksList.BindModel<TaskItem>(model, "taskrow", CreateTaskRow);
 
-        // settings.OnChanged("filter", () => filterListModel.SetFilter(GetFilter(settings)));
+        settings.OnChanged("filter", () => filterListModel.SetFilter(GetFilter(settings)));
 
-        // AddActions(
-        //     new SimpleAction("remove-done-tasks", RemoveDoneTasks),
-        //     settings.CreateAction("filter")
-        // );
+        AddActions(
+            new SimpleAction("remove-done-tasks", RemoveDoneTasks),
+            settings.CreateAction("filter")
+        );
 
-        // OnClose(_ => false.SideEffect(_ => Persistence.Save(store.GetItems<TaskItem>())));
+        OnClose(_ => false.SideEffect(_ => Persistence.Save(store.GetItems<TaskItem>())));
 
         OnFinalize(() =>
         {
