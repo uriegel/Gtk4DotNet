@@ -1,7 +1,7 @@
 ﻿using Gtk4DotNet;
 
 Application
-    .New(Globals.ApplicationId)
+    .NewAdwaita(Globals.ApplicationId)
     .WithDiagnostics(true)
     .OnActivate(app => app
         .WindowFromBuilder("window", "window", p => new MyWindow(p))
