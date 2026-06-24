@@ -1,41 +1,33 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!-- Created with Cambalache 1.0.3 -->
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-name shortcuts.ui -->
-  <requires lib="gtk" version="4.20"/>
-  <object class="GtkShortcutsWindow" id="help_overlay">
-    <property name="modal">True</property>
+  <requires lib="adw" version="1.7"/>
+  <requires lib="libadwaita" version="1.7"/>
+  <object class="AdwShortcutsDialog" id="help_overlay">
     <child>
-      <object class="GtkShortcutsSection">
-        <property name="max-height">10</property>
-        <property name="section-name">shortcuts</property>
+      <object class="AdwShortcutsSection">
+        <property name="title" translatable="yes">General</property>
         <child>
-          <object class="GtkShortcutsGroup">
-            <property name="title" translatable="yes" context="shortcut window">General</property>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="action-name">win.show-help-overlay</property>
-                <property name="title" translatable="yes" context="shortcut window">Show shortcuts</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="action-name">win.filter('All')</property>
-                <property name="title" translatable="yes" context="shortcut window">Filter to show all tasks</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="action-name">win.filter('Open')</property>
-                <property name="title" translatable="yes" context="shortcut window">Filter to show only open tasks</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="action-name">win.filter('Done')</property>
-                <property name="title" translatable="yes" context="shortcut window">Filter to show only completed tasks</property>
-              </object>
-            </child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Show shortcuts</property>
+            <property name="action-name">app.shortcuts</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Filter to show all tasks</property>
+            <property name="action-name">win.filter('All')</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Filter to show only open tasks</property>
+            <property name="action-name">win.filter('Open')</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title" translatable="yes">Filter to show only completed tasks</property>
+            <property name="action-name">win.filter('Done')</property>
           </object>
         </child>
       </object>

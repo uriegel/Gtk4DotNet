@@ -7,10 +7,6 @@ class MyWindow : ApplicationWindow
     {
         entry.OnActivate(NewTask);
 
-        using var shortcutsBuilder = Builder.FromDotNetResource("shortcuts");
-        var shortcuts = new Window(shortcutsBuilder, "help_overlay");
-        SetHelpOverlay(shortcuts);
-
         store = ListStore.New();
         store.OnItemsChanged((p, r, a) => tasksList.Visible = store.GetItems() > 0);
 
@@ -25,6 +21,7 @@ class MyWindow : ApplicationWindow
 
         AddActions(
             new SimpleAction("remove-done-tasks", RemoveDoneTasks),
+            new SimpleAction("show-help-overlay", ShowHelp, "<Ctrl>H"),
             settings.CreateAction("filter")
         );
 
@@ -75,6 +72,13 @@ class MyWindow : ApplicationWindow
             "Done" => CustomFilter.New<TaskItem>(item => item?.Completed == true),
             _ => null
         };
+
+    void ShowHelp()
+    {
+        using var shortcutsBuilder = Builder.FromDotNetResource("shortcuts");
+        var shortcuts = new AdwDialog(shortcutsBuilder, "help_overlay");
+        shortcuts.Present(this);
+    }
 
     [Widget]
     readonly ListBox tasksList = null!;
