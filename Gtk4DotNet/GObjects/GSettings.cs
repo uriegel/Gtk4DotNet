@@ -12,7 +12,7 @@ public class GSettings : GObject
 
     public string SchemaId { get; private set; } = "";
 
-    public GSettingsValue this[string index]
+    public new GSettingsValue this[string index]
     {
         get => values.TryGetValue(index, out var val)
             ? val
