@@ -1,5 +1,12 @@
 ﻿using Gtk4DotNet;
 
+
+using var test = SettingsSchemaSource.GetDefault().Lookup(Globals.ApplicationId, true);
+if (test == null)
+    return;
+test.Dispose();
+
+
 Application
     .NewAdwaita(Globals.ApplicationId, ApplicationFlags.HandlesOpen)
     .WithDiagnostics(true)
