@@ -68,6 +68,22 @@ public class GObject : BaseHandle
         return result;
     }
 
+// TODO like GSettings
+    // public event Action OnNotify
+    // {
+    //     add
+    //     {
+    //         ThreePointerDelegate unmanagedDelegate = (_, _, _) => value();
+    //         var id = SignalConnectForEvent($"notify::{property}", unmanagedDelegate);
+    //         eventDatas.TryAdd(value.GetHashCode(), new(id, value, unmanagedDelegate));
+    //     }
+    //     remove
+    //     {
+    //         if (eventDatas.Remove(value.GetHashCode(), out var data))
+    //             SignalDisconnectEvent(data.Id);
+    //     }
+    // }
+
     /// <summary>
     /// Set a notification callback in the form of 'notify::property'
     /// </summary>
