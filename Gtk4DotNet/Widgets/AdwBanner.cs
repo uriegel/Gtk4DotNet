@@ -51,12 +51,19 @@ public class AdwBanner : Widget
     /// <summary>
     /// When the banner button is clicked, this callback is called.
     /// </summary>
-    /// <param name="click"></param>
-    /// <returns></returns>
-    public AdwBanner OnButtonClicked(Action click)
+    public event Action OnButtonClicked
     {
-        SignalConnect<TwoPointerDelegate>("button-clicked", (_, __) => click());
-        return this;
+        add
+        {
+            TwoPointerDelegate unmanagedDelegate = (_, __) => value();
+            var id = SignalConnectForEvent("button-clicked", unmanagedDelegate);
+            eventDatas.TryAdd(value.GetHashCode(), new(id, value, unmanagedDelegate));
+        }
+        remove
+        {
+            if (eventDatas.Remove(value.GetHashCode(), out var data))
+                SignalDisconnectEvent(data.Id);
+        }
     }
 
     /// <summary>
