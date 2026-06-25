@@ -9,6 +9,7 @@ Highlights:
 * Mapping of the Gtk Threading and Gtk Main Event Loop to async/await with Synchronization context, so that asynchronous workflows or running in UI thread can be completely solved with async/await in C#.
 * GTk4 property bindings to C# properties in a DataContext implementing INotifyProperty like WPF.
 * Support for Adwaita
+* GSettings support without the need to install them as super user. 
 
 ### Remarks to Version 9.0:
 Version 9.0 is a breaking change to older versions of this C# class library. That was necessary because the focus was shifted from functional building of the UI to easy subclassing of parts of the UI as C# objects so that bigger projects can be better modularized.
@@ -17,14 +18,3 @@ More emphasis was placed on the Changing UI and reacting on UI actions than on b
 
 The functional builder concept has been partially retained, but now it is strongly recommended to use Gtk template.ui in connection with subbclassed Gtk widgets.
  
-## Installation of GTK Schema
-### Example APP
-```
-    sudo install -D ./Tests/ExampleApp/org.gtk.example.gschema.xml /usr/share/glib-2.0/schemas/
-    sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
-```     
-### ToDo List
-```
-    sudo install -D ./Tests/ToDoList/org.gtkrs.todo.gschema.xml /usr/share/glib-2.0/schemas/
-    sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
-```     

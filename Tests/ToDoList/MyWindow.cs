@@ -29,17 +29,22 @@ class MyWindow : ApplicationWindow
                 taskRow?.SetTask(item);
         });
 
-        settings = GSettings.New(Globals.ApplicationId);
-        filterListModel = FilterListModel.New(store, GetFilter(settings));
+        filterListModel = FilterListModel.New(store, GetFilter(Application.Settings));
         var model = SingleSelection.New(filterListModel);
         tasksList.SetModel(model);
         tasksList.SetFactory(factory);
 
-        settings.OnChanged("filter", () => filterListModel.SetFilter(GetFilter(settings)));
+
+
+
+
+            // TODO: hanging this delegate with a this reference to a global settings extends the lifetime of MyWindow
+            // Remove it on Dispose, perhaps with Event- technique?
+        Application.Settings.OnChanged("filter", () => filterListModel.SetFilter(GetFilter(Application.Settings)));
 
         AddActions(
             new SimpleAction("remove-done-tasks", RemoveDoneTasks),
-            settings.CreateAction("filter")
+            Application.Settings.CreateAction("filter")
         );
 
         OnClose(_ => false.SideEffect(_ => Persistence.Save(store.GetItems<TaskItem>())));
@@ -48,7 +53,6 @@ class MyWindow : ApplicationWindow
         {
             factory.Dispose();
             model.Dispose();
-            settings.Dispose();
         });
     }
 
@@ -90,8 +94,6 @@ class MyWindow : ApplicationWindow
     readonly Entry entry = null!;
 
     readonly ListStore store;
-
-    readonly GSettings settings;
 
     FilterListModel filterListModel = null!;
 }

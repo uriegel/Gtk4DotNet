@@ -12,6 +12,23 @@
   </ItemGroup>
 
   <ItemGroup>
+    <GSchemaXml Include="Schema\*.gschema.xml" />
+  </ItemGroup>
+
+  <Target Name="CompileGSettingsSchemas" BeforeTargets="CoreCompile">
+
+    <!-- Create a temporary schema directory in obj -->
+    <MakeDir Directories="$(IntermediateOutputPath)gsettings" />
+
+    <!-- Copy XML schemas -->
+    <Copy SourceFiles="@(GSchemaXml)" DestinationFolder="$(IntermediateOutputPath)gsettings" />
+
+    <!-- Generate gschemas.compiled -->
+    <Exec Command="glib-compile-schemas &quot;$(IntermediateOutputPath)gsettings&quot;" />
+
+  </Target>
+
+  <ItemGroup>
     <EmbeddedResource Include="./window.ui">
       <LogicalName>window</LogicalName>
     </EmbeddedResource>
@@ -21,6 +38,9 @@
     <EmbeddedResource Include="./shortcuts.ui">
       <LogicalName>shortcuts</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="./obj/$(Configuration)/net10.0/gsettings/gschemas.compiled">
+      <LogicalName>gschemas</LogicalName>
+    </EmbeddedResource> 
   </ItemGroup>
 
 </Project>

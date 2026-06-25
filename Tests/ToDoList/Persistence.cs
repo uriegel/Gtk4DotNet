@@ -1,5 +1,6 @@
 using CsTools;
 using CsTools.Extensions;
+using Gtk4DotNet;
 
 static class Persistence
 {
@@ -15,7 +16,7 @@ static class Persistence
     static string GetPath()
         => Environment
             .GetFolderPath(Environment.SpecialFolder.ApplicationData)
-            .AppendPath(Globals.ApplicationId)
+            .AppendPath(Application.ApplicationId)
             .SideEffect(d => d.EnsureDirectoryExists())
             .AppendPath("todolist.json");
 }

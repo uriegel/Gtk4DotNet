@@ -17,7 +17,7 @@ public class Application : GObject
         private set;
     }
     
-    public string ApplicationId { get; private set; } = null!;
+    public static string ApplicationId { get; private set; } = null!;
 
     /// <summary>
     /// Creates a new GtkApplication. It is not neccessary to call Gtk.Init
@@ -28,7 +28,7 @@ public class Application : GObject
     public static Application New(string applicationId, ApplicationFlags flags = ApplicationFlags.None)
     {
         var app = _New(applicationId, flags);
-        app.ApplicationId = applicationId;
+        ApplicationId = applicationId;
         Gtk.Init();
         return app;
     }
@@ -42,7 +42,7 @@ public class Application : GObject
     public static Application NewAdwaita(string applicationId, ApplicationFlags flags = ApplicationFlags.None)
     {
         var app = _NewAdw(applicationId, flags);
-        app.ApplicationId = applicationId;
+        ApplicationId = applicationId;
         Gtk.Init();
         return app;
     }

@@ -1,8 +1,9 @@
 ﻿using Gtk4DotNet;
 
 Application
-    .New(Globals.ApplicationId)
+    .New("de.uriegel.Todo")
     .WithDiagnostics(true)
+    .WithSettings()
     .OnActivate(app => app
         .WindowFromBuilder("window", "window", p => new MyWindow(p))
         .Show()
