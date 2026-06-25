@@ -8,7 +8,7 @@ class TaskRow : Box
     {
         completedButton.IsActive = task.Completed;
         contentLabel.Text = task.Content;
-        completedButton.OnToggled(state => task.Completed = state);
+        completedButton.OnToggled += state => task.Completed = state;
     }
 
     [Widget]

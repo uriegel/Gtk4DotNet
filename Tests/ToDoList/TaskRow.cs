@@ -6,12 +6,14 @@ class TaskRow : Box
 
     public void SetTask(TaskItem task)
     {
+        this.task = task;
         completedButton.IsActive = task.Completed;
         contentLabel.Text = task.Content;
-        if (delegateId.HasValue)
-            completedButton.SignalDisconnect(delegateId.Value);
-        delegateId = completedButton.OnToggled(state => task.Completed = state);
+        completedButton.OnToggled -= OnToggleCompleted;
+        completedButton.OnToggled += OnToggleCompleted;
     }
+
+    void OnToggleCompleted(bool state) => task?.Completed = state;
 
     [Widget]
     readonly CheckButton completedButton = null!;
@@ -19,5 +21,5 @@ class TaskRow : Box
     [Widget]
     readonly Label contentLabel = null!;
 
-    DelegateId? delegateId;
+    TaskItem? task;
 }

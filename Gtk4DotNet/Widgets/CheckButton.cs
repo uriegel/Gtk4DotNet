@@ -26,8 +26,20 @@ public class CheckButton : Widget
 
     public CheckButton(Builder builder, string? name = null) : base(builder, name) { }
 
-    public DelegateId OnToggled(Action<bool> onToggle)
-            => SignalConnect<TwoPointerDelegate>("toggled", (_, __) => onToggle(IsActive));
+    public event Action<bool> OnToggled
+    {
+        add
+        {
+            TwoPointerDelegate unmanagedDelegate = (_, __) => value(IsActive);
+            var id = SignalConnectForEvent("toggled", unmanagedDelegate);
+            eventDatas.TryAdd(value.GetHashCode(), new(id, value, unmanagedDelegate));
+        }
+        remove
+        {
+            if (eventDatas.Remove(value.GetHashCode(), out var data))
+                SignalDisconnectEvent(data.Id);
+        }
+    }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_check_button_new_with_label", CallingConvention = CallingConvention.Cdecl)]
     extern static CheckButton _NewWithLabel(string label);
