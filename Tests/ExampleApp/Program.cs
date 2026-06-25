@@ -1,15 +1,9 @@
 ﻿using Gtk4DotNet;
 
-
-using var test = SettingsSchemaSource.GetDefault().Lookup(Globals.ApplicationId, true);
-if (test == null)
-    return;
-test.Dispose();
-
-
 Application
-    .NewAdwaita(Globals.ApplicationId, ApplicationFlags.HandlesOpen)
+    .NewAdwaita("de.uriegel.exampleapp", ApplicationFlags.HandlesOpen)
     .WithDiagnostics(true)
+    .WithSettings()
     .OnOpen((app, files) =>
     {
         if (MyWindow.Instance == null)

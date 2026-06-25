@@ -11,6 +11,14 @@ namespace Gtk4DotNet;
 /// </summary>
 public class Application : GObject
 {
+    public static GSettings Settings
+    {
+        get => field ?? throw new Exception("Settings not initialized 'WithSettings'");
+        private set;
+    }
+    
+    public string ApplicationId { get; private set; } = null!;
+
     /// <summary>
     /// Creates a new GtkApplication. It is not neccessary to call Gtk.Init
     /// </summary>
@@ -20,6 +28,7 @@ public class Application : GObject
     public static Application New(string applicationId, ApplicationFlags flags = ApplicationFlags.None)
     {
         var app = _New(applicationId, flags);
+        app.ApplicationId = applicationId;
         Gtk.Init();
         return app;
     }
@@ -33,6 +42,7 @@ public class Application : GObject
     public static Application NewAdwaita(string applicationId, ApplicationFlags flags = ApplicationFlags.None)
     {
         var app = _NewAdw(applicationId, flags);
+        app.ApplicationId = applicationId;
         Gtk.Init();
         return app;
     }
@@ -65,7 +75,8 @@ public class Application : GObject
     }
 
     /// <summary>
-    /// When Diagnostics are switched on, a report of probably not released delegates or object is displayed in the console. This mehtod has to called before other GObject base types are created.
+    /// When Diagnostics are switched on, a report of probably not released delegates or object is displayed in the console. 
+    /// This method has to called before other GObject base types are created.
     /// </summary>
     /// <param name="gobjectTracing">Eyery time a GObject is freed, this will be logged</param>
     /// <returns>Application for chaining calls</returns>
@@ -75,6 +86,17 @@ public class Application : GObject
         Gtk.GObjectTracing = gobjectTracing;
         CheckDiagnostics();
         Console.WriteLine($"Running process: {Environment.ProcessId}");
+        return this;
+    }
+
+    /// <summary>
+    /// Using globally GSettings via the static <see cref="Settings"/>. There has to be a gschema.xml present an a build chain in the csproj project file,
+    /// see README.md in https://github.com/uriegel/Gtk4DotNet/blob/Main/README.md
+    /// </summary>
+    /// <returns>Application for chaining calls</returns>
+    public Application WithSettings()
+    {
+        Settings = GSettings.NewFromResource(ApplicationId, true);
         return this;
     }
 

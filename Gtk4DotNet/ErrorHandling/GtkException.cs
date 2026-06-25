@@ -24,6 +24,7 @@ public class GtkException : Exception
         => error?.Domain switch
         {
             Quarks.Gio => new GioException(error),
+            Quarks.File => new FileException(error),
             null => new Exception("Unknown exception"),
             _ => new GtkException(error)
         };

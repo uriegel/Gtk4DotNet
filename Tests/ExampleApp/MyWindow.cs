@@ -8,9 +8,8 @@ class MyWindow : ApplicationWindow
         Instance = this;
         sidebarRevealer.IsRevealed = true;
 
-        using var settings = GSettings.New(Globals.ApplicationId);
-        settings.Bind("transition", stack, "transition-type");
-        settings.Bind("show-words", sidebarRevealer, "reveal-child");
+        Application.Settings.Bind("transition", stack, "transition-type");
+        Application.Settings.Bind("show-words", sidebarRevealer, "reveal-child");
         searchEntry.OnSearchChanged(SearchTextChanged);
         search.BindProperty("active", searchbar, "search-mode-enabled", BindingFlags.Bidirectional);
         lines.BindProperty("visible", linesLabel, "visible");
@@ -24,7 +23,7 @@ class MyWindow : ApplicationWindow
         AddActions(
             new SimpleAction("preferences", ShowPreferences),
             new SimpleAction("quit", CloseWindow, "<Ctrl>Q"),
-            settings.CreateAction("show-words", "<Ctrl>W"),
+            Application.Settings.CreateAction("show-words", "<Ctrl>W"),
             lines.CreatePropertyAction("show-lines", "visible", "<Ctrl>L")
         );
     }

@@ -18,5 +18,4 @@ static class Persistence
             .AppendPath(Globals.ApplicationId)
             .SideEffect(d => d.EnsureDirectoryExists())
             .AppendPath("todolist.json");
-
 }

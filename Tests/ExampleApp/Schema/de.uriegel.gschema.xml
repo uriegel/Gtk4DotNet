@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
-  <schema path="/org/gtk/exampleapp/" id="org.gtk.exampleapp">
+  <schema path="/de/uriegel/exampleapp/" id="de.uriegel.exampleapp">
     <key name="font" type="s">
       <default>'Monospace 12'</default>
       <summary>Font</summary>
