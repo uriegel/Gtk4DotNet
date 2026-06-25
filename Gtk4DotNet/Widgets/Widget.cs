@@ -273,11 +273,35 @@ public class Widget : GObject
         AddController(shortcutController);
     }
 
-    public DelegateId OnRealize(Action action)
-        => SignalConnect<TwoPointerDelegate>("realize", (_, __) => action());
+    public event Action OnRealize
+    {
+        add
+        {
+            TwoPointerDelegate unmanagedDelegate = (_, __) => value();
+            var id = SignalConnectForEvent("realize", unmanagedDelegate);
+            eventDatas.TryAdd(value.GetHashCode(), new(id, value, unmanagedDelegate));
+        }
+        remove
+        {
+            if (eventDatas.Remove(value.GetHashCode(), out var data))
+                SignalDisconnectEvent(data.Id);
+        }
+    }
 
-    public DelegateId OnUnrealize(Action action)
-        => SignalConnect<TwoPointerDelegate>("unrealize", (_, __) => action());
+    public event Action OnUnrealize
+    {
+        add
+        {
+            TwoPointerDelegate unmanagedDelegate = (_, __) => value();
+            var id = SignalConnectForEvent("unrealize", unmanagedDelegate);
+            eventDatas.TryAdd(value.GetHashCode(), new(id, value, unmanagedDelegate));
+        }
+        remove
+        {
+            if (eventDatas.Remove(value.GetHashCode(), out var data))
+                SignalDisconnectEvent(data.Id);
+        }
+    }
 
     /// <summary>
     /// Used to register a widget so it can be found by its Gtk handle value. Used for example in a ListBox, when callbacks delivering handles
@@ -552,10 +576,6 @@ public static class WidgetExtensions
     public static THandle RegisterWidget<THandle>(this THandle widget)
         where THandle : Widget
         => widget.SideEffect(w => w.Register());
-
-    public static THandle Realize<THandle>(this THandle widget, Action action)
-        where THandle : Widget
-        => widget.SideEffect(w => w.OnRealize(action));
 
     public static THandle SizeRequest<THandle>(this THandle widget, int width, int height)
         where THandle : Widget

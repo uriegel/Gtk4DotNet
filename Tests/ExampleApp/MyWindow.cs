@@ -10,7 +10,7 @@ class MyWindow : ApplicationWindow
 
         Application.Settings.Bind("transition", stack, "transition-type");
         Application.Settings.Bind("show-words", sidebarRevealer, "reveal-child");
-        searchEntry.OnSearchChanged(SearchTextChanged);
+        searchEntry.OnSearchChanged += SearchTextChanged;
         search.BindProperty("active", searchbar, "search-mode-enabled", BindingFlags.Bidirectional);
         lines.BindProperty("visible", linesLabel, "visible");
         stack.OnNotify("visible-child", () =>

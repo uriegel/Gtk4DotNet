@@ -9,7 +9,20 @@ public class Entry : Widget
 {
     public Editable AsEditable() => new Editable(GetInternalHandle());
 
-    public DelegateId OnActivate(Action onActivate) => SignalConnect<TwoPointerDelegate>("activate", (_, __) => onActivate());
+    public event Action OnActivate
+    {
+        add
+        {
+            TwoPointerDelegate unmanagedDelegate = (_, __) => value();
+            var id = SignalConnectForEvent("activate", unmanagedDelegate);
+            eventDatas.TryAdd(value.GetHashCode(), new(id, value, unmanagedDelegate));
+        }
+        remove
+        {
+            if (eventDatas.Remove(value.GetHashCode(), out var data))
+                SignalDisconnectEvent(data.Id);
+        }
+    }
 
     public Entry() : base() { }
 

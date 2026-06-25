@@ -5,7 +5,7 @@ class MyWindow : ApplicationWindow
 {
     public MyWindow(WindowBuilder builder) : base(builder)
     {
-        entry.OnActivate(NewTask);
+        entry.OnActivate += NewTask;
 
         store = ListStore.New();
         store.OnItemsChanged((p, r, a) => tasksList.Visible = store.GetItems() > 0);

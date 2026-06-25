@@ -11,10 +11,22 @@ public class SearchEntry : Widget
     /// <summary>
     /// Emitted with a delay. The length of the delay can be changed with the GtkSearchEntry:search-delay property.
     /// </summary>
-    /// <param name="changed"></param>
-    public DelegateId OnSearchChanged(Action changed) => SignalConnect<TwoPointerDelegate>("search-changed", (_, __) => changed());
+    public event Action OnSearchChanged
+    {
+        add
+        {
+            TwoPointerDelegate unmanagedDelegate = (_, __) => value();
+            var id = SignalConnectForEvent("search-changed", unmanagedDelegate);
+            eventDatas.TryAdd(value.GetHashCode(), new(id, value, unmanagedDelegate));
+        }
+        remove
+        {
+            if (eventDatas.Remove(value.GetHashCode(), out var data))
+                SignalDisconnectEvent(data.Id);
+        }
+    }
 
-    public Editable AsEditable() => new Editable(GetInternalHandle());
+    public Editable AsEditable() => new(GetInternalHandle());
 
     public SearchEntry() : base() { }
 

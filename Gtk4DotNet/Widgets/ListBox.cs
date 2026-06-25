@@ -90,11 +90,20 @@ public class ListBox : Widget
         SetHeaderFunc(this, Marshal.GetFunctionPointerForDelegate((Delegate)threePointerDelegate), 0, 0);
     }
 
-    /// <summary>
-    /// Installs a callback that is being called on listbox row activation
-    /// </summary>
-    /// <param name="onActivated"></param>
-    public DelegateId OnRowActivated(Action onActivated) => SignalConnect<ThreePointerDelegate>("row-activated", (_, nint, __) => onActivated());
+    public event Action OnRowActivated
+    {
+        add
+        {
+            ThreePointerDelegate unmanagedDelegate = (_, _, _) => value();
+            var id = SignalConnectForEvent("row-activated", unmanagedDelegate);
+            eventDatas.TryAdd(value.GetHashCode(), new(id, value, unmanagedDelegate));
+        }
+        remove
+        {
+            if (eventDatas.Remove(value.GetHashCode(), out var data))
+                SignalDisconnectEvent(data.Id);
+        }
+    }
 
     /// <summary>
     /// Removes all items of this ListBox

@@ -5,7 +5,7 @@ class MyWindow : ApplicationWindow
 {
     public MyWindow(WindowBuilder builder) : base(builder)
     {
-        entry.OnActivate(NewTask);
+        entry.OnActivate += NewTask;
 
         using var shortcutsBuilder = Builder.FromDotNetResource("shortcuts");
         var shortcuts = new Window(shortcutsBuilder, "help_overlay");
