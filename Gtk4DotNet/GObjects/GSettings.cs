@@ -8,6 +8,21 @@ namespace Gtk4DotNet;
 
 public class GSettings : GObject
 {
+    #region Properties
+
+    public string SchemaId { get; private set; } = "";
+
+    public GSettingsValue this[string index]
+    {
+        get => values.TryGetValue(index, out var val)
+            ? val
+            : new GSettingsValue(index, this).SideEffect(sv => values.TryAdd(index, sv));
+    }
+
+    #endregion
+
+    #region Construction
+
     public static GSettings New(string schemaId, bool dontCheckDiagnostics = false)
     {
         var settings = _New(schemaId);
@@ -35,6 +50,10 @@ public class GSettings : GObject
         return settings;
     }
 
+    #endregion
+
+    #region Methods
+
     public void Bind(string key, GObject obj, string property, BindFlags flags = BindFlags.Default) => Bind(this, key, obj, property, flags);
 
     public bool SchemaHasKey(string key)
@@ -50,7 +69,7 @@ public class GSettings : GObject
     public GSettings? ValidateKey(string key)
         => SchemaHasKey(key) ? this : null;
 
-    public new string? GetString(string key) 
+    public new string? GetString(string key)
         => ValidateKey(key)
             ?._GetString(key)
             .PtrToString(true);
@@ -58,9 +77,9 @@ public class GSettings : GObject
     public new bool SetString(string key, string value)
         => ValidateKey(key)?._SetString(key, value) ?? false;
 
-    public new bool GetBool(string key) 
+    public new bool GetBool(string key)
         => ValidateKey(key)
-            ?._GetBool(key) 
+            ?._GetBool(key)
             ?? false;
 
     public new bool SetBool(string key, bool value)
@@ -73,15 +92,54 @@ public class GSettings : GObject
         return new(key, res, accelerator);
     }
 
-    public int? GetInt(string key) 
+    public int? GetInt(string key)
         => ValidateKey(key)
             ?._GetInt(key);
 
     public bool SetInt(string key, int value)
         => ValidateKey(key)?._SetInt(key, value) ?? false;
 
-    public DelegateId OnChanged(string key, Action onChanged)
-        => SignalConnect($"changed::{key}", onChanged);   
+    #endregion
+
+    #region Class
+
+    public class GSettingsValue
+    {
+        public string Key { get; }
+        public event Action OnChanged
+        {
+            add
+            {
+                var id = settings.SignalConnect($"changed::{Key}", value, true);
+                delegates.TryAdd(value, id);
+            }
+            remove
+            {
+                if (delegates.TryGetValue(value, out var id))
+                    settings.SignalDisconnect(id);
+            }
+        }
+
+        internal GSettingsValue(string key, GSettings settings)
+        {
+            Key = key;
+            this.settings = settings;
+        }
+
+        Dictionary<Delegate, DelegateId> delegates = [];
+
+        GSettings settings;
+    }
+
+    #endregion
+
+    #region Internals
+
+    Dictionary<string, GSettingsValue> values = [];
+
+    #endregion
+
+    #region PInvoke
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_settings_bind", CallingConvention = CallingConvention.Cdecl)]
     extern static void Bind(GSettings settings, string key, GObject obj, string property, BindFlags flags);
@@ -104,7 +162,7 @@ public class GSettings : GObject
     [DllImport(Libs.LibGtk, EntryPoint = "g_settings_create_action", CallingConvention = CallingConvention.Cdecl)]
     extern static ActionHandle CreateAction(GSettings settings, string key);
 
-    public string SchemaId { get; private set; } = "";
+    #endregion
 }
 
 static class GSettingsExtensions

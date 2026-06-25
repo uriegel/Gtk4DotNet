@@ -8,6 +8,7 @@ namespace Gtk4DotNet;
 // TODO ToDoApp with Adwaita
 // TODO Perhaps ColumnView/GridView
 // TODO DrawView
+// TODO Replace onMethods with events
 
 // TODO: Folder Widgets is release ready
 // TODO: Folder Actions is release ready

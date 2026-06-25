@@ -2,6 +2,7 @@
 
 Application
     .NewAdwaita(Globals.ApplicationId)
+    .WithSettings()
     .WithDiagnostics(true)
     .OnActivate(app => app
         .WindowFromBuilder("window", "window", p => new MyWindow(p))

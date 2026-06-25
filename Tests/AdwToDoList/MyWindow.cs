@@ -16,7 +16,7 @@ class MyWindow : ApplicationWindow
 
         tasksList.BindModel<TaskItem>(model, "taskrow", CreateTaskRow);
 
-        settings.OnChanged("filter", () => filterListModel.SetFilter(GetFilter(settings)));
+        settings["filter"].OnChanged += OnFilterChanged;
         store.Initialize(Persistence.Retrieve());
 
         AddActions(
@@ -31,8 +31,11 @@ class MyWindow : ApplicationWindow
         {
             model.Dispose();
             settings.Dispose();
+            settings["filter"].OnChanged -= OnFilterChanged;
         });
     }
+
+    void OnFilterChanged() => filterListModel.SetFilter(GetFilter(Application.Settings));
 
     Widget CreateTaskRow(Builder builder, TaskItem? item)
     {

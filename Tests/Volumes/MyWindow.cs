@@ -47,7 +47,7 @@ class MyWindow : ApplicationWindow
         using var root = mount?.GetRoot();
 
         settings = GSettings.New("org.gnome.desktop.interface");
-        settings.OnChanged("gtk-theme", () => WriteLine($"Thema, {settings.GetString("gtk-theme")}"));
+        settings["gtk-theme"].OnChanged += OnThemeChanged;
 
         monitor = VolumeMonitor.Get();
         using var volumes = monitor.GetVolumes();
@@ -104,9 +104,12 @@ class MyWindow : ApplicationWindow
         OnFinalize(() =>
         {
             monitor.Dispose();
+            settings["gtk-theme"].OnChanged -= OnThemeChanged;
             settings.Dispose();
         });
     }
+    
+    void OnThemeChanged() => WriteLine($"Thema, {settings.GetString("gtk-theme")}");
 
     VolumeMonitor monitor;
     GSettings settings;

@@ -34,14 +34,8 @@ class MyWindow : ApplicationWindow
         tasksList.SetModel(model);
         tasksList.SetFactory(factory);
 
-
-
-
-
-            // TODO: hanging this delegate with a this reference to a global settings extends the lifetime of MyWindow
-            // Remove it on Dispose, perhaps with Event- technique?
-        Application.Settings.OnChanged("filter", () => filterListModel.SetFilter(GetFilter(Application.Settings)));
-
+        Application.Settings["filter"].OnChanged += OnFilterChanged;
+        
         AddActions(
             new SimpleAction("remove-done-tasks", RemoveDoneTasks),
             Application.Settings.CreateAction("filter")
@@ -53,6 +47,7 @@ class MyWindow : ApplicationWindow
         {
             factory.Dispose();
             model.Dispose();
+            Application.Settings["filter"].OnChanged -= OnFilterChanged;
         });
     }
 
@@ -78,6 +73,8 @@ class MyWindow : ApplicationWindow
         foreach (var pos in donePositions)
             store.Remove(pos);
     }
+
+    void OnFilterChanged() => filterListModel.SetFilter(GetFilter(Application.Settings));
 
     static CustomFilter? GetFilter(GSettings settings)
         => settings.GetString("filter") switch
