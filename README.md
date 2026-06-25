@@ -103,6 +103,8 @@ Now an empty default window is being shown and the function call ```Applicatio.R
 
 And now your first Gtk window is being shown!
 
+## Hello World
+
 For a Hello World app it is used to display the Text "Hello World". We set thewindow title to this string, and set the default size of the window, and our Hello World app is finished:
 
 ```cs
@@ -118,3 +120,7 @@ Application
     ).Run();
 ```
 Many Methods returns their own instance, so that you can chain function calls in a builder way. 
+
+![custom titlebar](https://raw.githubusercontent.com/uriegel/Gtk4DotNet/refs/heads/Beta/Readme/helloworld.png) 
+
+## Including Widgets to the Window
