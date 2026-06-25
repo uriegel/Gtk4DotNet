@@ -112,6 +112,12 @@ public class Window : Widget
 
     public Window() : base() { }
 
+    protected void Construct()
+    {
+        SetInternalHandle(_New().GetInternalHandle());
+        CheckDiagnostics();
+    }
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_application", CallingConvention = CallingConvention.Cdecl)]
     internal extern static void SetApplication(Window window, Application application);
 

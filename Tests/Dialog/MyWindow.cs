@@ -4,9 +4,9 @@ class MyWindow : ApplicationWindow
 {
     public MyWindow(WindowBuilder builder) : base(builder)
     {
-        dialogFromCode.OnClicked(OnDialog);
-        dialogFromResource.OnClicked(OnDialogFromResource);
-        dialogAppChooser.OnClicked(OnAppChoser);
+        dialogFromCode.OnClicked += OnDialog;
+        dialogFromResource.OnClicked += OnDialogFromResource;
+        dialogAppChooser.OnClicked += OnAppChoser;
         OnClose(PreventClosing);
     }
 

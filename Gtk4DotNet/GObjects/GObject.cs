@@ -219,10 +219,22 @@ public class GObject : BaseHandle
         return key;
     }
 
+    internal long SignalConnectForEvent(string name, Delegate callback, bool manualFreeing = false)
+    {
+        EventFinalizer();
+        return SignalConnect(this, name, Marshal.GetFunctionPointerForDelegate(callback), 0, 0);
+    }
+
     public void SignalDisconnect(DelegateId id)
     {
         SignalDisconnect(this, id.SignalId);
         GtkDelegates.Instance.Remove(id.Key);
+    }
+
+    internal void SignalDisconnectEvent(long id) 
+    {
+        if (finalized != true)
+            SignalDisconnect(this, id);
     }
 
     protected virtual void OnDiagnostics()
@@ -251,6 +263,16 @@ public class GObject : BaseHandle
         _AddWeakRef(this, Marshal.GetFunctionPointerForDelegate(callback as Delegate), 0);
     }
 
+    void EventFinalizer()
+    {
+        if (finalized == null)
+        {
+            finalized = false;
+            AddWeakRef(() => finalized = true);
+        }
+    } 
+
+    bool? finalized = null;
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_free", CallingConvention = CallingConvention.Cdecl)]
     internal extern static void Free(nint obj);
@@ -310,6 +332,8 @@ public class GObject : BaseHandle
     static extern nint Ref(GObject obj);
 
     bool diagnosticsSet;
+
+    internal Dictionary<object, EventData> eventDatas = [];        
 }
 
 public static class GObjectExtensions
@@ -351,3 +375,5 @@ public static class GObjectExtensions
         where THandle : GObject
         => obj.SideEffect(o => o.OnFinalize(onFinalize));
 }
+
+record EventData(long Id, Delegate Delegate, Delegate EventDelegate);

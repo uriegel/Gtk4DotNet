@@ -28,11 +28,20 @@ public class Button : Widget
         return res;
     }
 
-    /// <summary>
-    /// Callback when the button is being clicked
-    /// </summary>
-    /// <param name="click"></param>
-    public DelegateId OnClicked(Action click) => SignalConnect<TwoPointerDelegate>("clicked", (_, __) => click());
+    public event Action OnClicked
+    {
+        add
+        {
+            TwoPointerDelegate unmanagedDelegate = (_, __) => value();
+            var id = SignalConnectForEvent("clicked", unmanagedDelegate);
+            eventDatas.TryAdd(value.GetHashCode(), new(id, value, unmanagedDelegate));
+        }
+        remove
+        {
+            if (eventDatas.Remove(value.GetHashCode(), out var data))
+                SignalDisconnectEvent(data.Id);
+        }
+    }
 
     public Button() : base() { }
 
@@ -50,17 +59,6 @@ public class Button : Widget
 
 public static class ButtonExtensions
 {
-    /// <summary>
-    /// Callback when the button is being clicked
-    /// </summary>
-    /// <typeparam name="THandle"></typeparam>
-    /// <param name="button"></param>
-    /// <param name="click"></param>
-    /// <returns>This button so that chained method calls are possible</returns>
-    public static THandle Clicked<THandle>(this THandle button, Action click)
-        where THandle : Button
-        => button.SideEffect(a => a.OnClicked(click));
-
     /// <summary>
     /// A button can contain an icon by name
     /// </summary>

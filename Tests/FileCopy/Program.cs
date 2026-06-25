@@ -20,7 +20,7 @@ A copy will be created when pressing this button.")
                 .MarginEnd(20)
                 .MarginTop(20)
                 .MarginBottom(20)
-                .Clicked(TestCopy)))
+                .SideEffect(b => b.OnClicked += TestCopy)))
         .Show()
     ).Run();
 

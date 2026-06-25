@@ -12,14 +12,14 @@ class MyWindow : ApplicationWindow
 
         box.DataContext = dataContext;
         label1.SetBinding("label", nameof(WindowDataContext.Name));
-        button1.OnClicked(async () =>
+        button1.OnClicked += async () =>
         {
             dataContext.Name = "Name was changed to John Doe";
             await Task.Delay(2000);
             dataContext.Name = "Name was changed back to URiegel";
-        });
-        buttonEmpty.OnClicked(() => dataContext.Name = "");
-        buttonNull.OnClicked(() => dataContext.Name = null!);
+        };
+        buttonEmpty.OnClicked += () => dataContext.Name = "";
+        buttonNull.OnClicked += () => dataContext.Name = null!;
         label2.SetBinding("label", nameof(WindowDataContext.Active));
         label3
             .Binding("label", nameof(WindowDataContext.Active), converter: b => (bool)b! ? "true" : "false")
