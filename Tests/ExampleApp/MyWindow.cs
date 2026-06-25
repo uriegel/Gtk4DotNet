@@ -13,13 +13,13 @@ class MyWindow : ApplicationWindow
         searchEntry.OnSearchChanged += SearchTextChanged;
         search.BindProperty("active", searchbar, "search-mode-enabled", BindingFlags.Bidirectional);
         lines.BindProperty("visible", linesLabel, "visible");
-        stack.OnNotify("visible-child", () =>
+        stack["visible-child"].OnNotify += () =>
         {
             searchbar.SearchMode = false;
             UpdateWords();
             UpdateLines();
-        });
-        sidebarRevealer.OnNotify("reveal-child", UpdateWords);
+        };
+        sidebarRevealer["reveal-child"].OnNotify += UpdateWords;
         AddActions(
             new SimpleAction("preferences", ShowPreferences),
             new SimpleAction("quit", CloseWindow, "<Ctrl>Q"),

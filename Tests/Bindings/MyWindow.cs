@@ -27,9 +27,8 @@ class MyWindow : ApplicationWindow
         checkBtn1.SetBinding("active", nameof(WindowDataContext.Active), BindingFlags.Bidirectional);
         checkBtn2.SetBinding("active", nameof(WindowDataContext.Active));
         trigger.OnToggled += b => dataContext.Active = b;
-        editable
-            .Binding("text", nameof(WindowDataContext.Name), BindingFlags.Bidirectional)
-            .Notify("editing", () => Console.WriteLine("Editing..."));
+        editable.Binding("text", nameof(WindowDataContext.Name), BindingFlags.Bidirectional);
+        editable["editing"].OnNotify += () => Console.WriteLine("Editing...");
     }
 
     readonly WindowDataContext dataContext = new();

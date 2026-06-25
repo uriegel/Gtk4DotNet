@@ -161,7 +161,7 @@ public class Widget : GObject
             AddWeakRef(() => dataContext.PropertyChanged -= OnChanged);
 
             if (bindingFlags.HasFlag(BindingFlags.Bidirectional))
-                OnNotify(targetProperty, SetValue);
+                this[targetProperty].OnNotify += SetValue;
 
             void OnChanged(object? sender, PropertyChangedEventArgs e)
             {

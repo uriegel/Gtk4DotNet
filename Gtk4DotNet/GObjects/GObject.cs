@@ -23,15 +23,22 @@ public class GObject : BaseHandle
     public bool HasFloatingRef { get => _HasFloatingRef(this); }
 
     /// <summary>
+    /// The object's RefCount
+    /// </summary>
+    public int RefCount { get => Marshal.PtrToStructure<GObjectStruct>(GetInternalHandle()).RefCount; }
+
+    public GObjectNotify this[string index]
+    {
+        get => values.TryGetValue(index, out var val)
+            ? val
+            : new GObjectNotify(index, this).SideEffect(sv => values.TryAdd(index, sv));
+    }
+
+    /// <summary>
     /// Add a notification action to notify when this instance is destroyed
     /// </summary>
     /// <param name="onFinalize"></param>
     public void OnFinalize(Action onFinalize) => AddWeakRef(onFinalize);
-
-    /// <summary>
-    /// The object's RefCount
-    /// </summary>
-    public int RefCount { get => Marshal.PtrToStructure<GObjectStruct>(GetInternalHandle()).RefCount; }
 
     /// <summary>
     /// Sets a property to this object (Gtk4DotNet.GTypes types are supperted)
@@ -67,30 +74,6 @@ public class GObject : BaseHandle
         gval.Unset();
         return result;
     }
-
-// TODO like GSettings
-    // public event Action OnNotify
-    // {
-    //     add
-    //     {
-    //         ThreePointerDelegate unmanagedDelegate = (_, _, _) => value();
-    //         var id = SignalConnectForEvent($"notify::{property}", unmanagedDelegate);
-    //         eventDatas.TryAdd(value.GetHashCode(), new(id, value, unmanagedDelegate));
-    //     }
-    //     remove
-    //     {
-    //         if (eventDatas.Remove(value.GetHashCode(), out var data))
-    //             SignalDisconnectEvent(data.Id);
-    //     }
-    // }
-
-    /// <summary>
-    /// Set a notification callback in the form of 'notify::property'
-    /// </summary>
-    /// <param name="property">Property name without 'notify::'</param>
-    /// <param name="onNotify"></param>
-    public void OnNotify(string property, Action onNotify)
-        => SignalConnect<ThreePointerDelegate>($"notify::{property}", (nint _, nint __, nint ___) => onNotify());
 
     /// <summary>
     /// Set a binding between this object and another GObject 'target'
@@ -286,9 +269,48 @@ public class GObject : BaseHandle
             finalized = false;
             AddWeakRef(() => finalized = true);
         }
-    } 
+    }
 
     bool? finalized = null;
+    
+    #region Class
+
+    public class GObjectNotify
+    {
+        public string Property { get; }
+
+        public event Action OnNotify
+        {
+            add
+            {
+                ThreePointerDelegate unmanagedDelegate = (_, _, _) => value();
+                var id = obj.SignalConnectForEvent($"notify::{Property}", unmanagedDelegate);
+                obj.eventDatas.TryAdd(value.GetHashCode(), new(id, value, unmanagedDelegate));
+            }
+            remove
+            {
+                if (obj.eventDatas.Remove(value.GetHashCode(), out var data))
+                    obj.SignalDisconnectEvent(data.Id);
+            }
+        }
+
+        internal GObjectNotify(string property, GObject obj)
+        {
+            Property = property;
+            this.obj = obj;
+        }
+
+        GObject obj;
+    }
+
+    #endregion
+
+    #region Internals
+
+    Dictionary<string, GObjectNotify> values = [];
+
+    #endregion
+
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_free", CallingConvention = CallingConvention.Cdecl)]
     internal extern static void Free(nint obj);
@@ -367,18 +389,6 @@ public static class GObjectExtensions
     public static THandle AddWeakRef<THandle>(this GObject obj, Action onDisposing)
         where THandle : GObject, new()
         => (THandle)obj.SideEffect(o => o.AddWeakRef(onDisposing));
-
-    /// <summary>
-    /// Set a notification callback in the form of 'notify::property'
-    /// </summary>
-    /// <typeparam name="THandle"></typeparam>
-    /// <param name="obj"></param>
-    /// <param name="property">Property name without 'notify::'</param>
-    /// <param name="onNotify"></param>
-    /// <returns>The GObject for chaining calls</returns>
-    public static THandle Notify<THandle>(this THandle obj, string property, Action onNotify)
-        where THandle : GObject
-        => obj.SideEffect(o => o.OnNotify(property, onNotify));
 
     /// <summary>
     /// Add a notification action to notify when this instance is destroyed

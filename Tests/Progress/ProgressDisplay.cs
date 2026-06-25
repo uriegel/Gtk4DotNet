@@ -6,7 +6,7 @@ class ProgressDisplay : Revealer
     {
         AddCssClass("custom-accent");
         drawingArea.SetDrawFunction(Draw);
-        OnNotify("reveal-child", MakeProgress);
+        this["reveal-child"].OnNotify += MakeProgress;
         starter.BindProperty("active", this, "reveal-child", BindingFlags.Bidirectional);
         OnFinalize(async () =>
         {
