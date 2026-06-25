@@ -23,27 +23,6 @@ Application
                 .Attach(
                     Button
                         .NewWithLabel("Quit")
-                        //.Clicked(() => win.CloseWindow()), 0, 1, 2, 1)))
-                        .SideEffect(b => b.OnClicked += ShowWindow), 0, 1, 2, 1)))
+                        .SideEffect(b => b.OnClicked += () => win.CloseWindow()), 0, 1, 2, 1)))
         .Show()
     ).Run();
-
-void ShowWindow()
-    => new MyWindow()
-        .Title("Child👍")
-        .Show();
-
-class MyWindow : Window
-{
-    public MyWindow()
-    {
-        Construct();
-        Button button = Button.NewWithLabel("Test");
-        button.OnClicked += Klicḱen;
-        SetChild(button);
-
-        OnFinalize(() => button.OnClicked -= Klicḱen);
-    }
-
-    void Klicḱen() => WriteLine("Geklickt");
-};

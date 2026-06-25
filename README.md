@@ -123,4 +123,12 @@ Many Methods returns their own instance, so that you can chain function calls in
 
 ![custom titlebar](https://raw.githubusercontent.com/uriegel/Gtk4DotNet/refs/heads/Beta/Readme/helloworld.png) 
 
+If you download the project from https://github.com/uriegel/Gtk4DotNet/ you can start the Test program 'HelloWorld' from Visual Studio Code.
+
 ## Including Widgets to the Window
+
+### TODO
+with diagnostics
+
+test app opening new custom windows inherited from Window, add to Application
+
