@@ -179,6 +179,11 @@ Application
   ```
 Gtk4DotNet has the nuget package CsTools included, which has some functional extensions like ```Pipe()``` or ```SideEffect()``` to be used in the functional flow of the builder. pattern.
 
+## Using an UI template from .NET resource 
+
+the same program with template Cambalache
+Adwaita
+
 ### TODO
 
 
