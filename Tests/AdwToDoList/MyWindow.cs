@@ -10,19 +10,18 @@ class MyWindow : ApplicationWindow
         store = ListStore.New();
         store.OnItemsChanged((p, r, a) => tasksList.Visible = store.GetItems() > 0);
 
-        settings = GSettings.New(Globals.ApplicationId);
-        filterListModel = FilterListModel.New(store, GetFilter(settings));
+        filterListModel = FilterListModel.New(store, GetFilter(Application.Settings));
         var model = NoSelection.New(filterListModel);
 
         tasksList.BindModel<TaskItem>(model, "taskrow", CreateTaskRow);
 
-        settings["filter"].OnChanged += OnFilterChanged;
+        Application.Settings["filter"].OnChanged += OnFilterChanged;
         store.Initialize(Persistence.Retrieve());
 
         AddActions(
             new SimpleAction("remove-done-tasks", RemoveDoneTasks),
             new SimpleAction("show-help-overlay", ShowHelp, "<Ctrl>H"),
-            settings.CreateAction("filter")
+            Application.Settings.CreateAction("filter")
         );
 
         OnClose(_ => false.SideEffect(_ => Persistence.Save(store.GetItems<TaskItem>())));
@@ -30,8 +29,7 @@ class MyWindow : ApplicationWindow
         OnFinalize(() =>
         {
             model.Dispose();
-            settings.Dispose();
-            settings["filter"].OnChanged -= OnFilterChanged;
+            Application.Settings["filter"].OnChanged -= OnFilterChanged;
         });
     }
 
@@ -90,8 +88,6 @@ class MyWindow : ApplicationWindow
     readonly Entry entry = null!;
 
     readonly ListStore store;
-
-    readonly GSettings settings;
 
     FilterListModel filterListModel = null!;
 }

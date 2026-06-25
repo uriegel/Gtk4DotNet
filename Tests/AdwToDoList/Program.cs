@@ -1,9 +1,9 @@
 ﻿using Gtk4DotNet;
 
 Application
-    .NewAdwaita(Globals.ApplicationId)
-    .WithSettings()
+    .NewAdwaita("de.uriegel.Todo")
     .WithDiagnostics(true)
+    .WithSettings()
     .OnActivate(app => app
         .WindowFromBuilder("window", "window", p => new MyWindow(p))
         .Show()

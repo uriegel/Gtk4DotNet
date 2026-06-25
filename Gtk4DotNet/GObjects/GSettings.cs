@@ -70,20 +70,14 @@ public class GSettings : GObject
         => SchemaHasKey(key) ? this : null;
 
     public new string? GetString(string key)
-        => ValidateKey(key)
-            ?._GetString(key)
-            .PtrToString(true);
+        => GetString(this, key).PtrToString(true);
 
     public new bool SetString(string key, string value)
-        => ValidateKey(key)?._SetString(key, value) ?? false;
+        => SetString(this, key, value);
 
-    public new bool GetBool(string key)
-        => ValidateKey(key)
-            ?._GetBool(key)
-            ?? false;
+    public new bool GetBool(string key) => GetBool(this, key);
 
-    public new bool SetBool(string key, bool value)
-        => ValidateKey(key)?._SetBool(key, value) ?? false;
+    public new bool SetBool(string key, bool value) => SetBool(this, key, value);
 
     public SettingsAction CreateAction(string key, string? accelerator = null)
     {
@@ -92,12 +86,9 @@ public class GSettings : GObject
         return new(key, res, accelerator);
     }
 
-    public int? GetInt(string key)
-        => ValidateKey(key)
-            ?._GetInt(key);
+    public int? GetInt(string key) => GetInt(this, key);
 
-    public bool SetInt(string key, int value)
-        => ValidateKey(key)?._SetInt(key, value) ?? false;
+    public bool SetInt(string key, int value) => SetInt(this, key, value);
 
     #endregion
 
@@ -162,26 +153,24 @@ public class GSettings : GObject
     [DllImport(Libs.LibGtk, EntryPoint = "g_settings_create_action", CallingConvention = CallingConvention.Cdecl)]
     extern static ActionHandle CreateAction(GSettings settings, string key);
 
+    [DllImport(Libs.LibGtk, EntryPoint = "g_settings_get_string", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint GetString(GSettings settings, string key);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_settings_get_string", CallingConvention = CallingConvention.Cdecl)]
+    extern static bool SetString(GSettings settings, string key, string value);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_settings_set_boolean", CallingConvention = CallingConvention.Cdecl)]
+    extern static bool SetBool(GSettings settings, string name, bool value);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_settings_get_boolean", CallingConvention = CallingConvention.Cdecl)]
+    extern static bool GetBool(GSettings settings, string name);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_settings_set_int", CallingConvention = CallingConvention.Cdecl)]
+    extern static bool SetInt(GSettings settings, string name, int value);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_settings_get_int", CallingConvention = CallingConvention.Cdecl)]
+    extern static int GetInt(GSettings settings, string name);
+    
     #endregion
 }
 
-static class GSettingsExtensions
-{
-    [DllImport(Libs.LibGtk, EntryPoint = "g_settings_get_string", CallingConvention = CallingConvention.Cdecl)]
-    public extern static nint _GetString(this GSettings settings, string key);
-
-    [DllImport(Libs.LibGtk, EntryPoint = "g_settings_get_string", CallingConvention = CallingConvention.Cdecl)]
-    public extern static bool _SetString(this GSettings settings, string key, string value);
-
-    [DllImport(Libs.LibGtk, EntryPoint = "g_settings_set_boolean", CallingConvention = CallingConvention.Cdecl)]
-    public extern static bool _SetBool(this GSettings settings, string name, bool value);
-
-    [DllImport(Libs.LibGtk, EntryPoint = "g_settings_get_boolean", CallingConvention = CallingConvention.Cdecl)]
-    public extern static bool _GetBool(this GSettings settings, string name);
-
-    [DllImport(Libs.LibGtk, EntryPoint = "g_settings_set_int", CallingConvention = CallingConvention.Cdecl)]
-    public extern static bool _SetInt(this GSettings settings, string name, int value);
-
-    [DllImport(Libs.LibGtk, EntryPoint = "g_settings_get_int", CallingConvention = CallingConvention.Cdecl)]
-    public extern static int _GetInt(this GSettings settings, string name);
-}

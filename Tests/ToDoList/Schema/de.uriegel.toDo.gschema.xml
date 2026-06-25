@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <schemalist>
-  <schema id="org.gtkrs.Todo" path="/org/gtkrs/Todo/">
+  <schema id="de.uriegel.Todo" path="/de/uriegel/Todo/">
     <key name="filter" type="s">
       <choices>
         <choice value='All'/>
