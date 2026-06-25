@@ -125,10 +125,62 @@ Many Methods returns their own instance, so that you can chain function calls in
 
 If you download the project from https://github.com/uriegel/Gtk4DotNet/ you can start the Test program 'HelloWorld' from Visual Studio Code.
 
-## Including Widgets to the Window
+## Including Widgets to the Window - Memory management
+
+A Window can have a child widget, and widgets can also have children/a single child. 
+
+Every widget is inherited from GObject. GObject uses reference counting as a mechanism for lifetime management. In Gtk4DotNet every GObject and inherited class implements IDisposable to unref a reference. But Gtk takes over lifetime management when a widget is member of a window hierarchy that is presented. Every widget such as ```Label```, ```Button``` or ```CheckButton``` is inherited from ```Widget```, and Widget has the property ```AutoDestroyed``` set to true. In this case ```Dispose()``` does nothing. 
+
+So every widget implements IDisposable like the GObject base class, but memory management is in the hand of GTK. This means when you create a widget like a Button, and you don't add t to a window, the object is never being freed! But it makes no sense to create a widget and don't display it!
+
+To check if all objects are being freed after the app has exited, there is a control mechanism. You can  enable it with the help of the method ```Application.WithDiagnostics()```. It should be the first method called on the application object: 
+
+```cs
+Application
+    .New("de.uriegel.gtk4dotnet")
+    .WithDiagnostics(true)
+    .OnActivate(app => app
+    ...
+```
+
+If WithDiagnostics is called with parameter true, every object that is being freed will be logged in the console. Otherwise only the dangling objects are being displayed after the app has exited.
+
+In the next test program 'PackButtons', three ```Button```s are being included in a ```Grid```, which is the child of the window. It is the transformation of the sample 'Packing Buttons' from the [GTK4 documentation](https://docs.gtk.org/gtk4/getting_started.html):
+
+```cs
+using Gtk4DotNet;
+using CsTools.Extensions;
+
+using static System.Console;
+
+Application
+    .New("de.uriegel.gtk4dotnet")
+    .WithDiagnostics(true)
+    .OnActivate(app => app
+        .NewWindow()
+        .Title("Pack👍")
+        .Pipe(win => win.Child(
+            Grid
+                .New()
+                .Attach(
+                    Button
+                        .NewWithLabel("Button 1")
+                        .SideEffect(b => b.OnClicked += () => WriteLine("Button1 clicked")), 0, 0, 1, 1)
+                .Attach(
+                    Button
+                        .NewWithLabel("Button 2")
+                        .SideEffect(b => b.OnClicked += () => WriteLine("Button2 clicked")), 1, 0, 1, 1)
+                .Attach(
+                    Button
+                        .NewWithLabel("Quit")
+                        .SideEffect(b => b.OnClicked += () => win.CloseWindow()), 0, 1, 2, 1)))
+        .Show()
+  ).Run();
+  ```
+Gtk4DotNet has the nuget package CsTools included, which has some functional extensions like ```Pipe()``` or ```SideEffect()``` to be used in the functional flow of the builder. pattern.
 
 ### TODO
-with diagnostics
+
 
 test app opening new custom windows inherited from Window, add to Application
 

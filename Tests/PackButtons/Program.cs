@@ -1,5 +1,5 @@
-﻿using CsTools.Extensions;
-using Gtk4DotNet;
+﻿using Gtk4DotNet;
+using CsTools.Extensions;
 
 using static System.Console;
 
