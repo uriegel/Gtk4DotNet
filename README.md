@@ -22,7 +22,7 @@ The functional builder concept has been partially retained, but now it is strong
 
 # Table of contents 
 1. [Hello World app and introduction to Gtk4DotNet](#hello-world-app-and-introduction-to-gtk4dotnet)
-    1. [Necessary prerequisites only depending on the version of Linux](#Necessary prerequisites only depending on the version of Linux)
+    1. [Necessary prerequisites only depending on the version of Linux](#necessary-prerequisites-only-depending-on-the-version-of-Linux)
     2. [Setup of a Gtk4DotNet program](#setup-of-a-gtk4dotnet-program)
     3. [Application object](#application-object)
     4. [Hello World](#hello-world)
