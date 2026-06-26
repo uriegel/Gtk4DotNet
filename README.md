@@ -26,13 +26,13 @@ The functional builder concept has been partially retained, but now it is strong
     2. [Setup of a Gtk4DotNet program](#setup-of-a-gtk4dotnet-program)
     3. [Application object](#application-object)
     4. [Hello World](#hello-world)
-2. [Including Widgets to the Window - Memory management](#widgets)
-3. [Using an UI template from .NET resource/Window subclassing](#uitemplates)
-    1. [Using an UI template](#uitemplate)
+2. [Including Widgets to the Window - Memory management](#including-widgets-to-the-window---memory-management)
+3. [Using an UI template from .NET resource - Window subclassing](#using-an-ui-template-from-.net-resource---window-subclassing)
+    1. [Using an UI template](#using-an-ui-template)
     2. [Windows subclassing](#subclassing)
-4. [Using stylesheets](#stylesheets)
-5. [Using Gtk actions](#actions)
-    1. [Linking an action to a widget in a template](#actionlinking)
+4. [Using stylesheets](#using-stylesheets)
+5. [Using Gtk actions](#using-gtk-actions)
+    1. [Linking an action to a widget in a template](#linking-an-action-to-a-widget-in-a-template)
 
 # Hello World app and introduction to Gtk4DotNet
 
@@ -139,7 +139,7 @@ Many Methods returns their own instance, so that you can chain function calls in
 
 If you download the project from https://github.com/uriegel/Gtk4DotNet/ you can start the Test program 'HelloWorld' from Visual Studio Code.
 
-# Including Widgets to the Window - Memory management <a name="widgets"></a>
+# Including Widgets to the Window - Memory management
 
 A Window can have a child widget, and widgets can also have children/a single child. 
 
@@ -193,9 +193,9 @@ Application
   ```
 Gtk4DotNet has the nuget package CsTools included, which has some functional extensions like ```Pipe()``` or ```SideEffect()``` to be used in the functional flow of the builder. pattern.
 
-# Using an UI template from .NET resource/Window subclassing <a name="uitemplates"></a>
+# Using an UI template from .NET resource - Window subclassing
 
-## Using an UI template <a name="uitemplate"></a>
+## Using an UI template
 
 With the functional builder approach you can nicely build small programs. But when the app becomes bigger, there this approach has disadvantages:
 * There is no separation of UI and functionality
@@ -287,7 +287,7 @@ Application
     ).Run();
 
 ```
-## Window subclassing <a name="subclassing"></a>
+## Window subclassing
 
 In this sample we build an Adwaita app instead of a Gtk4 app (```Application.NewAdwaita()```). Now our app blends well with modern Gnome.
 
@@ -352,7 +352,7 @@ Only the three buttons needs to be accessed in code, so there are only three fie
 
 Now we have the same program as before, only better structured.
 
-# Using stylesheets <a name="stylesheets"></a>
+# Using stylesheets
 
 The next sample ```WithStyle``` shows the using of a style sheet. Of course itwill be provided the C# way, with the help of a .NET Resource.
 
@@ -421,7 +421,7 @@ The last two buttons were provided with CSS rules provided by GTK:
 
 ![WithStyle](https://raw.githubusercontent.com/uriegel/Gtk4DotNet/refs/heads/Beta/Readme/withstyle.png) 
 
-# Using Gtk actions <a name="actions"></a>
+# Using Gtk actions
 
 Gtk actions are a means to abstract UI from code logic. They can be added to the application and then act application-wide for all top level window, or they can be inserted to a window, or to special ActionGroups.
 
@@ -434,7 +434,7 @@ To Add actions to the application or to a Window, all you have to do is to call 
 
 The action has the name "test", on activation it will be calling the specified lambda, and it can be activated via keyboard with the shortcut ```Ctrl-T```
 
-## Linking an action to a widget in a template <a name="actionlinking"></a>
+## Linking an action to a widget in a template
 
 The actions for MyWindow are inserted as well in the constructor:
 
