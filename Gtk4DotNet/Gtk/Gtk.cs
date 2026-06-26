@@ -9,8 +9,6 @@ namespace Gtk4DotNet;
 // TODO Perhaps ColumnView/GridView
 // TODO DrawView
 
-// TODO Readme: Table of contents
-
 // TODO: Folder Widgets is release ready
 // TODO: Folder Actions is release ready
 // TODO: Folder Attributes is release ready

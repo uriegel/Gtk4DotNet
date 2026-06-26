@@ -33,6 +33,8 @@ The functional builder concept has been partially retained, but now it is strong
 4. [Using stylesheets](#using-stylesheets)
 5. [Using Gtk actions](#using-gtk-actions)
     1. [Linking an action to a widget in a template](#linking-an-action-to-a-widget-in-a-template)
+6. [Bindings](#bindings)
+    1. [Data Bindings to DataContext](#data-bindings-to-datacontext)
 
 # Hello World app and introduction to Gtk4DotNet
 
@@ -465,8 +467,94 @@ The group name for actions added to an ApplicationWindow is ```win.``
 
 The first action in the sample is a 'stateful action'. The state of the ToggleButton is delivered in the callback of the action and an initial state has to be provided on creation of the stateful action.
 
+# Bindings
+## Data Bindings to DataContext
+GTK properties of widgets can be bound to properties in a DataContext implementing ```INotifyPropertyChanged``` like Binding in ```WPF```. This is a step further to separate the UI from the functionality.
+
+To use a DataContext, it has to be added to a widget. This DataContext is then usable in all sub widgets that are contained in the widget with the DataContext. 
+
+In out sample ```Bindings``` the DataContext is defined like this:
+```cs
+class WindowDataContext : INotifyPropertyChanged
+{
+    public string Name
+    {
+        get => field ?? "";
+        set
+        {
+            field = value;
+            OnChanged(nameof(Name));
+        }
+    }
+
+    public bool Active
+    {
+        get;
+        set
+        {
+            field = value;
+            OnChanged(nameof(Active));
+        }
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    void OnChanged(string name) => PropertyChanged?.Invoke(this, new(name));
+}
+```
+
+There are two Properties ```Name``` and ```Active", that can be changed from code, and the UI reacts on these changes. Two-way bindings are also possible.
+
+In this sample the DataContext is set to the Box containig all widgets:
+```cs
+box.DataContext = dataContext;
+```
+
+and DataContext is a field in MyWindow subclass:
+```cs
+readonly WindowDataContext dataContext = new();
+```
+
+A simple binding is set like this:
+```cs
+label1.SetBinding("label", nameof(WindowDataContext.Name));
+```
+The Label property of the Label ```label1``` is bound to the DataContext property with the name "Name". Whenever you change this property in code, the Label label1 reacts with showing the changed name. 
+
+This can also be done from an asynchronous Lambda after a while:
+
+```cs
+        button1.OnClicked += async () =>
+        {
+            dataContext.Name = "Name was changed to John Doe";
+            await Task.Delay(2000);
+            dataContext.Name = "Name was changed back to URiegel";
+        };
+```
+
+And it can even be done from a thread different to the GTK UI thread:
+```cs
+        button1.OnClicked += () =>
+        {
+            dataContext.Name = "Name was changed to John Doe";
+            new Thread(() =>
+            {
+                Thread.Sleep(4000);
+                dataContext.Name = "Name was changed from a background thread";
+            }).Start();
+        };
+```
+The widget ```editable``` is bound to property Name in a two-way-binding meaning that it reacts to name changing from code but also the DataContext property reacts to changes in the editable.
+
+```cs
+editable.Binding("text", nameof(WindowDataContext.Name), BindingFlags.Bidirectional);
+```
+
 ### TODO
+converter
+.Binding("label", nameof(WindowDataContext.Active), converter: b => (bool)b! ? "true" : "false")
 
 
+### TODO
 test app opening new custom windows inherited from Window, add to Application
 
