@@ -41,6 +41,14 @@ public static class Gtk
         return tcs.Task;
     }
 
+    public static (int Major, int Minor, int Micro) GetVersion()
+    {
+        var ma = GetMajorVersion();
+        var min = GetMinorVersion();
+        var mi = GetMicroVersion();
+        return (ma, min, mi);
+    }
+
     public static Task<T> InvokeAsync<T>(Func<T> action, bool highPriority = false)
         => InvokeAsync(action, highPriority ? 100 : 200);
 
@@ -117,6 +125,7 @@ public static class Gtk
         GC.WaitForPendingFinalizers();
         GC.Collect();
         Console.WriteLine($"=========================================================================================");
+        Console.WriteLine($"Gtk Version: {GetVersion()}");
         Console.WriteLine($"Total memory: {System.Diagnostics.Process.GetCurrentProcess().WorkingSet64:N0}, managed: {GC.GetTotalMemory(true):N0}");
 
         var registeredWidgets = Widget.GetRegisteredWidgetCount();
@@ -195,6 +204,15 @@ public static class Gtk
 
     [DllImport(Libs.LibGtk, EntryPoint = "gdk_keyval_to_unicode", CallingConvention = CallingConvention.Cdecl)]
     extern static int _KeyValToUnicode(int keyVal);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_get_major_version", CallingConvention = CallingConvention.Cdecl)]
+    extern static int GetMajorVersion();
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_get_minor_version", CallingConvention = CallingConvention.Cdecl)]
+    extern static int GetMinorVersion();
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_get_micro_version", CallingConvention = CallingConvention.Cdecl)]
+    extern static int GetMicroVersion();
 
     static int mainThreadId;
 }

@@ -9,7 +9,7 @@ class MyWindow : ApplicationWindow
             .Append(new Contact("Jim Doe", "jdoe@domain.de", 222))
             .Append(new Contact("Jane Doe", "jadoe@domain.de", 9999));
         var items = Enumerable
-            .Range(0, 1_000)
+            .Range(0, 100_000)
             .Select(n => new Contact($"Item no {n+1}", "uriegel@domain.de", n));
         foreach (var item in items)
             store.Append(item);
@@ -48,24 +48,17 @@ class MyWindow : ApplicationWindow
         });
 
         columnview.SetModel(model);
-        col1 = ColumnViewColumn.New("Name", namefactory);
-        col2 = ColumnViewColumn.New("E mail", emailfactory);
-        columnview.AppendColumn(col1);
-        columnview.AppendColumn(col2);
+        columnview.AppendColumn(ColumnViewColumn.New("Name", namefactory));
+        columnview.AppendColumn(ColumnViewColumn.New("E mail", emailfactory));
         
         OnFinalize(() =>
         {
-            col1.Dispose();
-            col2.Dispose();
             model.Dispose();
         });
     }
 
     [Widget]
     readonly ColumnView columnview = null!;
-
-    readonly ColumnViewColumn col1;
-    readonly ColumnViewColumn col2;
 }
 
 record Contact(string Name, string EMail, int Number);
