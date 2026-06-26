@@ -4,9 +4,11 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
-// TODO When using builder, ref the Widget
 // TODO ToDoApp with Adwaita
-// TODO Perhaps ColumnView/GridView
+// TODO ColumnView: change model with other columns and items
+// TODO ColumnView: Sort columns
+// TODO ColumnView: show icons (mod calc swirch icon-name)
+// TODO ColumnView: Filtering
 // TODO DrawView
 
 // TODO: Folder Widgets is release ready

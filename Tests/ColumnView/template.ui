@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!-- Created with Cambalache 1.0.2 -->
+<!-- Created with Cambalache 1.0.3 -->
 <interface>
   <!-- interface-name template.ui -->
   <requires lib="gtk" version="4.20"/>
@@ -12,7 +12,10 @@
         <property name="hscrollbar-policy">never</property>
         <property name="min-content-width">360</property>
         <child>
-          <object class="GtkColumnView" id="columnview"/>
+          <object class="GtkColumnView" id="columnview">
+            <property name="enable-rubberband">True</property>
+            <property name="tab-behavior">item</property>
+          </object>
         </child>
       </object>
     </child>

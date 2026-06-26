@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' standalone='no'?>
 <!DOCTYPE cambalache-project SYSTEM "cambalache-project.dtd">
-<!-- Created with Cambalache 1.0.2 -->
+<!-- Created with Cambalache 1.0.3 -->
 <cambalache-project version="1.0.0" target_tk="gtk-4.0" depends="libadwaita-1">
-  <ui filename="template.ui" sha256="e4a8dd3b88571531df147443ca29ab8343aeae80722fb8db1dea8ce5cace1941"/>
+  <ui filename="template.ui" sha256="4aebb7520efcf957cb3d9d24211da65f6dd8bbb2a1cbb8f9c52d66748c48d05f"/>
 </cambalache-project>

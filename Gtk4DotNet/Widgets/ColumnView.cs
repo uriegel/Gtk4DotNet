@@ -3,6 +3,13 @@ using Gtk4DotNet;
 
 public class ColumnView : Widget
 {
+    public bool Rubberband
+    {
+        get => GetEnableRubberband(this);
+        set => SetEnableRubberband(this, value);
+    }
+
+
     public void SetModel(SelectionModel selectionModel) => SetModel(this, selectionModel);
 
     public void AppendColumn(ColumnViewColumn column)
@@ -26,4 +33,10 @@ public class ColumnView : Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_append_column", CallingConvention = CallingConvention.Cdecl)]
     extern static void AppendColumn(ColumnView columnView, ColumnViewColumn column);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_get_enable_rubberband", CallingConvention = CallingConvention.Cdecl)]
+    extern static bool GetEnableRubberband(ColumnView columnView);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_set_enable_rubberband", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetEnableRubberband(ColumnView columnView, bool enable);
 }
