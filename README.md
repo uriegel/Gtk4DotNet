@@ -21,11 +21,11 @@ More emphasis was placed on changing UI state and reacting on UI actions than on
 The functional builder concept has been partially retained, but now it is strongly recommended to use Gtk template.ui in connection with subbclassed Gtk widgets.
 
 # Table of contents 
-1. [Hello World app and introduction to Gtk4DotNet](#Hello World app and introduction to Gtk4DotNet)
+1. [Hello World app and introduction to Gtk4DotNet](#hello-world-app-and-introduction-to-gtk4dotnet)
     1. [Necessary prerequisites only depending on the version of Linux](#Necessary prerequisites only depending on the version of Linux)
-    2. [Setup of a Gtk4DotNet program](#Setup of a Gtk4DotNet program)
-    3. [Application object](#Application object)
-    4. [Hello World](#Hello World)
+    2. [Setup of a Gtk4DotNet program](#setup-of-a-gtk4dotnet-program)
+    3. [Application object](#application-object)
+    4. [Hello World](#hello-world)
 2. [Including Widgets to the Window - Memory management](#widgets)
 3. [Using an UI template from .NET resource/Window subclassing](#uitemplates)
     1. [Using an UI template](#uitemplate)
