@@ -10,7 +10,7 @@ public class ColumnView : Widget
     }
 
 
-    public void SetModel(SelectionModel selectionModel) => SetModel(this, selectionModel);
+    public void SetModel(SelectionModel? selectionModel) => SetModel(this, selectionModel!= null ? selectionModel.GetInternalHandle() : 0);
 
     public void AppendColumn(ColumnViewColumn column)
     {
@@ -46,7 +46,7 @@ public class ColumnView : Widget
     readonly List<ColumnViewColumn> cols = [];
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_set_model", CallingConvention = CallingConvention.Cdecl)]
-    extern static void SetModel(ColumnView columnView, SelectionModel selectionModel);
+    extern static void SetModel(ColumnView columnView, nint selectionModel);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_append_column", CallingConvention = CallingConvention.Cdecl)]
     extern static void AppendColumn(ColumnView columnView, ColumnViewColumn column);

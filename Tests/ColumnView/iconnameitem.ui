@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Created with Cambalache 1.0.2 -->
+<interface>
+  <!-- interface-name template.ui -->
+  <requires lib="gtk" version="4.20"/>
+  <object class="GtkBox" id="listitem">
+    <property name="spacing">10</property>
+    <child>
+      <object class="GtkImage" id="image">
+        <property name="pixel-size">32</property>
+        <property name="use-fallback">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkLabel" id="text"/>
+    </child>
+  </object>
+</interface>

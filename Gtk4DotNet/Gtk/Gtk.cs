@@ -5,9 +5,7 @@ using Gtk4DotNet.Internals;
 namespace Gtk4DotNet;
 
 // TODO ToDoApp with Adwaita
-// TODO ColumnView: change model with other columns and items
 // TODO ColumnView: Sort columns
-// TODO ColumnView: show icons (mod calc swirch icon-name)
 // TODO ColumnView: Filtering
 // TODO DrawView
 

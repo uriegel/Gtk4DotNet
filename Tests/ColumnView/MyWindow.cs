@@ -1,3 +1,4 @@
+using CsTools.Extensions;
 using Gtk4DotNet;
 
 class MyWindow : ApplicationWindow
@@ -21,9 +22,9 @@ class MyWindow : ApplicationWindow
         if (!newModel)
         {
             var store = ListStore.New()
-                .Append(new Contact("Uwe Riegel", "uriegel@domain.de", 1965))
-                .Append(new Contact("Jim Doe", "jdoe@domain.de", 222))
-                .Append(new Contact("Jane Doe", "jadoe@domain.de", 9999));
+                .Append(new Contact("Uwe Riegel", "uriegel@domain.de", 1965, "mail-read"))
+                .Append(new Contact("Jim Doe", "jdoe@domain.de", 222, "mail-unread"))
+                .Append(new Contact("Jane Doe", "jadoe@domain.de", 9999, "mail"));
             var oldModel = model;
             model = SingleSelection.New(store);
             oldModel?.Dispose();
@@ -42,12 +43,19 @@ class MyWindow : ApplicationWindow
             // var model = SingleSelection.New(SortListModel.New(FilterListModel.New(store, filter), sorter));
 
             var namefactory = SignalListItemFactory.New();
-            namefactory.Setup(listitem => listitem.SetChild(Label.New()));
+            namefactory.Setup(listitem =>
+            {
+                using var builder = Builder.FromDotNetResource("iconnameitem");
+                var item = new IconNameItem(builder);
+                listitem.SetManagedChild(item);
+            });
             namefactory.Bind(listitem =>
             {
-                var label = listitem.GetChild<Label>();
+                var iconname = listitem.GetManagedChild<IconNameItem>();
                 var item = listitem.GetItem<Contact>();
-                label.Text = item?.Name ?? "";
+                iconname?.Name = item?.Name ?? "";
+                if (item?.IconName != null)
+                    iconname?.SetFromIconName(item.IconName);
             });
             var emailfactory = SignalListItemFactory.New();
             emailfactory.Setup(listitem => listitem.SetChild(Label.New()));
@@ -58,8 +66,8 @@ class MyWindow : ApplicationWindow
                 label.Text = item?.EMail ?? "";
             });
 
-            columnview.SetModel(model);
             columnview.ClearColumns();
+            columnview.SetModel(model);
             columnview.AppendColumn(ColumnViewColumn.New("Name", namefactory));
             columnview.AppendColumn(ColumnViewColumn.New("E mail", emailfactory).Expand());
         }
@@ -69,11 +77,6 @@ class MyWindow : ApplicationWindow
             var oldModel = model;
             model = SingleSelection.New(store);
             oldModel?.Dispose();
-            var items = Enumerable
-                .Range(0, 100_000)
-                .Select(n => new Contact($"Item no {n + 1}", "uriegel@domain.de", n));
-            foreach (var item in items)
-                store.Append(item);
 
             // SingleSelection with filtering
             // var filter = CustomFilter.New<Item>(item => (item?.Number ?? 0)  % 2 == 0);
@@ -93,22 +96,19 @@ class MyWindow : ApplicationWindow
             namefactory.Bind(listitem =>
             {
                 var label = listitem.GetChild<Label>();
-                var item = listitem.GetItem<Contact>();
-                label.Text = item?.Name ?? "";
-            });
-            var emailfactory = SignalListItemFactory.New();
-            emailfactory.Setup(listitem => listitem.SetChild(Label.New()));
-            emailfactory.Bind(listitem =>
-            {
-                var label = listitem.GetChild<Label>();
-                var item = listitem.GetItem<Contact>();
-                label.Text = item?.EMail ?? "";
+                var item = listitem.GetItem<string>();
+                label.Text = item ?? "";
             });
 
-            columnview.SetModel(model);
             columnview.ClearColumns();
-            columnview.AppendColumn(ColumnViewColumn.New("Name", namefactory));
-            columnview.AppendColumn(ColumnViewColumn.New("E mail", emailfactory).Expand());
+            columnview.SetModel(null);
+            var items = Enumerable
+                .Range(0, 100_000)
+                .Select(n => $"Item no {n + 1}");
+            foreach (var item in items)
+                store.Append(item);
+            columnview.AppendColumn(ColumnViewColumn.New("Name", namefactory).Expand());
+            columnview.SetModel(model);
         }
     }
 
@@ -117,4 +117,4 @@ class MyWindow : ApplicationWindow
 
     SelectionModel model = null!;
 }
-record Contact(string Name, string EMail, int Number);
+record Contact(string Name, string EMail, int Number, string IconName);
