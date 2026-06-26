@@ -11,6 +11,16 @@ public class ColumnViewColumn : GObject
         return res;
     }
 
+    public ColumnViewColumn Expand()
+    {
+        SetExpand(this, true);
+        return this;
+    }
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_column_new", CallingConvention = CallingConvention.Cdecl)]
     extern static ColumnViewColumn _New(string title, ListItemFactory factory);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_column_set_expand", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetExpand(ColumnViewColumn column, bool expand);
+
 }

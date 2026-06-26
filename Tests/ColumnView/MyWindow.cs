@@ -49,7 +49,7 @@ class MyWindow : ApplicationWindow
 
         columnview.SetModel(model);
         columnview.AppendColumn(ColumnViewColumn.New("Name", namefactory));
-        columnview.AppendColumn(ColumnViewColumn.New("E mail", emailfactory));
+        columnview.AppendColumn(ColumnViewColumn.New("E mail", emailfactory).Expand());
         
         OnFinalize(() =>
         {
