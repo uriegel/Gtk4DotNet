@@ -21,20 +21,22 @@ More emphasis was placed on changing UI state and reacting on UI actions than on
 The functional builder concept has been partially retained, but now it is strongly recommended to use Gtk template.ui in connection with subbclassed Gtk widgets.
 
 # Table of contents 
-1. [Hello World app and introduction to Gtk4DotNet](#helloworld)
-    1. [Necessary prerequisites only depending on the version of Linux](#prerequisites)
-    2. [Setup of a Gtk4DotNet program](#setup)
-    3. [Application object](#application)
-    4. [Hello World](#helloworldapp)
+1. [Hello World app and introduction to Gtk4DotNet](#Hello World app and introduction to Gtk4DotNet)
+    1. [Necessary prerequisites only depending on the version of Linux](#Necessary prerequisites only depending on the version of Linux)
+    2. [Setup of a Gtk4DotNet program](#Setup of a Gtk4DotNet program)
+    3. [Application object](#Application object)
+    4. [Hello World](#Hello World)
 2. [Including Widgets to the Window - Memory management](#widgets)
 3. [Using an UI template from .NET resource/Window subclassing](#uitemplates)
     1. [Using an UI template](#uitemplate)
     2. [Windows subclassing](#subclassing)
 4. [Using stylesheets](#stylesheets)
+5. [Using Gtk actions](#actions)
+    1. [Linking an action to a widget in a template](#actionlinking)
 
-# Hello World app and introduction to Gtk4DotNet <a name="helloworld"></a>
+# Hello World app and introduction to Gtk4DotNet
 
-## Necessary prerequisites only depending on the version of Linux <a name="prerequisites"></a>
+## Necessary prerequisites only depending on the version of Linux
 
 On modern Linux like Ubuntu 24.04 or Fedora 40 Gtk4DotNet apps will run out of the box (if you create a full contained single file exe), otherwise you have to install the necessary dotnet runtime.
 
@@ -59,7 +61,7 @@ if you want to use webkit webview whereas for KDE neon 6.0 you have to install
 sudo apt install libadwaita-1-dev
 sudo apt install libwebkitgtk-6.0-dev
 ``` 
-## Setup of a Gtk4DotNet program <a name="setup"></a>
+## Setup of a Gtk4DotNet program
 
 You have to setup a .NET 10 console app.To access the library, you need a reference to the nuget package  [Gtk4DotNet](https://www.nuget.org/packages/Gtk4DotNet/). In your project, add it with the help of this command line command:
 ```
@@ -67,7 +69,7 @@ dotnet add package Gtk4DotNet
 ``` 
 Thats all to build the simple HelloWorld app.
 
-## Application object <a name="application"></a>
+## Application object
 
 The most essential class is ```Application``` (together with ```Window```).
 
@@ -115,7 +117,7 @@ Now an empty default window is being shown and the function call ```Applicatio.R
 
 And now your first Gtk window is being shown!
 
-## Hello World <a name="helloworldapp"></a>
+## Hello World
 
 For a Hello World app it is used to display the Text "Hello World". We set thewindow title to this string, and set the default size of the window, and our Hello World app is finished:
 
@@ -417,8 +419,48 @@ Application
 The last two buttons were provided with CSS rules provided by GTK:
 "Suggested" and "Destructive". The app looks like this when started:
 
-![WithStyle](https://raw.githubusercontent.com/uriegel/Gtk4DotNet/refs/heads/Beta/Readme/WithStyle.png) 
+![WithStyle](https://raw.githubusercontent.com/uriegel/Gtk4DotNet/refs/heads/Beta/Readme/withstyle.png) 
 
+# Using Gtk actions <a name="actions"></a>
+
+Gtk actions are a means to abstract UI from code logic. They can be added to the application and then act application-wide for all top level window, or they can be inserted to a window, or to special ActionGroups.
+
+To Add actions to the application or to a Window, all you have to do is to call ```Actions()``` and add the actions. In our example ```Actions``` the following ```SimpleAction``` is added:
+
+```cs
+    .OnActivate(app => app
+        .Actions(new SimpleAction("test", () => Console.WriteLine("Test action from app"), "<Ctrl>T"))
+```
+
+The action has the name "test", on activation it will be calling the specified lambda, and it can be activated via keyboard with the shortcut ```Ctrl-T```
+
+## Linking an action to a widget in a template <a name="actionlinking"></a>
+
+The actions for MyWindow are inserted as well in the constructor:
+
+```cs
+public MyWindow(WindowBuilder builder) : base(builder)
+    {
+        AddActions(
+            new BoolAction("preview", false, show => Console.WriteLine($"Preview: {show}"), "F3"),
+            new SimpleAction("quit", CloseWindow, "<Ctrl>Q")
+        );
+    }
+```
+
+Actions can only be added to ```ApplicationWindow```
+
+The action name correspond with the action name given in the template.ui, for example:
+```xml
+    <object class="GtkToggleButton" id="preview_button">
+        <property name="action-name">win.preview</property>
+        <property name="icon-name">x-office-presentation</property>
+    </object>
+```
+
+The group name for actions added to an ApplicationWindow is ```win.``
+
+The first action in the sample is a 'stateful action'. The state of the ToggleButton is delivered in the callback of the action and an initial state has to be provided on creation of the stateful action.
 
 ### TODO
 
