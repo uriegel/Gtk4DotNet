@@ -13,6 +13,8 @@ Highlights:
 
 The following tutorial contains the ExampleApp (and others) from the original [GTK4 documentation](https://docs.gtk.org/gtk4/getting_started.html) as well the ToDo List app from [GUI development with Rust and GTK 4](https://gtk-rs.org/gtk4-rs/git/book/), all ported to C#.
 
+All Samples can be found in the ```Tests``` folder of https://github.com/uriegel/Gtk4DotNet
+
 ### Remarks to Version 9.0:
 Version 9.0 is a breaking change to older versions of this C# class library. That was necessary because the focus was shifted from functional building of the UI to easy subclassing of parts of the UI as C# objects so that bigger projects can be better modularized.
 
@@ -35,7 +37,7 @@ The functional builder concept has been partially retained, but now it is strong
     1. [Linking an action to a widget in a template](#linking-an-action-to-a-widget-in-a-template)
 6. [Bindings](#bindings)
 7. [Using multiple windows](#using-multiple-windows)
-8. [Subclassing a widget from a builder template](#subclassing-a-widget-from-a-builder-template)
+8. [Subclassing a widget from a builder template - ProgressDisplay](#subclassing-a-widget-from-a-builder-template-progressdisplay)
 
 # Hello World app and introduction to Gtk4DotNet
 
@@ -733,9 +735,99 @@ and creating the window with the app as parameter:
 ```
 Now the instances of all windows are being freed, and the app exits when <b>all</b> windows are closed.
 
-# Subclassing a widget from a builder template
-        _ = revealer;
-    }
+# Subclassing a widget from a builder template - ProgressDisplay
 
+Example ```Progress``` demonstrates a custom widget based on a ```Revealer``` widget that is included in a template:
+
+```xml
+...
+    <child type="end">
+        <object class="GtkRevealer" id="revealer">
+        <property name="transition-type">slide-left</property>
+        <child>
+            <object class="GtkMenuButton">
+            <property name="popover">
+                <object class="GtkPopover">
+                <child>
+                    <object class="GtkProgressBar" id="progress_bar">
+                    <property name="show-text">True</property>
+                    </object>
+                </child>
+                </object>
+            </property>
+            <child>
+                <object class="GtkDrawingArea" id="progress_area"/>
+            </child>
+            </object>
+        </child>
+        </object>
+    </child>
+...
+```
+Template element GtkRevealer with the template name "revealer" should be customized in a class "ProgressDisplay" based on Revealer. In this custom widget all included widgets should be accessible.
+
+To create a subclass of Revealer (ProgressDisplay), you have to create a field in MyWindow:
+
+```cs
     [Widget]
     readonly ProgressDisplay revealer = null!;
+```
+
+like you used to. One problem is, that the field is not being used in MyWindow, so the compiler gives a warning about never using revealer. You can work around this this:
+```cs
+    public MyWindow(WindowBuilder builder) : base(builder)
+    {
+        _ = revealer;
+    }
+```
+
+This is the implementation of ProgressDisplay:
+
+```cs
+class ProgressDisplay : Revealer
+{
+    public ProgressDisplay(Builder builder, string name) : base(builder, name)
+    {
+        AddCssClass("custom-accent");
+        drawingArea.SetDrawFunction(Draw);
+        this["reveal-child"].OnNotify += MakeProgress;
+        starter.BindProperty("active", this, "reveal-child", BindingFlags.Bidirectional);
+        OnFinalize(async () =>
+        {
+            closing = true;
+            await Task.Delay(400);
+        });
+    }
+
+    void Draw(DrawingArea area, Cairo cairo, int w, int h)
+    {
+        ...
+    }
+
+    async void MakeProgress()
+    {
+        ...
+    }
+
+    [Widget(Name = "progress_bar")]
+    ProgressBar progressBar = null!;
+
+    [Widget(Name = "progress_area")]
+    DrawingArea drawingArea = null!;
+
+    [Widget]
+    Widget starter = null!;
+
+    float progress = 0.0f;
+    bool closing;
+    int activeId;
+}
+```
+
+In this composite control you can access all field like before.
+
+# Better subclassing
+
+Problem: a big template file fore the window with the definition of a subclassed ProgressDisplay
+
+Better: the subclassed control gets ist own template.ui
