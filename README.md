@@ -37,7 +37,9 @@ The functional builder concept has been partially retained, but now it is strong
     1. [Linking an action to a widget in a template](#linking-an-action-to-a-widget-in-a-template)
 6. [Bindings](#bindings)
 7. [Using multiple windows](#using-multiple-windows)
-8. [Subclassing a widget from a builder template - ProgressDisplay](#subclassing-a-widget-from-a-builder-template-progressdisplay)
+8. [Subclassing a widget from a builder template](#subclassing-a-widget-from-a-builder-template)
+    1. [Using the main template.ui](#using-the-main-templateui)
+    2. [Using a separate template.ui for the custom ProgressDisplay](#using-a-separate-templateui-for-the-custom-ProgressDisplay)
 
 # Hello World app and introduction to Gtk4DotNet
 
@@ -735,7 +737,8 @@ and creating the window with the app as parameter:
 ```
 Now the instances of all windows are being freed, and the app exits when <b>all</b> windows are closed.
 
-# Subclassing a widget from a builder template - ProgressDisplay
+# Subclassing a widget from a builder template
+## Using the main template.ui
 
 Example ```Progress``` demonstrates a custom widget based on a ```Revealer``` widget that is included in a template:
 
@@ -826,8 +829,79 @@ class ProgressDisplay : Revealer
 
 In this composite control you can access all field like before.
 
-# Better subclassing
+The sample code can be found in project "Progress"
 
-Problem: a big template file fore the window with the definition of a subclassed ProgressDisplay
+## Using a separate template.ui for the custom ProgressDisplay
 
-Better: the subclassed control gets ist own template.ui
+There is one problem with the last approach for subclassing:
+* The complete UI is in one big template file for the window and additionally with the definition of the subclassed ProgressDisplay
+
+That would be better:
+* A template.ui for the main window and the custom ProgressDIsplay, but without internal widgets
+* An additional template.ui  for the internals of the ProgressDisplay.
+
+No problem with Gtk4DotNet!
+
+Changes in the main template:
+
+```xml
+    ...
+    <child type="end">
+        <object class="GtkBox" id="progressDisplay"/>
+    </child>
+    ...
+```
+
+Only a GtkBox as a placeholder with the ProgressDisplays name  
+
+The definition of the custom control's UI is in the .NET resource file progress.ui with the logical name "progress":
+
+```xml
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Created with Cambalache 1.0.2 -->
+<interface>
+  <!-- interface-name progress.ui -->
+  <requires lib="adw" version="1.0"/>
+  <requires lib="gtk" version="4.6"/>
+  <object class="GtkRevealer" id="progressDisplay">
+    <property name="transition-type">slide-left</property>
+    <child>
+      <object class="GtkMenuButton">
+        <property name="popover">
+          <object class="GtkPopover">
+            <child>
+              <object class="GtkProgressBar" id="progress_bar">
+                <property name="show-text">True</property>
+              </object>
+            </child>
+          </object>
+        </property>
+        <child>
+          <object class="GtkDrawingArea" id="progress_area"/>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
+```
+
+In the MyWindow class this custom control is instantiated with a field like before, but you must specify the name of the template:
+
+```cs
+    [Widget(Template = "progress")]
+    ProgressDisplay progressDisplay = null!;
+```
+In the MyWindow class you can access the custom ProgressDisplay, e.g set a binding, in this case not a binding to DataContext, but to a Gtk property:
+
+```cs
+    public MyWindow(WindowBuilder builder) : base(builder)
+    {
+        ...
+        starter.BindProperty("active", progressDisplay, "reveal-child", BindingFlags.Bidirectional);
+    }
+```
+When the GtkToggleButton with the name "starter" is active, the custom control based on a Revealer is being revealed and vice versa.
+
+The implementation of ProgressControl is almost identical as in the previous sample with the example of the activation (the revealing) which is done in the main window.
+
+The sample code can be found in project "ProgressSubclass".

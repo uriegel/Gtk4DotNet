@@ -17,7 +17,7 @@
           </object>
         </child>
         <child type="end">
-          <object class="GtkBox" id="revealer"/>
+          <object class="GtkBox" id="progressDisplay"/>
         </child>
       </object>
     </property>

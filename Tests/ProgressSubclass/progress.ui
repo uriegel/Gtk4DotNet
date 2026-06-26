@@ -4,7 +4,7 @@
   <!-- interface-name progress.ui -->
   <requires lib="adw" version="1.0"/>
   <requires lib="gtk" version="4.6"/>
-  <object class="GtkRevealer" id="revealer">
+  <object class="GtkRevealer" id="progressDisplay">
     <property name="transition-type">slide-left</property>
     <child>
       <object class="GtkMenuButton">
