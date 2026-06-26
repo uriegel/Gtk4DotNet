@@ -35,6 +35,7 @@ The functional builder concept has been partially retained, but now it is strong
     1. [Linking an action to a widget in a template](#linking-an-action-to-a-widget-in-a-template)
 6. [Bindings](#bindings)
 7. [Using multiple windows](#using-multiple-windows)
+8. [Subclassing a widget from a builder template](#subclassing-a-widget-from-a-builder-template)
 
 # Hello World app and introduction to Gtk4DotNet
 
@@ -731,3 +732,10 @@ and creating the window with the app as parameter:
     }))
 ```
 Now the instances of all windows are being freed, and the app exits when <b>all</b> windows are closed.
+
+# Subclassing a widget from a builder template
+        _ = revealer;
+    }
+
+    [Widget]
+    readonly ProgressDisplay revealer = null!;

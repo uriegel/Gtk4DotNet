@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Gtk4DotNet;
 
 class MyWindow : ApplicationWindow
@@ -11,11 +10,9 @@ class MyWindow : ApplicationWindow
             display,
             cssProvider,
             StyleProviderPriority.Application);
+        _ = revealer;
     }
 
-    // TODO to README.md
-    // TODO _ = ...
-    #pragma warning disable 0414
     [Widget]
     readonly ProgressDisplay revealer = null!;
 }
