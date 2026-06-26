@@ -148,6 +148,19 @@
             "enableStepFiltering": true,
             "console": "internalConsole"
         }, {
+            "name": "ColumnView",
+            "type": "coreclr",
+            "request": "launch",
+            "requireExactSource": true, 
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Tests/ColumnView/bin/Debug/net10.0/ColumnView.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Tests/ColumnView",
+            "stopAtEntry": false,
+            "justMyCode": false,
+            "enableStepFiltering": true,
+            "console": "internalConsole"
+        }, {
             "name": "Dialog",
             "type": "coreclr",
             "request": "launch",

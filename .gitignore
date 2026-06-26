@@ -45,3 +45,5 @@ Tests/AdwToDoList/bin
 Tests/AdwToDoList/obj
 Tests/MultipleWindows/bin
 Tests/MultipleWindows/obj
+Tests/ColumnView/bin
+Tests/ColumnView/obj

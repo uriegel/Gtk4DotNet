@@ -12,13 +12,14 @@ public class ListStore : ListModel
         return res;
     }
 
-    public void Append<T>(T t)
+    public ListStore Append<T>(T t)
         where T : class
     {
         var obj = NewObject(Type(), 0);
         SetManagedData(obj, DATA, t);
         Append(this, obj);
         Unref(obj);
+        return this;
     }
 
     public void Initialize<T>(IEnumerable<T> items)
