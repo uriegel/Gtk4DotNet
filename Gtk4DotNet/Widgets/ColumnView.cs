@@ -16,7 +16,23 @@ public class ColumnView : Widget
     {
         AppendColumn(this, column);  
         cols.Add(column);  
-    } 
+    }
+
+    public void RemoveColumn(ColumnViewColumn column)
+    {
+        RemoveColumn(this, column);
+        cols.Remove(column);
+    }
+    
+    public void ClearColumns()
+    {
+        foreach (var col in cols)
+        {
+            RemoveColumn(this, col);
+            col.Dispose();
+        }
+        cols.Clear();
+    }
 
     public ColumnView(Builder builder, string? name = null) : base(builder, name)
         => OnFinalize(() =>
@@ -25,6 +41,7 @@ public class ColumnView : Widget
                 col.Dispose();
             cols.Clear();
         });
+        
 
     readonly List<ColumnViewColumn> cols = [];
 
@@ -39,4 +56,10 @@ public class ColumnView : Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_set_enable_rubberband", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetEnableRubberband(ColumnView columnView, bool enable);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_get_columns", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint GetColumns(ColumnView columnView);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_remove_column", CallingConvention = CallingConvention.Cdecl)]
+    extern static void RemoveColumn(ColumnView columnView, ColumnViewColumn col);
 }

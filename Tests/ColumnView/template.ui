@@ -1,23 +1,66 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<!-- Created with Cambalache 1.0.3 -->
+<!-- Created with Cambalache 1.0.2 -->
 <interface>
-  <!-- interface-name template.ui -->
+  <!-- interface-name window.ui -->
+  <requires lib="gio" version="2.0"/>
   <requires lib="gtk" version="4.20"/>
-  <object class="GtkWindow" id="window">
+  <requires lib="libadwaita" version="1.7"/>
+  <object class="AdwApplicationWindow" id="window">
     <property name="default-height">300</property>
     <property name="default-width">600</property>
     <property name="title">Hello ColumnView👍</property>
-    <child>
-      <object class="GtkScrolledWindow">
-        <property name="hscrollbar-policy">never</property>
-        <property name="min-content-width">360</property>
-        <child>
-          <object class="GtkColumnView" id="columnview">
-            <property name="enable-rubberband">True</property>
-            <property name="tab-behavior">item</property>
+    <property name="content">
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar" id="headerBar">
+            <child type="end">
+              <object class="GtkMenuButton" id="menu_button">
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="menu-model">main-menu</property>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkToggleButton" id="preview_button">
+                <property name="action-name">win.preview</property>
+                <property name="icon-name">x-office-presentation</property>
+              </object>
+            </child>
           </object>
         </child>
+      <child>
+        <object class="GtkScrolledWindow">
+          <property name="hscrollbar-policy">never</property>
+          <property name="min-content-width">360</property>
+          <child>
+            <object class="GtkColumnView" id="columnview">
+              <property name="enable-rubberband">True</property>
+              <property name="tab-behavior">item</property>
+            </object>
+          </child>
+        </object>
+      </child>
       </object>
-    </child>
+    </property>
+    <property name="title">Actions👍</property>
   </object>
+  <menu id="main-menu">
+    <section>
+      <submenu>
+        <attribute name="label">_Datei</attribute>
+        <section>
+          <item>
+            <attribute name="action">app.test</attribute>
+            <attribute name="label">_Test</attribute>
+          </item>
+        </section>
+        <section>
+          <item>
+            <attribute name="action">win.quit</attribute>
+            <attribute name="label">_Beenden</attribute>
+          </item>
+        </section>
+      </submenu>
+    </section>
+  </menu>
 </interface>
+
