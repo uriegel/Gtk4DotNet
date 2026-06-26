@@ -19,10 +19,22 @@ Version 9.0 is a breaking change to older versions of this C# class library. Tha
 More emphasis was placed on changing UI state and reacting on UI actions than on building the UI.
 
 The functional builder concept has been partially retained, but now it is strongly recommended to use Gtk template.ui in connection with subbclassed Gtk widgets.
- 
-# Hello World app and introduction to Gtk4DotNet
 
-## Necessary prerequisites only depending on the version of Linux
+# Table of contents 
+1. [Hello World app and introduction to Gtk4DotNet](#helloworld)
+    1. [Necessary prerequisites only depending on the version of Linux](#prerequisites)
+    2. [Setup of a Gtk4DotNet program](#setup)
+    3. [Application object](#application)
+    4. [Hello World](#helloworldapp)
+2. [Including Widgets to the Window - Memory management](#widgets)
+3. [Using an UI template from .NET resource/Window subclassing](#uitemplates)
+    1. [Using an UI template](#uitemplate)
+    2. [Windows subclassing](#subclassing)
+4. [Using stylesheets](#stylesheets)
+
+# Hello World app and introduction to Gtk4DotNet <a name="helloworld"></a>
+
+## Necessary prerequisites only depending on the version of Linux <a name="prerequisites"></a>
 
 On modern Linux like Ubuntu 24.04 or Fedora 40 Gtk4DotNet apps will run out of the box (if you create a full contained single file exe), otherwise you have to install the necessary dotnet runtime.
 
@@ -47,7 +59,7 @@ if you want to use webkit webview whereas for KDE neon 6.0 you have to install
 sudo apt install libadwaita-1-dev
 sudo apt install libwebkitgtk-6.0-dev
 ``` 
-## Setup to a Gtk4DotNet program
+## Setup of a Gtk4DotNet program <a name="setup"></a>
 
 You have to setup a .NET 10 console app.To access the library, you need a reference to the nuget package  [Gtk4DotNet](https://www.nuget.org/packages/Gtk4DotNet/). In your project, add it with the help of this command line command:
 ```
@@ -55,7 +67,7 @@ dotnet add package Gtk4DotNet
 ``` 
 Thats all to build the simple HelloWorld app.
 
-## Application object
+## Application object <a name="application"></a>
 
 The most essential class is ```Application``` (together with ```Window```).
 
@@ -103,7 +115,7 @@ Now an empty default window is being shown and the function call ```Applicatio.R
 
 And now your first Gtk window is being shown!
 
-## Hello World
+## Hello World <a name="helloworldapp"></a>
 
 For a Hello World app it is used to display the Text "Hello World". We set thewindow title to this string, and set the default size of the window, and our Hello World app is finished:
 
@@ -121,11 +133,11 @@ Application
 ```
 Many Methods returns their own instance, so that you can chain function calls in a builder way. 
 
-![custom titlebar](https://raw.githubusercontent.com/uriegel/Gtk4DotNet/refs/heads/Beta/Readme/helloworld.png) 
+![Hello World](https://raw.githubusercontent.com/uriegel/Gtk4DotNet/refs/heads/Beta/Readme/helloworld.png) 
 
 If you download the project from https://github.com/uriegel/Gtk4DotNet/ you can start the Test program 'HelloWorld' from Visual Studio Code.
 
-## Including Widgets to the Window - Memory management
+# Including Widgets to the Window - Memory management <a name="widgets"></a>
 
 A Window can have a child widget, and widgets can also have children/a single child. 
 
@@ -179,10 +191,234 @@ Application
   ```
 Gtk4DotNet has the nuget package CsTools included, which has some functional extensions like ```Pipe()``` or ```SideEffect()``` to be used in the functional flow of the builder. pattern.
 
-## Using an UI template from .NET resource 
+# Using an UI template from .NET resource/Window subclassing <a name="uitemplates"></a>
 
-the same program with template Cambalache
-Adwaita
+## Using an UI template <a name="uitemplate"></a>
+
+With the functional builder approach you can nicely build small programs. But when the app becomes bigger, there this approach has disadvantages:
+* There is no separation of UI and functionality
+* Using state is a problem
+* Reacting on UI in connection with state is also problem
+* It is not so easy to create sub modules of the UI.
+
+Therefore the GTK approch with a template.UI (always containig ```<object>``` as the root  element, not ```<template>```!) is a good way to biuld our UI. This can be done with [Cambalache](https://github.com/ag-python/cambalache).
+
+The templates are shipped with the program the C# way, using.NET resources.
+
+The next sample (Builder) is the conversion of the previous sample. Our template.ui look like this:
+
+```xml
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Created with Cambalache 1.0.2 -->
+<interface>
+  <!-- interface-name window.ui -->
+  <requires lib="gtk" version="4.20"/>
+  <object class="GtkWindow" id="window">
+    <property name="resizable">False</property>
+    <property name="title">Builder👍</property>
+    <child>
+      <object class="GtkGrid" id="grid">
+        <property name="column-homogeneous">True</property>
+        <property name="column-spacing">5</property>
+        <property name="margin-bottom">5</property>
+        <property name="margin-end">5</property>
+        <property name="margin-start">5</property>
+        <property name="margin-top">5</property>
+        <property name="row-spacing">5</property>
+        <child>
+          <object class="GtkButton" id="button1">
+            <property name="label">Button 1</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="column-span">1</property>
+              <property name="row">0</property>
+              <property name="row-span">1</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="button2">
+            <property name="label">Button 2</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="column-span">1</property>
+              <property name="row">0</property>
+              <property name="row-span">1</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="quit">
+            <property name="label">Quit</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="column-span">2</property>
+              <property name="row">1</property>
+              <property name="row-span">1</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
+```
+As said before, this file will be included as .NET resource, so in the ```Builder.csproj``` the following is added:
+
+```xml
+  <ItemGroup>
+    <EmbeddedResource Include="./window.ui">
+      <LogicalName>window</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+```
+
+Our main prograsm now looks very small:
+
+```cs
+Application
+    .NewAdwaita("de.uriegel.gtk4dotnet")
+    .WithDiagnostics(true)
+    .OnActivate(app => app
+        .WindowFromBuilder("window", "window", p => new MyWindow(p))
+        .Show()
+    ).Run();
+
+```
+## Window subclassing <a name="subclassing"></a>
+
+In this sample we build an Adwaita app instead of a Gtk4 app (```Application.NewAdwaita()```). Now our app blends well with modern Gnome.
+
+But the interresting change is this line of code:
+
+```cs
+    .WindowFromBuilder("window", "window", p => new MyWindow(p))
+```
+
+The main window is build from the template resource. The first parameter is the logical name of the resource, the second the name of the window, and the third a constructor function.
+
+The main window is a custom class ```MyWindow``` based on ```ApplicationWindow```. ```ApplicationWindow``` is based on ```Window```, but acts as the top level window of the app. It can have Gtk actions.
+
+To be built by this concept, it must have a special constructor:
+
+```cs
+class MyWindow : ApplicationWindow
+{
+    public MyWindow(WindowBuilder builder) : base(builder)
+    {
+        ...
+    }
+}
+
+```
+The constructor of the custom class must have a ```WindowBuilder``` paramter included and with this calls the base constructor. The ```WindowBuilder``` is delivered by the constructor callback of```Application.WindowFromBuilder()```. This alone is sufficient to instanciate the custom subclassed Window.
+
+But how can we access the included widgets? That is very simple. Every widget that should be accessedgets a corresponding field in the MyWindow class. It then has to be annotated with the C# Attribute ```[Widget]```. As long as the name of this field is the same as the corresponding object name in the template.ui, that is enough, and the field is automatically initialized from the builder. If the name differs, the widget's name in the template.ui has to be specified in the WidgetAttribute lige this: ```[Widget(Name='name of the widget in the template')].
+
+Now our Window looks like this:
+
+```cs
+using Gtk4DotNet;
+
+class MyWindow : ApplicationWindow
+{
+    public MyWindow(WindowBuilder builder) : base(builder)
+    {
+        button1.OnClicked += () => Console.WriteLine("Button1 clicked");
+        button2.OnClicked += () => Console.WriteLine("Button2 clicked");
+        quit.OnClicked += CloseWindow;
+    }
+
+    [Widget]
+    readonly Button button1 = null!;
+
+    [Widget]
+    readonly MyButton button2 = null!;
+
+    [Widget]
+    readonly Button quit = null!;
+}
+
+class MyButton : Button
+{
+    public MyButton(Builder builder, string? name = null) : base(builder, name) 
+        => Console.WriteLine("My custom Button created");
+}
+```
+
+Only the three buttons needs to be accessed in code, so there are only three field, not the ```Grid```. One button is subclassed too. Therefore a special constructor similar to the one of the MyWindow class is needed. 
+
+Now we have the same program as before, only better structured.
+
+# Using stylesheets <a name="stylesheets"></a>
+
+The next sample ```WithStyle``` shows the using of a style sheet. Of course itwill be provided the C# way, with the help of a .NET Resource.
+
+So here is our stylesheet style.css:
+
+```css 
+button.button-1 {
+  color: cyan;
+}
+
+button#button-2 {
+    color: red;
+}
+
+button#button-2:hover {
+  color: magenta;
+  background: yellow;
+}
+
+menubutton arrow {
+  color: magenta;
+}
+```
+
+* ```button-1``` is a class name
+* ```button-2``` is the name of the 2nd Button 
+* ```:hover``` is a pseudo class getting active when hovering the widget
+* arrow is a css node. Some composite Widgets have special nodes for its sub components
+
+The style.css have to be included as .NET resource. It can be activated via 
+```cs
+StyleContext.AddProviderForDisplay(
+            Display.GetDefault(),
+            CssProvider.New().FromResource("style"),
+            StyleProviderPriority.Application)
+```
+
+The program now looks like:
+```cs
+Application
+    .New("de.uriegel.gtk4dotnet")
+    .WithDiagnostics(true)
+    .OnActivate(app => app
+        .NewWindow()
+        .Title("With Style👍")
+        .DefaultSize(200, 200)
+        .SideEffect(_ => StyleContext.AddProviderForDisplay(
+            Display.GetDefault(),
+            CssProvider.New().FromResource("style"),
+            StyleProviderPriority.Application))
+        .Child(Box
+            .New(Orientation.Vertical, 10)
+            .Margin(10)
+            .Append(Button.NewWithLabel("Button 1"))
+            .Append(Button.NewWithLabel("Button 2").CssClass("button-1"))
+            .Append(Button.NewWithLabel("Hover me!").SetName("button-2"))
+            .Append(MenuButton.New())
+            .Append(Button.NewWithLabel("Suggested").CssClass("destructive-action"))
+            .Append(Button.NewWithLabel("Destructive").CssClass("suggested-action")))
+        .Show()
+    ).Run();
+```
+
+The last two buttons were provided with CSS rules provided by GTK:
+"Suggested" and "Destructive". The app looks like this when started:
+
+![WithStyle](https://raw.githubusercontent.com/uriegel/Gtk4DotNet/refs/heads/Beta/Readme/WithStyle.png) 
+
 
 ### TODO
 
