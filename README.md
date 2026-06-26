@@ -27,7 +27,7 @@ The functional builder concept has been partially retained, but now it is strong
     3. [Application object](#application-object)
     4. [Hello World](#hello-world)
 2. [Including Widgets to the Window - Memory management](#including-widgets-to-the-window---memory-management)
-3. [Using an UI template from .NET resource - Window subclassing](#using-an-ui-template-from-.net-resource---window-subclassing)
+3. [Using an UI template from .NET resource - Window subclassing](#using-an-ui-template-from-net-resource---window-subclassing)
     1. [Using an UI template](#using-an-ui-template)
     2. [Windows subclassing](#subclassing)
 4. [Using stylesheets](#using-stylesheets)
