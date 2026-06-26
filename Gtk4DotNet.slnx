@@ -20,6 +20,7 @@
     <Project Path="Tests/ExampleApp/ExampleApp.csproj" />
     <Project Path="Tests/ToDoList/ToDoList.csproj" />
     <Project Path="Tests/AdwToDoList/AdwToDoList.csproj" />
+    <Project Path="Tests/MultipleWindows/MultipleWindows.csproj" />
   </Folder>
   <Project Path="Gtk4DotNet/Gtk4DotNet.csproj" />
 </Solution>

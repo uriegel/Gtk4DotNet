@@ -1,5 +1,7 @@
 Gtk4DotNet/bin
 Gtk4DotNet/obj
+C-Code/first
+C-Code/listview
 Tests/HelloWorld/bin
 Tests/HelloWorld/obj
 Tests/PackButtons/bin
@@ -41,5 +43,5 @@ Tests/WithStyle/bin
 Tests/WithStyle/obj
 Tests/AdwToDoList/bin
 Tests/AdwToDoList/obj
-C-Code/first
-C-Code/listview
+Tests/MultipleWindows/bin
+Tests/MultipleWindows/obj

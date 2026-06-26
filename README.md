@@ -34,7 +34,7 @@ The functional builder concept has been partially retained, but now it is strong
 5. [Using Gtk actions](#using-gtk-actions)
     1. [Linking an action to a widget in a template](#linking-an-action-to-a-widget-in-a-template)
 6. [Bindings](#bindings)
-    1. [Data Bindings to DataContext](#data-bindings-to-datacontext)
+7. [Using multiple windows](#using-multiple-windows)
 
 # Hello World app and introduction to Gtk4DotNet
 
@@ -468,12 +468,11 @@ The group name for actions added to an ApplicationWindow is ```win.``
 The first action in the sample is a 'stateful action'. The state of the ToggleButton is delivered in the callback of the action and an initial state has to be provided on creation of the stateful action.
 
 # Bindings
-## Data Bindings to DataContext
 GTK properties of widgets can be bound to properties in a DataContext implementing ```INotifyPropertyChanged``` like Binding in ```WPF```. This is a step further to separate the UI from the functionality.
 
 To use a DataContext, it has to be added to a widget. This DataContext is then usable in all sub widgets that are contained in the widget with the DataContext. 
 
-In out sample ```Bindings``` the DataContext is defined like this:
+In our sample ```Bindings``` the DataContext is defined like this:
 ```cs
 class WindowDataContext : INotifyPropertyChanged
 {
@@ -548,13 +547,187 @@ The widget ```editable``` is bound to property Name in a two-way-binding meaning
 
 ```cs
 editable.Binding("text", nameof(WindowDataContext.Name), BindingFlags.Bidirectional);
+
+```
+You can add a converter callback function to adapt the value of the property in DataCOntext to the widgets value:
+
+```cs
+.Binding("label", nameof(WindowDataContext.Active), converter: b => (bool)b! ? "true" : "false")
 ```
 
-### TODO
-converter
-.Binding("label", nameof(WindowDataContext.Active), converter: b => (bool)b! ? "true" : "false")
+This is the complete code of MyWindow from sample project Bindings:
 
+```cs
+using System.ComponentModel;
+using Gtk4DotNet;
 
-### TODO
-test app opening new custom windows inherited from Window, add to Application
+class MyWindow : ApplicationWindow
+{
+    public MyWindow(WindowBuilder builder) : base(builder)
+    {
+        StyleContext.AddProviderForDisplay(
+            Display.GetDefault(),
+            CssProvider.New().FromResource("style"),
+            StyleProviderPriority.Application);
 
+        box.DataContext = dataContext;
+        label1.SetBinding("label", nameof(WindowDataContext.Name));
+        button1.OnClicked += async () =>
+        {
+            dataContext.Name = "Name was changed to John Doe";
+            await Task.Delay(2000);
+            dataContext.Name = "Name was changed back to URiegel";
+        };
+        buttonEmpty.OnClicked += () => dataContext.Name = "";
+        buttonNull.OnClicked += () => dataContext.Name = null!;
+        label2.SetBinding("label", nameof(WindowDataContext.Active));
+        label3
+            .Binding("label", nameof(WindowDataContext.Active), converter: b => (bool)b! ? "true" : "false")
+            .SetBindingToCss("yellow", nameof(WindowDataContext.Active));
+        checkBtn1.SetBinding("active", nameof(WindowDataContext.Active), BindingFlags.Bidirectional);
+        checkBtn2.SetBinding("active", nameof(WindowDataContext.Active));
+        trigger.OnToggled += b => dataContext.Active = b;
+        editable.Binding("text", nameof(WindowDataContext.Name), BindingFlags.Bidirectional);
+        editable["editing"].OnNotify += () => Console.WriteLine("Editing...");
+    }
+
+    readonly WindowDataContext dataContext = new();
+
+    [Widget]
+    readonly Widget box = null!;
+
+    [Widget]
+    readonly Widget label1 = null!;
+
+    [Widget]
+    readonly Widget label2 = null!;
+
+    [Widget]
+    readonly Widget label3 = null!;
+
+    [Widget]
+    readonly Button button1 = null!;
+
+    [Widget]
+    readonly Button buttonEmpty = null!;
+
+    [Widget]
+    readonly Button buttonNull = null!;
+
+    [Widget(Name = "chk_1")]
+    readonly Widget checkBtn1 = null!;
+
+    [Widget(Name = "chk_2")]
+    readonly Widget checkBtn2 = null!;
+
+    [Widget(Name = "chk_trigger")]
+    readonly CheckButton trigger = null!;
+
+    [Widget]
+    readonly Widget editable = null!;
+}
+
+class WindowDataContext : INotifyPropertyChanged
+{
+    public string Name
+    {
+        get => field ?? "";
+        set
+        {
+            field = value;
+            OnChanged(nameof(Name));
+        }
+    }
+
+    public bool Active
+    {
+        get;
+        set
+        {
+            field = value;
+            OnChanged(nameof(Active));
+        }
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    void OnChanged(string name) => PropertyChanged?.Invoke(this, new(name));
+}
+```
+
+# Using multiple windows
+
+If you want to create a new window from the ApplicationWindow, you have to do this:
+
+```cs
+using CsTools.Extensions;
+using Gtk4DotNet;
+
+Application
+    .New("de.uriegel.gtk4dotnet")
+    .WithDiagnostics(true)
+    .OnActivate(app => app
+        .NewWindow()
+        .Title("Multiple Window👍")
+        .Child(Button
+            .NewWithLabel("Create Window")
+            .SideEffect(b => b.OnClicked += () =>
+            {
+                var win = new MyWindow();
+                win.Show();
+            }))
+        .Show()
+    ).Run();
+```
+
+with the MyWindow inherited from Window:
+
+```cs
+class MyWindow : Window
+```
+
+If you run the program the following error is displayed in the console when you click the button:
+``` 
+
+(MultipleWindows.dll:66180): Gtk-CRITICAL **: 10:42:41.033: gtk_widget_show: assertion 'GTK_IS_WIDGET (widget)' failed
+ ``` 
+
+MyWindow is inherited from Window, but Gtk doesn't know about creating a new Window. In the constructor of MyWindow you have to call ```Construct()```:
+
+```cs
+    public MyWindow()
+    {
+        Construct();
+        Title = "My custom Window";
+    }   
+```
+
+Now the newly created windows are displayed. ```Construct()``` must be the first function call in the constuctor, otherwise the call to ```Title()``` fails.
+
+If you close all instances of MyWindow and then the amin application window, no error occured. But when you close the Application window first, there are warnings in the console displayed, when ```WithDiagnostics()``` is set:
+
+```
+3 Dangling GObjects: DelegateInfo { Delegate = Gtk4DotNet.Internals.TwoPointerDelegate, Name = SetDiagnostics, TypeName = MyWindow }
+```
+
+Three instances of MyWindow were not freed.
+
+If you want to expand the lifetime of the app to the lifetime of all windows (so that all windows are freed eventually), you have to add the newly created windows to the Application:
+
+```cs
+    public MyWindow(Application app)
+    {
+        Construct();
+        Title = "My custom Window";
+        app.AddWindow(this);
+    }   
+```
+and creating the window with the app as parameter:
+```cs
+    .SideEffect(b => b.OnClicked += () =>
+    {
+        var win = new MyWindow(app);
+        win.Show();
+    }))
+```
+Now the instances of all windows are being freed, and the app exits when <b>all</b> windows are closed.
