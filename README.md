@@ -113,7 +113,7 @@ app.OnActivate(app =>
     windows.Show();
 });
 ``` 
-Now an empty default window is being shown and the function call ```Applicatio.Run()``` will only return when the window is being closed.
+Now an empty default window is being shown and the function call ```Application.Run()``` will only return when the window is being closed.
 
 And now your first Gtk window is being shown!
 
@@ -316,6 +316,9 @@ class MyWindow : ApplicationWindow
 The constructor of the custom class must have a ```WindowBuilder``` paramter included and with this calls the base constructor. The ```WindowBuilder``` is delivered by the constructor callback of```Application.WindowFromBuilder()```. This alone is sufficient to instanciate the custom subclassed Window.
 
 But how can we access the included widgets? That is very simple. Every widget that should be accessedgets a corresponding field in the MyWindow class. It then has to be annotated with the C# Attribute ```[Widget]```. As long as the name of this field is the same as the corresponding object name in the template.ui, that is enough, and the field is automatically initialized from the builder. If the name differs, the widget's name in the template.ui has to be specified in the WidgetAttribute lige this: ```[Widget(Name='name of the widget in the template')].
+
+The field are all initialized to ```null!```. That is to satisfy the C# compiler that all fields are not nullable (because thes are not unless a design error has occured, name mismatching).
+
 
 Now our Window looks like this:
 
