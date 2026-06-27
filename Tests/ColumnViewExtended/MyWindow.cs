@@ -37,6 +37,34 @@ class MyWindow : ApplicationWindow
         rightEvents.OnLeave += () => { };
         columnviewLeft.AddController(leftEvents);
         columnviewRight.AddController(rightEvents);
+
+
+        var kec = KeyEventController.New();
+        kec.SetPropagationPhase(1);
+        kec.OnKeyPressed += (chr, mod) =>
+        {
+            if (chr == (char)ConsoleKey.DownArrow)
+            {
+                Console.WriteLine($"Kie: {chr}, {(int)chr} {mod}");
+                return true;
+            }
+            return false;
+        };
+        AddController(kec);
+
+
+
+        using var actiongroup = SimpleActionGroup.New("appchooser");
+        actiongroup.AddActions(
+            new SimpleAction("openfile", () => Console.WriteLine("Open File"))
+        );
+        InsertActionGroup("appchooser", actiongroup);
+
+        AddShortcuts(
+            Shortcut.New("appchooser.openfile", "Down")
+        );
+
+
         OnFinalize(() =>
         {
             model.Dispose();

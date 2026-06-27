@@ -182,8 +182,10 @@ public static class Gtk
             77 => (char)ConsoleKey.F11,
             78 => (char)ConsoleKey.F12,
             110 => (char)ConsoleKey.Home,
+            111 => (char)ConsoleKey.UpArrow,
             112 => (char)ConsoleKey.PageUp,
             115 => (char)ConsoleKey.End,
+            116 => (char)ConsoleKey.DownArrow,
             117 => (char)ConsoleKey.PageDown,
             118 => (char)ConsoleKey.Insert,
             _ => (char)_KeyValToUnicode(keyVal)
