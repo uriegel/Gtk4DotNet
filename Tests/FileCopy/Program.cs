@@ -24,51 +24,28 @@ A copy will be created when pressing this button.")
         .Show()
     ).Run();
 
-
-
-
 async void TestCopy()
 {
-    var filename = "/home/uwe/Videos/Spreewaldkrimi - Tödllliche Heimkehr.mp4";
-    using var feile = GFile.New(filename);
-    try
+    var filename = Directory.EnumerateFiles(copyDir).FirstOrDefault();
+    if (filename != null)
     {
-        await feile.CopyAsync("/home/uwe/Test3/Videos/Spreewaldkrimi - Tödllliche Heimkehr.mp4", FileCopyFlags.Overwrite, true,
-                (c, t) => Console.WriteLine($"Copy progress: {c}/{t}"));
-        Console.WriteLine($"File copied to {filename}.copy");
+        var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+        using var feile = GFile.New(filename);
+        try
+        {
+            await feile.CopyAsync($"{filename}.copy", FileCopyFlags.Overwrite, true,
+                (c, t) => Console.WriteLine($"Copy progress: {c}/{t}"), cancellationToken.Token);
+            Console.WriteLine($"File copied to {filename}.copy");
+        }
+        catch (OperationCanceledException)
+        {
+            Console.Error.WriteLine($"Copying file canceled");
+        }
+        catch (Exception e)
+        {
+            Console.Error.WriteLine($"Error while copying: {e.Message}");
+        }
     }
-    catch (OperationCanceledException)
-    {
-        Console.Error.WriteLine($"Copying file canceled");
-    }
-    catch (Exception e)
-    {
-        Console.Error.WriteLine($"Error while copying: {e.Message}");
-    }
+    else
+        Console.Error.WriteLine($"You have to put a file in {copyDir}");
 }
-
-// async void TestCopy()
-// {
-//     var filename = Directory.EnumerateFiles(copyDir).FirstOrDefault();
-//     if (filename != null)
-//     {
-//         var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-//         using var feile = GFile.New(filename);
-//         try
-//         {
-//             await feile.CopyAsync($"{filename}.copy", FileCopyFlags.Overwrite, true,
-//                 (c, t) => Console.WriteLine($"Copy progress: {c}/{t}"), cancellationToken.Token);
-//             Console.WriteLine($"File copied to {filename}.copy");
-//         }
-//         catch (OperationCanceledException)
-//         {
-//             Console.Error.WriteLine($"Copying file canceled");
-//         }
-//         catch (Exception e)
-//         {
-//             Console.Error.WriteLine($"Error while copying: {e.Message}");
-//         }
-//     }
-//     else
-//         Console.Error.WriteLine($"You have to put a file in {copyDir}");
-// }
