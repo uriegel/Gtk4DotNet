@@ -1,20 +1,39 @@
 using CsTools.Extensions;
 using Gtk4DotNet;
 
+// TODO FocusEvetnController with events
 // TODO keep multi selection permanent (click with mouse and space)
-// TODO switch to singleSelection?
-// TODO KeyControllr for Shift Home/End, num+/num-, Ins
+// TODO Shortcut actions like up, down, pageup, pagedoen, but only for the group? test witf another ListBox
 
 class MyWindow : ApplicationWindow
 {
     public MyWindow(WindowBuilder builder) : base(builder)
     {
-        ToggleModel(false);
+        ToggleModel(columnviewLeft, false);
+        ToggleModel(columnviewRight, false);
         AddActions(
-            new BoolAction("new-model", false, ToggleModel, "F3"),
+            new BoolAction("new-model", false, newModel => ToggleModel(columnviewLeft, newModel), "F3"),
             new BoolAction("filter", false, FilterModel, "<Ctrl>F"),
             new SimpleAction("quit", CloseWindow, "<Ctrl>Q")
         );
+        activeView = columnviewLeft;
+
+        paned.AddController(KeyEventController.New().OnKeyPressed((chr, key) =>
+        {
+            if (chr == (char)ConsoleKey.Tab && !key.HasFlag(KeyModifiers.Shift))
+            {
+                GetInactiveView()?.GrabFocus();
+                return true;
+            }
+            else
+                return false;
+        }));
+        columnviewLeft.AddController(FocusEventController.New()
+            .OnEnter(() => activeView = columnviewLeft)
+            .OnLeave(() => { }));
+        columnviewRight.AddController(FocusEventController.New()
+            .OnEnter(() => activeView = columnviewRight)
+            .OnLeave(() => { }));
 
         OnFinalize(() =>
         {
@@ -22,7 +41,7 @@ class MyWindow : ApplicationWindow
         });
     }
 
-    void ToggleModel(bool newModel)
+    void ToggleModel(ColumnView columnview, bool newModel)
     {
         if (!newModel)
         {
@@ -104,8 +123,19 @@ class MyWindow : ApplicationWindow
         filterNumbers.Changed(filter ? FilterChange.MoreStrict : FilterChange.LessStrict);
     }
 
+    ColumnView GetInactiveView()
+        => columnviewLeft == activeView ? columnviewRight : columnviewLeft;
+
     [Widget]
-    readonly ColumnView columnview = null!;
+    readonly ColumnView columnviewLeft = null!;
+
+    [Widget]
+    readonly ColumnView columnviewRight = null!;
+
+    ColumnView activeView = null!;
+
+    [Widget]
+    readonly Widget paned = null!;
 
     SelectionModel model = null!;
 
