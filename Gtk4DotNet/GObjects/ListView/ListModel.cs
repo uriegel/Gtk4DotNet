@@ -27,12 +27,37 @@ public abstract class ListModel : GObject
     }
 
     public int GetItems() => GetItems(this);
-    
+
+    public int ItemsCount() => GetRawItems().Count();
+
     public void OnItemsChanged(OnItemsChangedDelegate onItemsChanged)
         => SignalConnect<OnItemsChangedRawDelegate>("items-changed", (_, position, removed, added, _) => onItemsChanged(position, removed, added));
 
+    internal nint GetRawItem(int position)
+    {
+        using var obj = GetItem(this, position);
+        if (obj.IsInvalid)
+            return 0;
+        return obj.GetManagedRawData(ListStore.DATA);
+    }
+
+    internal IEnumerable<nint> GetRawItems()
+    {
+        int i = 0;
+        while (true)
+        {
+            var item = GetRawItem(i++);
+            if (item == 0)
+                yield break;
+            yield return item;
+        }
+    }
+
     [DllImport(Libs.LibGtk, EntryPoint = "g_list_model_get_item", CallingConvention = CallingConvention.Cdecl)]
     extern static GObject GetItem(ListModel model, int position);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_list_model_get_item", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint GetRawItem(ListModel model, int position);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_list_model_get_n_items", CallingConvention = CallingConvention.Cdecl)]
     extern static int GetItems(ListModel model);

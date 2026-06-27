@@ -43,6 +43,6 @@ public class ListStore : ListModel
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_new", CallingConvention = CallingConvention.Cdecl)]
     static extern nint NewObject(nint type, nint _);
 
-    internal const string DATA = "DATA";
+    internal const string DATA = "LIST_STORE_DATA";
 }
         

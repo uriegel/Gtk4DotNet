@@ -42,7 +42,24 @@ public class ColumnView : Widget
             cols.Clear();
         });
 
-    public Sorter GetSorter() => GetSorter(this);    
+    public int GetFocusedItemPos()
+    {
+        window ??= GetAncestor<Window>();
+        var row = window.GetFocus<Widget>();
+        if (!IsWidgetInColumnView(row))
+            return -1;
+        if (!row.IsInvalid && row.GetName() == "GtkColumnViewRowWidget")
+        {
+            var ptr = row.GetManagedRawData(ListStore.DATA);
+            return GetModel().GetRawItems().TakeWhile(n => n != ptr).Count();
+        }
+        else
+            return -1;
+    }
+
+    public void ScrollTo(int pos, ListScrollFlags flags) =>  ScrollTo(this, pos, 0, flags, 0);
+
+    public Sorter GetSorter() => GetSorter(this);
 
     public SelectionModel GetModel()
     {
@@ -50,6 +67,21 @@ public class ColumnView : Widget
         res.AutoDestroyed = true;
         return res;
     }
+    
+    bool IsWidgetInColumnView(Widget w)
+    {
+        while (true)
+        {
+            var p = w.GetParent();
+            if (p.IsInvalid)
+                return false;
+            if (p.GetInternalHandle() == GetInternalHandle())
+                return true;
+            w = p;
+        }
+    }
+
+    Window? window = null;
 
     readonly List<ColumnViewColumn> cols = [];
 
@@ -76,4 +108,7 @@ public class ColumnView : Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_get_model", CallingConvention = CallingConvention.Cdecl)]
     extern static SelectionModel GetModel(ColumnView columnView);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_scroll_to", CallingConvention = CallingConvention.Cdecl)]
+    extern static void ScrollTo(ColumnView columnView, int pos, nint nilc, ListScrollFlags flags, nint nil);
 }

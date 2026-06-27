@@ -125,7 +125,12 @@ public class Widget : GObject
     public void Show() => Show(this);
     public void Hide() => Hide(this);
 
-    public Widget GetParent() => GetParent(this);
+    public Widget GetParent()
+    {
+        var res = GetParent(this);
+        res.AutoDestroyed = true;
+        return res;
+    } 
 
     /// <summary>
     /// Adds (or removes if add = false) a css class to this widget
@@ -327,6 +332,49 @@ public class Widget : GObject
     public static TWidget? GetRegistered<TWidget>(nint widgetKey) where TWidget : Widget
         => widgets.TryGetValue(widgetKey, out var val) ? val as TWidget : null;
 
+    public string GetName() => GetName(this).PtrToString(false) ?? "";
+
+    public TResultWidget GetAncestor<TResultWidget>()
+        where TResultWidget : Widget, new()
+    {
+        string[] ancestorTypeNames =
+            typeof(TResultWidget) == typeof(Window)
+            || typeof(TResultWidget) == typeof(ApplicationWindow)
+            || typeof(TResultWidget) == typeof(AdwApplicationWindow)
+            // TODO add all
+            ? ["GtkApplicationWindow", "AdwApplicationWindow", "GtkWindow", "AdwWindow"]
+            : typeof(TResultWidget) == typeof(Box)
+            ? ["GtkBox"]
+            : typeof(TResultWidget) == typeof(Paned)
+            ? ["GtkPaned"]
+            : typeof(TResultWidget) == typeof(ScrolledWindow)
+            ? ["GtkScrolledWindow"]
+            : [];
+
+        return GetAncestor<TResultWidget>(ancestorTypeNames);
+    }
+
+    public TResultWidget GetAncestor<TResultWidget>(string[] ancesterTypeNames)
+        where TResultWidget : Widget, new()
+    {
+        var widget = this;
+        while (true)
+        {
+            var parent = widget.GetParent();
+            if (parent.IsInvalid)
+                return new TResultWidget();
+            if (ancesterTypeNames.Any(n => parent.GetName() == n))
+            {
+                var res = new TResultWidget();
+                res.SetInternalHandle(parent.GetInternalHandle());
+                CheckDiagnostics();
+                AutoDestroyed = true;
+                return res;
+            }
+            widget = parent;
+        }
+    }
+
     #endregion
 
     #region Constructor
@@ -393,6 +441,28 @@ W A R N I N G
         }
     }
 
+    public Widget? GetFirstChild()
+    {
+        var p = GetFirstChild(this);
+        if (p == 0)
+            return null;
+        var res = new Widget();
+        res.SetInternalHandle(p);
+        res.AutoDestroyed = true;
+        return res;
+    } 
+
+    public TWidget? GetFirstChild<TWidget>() where TWidget : Widget, new()
+    {
+        var p = GetFirstChild(this);
+        if (p == 0)
+            return null;
+        var res = new TWidget();
+        res.SetInternalHandle(p);
+        res.AutoDestroyed = true;
+        return res;
+    }
+
     #endregion
 
     #region Internals
@@ -415,6 +485,9 @@ W A R N I N G
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_set_name", CallingConvention = CallingConvention.Cdecl)]
     internal extern static void SetWidgetName(Widget widget, string name);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_name", CallingConvention = CallingConvention.Cdecl)]
+    extern static IntPtr GetName(Widget widget);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_show", CallingConvention = CallingConvention.Cdecl)]
     extern static void Show(Widget widget);
@@ -514,6 +587,9 @@ W A R N I N G
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_set_sensitive", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetSensitive(Widget widget, bool value);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_first_child", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint GetFirstChild(Widget widget);
 
     #endregion
 }

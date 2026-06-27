@@ -97,6 +97,14 @@ public class Window : Widget
     public Application GetApplication()
         => _GetApplication(this).SideEffect(a => a.AutoDestroyed = true);
 
+    public TWidget GetFocus<TWidget>() where TWidget : Widget, new()
+    {
+        var res = new TWidget();
+        res.SetInternalHandle(GetFocus(this));
+        AutoDestroyed = true;
+        return res;
+    }
+
     /// <summary>
     /// Creates a new Window. This window should be added to the <see cref="Application"/> with the help of <see cref="Application.AddWindow(Window)"/> 
     /// </summary>
@@ -159,6 +167,9 @@ public class Window : Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_transient_for", CallingConvention = CallingConvention.Cdecl)]
     extern static void TransientFor(Window window, Window parent);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_get_focus", CallingConvention = CallingConvention.Cdecl)]
+    public extern static nint GetFocus(Window window);
 
     bool forceClose;
 }

@@ -121,7 +121,7 @@ public class GObject : BaseHandle
         var p = GetQData(this, GetQuark(key));
         return p != 0 ? (T?)GCHandle.FromIntPtr(p).Target : (T?)(object?)null;
     }
-    
+
     /// <summary>
     /// Sets a string to this object
     /// </summary>
@@ -188,6 +188,18 @@ public class GObject : BaseHandle
             SetDiagnostics();
     }
 
+    internal void SetData(string key, nint data) => SetData(this, key, data);
+
+    internal nint GetData(string key)
+    {
+        nint ptr = 0;
+        GetData(this, key, ref ptr, 0);
+        return ptr;
+    }
+
+    internal nint GetManagedRawData(string key)
+        => GetQData(this, GetQuark(key));
+
     static internal void SetManagedData(nint obj, string key, object? data)
     {
         var dkey = GtkDelegates.Instance.GetKey("SetManagedData");
@@ -200,6 +212,9 @@ public class GObject : BaseHandle
         SetQDataFull(obj, GetQuark(key), GCHandle.ToIntPtr(GCHandle.Alloc(data, GCHandleType.Normal)),
             Marshal.GetFunctionPointerForDelegate(callback as Delegate));
     }
+
+    internal void SetManagedRawData(string key, nint ptr)
+        => SetQData(this, GetQuark(key), ptr);
 
     static internal T? GetManagedData<T>(nint obj, string key)
     {
@@ -356,6 +371,15 @@ public class GObject : BaseHandle
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_get_qdata", CallingConvention = CallingConvention.Cdecl)]
     extern static nint GetQData(nint obj, int quark);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_set_qdata", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetQData(GObject obj, int quark, nint p);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_set_data", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetData(GObject obj, string key, nint data);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_object_get", CallingConvention = CallingConvention.Cdecl)]
+    extern static bool GetData(GObject obj, string key, ref nint value, nint end);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_quark_from_string", CallingConvention = CallingConvention.Cdecl)]
     extern static int GetQuark(string quark);

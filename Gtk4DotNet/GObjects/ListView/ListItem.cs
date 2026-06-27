@@ -34,6 +34,13 @@ public class ListItem : GObject
         return obj.GetManagedData<T>(ListStore.DATA);
     }
         
+    internal nint GetRawItem()
+    {
+        var obj = GetItem(this);
+        obj.AutoDestroyed = true;
+        return obj.GetManagedRawData(ListStore.DATA);
+    }
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_item_set_child", CallingConvention = CallingConvention.Cdecl)]
     public extern static void SetChild(ListItem listItem, Widget widget);
 
@@ -43,5 +50,5 @@ public class ListItem : GObject
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_item_get_item", CallingConvention = CallingConvention.Cdecl)]
     extern static GObject GetItem(ListItem listItem);
 
-    const string ListItemData = "ListItemData";
+    internal const string ListItemData = "ListItemData";
 }

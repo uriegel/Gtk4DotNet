@@ -28,6 +28,16 @@ public class SignalListItemFactory : ListItemFactory
                 li.SetInternalHandle(o);
                 li.AutoDestroyed = true;
                 onBind(li);
+                var liChild = li.GetChild<Widget>();
+                if (liChild != null)
+                {
+                    var name = liChild?.GetName();
+                    var parent = liChild?.GetParent();
+                    name = parent?.GetName();
+                    parent = parent?.GetParent();
+                    if (parent?.GetName() == "GtkColumnViewRowWidget")
+                        parent.SetManagedRawData(ListStore.DATA, li.GetRawItem());
+                }
             });
 
     // public static SignalData Unbind(this SignalListItemFactoryHandle factory, Action<ListItemHandle> onUnbind)

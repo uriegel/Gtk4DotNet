@@ -150,7 +150,11 @@ class MyWindow : ApplicationWindow
         if (view == null)
             return false;
 
-        return false;
+        var pos = view.GetFocusedItemPos();
+        var newPos = Math.Min(pos + 1, view.GetModel().ItemsCount() - 1);
+        view.ScrollTo(newPos, ListScrollFlags.ScrollFocus);
+
+        return true;
     }
 
     ColumnView GetInactiveView()
