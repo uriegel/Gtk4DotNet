@@ -111,7 +111,7 @@ public class GFile : GObject
         var asyncReady = new ThreePointerDelegate(AsyncReadyCallback);
         AsyncReady.Callbacks[id] = asyncReady;
         using var cancellable = Cancellable.New(cancellation);
-        using var destinationFile = New(destination);
+        var destinationFile = New(destination);
         var rcb = cb != null ? new TwoLongAndPtrCallback((c, t, _) => cb(c, t)) : null;
         if (rcb != null)
             AsyncReady.ProgressCallbacks[id] = rcb;
