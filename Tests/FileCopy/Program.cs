@@ -5,7 +5,7 @@ var copyDir = $"{CsTools.Directory.GetHomeDir()}/Copy";
 
 Application
     .New("de.uriegel.gtk4dotnet")
-    .WithDiagnostics()
+    .WithDiagnostics(true)
     .OnActivate(app => app
         .NewWindow()
         .Title("Copy File👍")
@@ -26,28 +26,49 @@ A copy will be created when pressing this button.")
 
 
 
+
 async void TestCopy()
 {
-    var filename = Directory.EnumerateFiles(copyDir).FirstOrDefault();
-    if (filename != null)
+    var filename = "/home/uwe/Videos/Spreewaldkrimi - Tödllliche Heimkehr.mp4";
+    using var feile = GFile.New(filename);
+    try
     {
-        var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-        using var feile = GFile.New(filename);
-        try
-        {
-            await feile.CopyAsync($"{filename}.copy", FileCopyFlags.Overwrite, true,
-                (c, t) => Console.WriteLine($"Copy progress: {c}/{t}"), cancellationToken.Token);
-            Console.WriteLine($"File copied to {filename}.copy");
-        }
-        catch (OperationCanceledException)
-        {
-            Console.Error.WriteLine($"Copying file canceled");
-        }
-        catch (Exception e)
-        {
-            Console.Error.WriteLine($"Error while copying: {e.Message}");
-        }
+        await feile.CopyAsync("/home/uwe/Test3/Videos/Spreewaldkrimi - Tödllliche Heimkehr.mp4", FileCopyFlags.Overwrite, true,
+                (c, t) => Console.WriteLine($"Copy progress: {c}/{t}"));
+        Console.WriteLine($"File copied to {filename}.copy");
     }
-    else
-        Console.Error.WriteLine($"You have to put a file in {copyDir}");
+    catch (OperationCanceledException)
+    {
+        Console.Error.WriteLine($"Copying file canceled");
+    }
+    catch (Exception e)
+    {
+        Console.Error.WriteLine($"Error while copying: {e.Message}");
+    }
 }
+
+// async void TestCopy()
+// {
+//     var filename = Directory.EnumerateFiles(copyDir).FirstOrDefault();
+//     if (filename != null)
+//     {
+//         var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+//         using var feile = GFile.New(filename);
+//         try
+//         {
+//             await feile.CopyAsync($"{filename}.copy", FileCopyFlags.Overwrite, true,
+//                 (c, t) => Console.WriteLine($"Copy progress: {c}/{t}"), cancellationToken.Token);
+//             Console.WriteLine($"File copied to {filename}.copy");
+//         }
+//         catch (OperationCanceledException)
+//         {
+//             Console.Error.WriteLine($"Copying file canceled");
+//         }
+//         catch (Exception e)
+//         {
+//             Console.Error.WriteLine($"Error while copying: {e.Message}");
+//         }
+//     }
+//     else
+//         Console.Error.WriteLine($"You have to put a file in {copyDir}");
+// }

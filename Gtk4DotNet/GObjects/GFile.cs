@@ -111,7 +111,7 @@ public class GFile : GObject
         var asyncReady = new ThreePointerDelegate(AsyncReadyCallback);
         AsyncReady.Callbacks[id] = asyncReady;
         using var cancellable = Cancellable.New(cancellation);
-        var destinationFile = New(destination);
+        using var destinationFile = New(destination);
         var rcb = cb != null ? new TwoLongAndPtrCallback((c, t, _) => cb(c, t)) : null;
         if (rcb != null)
             AsyncReady.ProgressCallbacks[id] = rcb;
@@ -150,7 +150,15 @@ public class GFile : GObject
                         tcs.TrySetException(new Exception("General Exception"));
                     }
 
-                    await CopyAsync(destination, flags, true, cb, cancellation);
+                    try
+                    {
+                        await CopyAsync(destination, flags, true, cb, cancellation);
+                        tcs.TrySetResult();
+                    }
+                    catch (Exception e)
+                    {
+                        tcs.TrySetException(e);
+                    }
                 }
                 else
                 {
