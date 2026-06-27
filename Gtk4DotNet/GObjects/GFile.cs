@@ -23,7 +23,7 @@ public class GFile : GObject
 
     public string LoadStringContents()
     {
-        var result = LoadContents(this, Cancellable.None(), out var content, out var length, IntPtr.Zero, IntPtr.Zero);
+        var result = LoadContents(this, 0, out var content, out var length, IntPtr.Zero, IntPtr.Zero);
         return result
             ? content.PtrToString(true) ?? ""
             : "";
@@ -35,7 +35,7 @@ public class GFile : GObject
         var id = AsyncReady.GetId();
         var asyncReady = new ThreePointerDelegate(AsyncReadyCallback);
         AsyncReady.Callbacks[id] = asyncReady;
-        Trash(this, 100, Cancellable.None(), asyncReady, 0);
+        Trash(this, 100, 0, asyncReady, 0);
         return tcs.Task;
 
         void AsyncReadyCallback(nint _, nint result, nint __)
@@ -117,9 +117,9 @@ public class GFile : GObject
             AsyncReady.ProgressCallbacks[id] = rcb;
         cb?.Invoke(0, 0);
         if (move)
-            MoveAsync(this, destinationFile, flags, 100, cancellable, rcb, 0, asyncReady, 0);
+            MoveAsync(this, destinationFile, flags, 100, cancellation != null ? cancellable.GetInternalHandle() : 0, rcb, 0, asyncReady, 0);
         else
-            CopyAsync(this, destinationFile, flags, 100, cancellable, rcb, 0, asyncReady, 0);
+            CopyAsync(this, destinationFile, flags, 100, cancellation != null ? cancellable.GetInternalHandle() : 0, rcb, 0, asyncReady, 0);
         await tcs.Task;
 
         async void AsyncReadyCallback(nint _, nint result, nint zero)
@@ -167,24 +167,24 @@ public class GFile : GObject
     extern static GFile _New(string path);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_load_contents", CallingConvention = CallingConvention.Cdecl)]
-    extern static bool LoadContents(GFile gFile, Cancellable cancellable, out nint content, out int length, nint etagOut, nint error);
+    extern static bool LoadContents(GFile gFile, nint cancellable, out nint content, out int length, nint etagOut, nint error);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_copy_async", CallingConvention = CallingConvention.Cdecl)]
-    extern static void CopyAsync(GFile source, GFile destination, FileCopyFlags flags, int priority, Cancellable cancellable,
+    extern static void CopyAsync(GFile source, GFile destination, FileCopyFlags flags, int priority, nint cancellable,
         TwoLongAndPtrCallback? progress, nint _, ThreePointerDelegate asyncCallback, nint __);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_copy_finish", CallingConvention = CallingConvention.Cdecl)]
     extern static bool CopyFinish(GFile source, nint asyncResult, ref nint error);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_move_async", CallingConvention = CallingConvention.Cdecl)]
-    extern static void MoveAsync(GFile source, GFile destination, FileCopyFlags flags, int priority, Cancellable cancellable,
+    extern static void MoveAsync(GFile source, GFile destination, FileCopyFlags flags, int priority, nint cancellable,
         TwoLongAndPtrCallback? progress, nint _, ThreePointerDelegate asyncCallback, nint __);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_move_finish", CallingConvention = CallingConvention.Cdecl)]
     extern static bool MoveFinish(GFile source, nint asyncResult, ref nint error);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_trash_async", CallingConvention = CallingConvention.Cdecl)]
-    extern static bool Trash(GFile file, int prio, Cancellable cancellable, ThreePointerDelegate asyncCallback, nint _);
+    extern static bool Trash(GFile file, int prio, nint cancellable, ThreePointerDelegate asyncCallback, nint _);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_trash_finish", CallingConvention = CallingConvention.Cdecl)]
     extern static bool TrashFinish(GFile source, nint asyncResult, ref nint error);
