@@ -12,7 +12,16 @@ public class SortListModel : ListModel
         sorter?.AutoDestroyed = true;
         return res;
     }
-        
+
+    public void SetSorter(Sorter? sorter)
+    {
+        SetSorter(this, sorter?.GetInternalHandle() ?? 0);
+        sorter?.AutoDestroyed = true;
+    } 
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_sort_list_model_new", CallingConvention = CallingConvention.Cdecl)]
     extern static SortListModel _New(ListModel model, nint sorter);
+    
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_sort_list_model_set_sorter", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetSorter(ListModel model, nint sorter);
 }

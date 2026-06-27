@@ -17,10 +17,14 @@ public class ColumnViewColumn : GObject
         return this;
     }
 
+    public void SetSorter(Sorter sorter) => SetSorter(this, sorter);
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_column_new", CallingConvention = CallingConvention.Cdecl)]
     extern static ColumnViewColumn _New(string title, ListItemFactory factory);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_column_set_expand", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetExpand(ColumnViewColumn column, bool expand);
 
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_column_set_sorter", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetSorter(ColumnViewColumn column, Sorter sorter);
 }

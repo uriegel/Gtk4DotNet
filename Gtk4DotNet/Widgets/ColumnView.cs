@@ -41,7 +41,8 @@ public class ColumnView : Widget
                 col.Dispose();
             cols.Clear();
         });
-        
+
+    public Sorter GetSorter() => GetSorter(this);    
 
     readonly List<ColumnViewColumn> cols = [];
 
@@ -62,4 +63,7 @@ public class ColumnView : Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_remove_column", CallingConvention = CallingConvention.Cdecl)]
     extern static void RemoveColumn(ColumnView columnView, ColumnViewColumn col);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_get_sorter", CallingConvention = CallingConvention.Cdecl)]
+    extern static CustomSorter GetSorter(ColumnView columnView);
 }

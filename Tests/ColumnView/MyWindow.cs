@@ -7,7 +7,8 @@ class MyWindow : ApplicationWindow
     {
         ToggleModel(false);
         AddActions(
-            new BoolAction("preview", false, ToggleModel, "F3"),
+            new BoolAction("new-model", false, ToggleModel, "F3"),
+            new BoolAction("filter", false, FilterModel, "<Ctrl>F"),
             new SimpleAction("quit", CloseWindow, "<Ctrl>Q")
         );
 
@@ -22,25 +23,13 @@ class MyWindow : ApplicationWindow
         if (!newModel)
         {
             var store = ListStore.New()
-                .Append(new Contact("Uwe Riegel", "uriegel@domain.de", 1965, "mail-read"))
+                .Append(new Contact("Uwe Riegel", "riegel@domain.de", 1965, "mail-read"))
                 .Append(new Contact("Jim Doe", "jdoe@domain.de", 222, "mail-unread"))
-                .Append(new Contact("Jane Doe", "jadoe@domain.de", 9999, "mail"));
+                .Append(new Contact("Jane Doe", "zjadoe@domain.de", 9999, "mail"));
             var oldModel = model;
-            model = SingleSelection.New(store);
+            sortModel = SortListModel.New(store, null);
+            model = SingleSelection.New(sortModel);
             oldModel?.Dispose();
-
-            // SingleSelection with filtering
-            // var filter = CustomFilter.New<Item>(item => (item?.Number ?? 0)  % 2 == 0);
-            // var model = SingleSelection.New(FilterListModel.New(store, filter));
-
-            // SingleSelection with sorting
-            // var sorter = CustomSorter.New<Item>((item1, item2) => (item2?.Number ?? 0) - (item1?.Number ?? 0));
-            // var model = SingleSelection.New(SortListModel.New(store, sorter));
-
-            // SingleSelection with sorting and filtering
-            // var sorter = CustomSorter.New<Item>((item1, item2) => (item2?.Number ?? 0) - (item1?.Number ?? 0));
-            // var filter = CustomFilter.New<Item>(item => (item?.Number ?? 0)  % 2 == 0);
-            // var model = SingleSelection.New(SortListModel.New(FilterListModel.New(store, filter), sorter));
 
             var namefactory = SignalListItemFactory.New();
             namefactory.Setup(listitem =>
@@ -68,43 +57,36 @@ class MyWindow : ApplicationWindow
 
             columnview.ClearColumns();
             columnview.SetModel(model);
-            columnview.AppendColumn(ColumnViewColumn.New("Name", namefactory));
-            columnview.AppendColumn(ColumnViewColumn.New("E mail", emailfactory).Expand());
+            using var nameSorter = CustomSorter.New<Contact>((item1, item2) => (item1?.Name ?? "").CompareTo((item2?.Name ?? "")));
+            using var mailSorter = CustomSorter.New<Contact>((item1, item2) => (item1?.EMail ?? "").CompareTo((item2?.EMail ?? "")));
+            columnview.AppendColumn(ColumnViewColumn.New("Name", namefactory).SideEffect(cvc => cvc.SetSorter(nameSorter)));
+            columnview.AppendColumn(ColumnViewColumn.New("E mail", emailfactory).Expand().SideEffect(cvc => cvc.SetSorter(mailSorter)));
+            using var viewsorter = columnview.GetSorter();
+            sortModel.SetSorter(viewsorter);
         }
         else
         {
+            this.filter = false;
             var store = ListStore.New();
             var oldModel = model;
-            model = SingleSelection.New(store);
+            filterNumbers = CustomFilter.New<Item>(item => !filter || (item?.Number ?? 0)  % 2 == 0);
+            model = SingleSelection.New(FilterListModel.New(store, filterNumbers));
             oldModel?.Dispose();
-
-            // SingleSelection with filtering
-            // var filter = CustomFilter.New<Item>(item => (item?.Number ?? 0)  % 2 == 0);
-            // var model = SingleSelection.New(FilterListModel.New(store, filter));
-
-            // SingleSelection with sorting
-            // var sorter = CustomSorter.New<Item>((item1, item2) => (item2?.Number ?? 0) - (item1?.Number ?? 0));
-            // var model = SingleSelection.New(SortListModel.New(store, sorter));
-
-            // SingleSelection with sorting and filtering
-            // var sorter = CustomSorter.New<Item>((item1, item2) => (item2?.Number ?? 0) - (item1?.Number ?? 0));
-            // var filter = CustomFilter.New<Item>(item => (item?.Number ?? 0)  % 2 == 0);
-            // var model = SingleSelection.New(SortListModel.New(FilterListModel.New(store, filter), sorter));
 
             var namefactory = SignalListItemFactory.New();
             namefactory.Setup(listitem => listitem.SetChild(Label.New()));
             namefactory.Bind(listitem =>
             {
                 var label = listitem.GetChild<Label>();
-                var item = listitem.GetItem<string>();
-                label.Text = item ?? "";
+                var item = listitem.GetItem<Item>();
+                label.Text = item?.Name ?? "";
             });
 
             columnview.ClearColumns();
             columnview.SetModel(null);
             var items = Enumerable
                 .Range(0, 100_000)
-                .Select(n => $"Item no {n + 1}");
+                .Select(n => new Item($"Item no {n + 1}", n));
             foreach (var item in items)
                 store.Append(item);
             columnview.AppendColumn(ColumnViewColumn.New("Name", namefactory).Expand());
@@ -112,9 +94,22 @@ class MyWindow : ApplicationWindow
         }
     }
 
+    void FilterModel(bool filter)
+    {
+        this.filter = filter;
+        filterNumbers.Changed(filter ? FilterChange.MoreStrict : FilterChange.LessStrict);
+    }
+
     [Widget]
     readonly ColumnView columnview = null!;
 
     SelectionModel model = null!;
+
+    CustomFilter filterNumbers = null!;
+
+    SortListModel sortModel = null!;
+
+    bool filter;
 }
 record Contact(string Name, string EMail, int Number, string IconName);
+record Item(string Name, int Number);
