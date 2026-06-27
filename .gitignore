@@ -47,3 +47,5 @@ Tests/MultipleWindows/bin
 Tests/MultipleWindows/obj
 Tests/ColumnView/bin
 Tests/ColumnView/obj
+Tests/ColumnViewExtended/bin
+Tests/ColumnViewExtended/obj

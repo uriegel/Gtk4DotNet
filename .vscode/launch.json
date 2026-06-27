@@ -289,6 +289,19 @@
             "enableStepFiltering": true,
             "console": "internalConsole"
         }, {
+            "name": "ColumnViewExtended",
+            "type": "coreclr",
+            "request": "launch",
+            "requireExactSource": true, 
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Tests/ColumnViewExtended/bin/Debug/net10.0/ColumnViewExtended.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Tests/ColumnViewExtended",
+            "stopAtEntry": false,
+            "justMyCode": false,
+            "enableStepFiltering": true,
+            "console": "internalConsole"
+        }, {
             "name": "first.cpp",
             "type": "cppdbg",
             "request": "launch",

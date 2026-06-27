@@ -41,7 +41,7 @@
     </property>
     <property name="default-height">300</property>
     <property name="default-width">600</property>
-    <property name="title">ColumnView👍</property>
+    <property name="title">ColumnView extended👍</property>
   </object>
   <menu id="main-menu">
     <section>

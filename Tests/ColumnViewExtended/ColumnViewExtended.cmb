@@ -2,6 +2,6 @@
 <!DOCTYPE cambalache-project SYSTEM "cambalache-project.dtd">
 <!-- Created with Cambalache 1.0.3 -->
 <cambalache-project version="1.0.0" target_tk="gtk-4.0" depends="libadwaita-1">
-  <ui filename="template.ui" sha256="90899a9a1b9372020c3db0cd2e657e9922a627e700188250a6e13462814b0645"/>
+  <ui filename="template.ui" sha256="6cf30128daadd168906afa320d42c3c61e703f4765d0678a60198d35f58efaa2"/>
   <ui filename="iconnameitem.ui" sha256="fe044b7ec76284ab370e983a2270ae23116a5eeea508bab8e444f2bb163fa774"/>
 </cambalache-project>

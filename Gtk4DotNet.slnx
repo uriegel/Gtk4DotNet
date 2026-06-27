@@ -22,6 +22,7 @@
     <Project Path="Tests/ToDoList/ToDoList.csproj" />
     <Project Path="Tests/AdwToDoList/AdwToDoList.csproj" />
     <Project Path="Tests/MultipleWindows/MultipleWindows.csproj" />
+    <Project Path="Tests/ColumnViewExtended/ColumnViewExtended.csproj" />
   </Folder>
   <Project Path="Gtk4DotNet/Gtk4DotNet.csproj" />
 </Solution>
