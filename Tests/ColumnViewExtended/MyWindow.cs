@@ -1,6 +1,10 @@
 using CsTools.Extensions;
 using Gtk4DotNet;
 
+// TODO keep multi selection permanent (click with mouse and space)
+// TODO switch to singleSelection?
+// TODO KeyControllr for Shift Home/End, num+/num-, Ins
+
 class MyWindow : ApplicationWindow
 {
     public MyWindow(WindowBuilder builder) : base(builder)
@@ -69,8 +73,8 @@ class MyWindow : ApplicationWindow
             this.filter = false;
             var store = ListStore.New();
             var oldModel = model;
-            filterNumbers = CustomFilter.New<Item>(item => !filter || (item?.Number ?? 0)  % 2 == 0);
-            model = SingleSelection.New(FilterListModel.New(store, filterNumbers));
+            filterNumbers = CustomFilter.New<Item>(item => !filter || (item?.Number ?? 0) % 2 == 0);
+            model = MultiSelection.New(FilterListModel.New(store, filterNumbers));
             oldModel?.Dispose();
 
             var namefactory = SignalListItemFactory.New();
