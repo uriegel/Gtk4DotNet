@@ -44,6 +44,13 @@ public class ColumnView : Widget
 
     public Sorter GetSorter() => GetSorter(this);    
 
+    public SelectionModel GetModel()
+    {
+        var res = GetModel(this);
+        res.AutoDestroyed = true;
+        return res;
+    }
+
     readonly List<ColumnViewColumn> cols = [];
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_set_model", CallingConvention = CallingConvention.Cdecl)]
@@ -66,4 +73,7 @@ public class ColumnView : Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_get_sorter", CallingConvention = CallingConvention.Cdecl)]
     extern static CustomSorter GetSorter(ColumnView columnView);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_get_model", CallingConvention = CallingConvention.Cdecl)]
+    extern static SelectionModel GetModel(ColumnView columnView);
 }

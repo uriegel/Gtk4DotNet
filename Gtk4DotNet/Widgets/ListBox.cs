@@ -96,11 +96,11 @@ public class ListBox : Widget
         {
             ThreePointerDelegate unmanagedDelegate = (_, _, _) => value();
             var id = SignalConnectForEvent("row-activated", unmanagedDelegate);
-            eventDatas.TryAdd(value.GetHashCode(), new(id, value, unmanagedDelegate));
+            eventDatas.TryAdd(value, new(id, value, unmanagedDelegate));
         }
         remove
         {
-            if (eventDatas.Remove(value.GetHashCode(), out var data))
+            if (eventDatas.Remove(value, out var data))
                 SignalDisconnectEvent(data.Id);
         }
     }

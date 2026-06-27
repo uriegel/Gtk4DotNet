@@ -261,6 +261,12 @@ public class Widget : GObject
         AddController(this, controller);
     }
 
+    public void RemoveController(EventController controller)
+    {
+        controller.AutoDestroyed = true;
+        RemoveController(this, controller);
+    }
+
     /// <summary>
     /// Adds shotcuts to this widget. It attaches a ShortcutController to achieve this
     /// </summary>
@@ -279,11 +285,11 @@ public class Widget : GObject
         {
             TwoPointerDelegate unmanagedDelegate = (_, __) => value();
             var id = SignalConnectForEvent("realize", unmanagedDelegate);
-            eventDatas.TryAdd(value.GetHashCode(), new(id, value, unmanagedDelegate));
+            eventDatas.TryAdd(value, new(id, value, unmanagedDelegate));
         }
         remove
         {
-            if (eventDatas.Remove(value.GetHashCode(), out var data))
+            if (eventDatas.Remove(value, out var data))
                 SignalDisconnectEvent(data.Id);
         }
     }
@@ -294,11 +300,11 @@ public class Widget : GObject
         {
             TwoPointerDelegate unmanagedDelegate = (_, __) => value();
             var id = SignalConnectForEvent("unrealize", unmanagedDelegate);
-            eventDatas.TryAdd(value.GetHashCode(), new(id, value, unmanagedDelegate));
+            eventDatas.TryAdd(value, new(id, value, unmanagedDelegate));
         }
         remove
         {
-            if (eventDatas.Remove(value.GetHashCode(), out var data))
+            if (eventDatas.Remove(value, out var data))
                 SignalDisconnectEvent(data.Id);
         }
     }
@@ -475,6 +481,9 @@ W A R N I N G
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_add_controller", CallingConvention = CallingConvention.Cdecl)]
     extern static void AddController(Widget widget, EventController controller);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_remove_controller", CallingConvention = CallingConvention.Cdecl)]
+    extern static void RemoveController(Widget widget, EventController controller);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_set_halign", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetHAlign(Widget widget, Align align);

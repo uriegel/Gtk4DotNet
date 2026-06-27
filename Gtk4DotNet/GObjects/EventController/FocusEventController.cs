@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
+
 public class FocusEventController : EventController
 {
     public static FocusEventController New()
@@ -17,11 +18,11 @@ public class FocusEventController : EventController
         {
             TwoPointerDelegate unmanagedDelegate = (_, __) => value();
             var id = SignalConnectForEvent("enter", unmanagedDelegate);
-            eventDatas.TryAdd(value.GetHashCode(), new(id, value, unmanagedDelegate));
+            eventDatas.TryAdd(value, new(id, value, unmanagedDelegate));
         }
         remove
         {
-            if (eventDatas.Remove(value.GetHashCode(), out var data))
+            if (eventDatas.Remove(value, out var data))
                 SignalDisconnectEvent(data.Id);
         }
     }
@@ -32,11 +33,11 @@ public class FocusEventController : EventController
         {
             TwoPointerDelegate unmanagedDelegate = (_, __) => value();
             var id = SignalConnectForEvent("leave", unmanagedDelegate);
-            eventDatas.TryAdd(value.GetHashCode(), new(id, value, unmanagedDelegate));
+            eventDatas.TryAdd(value, new(id, value, unmanagedDelegate));
         }
         remove
         {
-            if (eventDatas.Remove(value.GetHashCode(), out var data))
+            if (eventDatas.Remove(value, out var data))
                 SignalDisconnectEvent(data.Id);
         }
     }

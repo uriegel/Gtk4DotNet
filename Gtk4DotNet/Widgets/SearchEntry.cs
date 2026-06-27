@@ -17,11 +17,11 @@ public class SearchEntry : Widget
         {
             TwoPointerDelegate unmanagedDelegate = (_, __) => value();
             var id = SignalConnectForEvent("search-changed", unmanagedDelegate);
-            eventDatas.TryAdd(value.GetHashCode(), new(id, value, unmanagedDelegate));
+            eventDatas.TryAdd(value, new(id, value, unmanagedDelegate));
         }
         remove
         {
-            if (eventDatas.Remove(value.GetHashCode(), out var data))
+            if (eventDatas.Remove(value, out var data))
                 SignalDisconnectEvent(data.Id);
         }
     }

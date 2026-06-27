@@ -30,40 +30,32 @@ class MyWindow : ApplicationWindow
         };
         paned.AddController(keyController);
         var leftEvents = FocusEventController.New();
-        leftEvents.OnEnter += () => activeView = columnviewLeft;
-        leftEvents.OnLeave += () => { };
+        leftEvents.OnEnter += () =>
+        {
+            activeView = columnviewLeft;
+            lastActiveView = columnviewLeft;
+        };
+        leftEvents.OnLeave += () => activeView = null;        
+
         var rightEvents = FocusEventController.New();
-        rightEvents.OnEnter += () => activeView = columnviewRight;
-        rightEvents.OnLeave += () => { };
+        rightEvents.OnEnter += () =>
+        {
+            activeView = columnviewRight;
+            lastActiveView = columnviewRight;
+        };
+        rightEvents.OnLeave += () => activeView = null;
         columnviewLeft.AddController(leftEvents);
         columnviewRight.AddController(rightEvents);
 
-
         var kec = KeyEventController.New();
-        kec.SetPropagationPhase(1);
+        kec.SetPropagationPhase(PropagationPhase.Capture);
         kec.OnKeyPressed += (chr, mod) =>
         {
             if (chr == (char)ConsoleKey.DownArrow)
-            {
-                Console.WriteLine($"Kie: {chr}, {(int)chr} {mod}");
-                return true;
-            }
+                return OnKey(activeView, chr);
             return false;
         };
         AddController(kec);
-
-
-
-        using var actiongroup = SimpleActionGroup.New("appchooser");
-        actiongroup.AddActions(
-            new SimpleAction("openfile", () => Console.WriteLine("Open File"))
-        );
-        InsertActionGroup("appchooser", actiongroup);
-
-        AddShortcuts(
-            Shortcut.New("appchooser.openfile", "Down")
-        );
-
 
         OnFinalize(() =>
         {
@@ -119,7 +111,7 @@ class MyWindow : ApplicationWindow
         }
         else
         {
-            this.filter = false;
+            filter = false;
             var store = ListStore.New();
             var oldModel = model;
             filterNumbers = CustomFilter.New<Item>(item => !filter || (item?.Number ?? 0) % 2 == 0);
@@ -153,6 +145,14 @@ class MyWindow : ApplicationWindow
         filterNumbers.Changed(filter ? FilterChange.MoreStrict : FilterChange.LessStrict);
     }
 
+    bool OnKey(ColumnView? view, char key)
+    {
+        if (view == null)
+            return false;
+
+        return false;
+    }
+
     ColumnView GetInactiveView()
         => columnviewLeft == activeView ? columnviewRight : columnviewLeft;
 
@@ -162,7 +162,8 @@ class MyWindow : ApplicationWindow
     [Widget]
     readonly ColumnView columnviewRight = null!;
 
-    ColumnView activeView = null!;
+    ColumnView? activeView;
+    ColumnView lastActiveView = null!;
 
     [Widget]
     readonly Widget paned = null!;
