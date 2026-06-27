@@ -16,7 +16,7 @@ class MyWindow : ApplicationWindow
         });
 
         var keyController = KeyEventController.New();
-        keyController.OnKeyPressed((chr, mod) =>
+        keyController.OnKeyPressed += (chr, mod) =>
         {
             if (chr == 13)
             {
@@ -25,7 +25,7 @@ class MyWindow : ApplicationWindow
                 return true;
             }
             return false;
-        });
+        };
         AddController(keyController);
 
         EventController CreatePressed() => ClickGesture.New().SideEffect(c => c.OnPressed((n, x, y) =>

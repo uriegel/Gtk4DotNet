@@ -1,7 +1,6 @@
 using CsTools.Extensions;
 using Gtk4DotNet;
 
-// TODO FocusEvetnController with events
 // TODO keep multi selection permanent (click with mouse and space)
 // TODO Shortcut actions like up, down, pageup, pagedoen, but only for the group? test witf another ListBox
 
@@ -18,7 +17,8 @@ class MyWindow : ApplicationWindow
         );
         activeView = columnviewLeft;
 
-        paned.AddController(KeyEventController.New().OnKeyPressed((chr, key) =>
+        var keyController = KeyEventController.New();
+        keyController.OnKeyPressed += (chr, key) =>
         {
             if (chr == (char)ConsoleKey.Tab && !key.HasFlag(KeyModifiers.Shift))
             {
@@ -27,14 +27,16 @@ class MyWindow : ApplicationWindow
             }
             else
                 return false;
-        }));
-        columnviewLeft.AddController(FocusEventController.New()
-            .OnEnter(() => activeView = columnviewLeft)
-            .OnLeave(() => { }));
-        columnviewRight.AddController(FocusEventController.New()
-            .OnEnter(() => activeView = columnviewRight)
-            .OnLeave(() => { }));
-
+        };
+        paned.AddController(keyController);
+        var leftEvents = FocusEventController.New();
+        leftEvents.OnEnter += () => activeView = columnviewLeft;
+        leftEvents.OnLeave += () => { };
+        var rightEvents = FocusEventController.New();
+        rightEvents.OnEnter += () => activeView = columnviewRight;
+        rightEvents.OnLeave += () => { };
+        columnviewLeft.AddController(leftEvents);
+        columnviewRight.AddController(rightEvents);
         OnFinalize(() =>
         {
             model.Dispose();

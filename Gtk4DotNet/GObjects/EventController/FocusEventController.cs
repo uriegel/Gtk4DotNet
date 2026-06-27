@@ -11,16 +11,34 @@ public class FocusEventController : EventController
         return controller;
     }
 
-    public FocusEventController OnEnter(Action onEnter)
+    public event Action OnEnter
     {
-        SignalConnect<TwoPointerDelegate>("enter", (_, _) => onEnter());
-        return this;
+        add
+        {
+            TwoPointerDelegate unmanagedDelegate = (_, __) => value();
+            var id = SignalConnectForEvent("enter", unmanagedDelegate);
+            eventDatas.TryAdd(value.GetHashCode(), new(id, value, unmanagedDelegate));
+        }
+        remove
+        {
+            if (eventDatas.Remove(value.GetHashCode(), out var data))
+                SignalDisconnectEvent(data.Id);
+        }
     }
 
-    public FocusEventController OnLeave(Action onLeave)
+    public event Action OnLeave
     {
-        SignalConnect<TwoPointerDelegate>("leave", (_, _) => onLeave());
-        return this;
+        add
+        {
+            TwoPointerDelegate unmanagedDelegate = (_, __) => value();
+            var id = SignalConnectForEvent("leave", unmanagedDelegate);
+            eventDatas.TryAdd(value.GetHashCode(), new(id, value, unmanagedDelegate));
+        }
+        remove
+        {
+            if (eventDatas.Remove(value.GetHashCode(), out var data))
+                SignalDisconnectEvent(data.Id);
+        }
     }
 
     /// <summary>
