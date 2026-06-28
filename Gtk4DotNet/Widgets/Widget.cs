@@ -24,6 +24,9 @@ public class Widget : GObject
         internal set => SetWidgetName(this, value);
     }
 
+    public int Width { get => GetWidth(this); }
+    public int Height { get => GetHeight(this);  }
+
     /// <summary>
     /// Sets all 4 Margins at once
     /// </summary>
@@ -561,6 +564,12 @@ W A R N I N G
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_root", CallingConvention = CallingConvention.Cdecl)]
     extern static nint GetRoot(Widget widget);
+
+    [DllImport(Libs.LibGtk, CallingConvention = CallingConvention.Cdecl, EntryPoint = "gtk_widget_get_height")]
+    public static extern int GetHeight(Widget widget);
+
+    [DllImport(Libs.LibGtk, CallingConvention = CallingConvention.Cdecl, EntryPoint = "gtk_widget_get_width")]
+    public static extern int GetWidth(Widget widget);
     
     #endregion
 }

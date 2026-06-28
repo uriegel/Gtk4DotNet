@@ -1,9 +1,8 @@
-using System.Diagnostics;
 using CsTools.Extensions;
 using Gtk4DotNet;
 
-// TODO Shortcut actions like up, pageup, pagedown, home, end 
-// TODO keep multi selection permanent (click with mouse and space)
+// TODO Ins to toggle and move next, set selection to all and none, shift pos/end
+// TODO Mouse click must remain selection
 
 class MyWindow : ApplicationWindow
 {
@@ -55,12 +54,7 @@ class MyWindow : ApplicationWindow
 
         var kec = KeyEventController.New();
         kec.SetPropagationPhase(PropagationPhase.Capture);
-        kec.OnKeyPressed += (chr, mod) =>
-        {
-            if (chr == (char)ConsoleKey.DownArrow)
-                return OnKey(activeView, chr);
-            return false;
-        };
+        kec.OnKeyPressed += (chr, mod) => OnKey(activeView, chr);
         AddController(kec);
 
         OnFinalize(() =>
@@ -149,6 +143,7 @@ class MyWindow : ApplicationWindow
             using var viewsorter = columnview.GetSorter();
             sortModel.SetSorter(viewsorter);
         }
+        columnview.GetModel()?.UnselectAll();
     }
 
     void FilterModel(bool filter)
@@ -159,16 +154,52 @@ class MyWindow : ApplicationWindow
 
     bool OnKey(ColumnView? view, char key)
     {
-        var stopwatch = new Stopwatch();
-        stopwatch.Start();
         if (view == null)
             return false;
+        switch (key)
+        {
+            case (char)ConsoleKey.UpArrow:
+            case (char)ConsoleKey.DownArrow:
+                var pos = view.GetFocusedItemPos();
+                var newPos = key switch
+                {
+                    (char)ConsoleKey.UpArrow => Math.Max(pos - 1, 0),
+                    (char)ConsoleKey.DownArrow => Math.Min(pos + 1, view.ItemsCount() - 1),
+                    _ => 0
+                };
+                view.ScrollTo(newPos, ListScrollFlags.ScrollFocus);
+                return true;
+            case (char)ConsoleKey.Home:
+                view.ScrollTo(0, ListScrollFlags.ScrollFocus);
+                return true;
+            case (char)ConsoleKey.End:
+                view.ScrollTo(view.ItemsCount() - 1, ListScrollFlags.ScrollFocus);
+                return true;
+            case (char)ConsoleKey.PageUp:
+            case (char)ConsoleKey.PageDown:
+                var pageSize = GetNumberOfVisibleRows(view);
+                pos = view.GetFocusedItemPos();
+                newPos = key switch
+                {
+                    (char)ConsoleKey.PageUp => Math.Max(pos - pageSize, 0),
+                    (char)ConsoleKey.PageDown => Math.Min(pos + pageSize, view.ItemsCount() - 1),
+                    _ => 0
+                };
+                view.ScrollTo(newPos, ListScrollFlags.ScrollFocus);
+                return true;
+        }
+        return false;
+    }
 
-        var pos = view.GetFocusedItemPos();
-        var newPos = Math.Min(pos + 1, view.ItemsCount() - 1);
-        view.ScrollTo(newPos, ListScrollFlags.ScrollFocus);
-
-        return true;
+    int GetNumberOfVisibleRows(ColumnView? view)
+    {
+        if (view == null)
+            return 0;
+        var row = GetFocus<Widget>();
+        if (!row.IsInvalid && row.Name == "GtkColumnViewRowWidget")
+            return (view.Height / (row.Height + 1)) - 4;
+        else
+            return 0;
     }
 
     ColumnView GetInactiveView()
