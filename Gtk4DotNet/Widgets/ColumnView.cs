@@ -9,8 +9,11 @@ public class ColumnView : Widget
         set => SetEnableRubberband(this, value);
     }
 
-
-    public void SetModel(SelectionModel? selectionModel) => SetModel(this, selectionModel!= null ? selectionModel.GetInternalHandle() : 0);
+    public void SetModel(SelectionModel? selectionModel)
+    {
+        SetModel(this, selectionModel != null ? selectionModel.GetInternalHandle() : 0);
+        positions = null;
+    }
 
     public void AppendColumn(ColumnViewColumn column)
     {
@@ -44,6 +47,7 @@ public class ColumnView : Widget
 
     public int GetFocusedItemPos()
     {
+        positions ??= CreatePositions();
         window ??= GetAncestor<Window>();
         var row = window.GetFocus<Widget>();
         if (!IsWidgetInColumnView(row))
@@ -51,7 +55,7 @@ public class ColumnView : Widget
         if (!row.IsInvalid && row.GetName() == "GtkColumnViewRowWidget")
         {
             var ptr = row.GetManagedRawData(ListStore.DATA);
-            return GetModel().GetRawItems().TakeWhile(n => n != ptr).Count();
+            return positions?.TryGetValue(ptr, out var pos) == true ? pos : -1;
         }
         else
             return -1;
@@ -67,7 +71,9 @@ public class ColumnView : Widget
         res.AutoDestroyed = true;
         return res;
     }
-    
+
+    public int ItemsCount() => (positions ??= CreatePositions())?.Count ?? 0;
+
     bool IsWidgetInColumnView(Widget w)
     {
         while (true)
@@ -80,6 +86,11 @@ public class ColumnView : Widget
             w = p;
         }
     }
+
+    Dictionary<nint, int>? CreatePositions()
+        => GetModel().GetRawItems().Select((n, i) => (n, i)).ToDictionary();
+
+    Dictionary<nint, int>? positions;
 
     Window? window = null;
 

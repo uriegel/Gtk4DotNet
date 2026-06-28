@@ -1,8 +1,9 @@
+using System.Diagnostics;
 using CsTools.Extensions;
 using Gtk4DotNet;
 
 // TODO keep multi selection permanent (click with mouse and space)
-// TODO Shortcut actions like up, down, pageup, pagedoen, but only for the group? test witf another ListBox
+// TODO Shortcut actions like up, down, pageup, pagedown, but only for the group? 
 
 class MyWindow : ApplicationWindow
 {
@@ -147,11 +148,13 @@ class MyWindow : ApplicationWindow
 
     bool OnKey(ColumnView? view, char key)
     {
+        var stopwatch = new Stopwatch();
+        stopwatch.Start();
         if (view == null)
             return false;
 
         var pos = view.GetFocusedItemPos();
-        var newPos = Math.Min(pos + 1, view.GetModel().ItemsCount() - 1);
+        var newPos = Math.Min(pos + 1, view.ItemsCount() - 1);
         view.ScrollTo(newPos, ListScrollFlags.ScrollFocus);
 
         return true;
