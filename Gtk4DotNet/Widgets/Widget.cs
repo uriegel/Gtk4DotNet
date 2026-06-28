@@ -14,11 +14,16 @@ public class Widget : GObject
 {
     #region Properties
 
-    // TODO Other Name as Name property from GObject
     /// <summary>
     /// When built from a template.ui, then this is the name this object is given in the template
     /// </summary>
-    public string Name
+    public string? Name
+    {
+        get;
+        internal set;
+    }
+
+    public string WidgetName
     {
         get => GetWidgetName(this).PtrToString(false) ?? "";
         internal set => SetWidgetName(this, value);

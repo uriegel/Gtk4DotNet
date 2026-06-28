@@ -33,7 +33,7 @@ public class SignalListItemFactory : ListItemFactory
                 {
                     var parent = liChild?.GetParent();
                     parent = parent?.GetParent();
-                    if (parent?.Name == "GtkColumnViewRowWidget")
+                    if (parent?.WidgetName == "GtkColumnViewRowWidget")
                         parent.SetManagedRawData(ListStore.DATA, li.GetRawItem());
                 }
             });

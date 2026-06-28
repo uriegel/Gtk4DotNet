@@ -54,7 +54,7 @@ public class ColumnView : Widget
         var row = GetRoot<Window>()?.GetFocus<Widget>();
         if (row == null || !IsWidgetInColumnView(row))
             return -1;
-        if (!row.IsInvalid && row.Name == "GtkColumnViewRowWidget")
+        if (!row.IsInvalid && row.WidgetName == "GtkColumnViewRowWidget")
         {
             var ptr = row.GetManagedRawData(ListStore.DATA);
             return positions?.TryGetValue(ptr, out var pos) == true ? pos : -1;
