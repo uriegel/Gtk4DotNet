@@ -14,6 +14,7 @@ public class Widget : GObject
 {
     #region Properties
 
+    // TODO Other Name as Name property from GObject
     /// <summary>
     /// When built from a template.ui, then this is the name this object is given in the template
     /// </summary>
@@ -97,6 +98,7 @@ public class Widget : GObject
         set => SetTooltipText(this, value);
     }
 
+    // TODO Set with QData!!!
     /// <summary>
     /// A DataContext object that can be used for bindings
     /// </summary>
