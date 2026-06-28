@@ -18,6 +18,9 @@
     <EmbeddedResource Include="./iconnameitem.ui">
       <LogicalName>iconnameitem</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="./style.css">
+      <LogicalName>style</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

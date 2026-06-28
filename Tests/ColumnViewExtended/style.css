@@ -1,0 +1,27 @@
+listview row {
+    font-size: smaller;
+    font-family: "Noto Sans";
+    border-width: 1px;
+    border-style: solid;
+    border-color: transparent;
+}
+
+listview row:selected {
+    border-color: color-mix(in srgb, @theme_selected_bg_color 25%, transparent);
+}
+
+listview row:focus {
+    border-color: color-mix(in srgb, @theme_selected_bg_color 60%, transparent);
+}
+
+listview row cell {
+    padding: 0px;
+}
+
+listview row .exif {
+    color: color-mix(in srgb, @theme_fg_color 50%, blue);
+}
+
+listview row.hiddenItem {
+    opacity: 0.5;
+}

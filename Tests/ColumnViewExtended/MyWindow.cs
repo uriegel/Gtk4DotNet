@@ -4,13 +4,16 @@ using Gtk4DotNet;
 
 // TODO keep multi selection permanent (click with mouse and space)
 // TODO Shortcut actions like up, down, pageup, pagedown, but only for the group? 
-// TODO Check getting focused item, with ListView too
-// TODO EventDelegates for floating SafeHandles not working: lifetime not sure!
 
 class MyWindow : ApplicationWindow
 {
     public MyWindow(WindowBuilder builder) : base(builder)
     {
+        StyleContext.AddProviderForDisplay(
+            Display.GetDefault(),
+            CssProvider.New().FromResource("style"),
+            StyleProviderPriority.Application);
+
         ToggleModel(columnviewLeft, false);
         ToggleModel(columnviewRight, false);
         AddActions(
