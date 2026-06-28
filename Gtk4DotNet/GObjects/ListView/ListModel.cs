@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices;
-using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 

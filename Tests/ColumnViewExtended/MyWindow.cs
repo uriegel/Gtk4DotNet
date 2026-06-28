@@ -4,6 +4,7 @@ using Gtk4DotNet;
 
 // TODO keep multi selection permanent (click with mouse and space)
 // TODO Shortcut actions like up, down, pageup, pagedown, but only for the group? 
+// TODO Check gettting focused item, with ListView too
 
 class MyWindow : ApplicationWindow
 {
@@ -36,7 +37,7 @@ class MyWindow : ApplicationWindow
             activeView = columnviewLeft;
             lastActiveView = columnviewLeft;
         };
-        leftEvents.OnLeave += () => activeView = null;        
+        leftEvents.OnLeave += () => activeView = null;
 
         var rightEvents = FocusEventController.New();
         rightEvents.OnEnter += () =>
@@ -101,6 +102,7 @@ class MyWindow : ApplicationWindow
                 label.Text = item?.EMail ?? "";
             });
 
+            columnview.SetModel(null);
             columnview.ClearColumns();
             columnview.SetModel(model);
             using var nameSorter = CustomSorter.New<Contact>((item1, item2) => (item1?.Name ?? "").CompareTo((item2?.Name ?? "")));
@@ -116,7 +118,8 @@ class MyWindow : ApplicationWindow
             var store = ListStore.New();
             var oldModel = model;
             filterNumbers = CustomFilter.New<Item>(item => !filter || (item?.Number ?? 0) % 2 == 0);
-            model = MultiSelection.New(FilterListModel.New(store, filterNumbers));
+            sortModel = SortListModel.New(FilterListModel.New(store, filterNumbers), null);
+            model = MultiSelection.New(sortModel);
             oldModel?.Dispose();
 
             var namefactory = SignalListItemFactory.New();
@@ -128,6 +131,7 @@ class MyWindow : ApplicationWindow
                 label.Text = item?.Name ?? "";
             });
 
+            columnview.SetModel(null);
             columnview.ClearColumns();
             columnview.SetModel(null);
             var items = Enumerable
@@ -135,8 +139,11 @@ class MyWindow : ApplicationWindow
                 .Select(n => new Item($"Item no {n + 1}", n));
             foreach (var item in items)
                 store.Append(item);
-            columnview.AppendColumn(ColumnViewColumn.New("Name", namefactory).Expand());
+            using var sorter = CustomSorter.New<Item>((item1, item2) => (item1?.Number ?? 0) - (item2?.Number ?? 0));
+            columnview.AppendColumn(ColumnViewColumn.New("Name", namefactory).Expand().SideEffect(cvc => cvc.SetSorter(sorter)));
             columnview.SetModel(model);
+            using var viewsorter = columnview.GetSorter();
+            sortModel.SetSorter(viewsorter);
         }
     }
 
