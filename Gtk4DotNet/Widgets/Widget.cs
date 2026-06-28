@@ -128,7 +128,7 @@ public class Widget : GObject
     public Widget GetParent()
     {
         var res = GetParent(this);
-        res.AutoDestroyed = true;
+        res.WeakCopy = true;
         return res;
     } 
 
@@ -239,7 +239,7 @@ public class Widget : GObject
     public StyleContext GetStyleContext()
     {
         var res = GetStyleContext(this);
-        res.AutoDestroyed = true;
+        res.WeakCopy = true;
         return res;
     }
 
@@ -262,15 +262,12 @@ public class Widget : GObject
     /// <param name="controller"></param>
     public void AddController(EventController controller)
     {
-        controller.AutoDestroyed = true;
+        controller.WeakCopy = true;
         AddController(this, controller);
     }
 
     public void RemoveController(EventController controller)
-    {
-        controller.AutoDestroyed = true;
-        RemoveController(this, controller);
-    }
+        => RemoveController(this, controller);
 
     /// <summary>
     /// Adds shotcuts to this widget. It attaches a ShortcutController to achieve this
@@ -368,7 +365,7 @@ public class Widget : GObject
                 var res = new TResultWidget();
                 res.SetInternalHandle(parent.GetInternalHandle());
                 CheckDiagnostics();
-                AutoDestroyed = true;
+                WeakCopy = true;
                 return res;
             }
             widget = parent;
@@ -379,8 +376,7 @@ public class Widget : GObject
 
     #region Constructor
 
-    public Widget() : base()
-        => AutoDestroyed = true;
+    public Widget() : base() => WeakCopy = true;
 
     public Widget(Builder builder, string? name = null) : this()
     {
@@ -448,7 +444,7 @@ W A R N I N G
             return null;
         var res = new Widget();
         res.SetInternalHandle(p);
-        res.AutoDestroyed = true;
+        res.WeakCopy = true;
         return res;
     } 
 
@@ -459,7 +455,7 @@ W A R N I N G
             return null;
         var res = new TWidget();
         res.SetInternalHandle(p);
-        res.AutoDestroyed = true;
+        res.WeakCopy = true;
         return res;
     }
 

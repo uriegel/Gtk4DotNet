@@ -9,7 +9,7 @@ public class WebKitWebContext : GObject
     public static WebKitWebContext GetDefault() 
     {
         var res = _GetDefault();
-        res.AutoDestroyed = true;
+        res.WeakCopy = true;
         return res;
     }
 

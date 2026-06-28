@@ -95,13 +95,13 @@ public class Window : Widget
     /// </summary>
     /// <returns></returns>
     public Application GetApplication()
-        => _GetApplication(this).SideEffect(a => a.AutoDestroyed = true);
+        => _GetApplication(this).SideEffect(a => a.WeakCopy = true);
 
     public TWidget GetFocus<TWidget>() where TWidget : Widget, new()
     {
         var res = new TWidget();
         res.SetInternalHandle(GetFocus(this));
-        AutoDestroyed = true;
+        WeakCopy = true;
         return res;
     }
 

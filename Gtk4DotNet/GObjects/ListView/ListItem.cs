@@ -18,7 +18,7 @@ public class ListItem : GObject
         var ptr = GetChild(this);
         var t = new T();
         t.SetInternalHandle(ptr);
-        t.AutoDestroyed = true;
+        t.WeakCopy = true;
         return t;
     }
 
@@ -30,14 +30,14 @@ public class ListItem : GObject
         where T : class
     {
         var obj = GetItem(this);
-        obj.AutoDestroyed = true;
+        obj.WeakCopy = true;
         return obj.GetManagedData<T>(ListStore.DATA);
     }
         
     internal nint GetRawItem()
     {
         var obj = GetItem(this);
-        obj.AutoDestroyed = true;
+        obj.WeakCopy = true;
         return obj.GetManagedRawData(ListStore.DATA);
     }
 

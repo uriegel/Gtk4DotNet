@@ -8,15 +8,15 @@ public class SortListModel : ListModel
     {
         var res = _New(model, sorter?.GetInternalHandle() ?? 0);
         res.CheckDiagnostics();
-        model.AutoDestroyed = true;
-        sorter?.AutoDestroyed = true;
+        model.WeakCopy = true;
+        sorter?.WeakCopy = true;
         return res;
     }
 
     public void SetSorter(Sorter? sorter)
     {
         SetSorter(this, sorter?.GetInternalHandle() ?? 0);
-        sorter?.AutoDestroyed = true;
+        sorter?.WeakCopy = true;
     } 
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_sort_list_model_new", CallingConvention = CallingConvention.Cdecl)]

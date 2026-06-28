@@ -2,11 +2,14 @@
 
 Application
     .New("de.uriegel.gtk4dotnet")
-    .OnActivate(app => app
-        .NewWindow()
-        .Title("Hello World👍")
+    .WithDiagnostics(true)
+    .OnActivate(app =>
+    {
+        using var window = app.NewWindow();
+        window.Title("Hello World👍")
         .DefaultSize(600, 200)
-        .Show()
+        .Show();
+    }
     ).Run();
 
 

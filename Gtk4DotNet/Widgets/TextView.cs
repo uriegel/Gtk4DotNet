@@ -10,16 +10,16 @@ public class TextView : Widget
     {
         var res = _New();
         res.CheckDiagnostics();
-        res.AutoDestroyed = true;
+        res.WeakCopy = true;
         return res;
     }
 
     public TextBuffer GetBuffer()
     {
         var buffer = GetBuffer(this);
-        buffer.AutoDestroyed = true;
+        buffer.WeakCopy = true;
         // Don't call this because TextBuffer can leak when a range is set
-        //buffer.CheckDiagnostics();
+        // buffer.CheckDiagnostics();
         return buffer;
     }
 

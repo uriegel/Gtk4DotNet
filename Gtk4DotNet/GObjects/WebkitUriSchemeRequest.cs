@@ -9,7 +9,7 @@ public class WebkitUriSchemeRequest : GObject
     {
         SetInternalHandle(nativeHandle);
         CheckDiagnostics();
-        AutoDestroyed = true;
+        WeakCopy = true;
     }
 
     public string GetUri() => _GetUri(this).PtrToString(false) ?? "";

@@ -7,7 +7,7 @@ public class MultiSelection : SelectionModel
     public static MultiSelection New(ListModel model)
     {
         var res = _New(model);
-        model.AutoDestroyed = true;
+        model.WeakCopy = true;
         res.CheckDiagnostics();
         return res;
     }

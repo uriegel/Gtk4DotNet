@@ -2,7 +2,7 @@
 
 Application
     .NewAdwaita("de.uriegel.gtk4dotnet")
-    .WithDiagnostics()
+    .WithDiagnostics(true)
     .OnActivate(app => app
         .WindowFromBuilder("window", "window", p => new MyWindow(p))
         .Show()

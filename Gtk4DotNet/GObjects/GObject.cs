@@ -15,7 +15,7 @@ public class GObject : BaseHandle
     /// <summary>
     /// The Object is owned by a parent or Gtk and is not being unreffed by this instance
     /// </summary>
-    public bool AutoDestroyed { get; internal set; }
+    public bool WeakCopy { get; internal set; }
 
     /// <summary>
     /// Do this object has a fGtk floating ref
@@ -185,7 +185,8 @@ public class GObject : BaseHandle
     internal void CheckDiagnostics()
     {
         if (!IsInvalid && Gtk.Diagnostics && !diagnosticsSet)
-            SetDiagnostics();
+            // SetDiagnostics();
+            SetQDataDiagnostics();
     }
 
     internal void SetData(string key, nint data) => SetData(this, key, data);
@@ -256,7 +257,7 @@ public class GObject : BaseHandle
 
     protected override bool ReleaseHandle()
     {
-        if (!AutoDestroyed)
+        if (!WeakCopy)
             Unref(handle);
         return true;
     }
@@ -265,6 +266,7 @@ public class GObject : BaseHandle
 
     void SetDiagnostics()
     {
+
         diagnosticsSet = true;
         var key = GObjectsDiagnostics.GetKey("SetDiagnostics");
         TwoPointerDelegate callback = (_, ___) =>
@@ -275,6 +277,21 @@ public class GObject : BaseHandle
         };
         GObjectsDiagnostics.Add(key, callback, GetType().FullName);
         _AddWeakRef(this, Marshal.GetFunctionPointerForDelegate(callback as Delegate), 0);
+    }
+
+    void SetQDataDiagnostics()
+    {
+        var dkey = GtkDelegates.Instance.GetKey("SetQDataDiagnostics");
+        OnePointerDelegate callback = data =>
+        {
+            GtkDelegates.Instance.Remove(dkey.Key);
+            if (Gtk.GObjectTracing)
+                OnDiagnostics();
+        };
+        GtkDelegates.Instance.Add(dkey, callback);
+        SetQDataFull(this, GetQuark("QDataDiagnostics"), 7,
+            Marshal.GetFunctionPointerForDelegate(callback as Delegate));
+        
     }
 
     void EventFinalizer()

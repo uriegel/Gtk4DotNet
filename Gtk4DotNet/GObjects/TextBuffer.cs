@@ -15,7 +15,7 @@ public class TextBuffer : GObject
     public TextTag CreateTag(string? name, string? firstProperty)
     {
         var res = CreateTag(this, name, firstProperty);
-        res.AutoDestroyed = true;
+        res.WeakCopy = true;
 
         // Do not call this because TextBuffer leaks when a range was set
         // res.CheckDiagnostics();

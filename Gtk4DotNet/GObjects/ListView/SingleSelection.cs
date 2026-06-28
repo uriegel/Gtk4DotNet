@@ -12,7 +12,7 @@ public class SingleSelection : SelectionModel
     public static SingleSelection New(ListModel model)
     {
         var res = _New(model);
-        model.AutoDestroyed = true;
+        model.WeakCopy = true;
         res.CheckDiagnostics();
         return res;
     }

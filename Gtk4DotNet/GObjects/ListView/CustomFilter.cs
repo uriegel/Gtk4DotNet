@@ -11,7 +11,7 @@ public class CustomFilter : Filter
         {
             var obj = new GObject
             {
-                AutoDestroyed = true
+                WeakCopy = true
             };
             obj.SetInternalHandle(ptr);
             return predicate(obj.GetManagedData<T>(ListStore.DATA));

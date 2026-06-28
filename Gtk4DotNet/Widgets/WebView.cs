@@ -76,7 +76,7 @@ public class WebView : Widget
     public WebViewSettings GetSettings()
     {
         var res = GetSettings(this);
-        res.AutoDestroyed = true;
+        res.WeakCopy = true;
         return res;
     }
 
@@ -99,7 +99,7 @@ public class WebView : Widget
     public WebInspector GetInspector()
     {
         var insp = GetInspector(this);
-        insp.AutoDestroyed = true;
+        insp.WeakCopy = true;
         insp.CheckDiagnostics();
         return insp;
     }

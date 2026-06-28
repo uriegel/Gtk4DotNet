@@ -11,12 +11,12 @@ public class CustomSorter : Sorter
         {
             var obj1 = new GObject
             {
-                AutoDestroyed = true
+                WeakCopy = true
             };
             obj1.SetInternalHandle(p1);
             var obj2 = new GObject
             {
-                AutoDestroyed = true
+                WeakCopy = true
             };
             obj2.SetInternalHandle(p2);
 

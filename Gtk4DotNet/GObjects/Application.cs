@@ -64,7 +64,7 @@ public class Application : GObject
                 var p = Marshal.ReadIntPtr(filesPtr, n * IntPtr.Size);
                 var gfile = new GFile();
                 gfile.SetInternalHandle(p);
-                gfile.AutoDestroyed = true;
+                gfile.WeakCopy = true;
                 gfile.CheckDiagnostics();
                 return gfile;
 

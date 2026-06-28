@@ -8,7 +8,7 @@ public class FilterListModel : ListModel
     {
         var res = New(model, filter?.GetInternalHandle() ?? 0);
         res.CheckDiagnostics();
-        filter?.AutoDestroyed = true;
+        filter?.WeakCopy = true;
         return res;
     }
 
@@ -19,7 +19,7 @@ public class FilterListModel : ListModel
         if (ptr != 0)
             Unref(ptr);
         filter?.CheckDiagnostics();
-        filter?.AutoDestroyed = true;
+        filter?.WeakCopy = true;
     }
     
 
