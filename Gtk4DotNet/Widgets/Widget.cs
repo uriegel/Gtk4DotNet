@@ -128,7 +128,7 @@ public class Widget : GObject
     public Widget GetParent()
     {
         var res = GetParent(this);
-        res.WeakCopy = true;
+        res.AutoDestroyed = true;
         return res;
     } 
 
@@ -239,7 +239,7 @@ public class Widget : GObject
     public StyleContext GetStyleContext()
     {
         var res = GetStyleContext(this);
-        res.WeakCopy = true;
+        res.AutoDestroyed = true;
         return res;
     }
 
@@ -262,7 +262,7 @@ public class Widget : GObject
     /// <param name="controller"></param>
     public void AddController(EventController controller)
     {
-        controller.WeakCopy = true;
+        controller.AutoDestroyed = true;
         AddController(this, controller);
     }
 
@@ -365,7 +365,7 @@ public class Widget : GObject
                 var res = new TResultWidget();
                 res.SetInternalHandle(parent.GetInternalHandle());
                 CheckDiagnostics();
-                WeakCopy = true;
+                AutoDestroyed = true;
                 return res;
             }
             widget = parent;
@@ -376,7 +376,7 @@ public class Widget : GObject
 
     #region Constructor
 
-    public Widget() : base() => WeakCopy = true;
+    public Widget() : base() => AutoDestroyed = true;
 
     public Widget(Builder builder, string? name = null) : this()
     {
@@ -444,7 +444,7 @@ W A R N I N G
             return null;
         var res = new Widget();
         res.SetInternalHandle(p);
-        res.WeakCopy = true;
+        res.AutoDestroyed = true;
         return res;
     } 
 
@@ -455,7 +455,7 @@ W A R N I N G
             return null;
         var res = new TWidget();
         res.SetInternalHandle(p);
-        res.WeakCopy = true;
+        res.AutoDestroyed = true;
         return res;
     }
 

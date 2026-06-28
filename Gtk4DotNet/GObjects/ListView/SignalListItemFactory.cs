@@ -17,7 +17,7 @@ public class SignalListItemFactory : ListItemFactory
             {
                 var li = new ListItem();
                 li.SetInternalHandle(o);
-                li.WeakCopy = true;
+                li.AutoDestroyed = true;
                 onSetup(li);
             });
 
@@ -26,7 +26,7 @@ public class SignalListItemFactory : ListItemFactory
             {
                 var li = new ListItem();
                 li.SetInternalHandle(o);
-                li.WeakCopy = true;
+                li.AutoDestroyed = true;
                 onBind(li);
                 var liChild = li.GetChild<Widget>();
                 if (liChild != null)

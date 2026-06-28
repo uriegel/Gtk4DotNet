@@ -28,7 +28,7 @@ public class Stack : Widget
             return null;
         t.SetInternalHandle(ptr);
         t.CheckDiagnostics();
-        t.WeakCopy = true;
+        t.AutoDestroyed = true;
         return t;
     }
     

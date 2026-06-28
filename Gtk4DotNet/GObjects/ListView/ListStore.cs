@@ -8,7 +8,7 @@ public class ListStore : ListModel
     {
         var res = New(Type());
         res.CheckDiagnostics();
-        res.WeakCopy = true;
+        res.AutoDestroyed = true;
         return res;
     }
 

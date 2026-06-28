@@ -7,7 +7,7 @@ public class ColumnViewColumn : GObject
     {
         var res = _New(title, factory);
         res.CheckDiagnostics();
-        factory.WeakCopy = true;
+        factory.AutoDestroyed = true;
         return res;
     }
 

@@ -150,7 +150,7 @@ If you download the project from https://github.com/uriegel/Gtk4DotNet/ you can 
 
 A Window can have a child widget, and widgets can also have children/a single child. 
 
-Every widget is inherited from GObject. GObject uses reference counting as a mechanism for lifetime management. In Gtk4DotNet every GObject and inherited class implements IDisposable to unref a reference. But Gtk takes over lifetime management when a widget is member of a window hierarchy that is presented. Every widget such as ```Label```, ```Button``` or ```CheckButton``` is inherited from ```Widget```, and Widget has the property ```WeakCopy``` set to true. In this case ```Dispose()``` does nothing. 
+Every widget is inherited from GObject. GObject uses reference counting as a mechanism for lifetime management. In Gtk4DotNet every GObject and inherited class implements IDisposable to unref a reference. But Gtk takes over lifetime management when a widget is member of a window hierarchy that is presented. Every widget such as ```Label```, ```Button``` or ```CheckButton``` is inherited from ```Widget```, and Widget has the property ```AutoDestroyed``` set to true. In this case ```Dispose()``` does nothing. 
 
 So every widget implements IDisposable like the GObject base class, but memory management is in the hand of GTK. This means when you create a widget like a Button, and you don't add t to a window, the object is never being freed! But it makes no sense to create a widget and don't display it!
 

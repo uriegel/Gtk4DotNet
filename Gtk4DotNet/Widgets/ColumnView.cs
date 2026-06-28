@@ -75,7 +75,7 @@ public class ColumnView : Widget
             return null;
         var res = new SelectionModel()
         {
-            WeakCopy = true
+            AutoDestroyed = true
         };
         res.SetInternalHandle(m);
         return res;

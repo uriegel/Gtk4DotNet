@@ -13,7 +13,7 @@ public class ScrolledWindow : Widget
             return null;
         t.SetInternalHandle(ptr);
         t.CheckDiagnostics();
-        t.WeakCopy = true;
+        t.AutoDestroyed = true;
         return t;
     }
 

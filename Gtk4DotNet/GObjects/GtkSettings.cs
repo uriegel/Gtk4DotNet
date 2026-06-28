@@ -7,7 +7,7 @@ public class GtkSettings : GObject
     public static GtkSettings GetDefault()
     {
         var res = _GetDefault();
-        res.WeakCopy = true;
+        res.AutoDestroyed = true;
         return res;
     }
 

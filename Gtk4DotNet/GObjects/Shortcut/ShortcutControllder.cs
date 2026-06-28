@@ -13,7 +13,7 @@ public class ShortcutController : EventController
 
     public void AddShortcut(Shortcut shortcut)
     {
-        shortcut.WeakCopy = true;
+        shortcut.AutoDestroyed = true;
         AddShortcut(this, shortcut);
     }
 

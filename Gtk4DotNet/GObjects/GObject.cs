@@ -15,7 +15,7 @@ public class GObject : BaseHandle
     /// <summary>
     /// The Object is owned by a parent or Gtk and is not being unreffed by this instance
     /// </summary>
-    public bool WeakCopy { get; internal set; }
+    public bool AutoDestroyed { get; internal set; }
 
     /// <summary>
     /// Do this object has a fGtk floating ref
@@ -257,7 +257,7 @@ public class GObject : BaseHandle
 
     protected override bool ReleaseHandle()
     {
-        if (!WeakCopy)
+        if (!AutoDestroyed)
             Unref(handle);
         return true;
     }

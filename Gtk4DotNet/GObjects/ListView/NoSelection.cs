@@ -7,7 +7,7 @@ public class NoSelection : SelectionModel
     public static NoSelection New(ListModel model)
     {
         var res = _New(model);
-        model.WeakCopy = true;
+        model.AutoDestroyed = true;
         res.CheckDiagnostics();
         return res;
     }

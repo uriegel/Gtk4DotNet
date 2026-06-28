@@ -7,14 +7,14 @@ public class Display : GObject
     public static Display GetDefault()
     {
         var res = _GetDefault();
-        res.WeakCopy = true;
+        res.AutoDestroyed = true;
         return res;
     }
 
     public IconTheme GetIconTheme ()
     {
         var res = GetIconTheme(this);
-        res.WeakCopy = true;
+        res.AutoDestroyed = true;
         return res;
     }
 
