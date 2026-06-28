@@ -51,11 +51,10 @@ public class ColumnView : Widget
     public int GetFocusedItemPos()
     {
         positions ??= CreatePositions();
-        window ??= GetAncestor<Window>();
-        var row = window.GetFocus<Widget>();
-        if (!IsWidgetInColumnView(row))
+        var row = GetRoot<Window>()?.GetFocus<Widget>();
+        if (row == null || !IsWidgetInColumnView(row))
             return -1;
-        if (!row.IsInvalid && row.GetName() == "GtkColumnViewRowWidget")
+        if (!row.IsInvalid && row.Name == "GtkColumnViewRowWidget")
         {
             var ptr = row.GetManagedRawData(ListStore.DATA);
             return positions?.TryGetValue(ptr, out var pos) == true ? pos : -1;
@@ -102,9 +101,7 @@ public class ColumnView : Widget
     Dictionary<nint, int>? CreatePositions()
         => GetModel()?.GetRawItems().Select((n, i) => (n, i)).ToDictionary();
 
-    Dictionary<nint, int>? positions;
-
-    Window? window = null;
+    Dictionary<nint, int>? positions;    
 
     readonly List<ColumnViewColumn> cols = [];   [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_set_model", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetModel(ColumnView columnView, nint selectionModel);
