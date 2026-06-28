@@ -40,8 +40,8 @@ public class Window : Widget
             return new(w, h);
         }
     }
-    public int Width { get => Size.Width; }
-    public int Height { get => Size.Height; }
+    public new int Width { get => Size.Width; }
+    public new int Height { get => Size.Height; }
 
     public void Present() => Present(this);
 
