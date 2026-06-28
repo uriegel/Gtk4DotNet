@@ -317,11 +317,11 @@ public class GObject : BaseHandle
             {
                 ThreePointerDelegate unmanagedDelegate = (_, _, _) => value();
                 var id = obj.SignalConnectForEvent($"notify::{Property}", unmanagedDelegate);
-                obj.eventDatas.TryAdd(value, new(id, value, unmanagedDelegate));
+                eventDatas.TryAdd(value, new(id, value, unmanagedDelegate));
             }
             remove
             {
-                if (obj.eventDatas.Remove(value, out var data))
+                if (eventDatas.Remove(value, out var data))
                     obj.SignalDisconnectEvent(data.Id);
             }
         }
@@ -412,7 +412,7 @@ public class GObject : BaseHandle
 
     bool diagnosticsSet;
 
-    internal Dictionary<Delegate, EventData> eventDatas = [];        
+    static internal Dictionary<Delegate, EventData> eventDatas = [];        
 }
 
 public static class GObjectExtensions
