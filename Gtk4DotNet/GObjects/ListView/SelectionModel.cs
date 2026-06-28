@@ -1,5 +1,6 @@
-using System.Runtime.InteropServices;
-
 namespace Gtk4DotNet;
 
-public class SelectionModel : ListModel { }
+public class SelectionModel : ListModel
+{
+    internal SelectionModel() : base() {}
+}

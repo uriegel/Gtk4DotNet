@@ -1,3 +1,4 @@
+using System.Net.WebSockets;
 using System.Runtime.InteropServices;
 using Gtk4DotNet;
 
@@ -11,7 +12,9 @@ public class ColumnView : Widget
 
     public void SetModel(SelectionModel? selectionModel)
     {
+        GetModel()?.OnItemsChanged -= OnItemsChanged;
         SetModel(this, selectionModel != null ? selectionModel.GetInternalHandle() : 0);
+        selectionModel?.OnItemsChanged += OnItemsChanged;
         positions = null;
     }
 
@@ -65,15 +68,24 @@ public class ColumnView : Widget
 
     public Sorter GetSorter() => GetSorter(this);
 
-    public SelectionModel GetModel()
+    public SelectionModel? GetModel()
     {
-        var res = GetModel(this);
-        res.AutoDestroyed = true;
+        var m = GetModel(this);
+        if (m == 0)
+            return null;
+        var res = new SelectionModel()
+        {
+            AutoDestroyed = true
+        };
+        res.SetInternalHandle(m);
         return res;
     }
 
     public int ItemsCount() => (positions ??= CreatePositions())?.Count ?? 0;
 
+    void OnItemsChanged(int position, int removed, int added)
+        => positions = null;
+    
     bool IsWidgetInColumnView(Widget w)
     {
         while (true)
@@ -88,15 +100,13 @@ public class ColumnView : Widget
     }
 
     Dictionary<nint, int>? CreatePositions()
-        => GetModel().GetRawItems().Select((n, i) => (n, i)).ToDictionary();
+        => GetModel()?.GetRawItems().Select((n, i) => (n, i)).ToDictionary();
 
     Dictionary<nint, int>? positions;
 
     Window? window = null;
 
-    readonly List<ColumnViewColumn> cols = [];
-
-    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_set_model", CallingConvention = CallingConvention.Cdecl)]
+    readonly List<ColumnViewColumn> cols = [];   [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_set_model", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetModel(ColumnView columnView, nint selectionModel);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_append_column", CallingConvention = CallingConvention.Cdecl)]
@@ -118,7 +128,7 @@ public class ColumnView : Widget
     extern static CustomSorter GetSorter(ColumnView columnView);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_get_model", CallingConvention = CallingConvention.Cdecl)]
-    extern static SelectionModel GetModel(ColumnView columnView);
+    extern static nint GetModel(ColumnView columnView);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_scroll_to", CallingConvention = CallingConvention.Cdecl)]
     extern static void ScrollTo(ColumnView columnView, int pos, nint nilc, ListScrollFlags flags, nint nil);

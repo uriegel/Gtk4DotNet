@@ -4,11 +4,26 @@ namespace Gtk4DotNet;
 
 public abstract class ListModel : GObject
 {
-    public IEnumerable<T> GetItems<T>() 
+    public event OnItemsChangedDelegate OnItemsChanged
+    {
+        add
+        {
+            OnItemsChangedRawDelegate unmanagedDelegate = (_, position, removed, added, _) => value(position, removed, added);
+            var id = SignalConnectForEvent("items-changed", unmanagedDelegate);
+            eventDatas.TryAdd(value, new(id, value, unmanagedDelegate));
+        }
+        remove
+        {
+            if (eventDatas.Remove(value, out var data))
+                SignalDisconnectEvent(data.Id);
+        }
+    }
+
+    public IEnumerable<T> GetItems<T>()
         where T : class
     {
         int i = 0;
-        while(true)
+        while (true)
         {
             var item = GetItem<T>(i++);
             if (item == null)
@@ -28,9 +43,6 @@ public abstract class ListModel : GObject
     public int GetItems() => GetItems(this);
 
     public int ItemsCount() => GetRawItems().Count();
-
-    public void OnItemsChanged(OnItemsChangedDelegate onItemsChanged)
-        => SignalConnect<OnItemsChangedRawDelegate>("items-changed", (_, position, removed, added, _) => onItemsChanged(position, removed, added));
 
     internal nint GetRawItem(int position)
     {

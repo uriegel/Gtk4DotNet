@@ -8,7 +8,7 @@ class MyWindow : ApplicationWindow
         entry.OnActivate += NewTask;
 
         store = ListStore.New();
-        store.OnItemsChanged((p, r, a) => tasksList.Visible = store.GetItems() > 0);
+        store.OnItemsChanged += (p, r, a) => tasksList.Visible = store.GetItems() > 0;
 
         filterListModel = FilterListModel.New(store, GetFilter(Application.Settings));
         var model = NoSelection.New(filterListModel);
