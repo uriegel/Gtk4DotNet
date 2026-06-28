@@ -2,8 +2,8 @@ using System.Diagnostics;
 using CsTools.Extensions;
 using Gtk4DotNet;
 
+// TODO Shortcut actions like up, pageup, pagedown, home, end 
 // TODO keep multi selection permanent (click with mouse and space)
-// TODO Shortcut actions like up, down, pageup, pagedown, but only for the group? 
 
 class MyWindow : ApplicationWindow
 {
