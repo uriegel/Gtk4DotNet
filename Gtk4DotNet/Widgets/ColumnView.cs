@@ -1,4 +1,3 @@
-using System.Net.WebSockets;
 using System.Runtime.InteropServices;
 using Gtk4DotNet;
 
@@ -65,7 +64,12 @@ public class ColumnView : Widget
 
     public void ScrollTo(int pos, ListScrollFlags flags) =>  ScrollTo(this, pos, 0, flags, 0);
 
-    public Sorter GetSorter() => GetSorter(this);
+    public ColumnViewSorter GetSorter()
+    {
+        var res = GetSorter(this);
+        res.AutoDestroyed = true;
+        return res;  
+    } 
 
     public SelectionModel? GetModel()
     {
@@ -122,7 +126,7 @@ public class ColumnView : Widget
     extern static void RemoveColumn(ColumnView columnView, ColumnViewColumn col);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_get_sorter", CallingConvention = CallingConvention.Cdecl)]
-    extern static CustomSorter GetSorter(ColumnView columnView);
+    extern static ColumnViewSorter GetSorter(ColumnView columnView);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_get_model", CallingConvention = CallingConvention.Cdecl)]
     extern static nint GetModel(ColumnView columnView);

@@ -1,9 +1,6 @@
 using CsTools.Extensions;
 using Gtk4DotNet;
 
-// TODO Ins to toggle and move next, set selection to all and none, shift pos/end
-// TODO Mouse click must remain selection
-
 class MyWindow : ApplicationWindow
 {
     public MyWindow(WindowBuilder builder) : base(builder)
@@ -76,29 +73,31 @@ class MyWindow : ApplicationWindow
             model = NoSelection.New(sortModel);
             oldModel?.Dispose();
 
-            var namefactory = SignalListItemFactory.New();
-            namefactory.Setup(listitem =>
-            {
-                using var builder = Builder.FromDotNetResource("iconnameitem");
-                var item = new IconNameItem(builder);
-                listitem.SetManagedChild(item);
-            });
-            namefactory.Bind(listitem =>
-            {
-                var iconname = listitem.GetManagedChild<IconNameItem>();
-                var item = listitem.GetItem<Contact>();
-                iconname?.Name = item?.Name ?? "";
-                if (item?.IconName != null)
-                    iconname?.SetFromIconName(item.IconName);
-            });
-            var emailfactory = SignalListItemFactory.New();
-            emailfactory.Setup(listitem => listitem.SetChild(Label.New()));
-            emailfactory.Bind(listitem =>
-            {
-                var label = listitem.GetChild<Label>();
-                var item = listitem.GetItem<Contact>();
-                label.Text = item?.EMail ?? "";
-            });
+            var namefactory = SignalListItemFactory
+                .New()
+                .Setup(listitem =>
+                {
+                    using var builder = Builder.FromDotNetResource("iconnameitem");
+                    var item = new IconNameItem(builder);
+                    listitem.SetManagedChild(item);
+                })
+                .Bind(listitem =>
+                {
+                    var iconname = listitem.GetManagedChild<IconNameItem>();
+                    var item = listitem.GetItem<Contact>();
+                    iconname?.Name = item?.Name ?? "";
+                    if (item?.IconName != null)
+                        iconname?.SetFromIconName(item.IconName);
+                });
+            var emailfactory = SignalListItemFactory
+                .New()
+                .Setup(listitem => listitem.SetChild(Label.New()))
+                .Bind(listitem =>
+                {
+                    var label = listitem.GetChild<Label>();
+                    var item = listitem.GetItem<Contact>();
+                    label.Text = item?.EMail ?? "";
+                });
 
             columnview.SetModel(null);
             columnview.ClearColumns();
@@ -107,7 +106,8 @@ class MyWindow : ApplicationWindow
             using var mailSorter = CustomSorter.New<Contact>((item1, item2) => (item1?.EMail ?? "").CompareTo((item2?.EMail ?? "")));
             columnview.AppendColumn(ColumnViewColumn.New("Name", namefactory).SideEffect(cvc => cvc.SetSorter(nameSorter)));
             columnview.AppendColumn(ColumnViewColumn.New("E mail", emailfactory).Expand().SideEffect(cvc => cvc.SetSorter(mailSorter)));
-            using var viewsorter = columnview.GetSorter();
+            var viewsorter = columnview.GetSorter();
+            viewsorter.OnChanged -= SortOrderChanged;
             sortModel.SetSorter(viewsorter);
         }
         else
@@ -120,9 +120,9 @@ class MyWindow : ApplicationWindow
             model = MultiSelection.New(sortModel);
             oldModel?.Dispose();
 
-            var namefactory = SignalListItemFactory.New();
-            namefactory.Setup(listitem => listitem.SetChild(Label.New()));
-            namefactory.Bind(listitem =>
+            var namefactory = SignalListItemFactory.New()
+                .Setup(listitem => listitem.SetChild(Label.New()))
+                .Bind(listitem =>
             {
                 var label = listitem.GetChild<Label>();
                 var item = listitem.GetItem<Item>();
@@ -137,13 +137,31 @@ class MyWindow : ApplicationWindow
                 .Select(n => new Item($"Item no {n + 1}", n));
             foreach (var item in items)
                 store.Append(item);
-            using var sorter = CustomSorter.New<Item>((item1, item2) => (item1?.Number ?? 0) - (item2?.Number ?? 0));
-            columnview.AppendColumn(ColumnViewColumn.New("Name", namefactory).Expand().SideEffect(cvc => cvc.SetSorter(sorter)));
+
+            var sorterIsEven = CustomSorter.New<Item>((item1, item2) =>
+            {
+                var order = (item1?.Number ?? 0) % 2 - (item2?.Number ?? 0) % 2;
+                return reverseSortOrder ? -order : order;
+            });
+            var sorter = CustomSorter.New<Item>((item1, item2) => (item1?.Number ?? 0) - (item2?.Number ?? 0));
+            using var multiSorter = MultiSorter
+                .New()
+                .Append(sorterIsEven)
+                .Append(sorter);
+
+            columnview.AppendColumn(ColumnViewColumn.New("Name", namefactory).Expand().SideEffect(cvc => cvc.SetSorter(multiSorter)));
             columnview.SetModel(model);
-            using var viewsorter = columnview.GetSorter();
+            var viewsorter = columnview.GetSorter();
+            viewsorter.OnChanged += SortOrderChanged;
             sortModel.SetSorter(viewsorter);
         }
         columnview.GetModel()?.UnselectAll();
+    }
+    
+    void SortOrderChanged(bool reverse, SorterChange _) 
+    {
+        reverseSortOrder = reverse;
+        Console.WriteLine($"Ordering reverse: {reverse}");
     }
 
     void FilterModel(bool filter)
@@ -224,6 +242,8 @@ class MyWindow : ApplicationWindow
     SortListModel sortModel = null!;
 
     bool filter;
+
+    bool reverseSortOrder;
 }
 record Contact(string Name, string EMail, int Number, string IconName);
 record Item(string Name, int Number);

@@ -66,7 +66,7 @@ class MyWindow : ApplicationWindow
         }
         else
         {
-            this.filter = false;
+            filter = false;
             var store = ListStore.New();
             var oldModel = model;
             filterNumbers = CustomFilter.New<Item>(item => !filter || (item?.Number ?? 0)  % 2 == 0);

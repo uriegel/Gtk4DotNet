@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using CsTools.Extensions;
 using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
@@ -12,17 +13,17 @@ public class SignalListItemFactory : ListItemFactory
         return res;
     }
 
-    public void Setup(Action<ListItem> onSetup)
-        => SignalConnect<ThreePointerDelegate>("setup", (_, o, ___) =>
+    public SignalListItemFactory Setup(Action<ListItem> onSetup)
+        => this.SideEffect(_ => SignalConnect<ThreePointerDelegate>("setup", (_, o, ___) =>
             {
                 var li = new ListItem();
                 li.SetInternalHandle(o);
                 li.AutoDestroyed = true;
                 onSetup(li);
-            });
+            }));
 
-    public void Bind(Action<ListItem> onBind)
-        => SignalConnect<ThreePointerDelegate>("bind", (_, o, ___) =>
+    public SignalListItemFactory Bind(Action<ListItem> onBind)
+        => this.SideEffect(_ => SignalConnect<ThreePointerDelegate>("bind", (_, o, ___) =>
             {
                 var li = new ListItem();
                 li.SetInternalHandle(o);
@@ -36,7 +37,7 @@ public class SignalListItemFactory : ListItemFactory
                     if (parent?.WidgetName == "GtkColumnViewRowWidget")
                         parent.SetManagedRawData(ListStore.DATA, li.GetRawItem());
                 }
-            });
+            }));
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_signal_list_item_factory_new", CallingConvention = CallingConvention.Cdecl)]
     extern static SignalListItemFactory _New();

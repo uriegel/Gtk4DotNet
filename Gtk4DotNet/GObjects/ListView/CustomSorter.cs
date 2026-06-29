@@ -31,20 +31,11 @@ public class CustomSorter : Sorter
         return res;
     }
 
-    // public static void OnChanged(Action<bool, SorterChange> onChanged)
-    //     => SignalConnect<OnChangedDelegate>(s, "changed", (col, sorterChanged, __) =>
-    //     {
-    //         bool desc = GetPrimaryOrder(col) != 0;
-    //         onChanged(desc, sorterChanged);
-    //     });
-
-
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_custom_sorter_new", CallingConvention = CallingConvention.Cdecl)]
     extern static CustomSorter New(CompareDataDelegate compare, nint nil, nint nil2);
-
-    // [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_sorter_get_primary_sort_order", CallingConvention = CallingConvention.Cdecl)]
-    // extern static int GetPrimaryOrder(nint col);
 }
 
 delegate int CompareDataDelegate(nint data1, nint data2, nint nil);
-//delegate void OnChangedDelegate(nint _, SorterChange sorterChange, nint nil);
+
+
+
