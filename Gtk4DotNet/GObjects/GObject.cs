@@ -288,7 +288,7 @@ public class GObject : BaseHandle
             if (Gtk.GObjectTracing)
                 OnDiagnostics();
         };
-        GtkDelegates.Instance.Add(dkey, callback);
+        GtkDelegates.Instance.Add(dkey, callback, GetType().FullName);
         SetQDataFull(this, GetQuark("QDataDiagnostics"), 7,
             Marshal.GetFunctionPointerForDelegate(callback as Delegate));
         

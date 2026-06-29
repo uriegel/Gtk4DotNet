@@ -73,7 +73,7 @@ class MyWindow : ApplicationWindow
                 .Append(new Contact("Jane Doe", "zjadoe@domain.de", 9999, "mail"));
             var oldModel = model;
             sortModel = SortListModel.New(store, null);
-            model = SingleSelection.New(sortModel);
+            model = NoSelection.New(sortModel);
             oldModel?.Dispose();
 
             var namefactory = SignalListItemFactory.New();
