@@ -149,7 +149,9 @@ class MyWindow : ApplicationWindow
                 .Append(sorterIsEven)
                 .Append(sorter);
 
-            columnview.AppendColumn(ColumnViewColumn.New("Name", namefactory).Expand().SideEffect(cvc => cvc.SetSorter(multiSorter)));
+            var col = ColumnViewColumn.New("Name", namefactory).Expand().SideEffect(cvc => cvc.SetSorter(multiSorter));
+            columnview.AppendColumn(col);
+            columnview.SortByColumn(col);
             columnview.SetModel(model);
             var viewsorter = columnview.GetSorter();
             viewsorter.OnChanged += SortOrderChanged;

@@ -62,7 +62,9 @@ public class ColumnView : Widget
             return -1;
     }
 
-    public void ScrollTo(int pos, ListScrollFlags flags) =>  ScrollTo(this, pos, 0, flags, 0);
+    public void ScrollTo(int pos, ListScrollFlags flags) => ScrollTo(this, pos, 0, flags, 0);
+
+    public void SortByColumn(ColumnViewColumn column, bool descending = false) => SortByColumn(this, column, descending ? 1 : 0);
 
     public ColumnViewSorter GetSorter()
     {
@@ -133,4 +135,7 @@ public class ColumnView : Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_scroll_to", CallingConvention = CallingConvention.Cdecl)]
     extern static void ScrollTo(ColumnView columnView, int pos, nint nilc, ListScrollFlags flags, nint nil);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_sort_by_column", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SortByColumn(ColumnView columnView, ColumnViewColumn column, int descending);
 }
