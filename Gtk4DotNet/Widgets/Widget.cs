@@ -121,7 +121,7 @@ public class Widget : GObject
                 if (val != null)
                     return val;
                 w = w.GetParent();
-                if (w.IsInvalid)
+                if (w == null)
                     return null;
             }
         }
@@ -135,12 +135,20 @@ public class Widget : GObject
     public void Show() => Show(this);
     public void Hide() => Hide(this);
 
-    public Widget GetParent()
+    public Widget? GetParent() => GetParent<Widget>();
+
+    public TWidget? GetParent<TWidget>() where TWidget : Widget, new()
     {
-        var res = GetParent(this);
-        res.AutoDestroyed = true;
+        var ptr = GetParent(this);
+        if (ptr == 0)
+            return null;
+        var res = new TWidget
+        {
+            AutoDestroyed = true
+        };
+        res.SetInternalHandle(ptr);
         return res;
-    } 
+    }
 
     /// <summary>
     /// Adds (or removes if add = false) a css class to this widget
@@ -502,7 +510,7 @@ W A R N I N G
     extern static nint GetTooltipText(Widget widget);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_parent", CallingConvention = CallingConvention.Cdecl)]
-    extern static Widget GetParent(Widget widget);
+    extern static nint GetParent(Widget widget);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_add_css_class", CallingConvention = CallingConvention.Cdecl)]
     extern static void AddCssClass(Widget widget, string cssClass);

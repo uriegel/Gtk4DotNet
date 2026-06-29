@@ -96,7 +96,7 @@ public class ColumnView : Widget
         while (true)
         {
             var p = w.GetParent();
-            if (p.IsInvalid)
+            if (p == null)
                 return false;
             if (p.GetInternalHandle() == GetInternalHandle())
                 return true;
