@@ -31,6 +31,8 @@ public class ListStore : ListModel
 
     public void Remove(int position) => Remove(this, position);
 
+    public void RemoveAll() => RemoveAll(this);
+
     [DllImport(Libs.LibGtk, EntryPoint = "g_list_store_new", CallingConvention = CallingConvention.Cdecl)]
     extern static ListStore New(nint type);
 
@@ -42,6 +44,9 @@ public class ListStore : ListModel
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_new", CallingConvention = CallingConvention.Cdecl)]
     static extern nint NewObject(nint type, nint _);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_list_store_remove_all", CallingConvention = CallingConvention.Cdecl)]
+    extern static void RemoveAll(ListStore store);
 
     internal const string DATA = "LIST_STORE_DATA";
 }
