@@ -15,6 +15,7 @@ class MyWindow : ApplicationWindow
         AddActions(
             new BoolAction("new-model", false, newModel => ToggleModel(columnviewLeft, newModel), "F3"),
             new BoolAction("filter", false, FilterModel, "<Ctrl>F"),
+            new SimpleAction("find", FindItem),
             new SimpleAction("quit", CloseWindow, "<Ctrl>Q")
         );
         activeView = columnviewLeft;
@@ -71,6 +72,7 @@ class MyWindow : ApplicationWindow
             var oldModel = model;
             sortModel = SortListModel.New(store, null);
             model = NoSelection.New(sortModel);
+            model.OnSelectionChanged += (i, c) => Console.WriteLine($"{i}, {c}");
             oldModel?.Dispose();
 
             var namefactory = SignalListItemFactory
@@ -118,6 +120,7 @@ class MyWindow : ApplicationWindow
             filterNumbers = CustomFilter.New<Item>(item => !filter || (item?.Number ?? 0) % 2 == 0);
             sortModel = SortListModel.New(FilterListModel.New(store, filterNumbers), null);
             model = MultiSelection.New(sortModel);
+            model.OnSelectionChanged += (i, c) => Console.WriteLine($"{i}, {c}");
             oldModel?.Dispose();
 
             var namefactory = SignalListItemFactory.New()
@@ -135,8 +138,7 @@ class MyWindow : ApplicationWindow
             var items = Enumerable
                 .Range(0, 100_000)
                 .Select(n => new Item($"Item no {n + 1}", n));
-            foreach (var item in items)
-                store.Append(item);
+            store.Splice(0, 0, items);
 
             var sorterIsEven = CustomSorter.New<Item>((item1, item2) =>
             {
@@ -220,6 +222,13 @@ class MyWindow : ApplicationWindow
             return (view.Height / (row.Height + 1)) - 4;
         else
             return 0;
+    }
+
+    void FindItem()
+    {
+        var items = model.GetItems<Item>().Take(20);
+        foreach (var item in items)
+            Console.WriteLine(item);
     }
 
     ColumnView GetInactiveView()

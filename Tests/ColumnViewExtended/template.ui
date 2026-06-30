@@ -17,9 +17,16 @@
               </object>
             </child>
             <child type="end">
-              <object class="GtkToggleButton" id="preview_button">
+              <object class="GtkToggleButton">
                 <property name="action-name">win.filter</property>
                 <property name="icon-name">edit-cut</property>
+                <property name="visible" bind-source="model_button" bind-property="active" bind-flags="sync-create"/>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkToggleButton">
+                <property name="action-name">win.find</property>
+                <property name="icon-name">edit-find</property>
                 <property name="visible" bind-source="model_button" bind-property="active" bind-flags="sync-create"/>
               </object>
             </child>
@@ -27,24 +34,24 @@
         </child>
         <child>
           <object class="GtkPaned" id="paned">
-            <property name="start-child">
-              <object class="GtkScrolledWindow">
-                <property name="hscrollbar-policy">never</property>
-                <property name="min-content-width">360</property>
-                <child>
-                  <object class="GtkColumnView" id="columnviewLeft">
-                    <property name="enable-rubberband">True</property>
-                    <property name="tab-behavior">item</property>
-                  </object>
-                </child>
-              </object>
-            </property>
             <property name="end-child">
               <object class="GtkScrolledWindow">
                 <property name="hscrollbar-policy">never</property>
                 <property name="min-content-width">360</property>
                 <child>
                   <object class="GtkColumnView" id="columnviewRight">
+                    <property name="enable-rubberband">True</property>
+                    <property name="tab-behavior">item</property>
+                  </object>
+                </child>
+              </object>
+            </property>
+            <property name="start-child">
+              <object class="GtkScrolledWindow">
+                <property name="hscrollbar-policy">never</property>
+                <property name="min-content-width">360</property>
+                <child>
+                  <object class="GtkColumnView" id="columnviewLeft">
                     <property name="enable-rubberband">True</property>
                     <property name="tab-behavior">item</property>
                   </object>

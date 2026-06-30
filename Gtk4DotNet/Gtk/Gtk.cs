@@ -4,6 +4,8 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
+// TODO ClickGesture with events and release event
+
 // TODO ToDoApp with Adwaita
 // TODO DrawView
 

@@ -6,8 +6,23 @@ public class SelectionModel : ListModel
 {
     public bool UnselectAll() => UnselectAll(this);
 
+    public event Action<int, int> OnSelectionChanged
+    {
+        add
+        {
+            OnSelectionChangedDelegate unmanagedDelegate = (_, pos, count) => value(pos, count);
+            var id = SignalConnectForEvent("selection-changed", unmanagedDelegate);
+            eventDatas.TryAdd(value, new(id, value, unmanagedDelegate));
+        }
+        remove
+        {
+            if (eventDatas.Remove(value, out var data))
+                SignalDisconnectEvent(data.Id);
+        }
+    }
+
     internal SelectionModel() : base() { }
-    
+
     [DllImport(Libs.LibGtk, CallingConvention = CallingConvention.Cdecl, EntryPoint = "gtk_selection_model_select_all")]
     static extern bool SelectAll(SelectionModel model);
 
@@ -29,3 +44,5 @@ public class SelectionModel : ListModel
     [DllImport(Libs.LibGtk, CallingConvention = CallingConvention.Cdecl, EntryPoint = "gtk_selection_model_is_selected")]
     static extern bool IsSelected(SelectionModel model, int pos);
 }
+
+delegate void OnSelectionChangedDelegate(nint nil, int pos, int count);
