@@ -9,6 +9,21 @@ public class ColumnView : Widget
         set => SetEnableRubberband(this, value);
     }
 
+    public event Action<int> OnActivate
+    {
+        add
+        {
+            ActivateDelegate unmanagedDelegate = (_, pos, _) => value(pos);
+            var id = SignalConnectForEvent("activate", unmanagedDelegate);
+            eventDatas.TryAdd(value, new(id, value, unmanagedDelegate));
+        }
+        remove
+        {
+            if (eventDatas.Remove(value, out var data))
+                SignalDisconnectEvent(data.Id);
+        }
+    }
+
     public void SetModel(SelectionModel? selectionModel)
     {
         GetModel()?.OnItemsChanged -= OnItemsChanged;
@@ -139,3 +154,5 @@ public class ColumnView : Widget
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_sort_by_column", CallingConvention = CallingConvention.Cdecl)]
     extern static void SortByColumn(ColumnView columnView, ColumnViewColumn column, int descending);
 }
+
+delegate void ActivateDelegate(nint _, int pos , nint __);

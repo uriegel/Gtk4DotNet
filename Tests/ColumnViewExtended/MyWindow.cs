@@ -56,6 +56,8 @@ class MyWindow : ApplicationWindow
         kec.OnKeyPressed += (chr, mod) => OnKey(activeView, chr);
         AddController(kec);
 
+        columnviewLeft.OnActivate += pos => Console.WriteLine($"Activated {pos} item");
+
         OnClose(async _ =>
         {
             inChange = false;
@@ -83,7 +85,6 @@ class MyWindow : ApplicationWindow
             var oldModel = model;
             sortModel = SortListModel.New(store, null);
             model = NoSelection.New(sortModel);
-            model.OnSelectionChanged += (i, c) => Console.WriteLine($"{i}, {c}");
             oldModel?.Dispose();
 
             var namefactory = SignalListItemFactory
@@ -131,7 +132,6 @@ class MyWindow : ApplicationWindow
             filterNumbers = CustomFilter.New<Item>(item => !filter || (item?.Number ?? 0) % 2 == 0);
             sortModel = SortListModel.New(FilterListModel.New(store, filterNumbers), null);
             model = MultiSelection.New(sortModel);
-            model.OnSelectionChanged += (i, c) => Console.WriteLine($"{i}, {c}");
             oldModel?.Dispose();
 
             var namefactory = SignalListItemFactory.New()
