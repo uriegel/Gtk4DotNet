@@ -12,9 +12,35 @@ public class ClickGesture : SingleGesture
         return click;
     }
 
-    public void OnPressed(Action<int, double, double> pressed)
-        => SignalConnect<PressedGestureDelegate>("pressed", (nint _, int pressCount, double x, double y, nint __)  => pressed(pressCount, x, y));
+    public event Action<int, double, double> OnPressed
+    {
+        add
+        {
+            PressedGestureDelegate unmanagedDelegate = (_, pressCount, x, y, _) => value(pressCount, x, y);
+            var id = SignalConnectForEvent("pressed", unmanagedDelegate);
+            eventDatas.TryAdd(value, new(id, value, unmanagedDelegate));
+        }
+        remove
+        {
+            if (eventDatas.Remove(value, out var data))
+                SignalDisconnectEvent(data.Id);
+        }
+    }
 
+    public event Action<int, double, double> OnReleased
+    {
+        add
+        {
+            PressedGestureDelegate unmanagedDelegate = (_, pressCount, x, y, _) => value(pressCount, x, y);
+            var id = SignalConnectForEvent("released", unmanagedDelegate);
+            eventDatas.TryAdd(value, new(id, value, unmanagedDelegate));
+        }
+        remove
+        {
+            if (eventDatas.Remove(value, out var data))
+                SignalDisconnectEvent(data.Id);
+        }
+    }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_gesture_click_new", CallingConvention = CallingConvention.Cdecl)]
     extern static ClickGesture _New();

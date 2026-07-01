@@ -106,7 +106,6 @@ public class Widget : GObject
         set => SetTooltipText(this, value);
     }
 
-    // TODO Set with QData!!!
     /// <summary>
     /// A DataContext object that can be used for bindings
     /// </summary>
@@ -180,8 +179,20 @@ public class Widget : GObject
         {
             bool inChange = false;
             SetProperty(targetProperty, GetValue());
+
+            var delegates = BindingsDelegates;
+            if (delegates == null)
+            {
+                delegates = [];
+                BindingsDelegates = delegates;
+            }
+            delegates.Add(targetProperty, OnChanged);
             dataContext.PropertyChanged += OnChanged;
-            AddWeakRef(() => dataContext.PropertyChanged -= OnChanged);
+            AddWeakRef(() =>
+            {
+                delegates.Remove(targetProperty);
+                dataContext.PropertyChanged -= OnChanged;
+            });
 
             if (bindingFlags.HasFlag(BindingFlags.Bidirectional))
                 this[targetProperty].OnNotify += SetValue;
@@ -216,7 +227,13 @@ public class Widget : GObject
         else
             Console.Error.WriteLine("Binding not possible: DataContext not set");
     }
-
+    public void UnsetBinding(string targetProperty)
+    {
+        var delegates = BindingsDelegates;
+        if (delegates != null && delegates.Remove(targetProperty, out var delegat))
+            DataContext?.PropertyChanged -= delegat;
+    }
+    
     /// <summary>
     /// Sets a binding from a value in a given and attached DataContext to a css class of this object. The DataContext can be set in a parent widget
     /// </summary>
@@ -437,7 +454,7 @@ W A R N I N G
         res.SetInternalHandle(p);
         res.AutoDestroyed = true;
         return res;
-    } 
+    }
 
     public TWidget? GetFirstChild<TWidget>() where TWidget : Widget, new()
     {
@@ -450,6 +467,12 @@ W A R N I N G
         return res;
     }
 
+    Dictionary<string, PropertyChangedEventHandler>? BindingsDelegates
+    {
+        get => GetManagedData<Dictionary<string, PropertyChangedEventHandler>>(BINDINGS_DELEGATES);
+        set => SetManagedData(BINDINGS_DELEGATES, value);
+    }
+
     #endregion
 
     #region Internals
@@ -458,6 +481,7 @@ W A R N I N G
         => Console.WriteLine(Name != null ? $"{GetType().Name} {Name} finalized" : $"{GetType().Name} finalized");
 
     internal const string DATA_CONTEXT = "DATA_CONTEXT";
+    internal const string BINDINGS_DELEGATES = "BINDINGS_DELEGATES";
 
     internal static int GetRegisteredWidgetCount() => widgets.Count;
 
@@ -663,5 +687,4 @@ public static class WidgetExtensions
         where THandle : Widget
         => widget.SideEffect(w => Widget.InsertAfter(child, w, previous ?? new Widget()));
 }
-
 

@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using CsTools.Extensions;
 using Gtk4DotNet;
 
@@ -55,14 +56,24 @@ class MyWindow : ApplicationWindow
         kec.OnKeyPressed += (chr, mod) => OnKey(activeView, chr);
         AddController(kec);
 
+        OnClose(async _ =>
+        {
+            inChange = false;
+            await Task.Delay(200);
+            return false;
+        });
+
         OnFinalize(() =>
         {
             model.Dispose();
         });
     }
 
-    void ToggleModel(ColumnView columnview, bool newModel)
+    async void ToggleModel(ColumnView columnview, bool newModel)
     {
+        GC.Collect();
+        GC.Collect();
+        inChange = false;
         if (!newModel)
         {
             var store = ListStore.New()
@@ -126,17 +137,24 @@ class MyWindow : ApplicationWindow
             var namefactory = SignalListItemFactory.New()
                 .Setup(listitem => listitem.SetChild(Label.New()))
                 .Bind(listitem =>
-            {
-                var label = listitem.GetChild<Label>();
-                var item = listitem.GetItem<Item>();
-                label.Text = item?.Name ?? "";
-            });
+                {
+                    var label = listitem.GetChild<Label>();
+                    var item = listitem.GetItem<Item>();
+                    label.DataContext = item;
+                    label.SetBinding("label", nameof(item.Name));
+                })
+                .Unbind(listitem =>
+                {
+                    var label = listitem.GetChild<Label>();
+                    label.UnsetBinding("label");
+                    label.DataContext = null;
+                });
 
             columnview.SetModel(null);
             columnview.ClearColumns();
             columnview.SetModel(null);
             var items = Enumerable
-                .Range(0, 100_000)
+                .Range(0, 10_000)
                 .Select(n => new Item($"Item no {n + 1}", n));
             store.Splice(0, 0, items);
 
@@ -158,6 +176,20 @@ class MyWindow : ApplicationWindow
             var viewsorter = columnview.GetSorter();
             viewsorter.OnChanged += SortOrderChanged;
             sortModel.SetSorter(viewsorter);
+
+            await Changer();        
+
+            async Task Changer()
+            {
+                 var item = model.GetItem<Item>(10);
+                inChange = true;
+                for (var i = 1; i < 100_000 && inChange; i++)
+                {
+                    item?.Name = $"Eintrag {i}";
+                    await Task.Delay(40);
+                }
+                inChange = false;
+            }
         }
         columnview.GetModel()?.UnselectAll();
     }
@@ -255,6 +287,29 @@ class MyWindow : ApplicationWindow
     bool filter;
 
     bool reverseSortOrder;
+    bool inChange;
 }
 record Contact(string Name, string EMail, int Number, string IconName);
-record Item(string Name, int Number);
+
+class Item(string name, int number) : INotifyPropertyChanged
+{
+    //~Item() { Console.WriteLine("Item destroyed"); }
+    public string Name
+    {
+        get;
+        set
+        {
+            if (field != value)
+            {
+                field = value;
+                OnChanged(nameof(Name));
+            }
+        }
+    } = name;
+
+    public int Number { get => number; }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    void OnChanged(string name) => PropertyChanged?.Invoke(this, new(name));
+}

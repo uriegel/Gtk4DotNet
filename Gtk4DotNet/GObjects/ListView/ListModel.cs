@@ -44,6 +44,8 @@ public abstract class ListModel : GObject
 
     public int ItemsCount() => GetRawItems().Count();
 
+    public void ItemsChanged(int position, int removed = 1, int added = 1) => ItemsChanged(this, position, removed, added);
+
     internal nint GetRawItem(int position)
     {
         using var obj = GetItem(this, position);
@@ -72,6 +74,9 @@ public abstract class ListModel : GObject
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_list_model_get_n_items", CallingConvention = CallingConvention.Cdecl)]
     extern static int GetItems(ListModel model);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_list_model_items_changed", CallingConvention = CallingConvention.Cdecl)]
+    extern static void ItemsChanged(ListModel model, int position, int removed, int added);
 }
 
 public delegate void OnItemsChangedDelegate(int position, int removed, int added);

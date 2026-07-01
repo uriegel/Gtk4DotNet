@@ -4,8 +4,6 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
-// TODO ClickGesture with events and release event
-
 // TODO ToDoApp with Adwaita
 // TODO DrawView
 
@@ -17,8 +15,6 @@ namespace Gtk4DotNet;
 // TODO: Folder Extensions is release ready
 // TODO: Folder Gestures is release ready
 // TODO: Folder Gio is release ready
-
-// TODO ColumnView: Sample with keyboard and selection like Commander
 
 public static class Gtk
 {

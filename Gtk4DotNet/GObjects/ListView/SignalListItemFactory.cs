@@ -39,6 +39,15 @@ public class SignalListItemFactory : ListItemFactory
                 }
             }));
 
+    public SignalListItemFactory Unbind(Action<ListItem> onUnbind)
+        => this.SideEffect(_ => SignalConnect<ThreePointerDelegate>("unbind", (_, o, ___) =>
+            {
+                var li = new ListItem();
+                li.SetInternalHandle(o);
+                li.AutoDestroyed = true;
+                onUnbind(li);
+            }));
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_signal_list_item_factory_new", CallingConvention = CallingConvention.Cdecl)]
     extern static SignalListItemFactory _New();
 }

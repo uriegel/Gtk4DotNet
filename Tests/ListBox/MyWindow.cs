@@ -28,14 +28,14 @@ class MyWindow : ApplicationWindow
         };
         AddController(keyController);
 
-        EventController CreatePressed() => ClickGesture.New().SideEffect(c => c.OnPressed((n, x, y) =>
+        EventController CreatePressed() => ClickGesture.New().SideEffect(c => c.OnPressed += (n, x, y) =>
         {
             if (n == 2)
             {
                 var row = listbox.GetSelectedRow().GetChild<Box>();
                 Console.WriteLine($"Open file with {row?.GetManagedData<string>("data")}");
             }
-        }));
+        });
 
         var contentType = Gio.GuessContentType(".html") ?? "none";
         using var defaultApp = GAppInfo.GetDefault(contentType);
