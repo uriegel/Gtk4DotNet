@@ -115,8 +115,8 @@ class MyWindow : ApplicationWindow
             columnview.SetModel(null);
             columnview.ClearColumns();
             columnview.SetModel(model);
-            using var nameSorter = CustomSorter.New<Contact>((item1, item2) => (item1?.Name ?? "").CompareTo((item2?.Name ?? "")));
-            using var mailSorter = CustomSorter.New<Contact>((item1, item2) => (item1?.EMail ?? "").CompareTo((item2?.EMail ?? "")));
+            using var nameSorter = CustomSorter.New<Contact>((item1, item2) => (item1?.Name ?? "").CompareTo(item2?.Name ?? ""));
+            using var mailSorter = CustomSorter.New<Contact>((item1, item2) => (item1?.EMail ?? "").CompareTo(item2?.EMail ?? ""));
             columnview.AppendColumn(ColumnViewColumn.New("Name", namefactory).SideEffect(cvc => cvc.SetSorter(nameSorter)));
             columnview.AppendColumn(ColumnViewColumn.New("E mail", emailfactory).Expand().SideEffect(cvc => cvc.SetSorter(mailSorter)));
             var viewsorter = columnview.GetSorter();
@@ -260,7 +260,7 @@ class MyWindow : ApplicationWindow
     {
         var items = model.GetItems<Item>().Take(20);
         foreach (var item in items)
-            Console.WriteLine(item);
+            Console.WriteLine(item.Name);
     }
 
     ColumnView GetInactiveView()
