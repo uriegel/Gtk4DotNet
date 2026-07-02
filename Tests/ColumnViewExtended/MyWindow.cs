@@ -194,7 +194,7 @@ class MyWindow : ApplicationWindow
         columnview.GetModel()?.UnselectAll();
     }
     
-    void SortOrderChanged(bool reverse, SorterChange _) 
+    void SortOrderChanged(bool reverse, ColumnViewColumn _,  SorterChange __) 
     {
         reverseSortOrder = reverse;
         Console.WriteLine($"Ordering reverse: {reverse}");

@@ -1,8 +1,17 @@
 using System.Runtime.InteropServices;
-using Gtk4DotNet;
+using Gtk4DotNet.Extensions;
+
+namespace Gtk4DotNet;
+
 
 public class ColumnViewColumn : GObject
 {
+    public string Title
+    {
+        get => GetTitle(this).PtrToString(false) ?? "";
+        set => SetTitle(this, value);
+    }
+
     public static ColumnViewColumn New(string title, ListItemFactory factory)
     {
         var res = _New(title, factory);
@@ -17,6 +26,8 @@ public class ColumnViewColumn : GObject
         return this;
     }
 
+    internal ColumnViewColumn() { }
+
     public void SetSorter(Sorter sorter) => SetSorter(this, sorter);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_column_new", CallingConvention = CallingConvention.Cdecl)]
@@ -27,4 +38,10 @@ public class ColumnViewColumn : GObject
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_column_set_sorter", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetSorter(ColumnViewColumn column, Sorter sorter);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_column_get_title", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint GetTitle(ColumnViewColumn column);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_column_set_title", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetTitle(ColumnViewColumn column, string title);
 }
