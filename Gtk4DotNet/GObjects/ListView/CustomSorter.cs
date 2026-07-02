@@ -20,7 +20,7 @@ public class CustomSorter : Sorter
             };
             obj2.SetInternalHandle(p2);
 
-            return compareFunc(obj1.GetManagedData<T>(ListStore.DATA), obj2.GetManagedData<T>(ListStore.DATA));
+            return compareFunc(obj1.GetManagedData<T>(Quark.ListData), obj2.GetManagedData<T>(Quark.ListData));
         }
         CompareDataDelegate compareDataDelegate = RawCompare;
         var res = New(compareDataDelegate, 0, 0);

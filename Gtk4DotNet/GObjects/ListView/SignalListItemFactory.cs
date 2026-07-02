@@ -35,7 +35,7 @@ public class SignalListItemFactory : ListItemFactory
                     var parent = liChild.GetParent();
                     parent = parent?.GetParent();
                     if (parent?.WidgetName == "GtkColumnViewRowWidget")
-                        parent.SetManagedRawData(ListStore.DATA, li.GetRawItem());
+                        parent.SetManagedRawData(Quark.ListData, li.GetRawItem());
                 }
             }));
 

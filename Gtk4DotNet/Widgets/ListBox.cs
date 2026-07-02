@@ -139,7 +139,7 @@ public class ListBox : Widget
     {
         CreateItemDelegate callback = (item, _) =>
         {
-            var t = GetManagedData<T>(item, ListStore.DATA);
+            var t = GetManagedData<T>(item, Quark.ListData);
             var widget = onCreate(t);
             return widget.GetInternalHandle();
         };
@@ -153,7 +153,7 @@ public class ListBox : Widget
         CreateItemDelegate callback = (item, _) =>
         {
             using var builder = Builder.FromDotNetResource(template);
-            var t = GetManagedData<T>(item, ListStore.DATA);
+            var t = GetManagedData<T>(item, Quark.ListData);
             var widget = onCreate(builder, t);
             widget.Ref();
             return widget.GetInternalHandle();

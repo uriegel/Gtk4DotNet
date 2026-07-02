@@ -91,13 +91,20 @@ public class GObject : BaseHandle
         action.CheckDiagnostics();
         return new(name, action, accelerator);
     }
-         
+
     /// <summary>
     /// Sets a managed object to this GObject instance
     /// </summary>
     /// <param name="key"></param>
     /// <param name="obj"></param>
-    public void SetManagedData(string key, object? obj)
+    public void SetManagedData(string key, object? obj) => SetManagedData(Quark.Get(key), obj);
+
+    /// <summary>
+    /// Sets a managed object to this GObject instance
+    /// </summary>
+    /// <param name="key">Must be unique, use <see cref="Quark.Get"/></param>
+    /// <param name="obj"></param>
+    public void SetManagedData(int key, object? obj)
     {
         var dkey = GtkDelegates.Instance.GetKey("SetManagedData");
         OnePointerDelegate callback = data =>
@@ -106,8 +113,20 @@ public class GObject : BaseHandle
             GtkDelegates.Instance.Remove(dkey.Key);
         };
         GtkDelegates.Instance.Add(dkey, callback);
-        SetQDataFull(this, GetQuark(key), GCHandle.ToIntPtr(GCHandle.Alloc(obj, GCHandleType.Normal)),
+        SetQDataFull(this, key, GCHandle.ToIntPtr(GCHandle.Alloc(obj, GCHandleType.Normal)),
             Marshal.GetFunctionPointerForDelegate(callback as Delegate));
+    }
+
+    /// <summary>
+    /// Gets the previously set managed data  
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="key">Must be unique, use <see cref="Quark.Get"/></param>
+    /// <returns></returns>
+    public T? GetManagedData<T>(int key)
+    {
+        var p = GetQData(this, key);
+        return p != 0 ? (T?)GCHandle.FromIntPtr(p).Target : (T?)(object?)null;
     }
 
     /// <summary>
@@ -118,7 +137,7 @@ public class GObject : BaseHandle
     /// <returns></returns>
     public T? GetManagedData<T>(string key)
     {
-        var p = GetQData(this, GetQuark(key));
+        var p = GetQData(this, Quark.Get(key));
         return p != 0 ? (T?)GCHandle.FromIntPtr(p).Target : (T?)(object?)null;
     }
 
@@ -185,8 +204,7 @@ public class GObject : BaseHandle
     internal void CheckDiagnostics()
     {
         if (!IsInvalid && Gtk.Diagnostics && !diagnosticsSet)
-            // SetDiagnostics();
-            SetQDataDiagnostics();
+            SetDiagnostics();
     }
 
     internal void SetData(string key, nint data) => SetData(this, key, data);
@@ -198,10 +216,9 @@ public class GObject : BaseHandle
         return ptr;
     }
 
-    internal nint GetManagedRawData(string key)
-        => GetQData(this, GetQuark(key));
+    internal nint GetManagedRawData(int key) => GetQData(this, key);
 
-    static internal void SetManagedData(nint obj, string key, object? data)
+    static internal void SetManagedData(nint obj, int key, object? data)
     {
         var dkey = GtkDelegates.Instance.GetKey("SetManagedData");
         OnePointerDelegate callback = data =>
@@ -210,16 +227,16 @@ public class GObject : BaseHandle
             GtkDelegates.Instance.Remove(dkey.Key);
         };
         GtkDelegates.Instance.Add(dkey, callback);
-        SetQDataFull(obj, GetQuark(key), GCHandle.ToIntPtr(GCHandle.Alloc(data, GCHandleType.Normal)),
+        SetQDataFull(obj, key, GCHandle.ToIntPtr(GCHandle.Alloc(data, GCHandleType.Normal)),
             Marshal.GetFunctionPointerForDelegate(callback as Delegate));
     }
 
-    internal void SetManagedRawData(string key, nint ptr)
-        => SetQData(this, GetQuark(key), ptr);
+    internal void SetManagedRawData(int key, nint ptr)
+        => SetQData(this, key, ptr);
 
-    static internal T? GetManagedData<T>(nint obj, string key)
+    static internal T? GetManagedData<T>(nint obj, int key)
     {
-        var p = GetQData(obj, GetQuark(key));
+        var p = GetQData(obj, key);
         return p != 0 ? (T?)GCHandle.FromIntPtr(p).Target : (T?)(object?)null;
     }
 
@@ -266,22 +283,8 @@ public class GObject : BaseHandle
 
     void SetDiagnostics()
     {
-
         diagnosticsSet = true;
-        var key = GObjectsDiagnostics.GetKey("SetDiagnostics");
-        TwoPointerDelegate callback = (_, ___) =>
-        {
-            GObjectsDiagnostics.Remove(key.Key);
-            if (Gtk.GObjectTracing)
-                OnDiagnostics();
-        };
-        GObjectsDiagnostics.Add(key, callback, GetType().FullName);
-        _AddWeakRef(this, Marshal.GetFunctionPointerForDelegate(callback as Delegate), 0);
-    }
-
-    void SetQDataDiagnostics()
-    {
-        var dkey = GtkDelegates.Instance.GetKey("SetQDataDiagnostics");
+        var dkey = GtkDelegates.Instance.GetKey("SetDiagnostics");
         OnePointerDelegate callback = data =>
         {
             GtkDelegates.Instance.Remove(dkey.Key);
@@ -289,9 +292,8 @@ public class GObject : BaseHandle
                 OnDiagnostics();
         };
         GtkDelegates.Instance.Add(dkey, callback, GetType().FullName);
-        SetQDataFull(this, GetQuark("QDataDiagnostics"), 7,
+        SetQDataFull(this, Quark.Diagnostics, 7,
             Marshal.GetFunctionPointerForDelegate(callback as Delegate));
-        
     }
 
     void EventFinalizer()
@@ -397,9 +399,6 @@ public class GObject : BaseHandle
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_get", CallingConvention = CallingConvention.Cdecl)]
     extern static bool GetData(GObject obj, string key, ref nint value, nint end);
-
-    [DllImport(Libs.LibGtk, EntryPoint = "g_quark_from_string", CallingConvention = CallingConvention.Cdecl)]
-    extern static int GetQuark(string quark);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_is_floating", CallingConvention = CallingConvention.Cdecl)]
     extern static bool _HasFloatingRef(GObject obj);

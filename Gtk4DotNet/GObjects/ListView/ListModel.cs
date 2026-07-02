@@ -37,7 +37,7 @@ public abstract class ListModel : GObject
         using var obj = GetItem(this, position);
         if (obj.IsInvalid)
             return null;
-        return obj.GetManagedData<T>(ListStore.DATA);
+        return obj.GetManagedData<T>(Quark.ListData);
     }
 
     public int GetItems() => GetItems(this);
@@ -51,7 +51,7 @@ public abstract class ListModel : GObject
         using var obj = GetItem(this, position);
         if (obj.IsInvalid)
             return 0;
-        return obj.GetManagedRawData(ListStore.DATA);
+        return obj.GetManagedRawData(Quark.ListData);
     }
 
     internal IEnumerable<nint> GetRawItems()

@@ -14,7 +14,7 @@ public class CustomFilter : Filter
                 AutoDestroyed = true
             };
             obj.SetInternalHandle(ptr);
-            return predicate(obj.GetManagedData<T>(ListStore.DATA));
+            return predicate(obj.GetManagedData<T>(Quark.ListData));
         }
         ;
         CustomFilterDelegate customFilterDelegate = RawCompare;

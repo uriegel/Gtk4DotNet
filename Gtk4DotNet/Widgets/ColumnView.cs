@@ -70,7 +70,7 @@ public class ColumnView : Widget
             return -1;
         if (!row.IsInvalid && row.WidgetName == "GtkColumnViewRowWidget")
         {
-            var ptr = row.GetManagedRawData(ListStore.DATA);
+            var ptr = row.GetManagedRawData(Quark.ListData);
             return positions?.TryGetValue(ptr, out var pos) == true ? pos : -1;
         }
         else

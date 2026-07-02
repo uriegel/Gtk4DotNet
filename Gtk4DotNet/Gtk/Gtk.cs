@@ -5,7 +5,6 @@ using Gtk4DotNet.Internals;
 namespace Gtk4DotNet;
 
 // TODO SetQData to save q_objects and automatically unrefs them
-// TODO QData: use memoized ints instead of quarks, initialize once
 
 // TODO ToDoApp with Adwaita
 // TODO DrawView

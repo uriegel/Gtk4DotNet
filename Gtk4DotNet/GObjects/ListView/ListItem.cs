@@ -31,14 +31,14 @@ public class ListItem : GObject
     {
         var obj = GetItem(this);
         obj.AutoDestroyed = true;
-        return obj.GetManagedData<T>(ListStore.DATA);
+        return obj.GetManagedData<T>(Quark.ListData);
     }
         
     internal nint GetRawItem()
     {
         var obj = GetItem(this);
         obj.AutoDestroyed = true;
-        return obj.GetManagedRawData(ListStore.DATA);
+        return obj.GetManagedRawData(Quark.ListData);
     }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_item_set_child", CallingConvention = CallingConvention.Cdecl)]

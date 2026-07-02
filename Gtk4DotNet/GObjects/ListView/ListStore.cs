@@ -17,7 +17,7 @@ public class ListStore : ListModel
         where T : class
     {
         var obj = NewObject(Type(), 0);
-        SetManagedData(obj, DATA, t);
+        SetManagedData(obj, Quark.ListData, t);
         Append(this, obj);
         Unref(obj);
         return this;
@@ -37,7 +37,7 @@ public class ListStore : ListModel
             objs.Select(o =>
             {
                 var obj = NewObject(Type(), 0);
-                SetManagedData(obj, DATA, o);
+                SetManagedData(obj, Quark.ListData, o);
                 return obj;
             }).Windowed(9_000).Select(n => n.ToArray()))
         {
@@ -89,6 +89,4 @@ public class ListStore : ListModel
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_list_store_splice", CallingConvention = CallingConvention.Cdecl)]
     extern static void Splice(ListStore store, int pos, int removalCount, nint nullArray, int length);
-
-    internal const string DATA = "LIST_STORE_DATA";
 }
