@@ -121,7 +121,7 @@ class MyWindow : ApplicationWindow
             columnview.AppendColumn(ColumnViewColumn.New("Name", namefactory).SideEffect(cvc => cvc.SetSorter(nameSorter)));
             columnview.AppendColumn(ColumnViewColumn.New("E mail", emailfactory).Expand().SideEffect(cvc => cvc.SetSorter(mailSorter)));
             var viewsorter = columnview.GetSorter();
-            viewsorter.OnChanged -= SortOrderChanged;
+            viewsorter?.OnChanged -= SortOrderChanged;
             sortModel.SetSorter(viewsorter);
         }
         else
@@ -194,7 +194,7 @@ class MyWindow : ApplicationWindow
         columnview.GetModel()?.UnselectAll();
     }
     
-    void SortOrderChanged(bool reverse, ColumnViewColumn _,  SorterChange __) 
+    void SortOrderChanged(bool reverse, ColumnViewColumn? _,  SorterChange __) 
     {
         reverseSortOrder = reverse;
         Console.WriteLine($"Ordering reverse: {reverse}");
