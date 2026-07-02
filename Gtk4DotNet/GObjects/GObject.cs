@@ -141,6 +141,31 @@ public class GObject : BaseHandle
         return p != 0 ? (T?)GCHandle.FromIntPtr(p).Target : (T?)(object?)null;
     }
 
+    public void SetObject(int key, GObject obj)
+    {
+        var dkey = GtkDelegates.Instance.GetKey("SetManagedData");
+        OnePointerDelegate callback = data =>
+        {
+            Unref(data);
+            GtkDelegates.Instance.Remove(dkey.Key);
+        };
+        GtkDelegates.Instance.Add(dkey, callback);
+        SetQDataFull(this, key, obj.GetInternalHandle(), Marshal.GetFunctionPointerForDelegate(callback as Delegate));
+    }
+
+    public TObject? GetData<TObject>(int key) where TObject : GObject, new()
+    {
+        var p = GetQData(this, key);
+        if (p == 0)
+            return null;
+        var t = new TObject
+        {
+            AutoDestroyed = true
+        };
+        t.SetInternalHandle(p);
+        return t;
+    }
+
     /// <summary>
     /// Sets a string to this object
     /// </summary>
@@ -205,15 +230,6 @@ public class GObject : BaseHandle
     {
         if (!IsInvalid && Gtk.Diagnostics && !diagnosticsSet)
             SetDiagnostics();
-    }
-
-    internal void SetData(string key, nint data) => SetData(this, key, data);
-
-    internal nint GetData(string key)
-    {
-        nint ptr = 0;
-        GetData(this, key, ref ptr, 0);
-        return ptr;
     }
 
     internal nint GetManagedRawData(int key) => GetQData(this, key);
@@ -393,12 +409,6 @@ public class GObject : BaseHandle
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_set_qdata", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetQData(GObject obj, int quark, nint p);
-
-    [DllImport(Libs.LibGtk, EntryPoint = "g_object_set_data", CallingConvention = CallingConvention.Cdecl)]
-    extern static void SetData(GObject obj, string key, nint data);
-
-    [DllImport(Libs.LibGtk, EntryPoint = "g_object_get", CallingConvention = CallingConvention.Cdecl)]
-    extern static bool GetData(GObject obj, string key, ref nint value, nint end);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_is_floating", CallingConvention = CallingConvention.Cdecl)]
     extern static bool _HasFloatingRef(GObject obj);
