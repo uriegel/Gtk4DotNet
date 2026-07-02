@@ -144,6 +144,7 @@ public class GObject : BaseHandle
     public void SetObject(int key, GObject obj)
     {
         var dkey = GtkDelegates.Instance.GetKey("SetManagedData");
+        obj.AutoDestroyed = true;
         OnePointerDelegate callback = data =>
         {
             Unref(data);
