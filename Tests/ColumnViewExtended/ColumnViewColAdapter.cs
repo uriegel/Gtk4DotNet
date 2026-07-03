@@ -12,31 +12,40 @@ class PanedSizeAdapter
     {
         paned["position"].OnNotify += () =>
         {
+            Console.WriteLine($"Links: {widgetLeft.Width} - {Math.Abs(widgetLeft.Width - widgetRight.Width)}");
             if (panedPosLeft != -1 && panedPosLeft == widgetLeft.Width)
             {
-                if (thresholdLeft == 0)
+                if (thresholdLeft == -1)
                 {
                     thresholdLeft = panedPosLeft;
                     OnLeftSizePressure?.Invoke();
+                    if (Math.Abs(widgetLeft.Width - widgetRight.Width) < 20)
+                        OnRightSizePressure?.Invoke();
                 }
             }
             if (panedPosRight != -1 && panedPosRight == widgetRight.Width)
             {
-                if (thresholdRight == 0)
+                if (thresholdRight == -1)
                 {
                     thresholdRight = panedPosRight;
                     OnRightSizePressure?.Invoke();
+                    if (Math.Abs(widgetLeft.Width - widgetRight.Width) < 20)
+                        OnLeftSizePressure?.Invoke();
                 }
             }
             if (panedPosLeft > thresholdLeft + 20 && thresholdLeft > 0)
             {
-                thresholdLeft = 0;
+                thresholdLeft = -1;
                 OnLeftSizePressureRelease?.Invoke();
+                if (Math.Abs(widgetLeft.Width - widgetRight.Width) < 20)
+                    OnRightSizePressureRelease?.Invoke();
             }
             if (panedPosRight > thresholdRight + 20 && thresholdRight > 0)
             {
-                thresholdRight = 0;
+                thresholdRight = -1;
                 OnRightSizePressureRelease?.Invoke();
+                if (Math.Abs(widgetLeft.Width - widgetRight.Width) < 20)
+                    OnLeftSizePressureRelease?.Invoke();
             }
             if (panedPosLeft != widgetLeft.Width)
                 panedPosLeft = widgetLeft.Width;
@@ -45,8 +54,8 @@ class PanedSizeAdapter
         };
     }
 
-    int thresholdLeft;
-    int thresholdRight;
+    int thresholdLeft = -1;
+    int thresholdRight = -1;
     int panedPosLeft = -1;
     int panedPosRight = -1;
 }
