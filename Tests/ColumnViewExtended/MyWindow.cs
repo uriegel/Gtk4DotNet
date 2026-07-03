@@ -11,10 +11,13 @@ class MyWindow : ApplicationWindow
             CssProvider.New().FromResource("style"),
             StyleProviderPriority.Application);
 
-        ToggleModel(columnviewLeft, false);
-        ToggleModel(columnviewRight, false);
+        colAdapter = new(paned, scrolledLeft, scrolledRight);
+        colAdapter2 = new(paned, scrolledRight, scrolledLeft);
+
+        ToggleModel(columnviewLeft, false, colAdapter, true);
+        ToggleModel(columnviewRight, false, colAdapter2, false);
         AddActions(
-            new BoolAction("new-model", false, newModel => ToggleModel(columnviewLeft, newModel), "F3"),
+            new BoolAction("new-model", false, newModel => ToggleModel(columnviewLeft, newModel, colAdapter, true), "F3"),
             new BoolAction("filter", false, FilterModel, "<Ctrl>F"),
             new SimpleAction("find", FindItem),
             new SimpleAction("quit", CloseWindow, "<Ctrl>Q")
@@ -58,33 +61,6 @@ class MyWindow : ApplicationWindow
 
         columnviewLeft.OnActivate += pos => Console.WriteLine($"Activated {pos} item");
 
-        colAdapter = new(paned, scrolledLeft, scrolledRight,
-            () =>
-            {
-                using var cols = columnviewLeft.GetColumns();
-                cols.FirstOrDefault()?.Title = "N";
-                cols.Skip(1).FirstOrDefault()?.Title = "E";
-            },
-            () =>
-            {
-                using var cols = columnviewLeft.GetColumns();
-                cols.FirstOrDefault()?.Title = "Name";
-                cols.Skip(1).FirstOrDefault()?.Title = "E Mail ( back again)";
-            });
-        colAdapter2 = new(paned, scrolledRight, scrolledLeft,
-            () =>
-            {
-                using var cols = columnviewRight.GetColumns();
-                cols.FirstOrDefault()?.Title = "N";
-                cols.Skip(1).FirstOrDefault()?.Title = "E";
-            },
-            () =>
-            {
-                using var cols = columnviewRight.GetColumns();
-                cols.FirstOrDefault()?.Title = "Name";
-                cols.Skip(1).FirstOrDefault()?.Title = "E Mail ( back again)";
-            });
-
         OnClose(async _ =>
         {
             inChange = false;
@@ -98,7 +74,7 @@ class MyWindow : ApplicationWindow
         });
     }
 
-    async void ToggleModel(ColumnView columnview, bool newModel)
+    async void ToggleModel(ColumnView columnview, bool newModel, PanedSizeAdapter colAdapter, bool left)
     {
         GC.Collect();
         GC.Collect();
@@ -150,6 +126,8 @@ class MyWindow : ApplicationWindow
             var viewsorter = columnview.GetSorter();
             viewsorter?.OnChanged -= SortOrderChanged;
             sortModel.SetSorter(viewsorter);
+            colAdapter.OnSizePressure += left ? OnSizePressureLeft : OnSizePressureRight;
+            colAdapter.OnSizePressureRelease += left ? OnSizePressureReleaseLeft : OnSizePressureReleaseRight;
         }
         else
         {
@@ -217,6 +195,8 @@ class MyWindow : ApplicationWindow
                 }
                 inChange = false;
             }
+            colAdapter.OnSizePressure -= left ? OnSizePressureLeft : OnSizePressureRight;
+            colAdapter.OnSizePressureRelease -= left ? OnSizePressureReleaseLeft : OnSizePressureReleaseRight;
         }
         columnview.GetModel()?.UnselectAll();
     }
@@ -272,6 +252,32 @@ class MyWindow : ApplicationWindow
         return false;
     }
 
+    void OnSizePressureLeft()
+    {
+        using var cols = columnviewLeft.GetColumns();
+        cols.FirstOrDefault()?.Title = "N";
+        cols.Skip(1).FirstOrDefault()?.Title = "E";
+    }
+    void OnSizePressureReleaseLeft()
+    {
+        using var cols = columnviewLeft.GetColumns();
+        cols.FirstOrDefault()?.Title = "Name";
+        cols.Skip(1).FirstOrDefault()?.Title = "E mail address (long column)";
+    }
+        
+    void OnSizePressureRight()
+    {
+        using var cols = columnviewRight.GetColumns();
+        cols.FirstOrDefault()?.Title = "N";
+        cols.Skip(1).FirstOrDefault()?.Title = "E";
+    }
+    void OnSizePressureReleaseRight()
+    {
+        using var cols = columnviewRight.GetColumns();
+        cols.FirstOrDefault()?.Title = "Name";
+        cols.Skip(1).FirstOrDefault()?.Title = "E mail address (long column)";
+    }
+
     int GetNumberOfVisibleRows(ColumnView? view)
     {
         if (view == null)
@@ -317,8 +323,8 @@ class MyWindow : ApplicationWindow
 
     SortListModel sortModel = null!;
 
-    ColumnViewColAdapter colAdapter;
-    ColumnViewColAdapter colAdapter2;
+    PanedSizeAdapter colAdapter;
+    PanedSizeAdapter colAdapter2;
 
     bool filter;
 

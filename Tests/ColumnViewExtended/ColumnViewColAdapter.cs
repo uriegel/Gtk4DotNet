@@ -1,33 +1,36 @@
 using Gtk4DotNet;
 
-class ColumnViewColAdapter
+// TODO Two problems: One: Initial window size too small
+// TODO Two problems: Two: Window size Ok, then reducing, only one side is adapted
+class PanedSizeAdapter
 {
-    public ColumnViewColAdapter(Paned paned, ScrolledWindow scrolled, ScrolledWindow scrolledOther, Action onsizePressure, Action onsizePressureRelease)
+    public event Action? OnSizePressure;
+    public event Action? OnSizePressureRelease;
+    public PanedSizeAdapter(Paned paned, Widget widget, Widget other)
     {
         paned["position"].OnNotify += () =>
         {
-            if (panedPos == scrolled.Width && panedPosOther != scrolledOther.Width)
+            if (panedPos == widget.Width && panedPosOther != other.Width)
             {
                 if (threshold == 0)
                 {
                     threshold = panedPos;
-                    onsizePressure();
+                    OnSizePressure?.Invoke();
                 }
             }
             if (panedPos > threshold + 20 && threshold > 0)
             {
                 threshold = 0;
-                onsizePressureRelease();
+                OnSizePressureRelease?.Invoke();
             }
-            if (panedPos != scrolled.Width)
-                panedPos = scrolled.Width;
-            if (panedPosOther != scrolledOther.Width)
-                panedPosOther = scrolledOther.Width;
+            if (panedPos != widget.Width)
+                panedPos = widget.Width;
+            if (panedPosOther != other.Width)
+                panedPosOther = other.Width;
         };
     }
 
     int threshold;
-
     int panedPos;
     int panedPosOther;
 }
