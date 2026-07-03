@@ -16,7 +16,13 @@ class MyWindow : ApplicationWindow
         ToggleModel(columnviewLeft, false, true);
         ToggleModel(columnviewRight, false, false);
         AddActions(
-            new BoolAction("new-model", false, newModel => ToggleModel(columnviewLeft, newModel, true), "F3"),
+            new BoolAction("new-model", false, async newModel =>
+            {
+                var pos = paned.Position;
+                ToggleModel(columnviewLeft, newModel, true);
+                await Task.Delay(10);
+                paned.Position = pos;
+            }, "F3"),
             new BoolAction("filter", false, FilterModel, "<Ctrl>F"),
             new SimpleAction("find", FindItem),
             new SimpleAction("quit", CloseWindow, "<Ctrl>Q")

@@ -98,22 +98,6 @@ public static class Gtk
         }
     }
 
-    public static void IdleAdd(int priority, Action action)
-    {
-        // var key = GtkDelegates.Instance.GetKey();
-        // OnePointerBoolRetDelegate? mainFunction = _ =>
-        // {
-        //     action.Invoke();
-        //     // mainFunction = null;    
-        //     // GtkDelegates.Instance.Remove(key);
-        //     return true;
-        // };
-        // GtkDelegates.Instance.Add(key, mainFunction);
-        // var delegat = mainFunction as Delegate;
-        // var funcPtr = Marshal.GetFunctionPointerForDelegate(delegat);
-        // IdleAddFull(priority, funcPtr, IntPtr.Zero, IntPtr.Zero);
-    }
-
     public static bool GObjectTracing
     {
         get;
