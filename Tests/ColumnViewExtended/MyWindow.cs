@@ -58,10 +58,32 @@ class MyWindow : ApplicationWindow
 
         columnviewLeft.OnActivate += pos => Console.WriteLine($"Activated {pos} item");
 
-        paned["position"].OnNotify += () =>
-        {
-            Console.WriteLine($"Left width: {scrolledLeft.Width}, Right width: {scrolledRight.Width}");   
-        };
+        colAdapter = new(paned, scrolledLeft, scrolledRight,
+            () =>
+            {
+                using var cols = columnviewLeft.GetColumns();
+                cols.FirstOrDefault()?.Title = "N";
+                cols.Skip(1).FirstOrDefault()?.Title = "E";
+            },
+            () =>
+            {
+                using var cols = columnviewLeft.GetColumns();
+                cols.FirstOrDefault()?.Title = "Name";
+                cols.Skip(1).FirstOrDefault()?.Title = "E Mail ( back again)";
+            });
+        colAdapter2 = new(paned, scrolledRight, scrolledLeft,
+            () =>
+            {
+                using var cols = columnviewRight.GetColumns();
+                cols.FirstOrDefault()?.Title = "N";
+                cols.Skip(1).FirstOrDefault()?.Title = "E";
+            },
+            () =>
+            {
+                using var cols = columnviewRight.GetColumns();
+                cols.FirstOrDefault()?.Title = "Name";
+                cols.Skip(1).FirstOrDefault()?.Title = "E Mail ( back again)";
+            });
 
         OnClose(async _ =>
         {
@@ -287,13 +309,16 @@ class MyWindow : ApplicationWindow
     ColumnView lastActiveView = null!;
 
     [Widget]
-    readonly Widget paned = null!;
+    readonly Paned paned = null!;
 
     SelectionModel model = null!;
 
     CustomFilter filterNumbers = null!;
 
     SortListModel sortModel = null!;
+
+    ColumnViewColAdapter colAdapter;
+    ColumnViewColAdapter colAdapter2;
 
     bool filter;
 

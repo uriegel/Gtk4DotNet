@@ -1,4 +1,6 @@
 using System.Runtime.InteropServices;
+using CsTools;
+using CsTools.Extensions;
 using Gtk4DotNet;
 
 public class ColumnView : Widget
@@ -32,10 +34,13 @@ public class ColumnView : Widget
         positions = null;
     }
 
+    public DisposableEnumerable<ColumnViewColumn> GetColumns()
+        => GetColumnsEnumerable().AsDisposable();
+    
     public void AppendColumn(ColumnViewColumn column)
     {
-        AppendColumn(this, column);  
-        cols.Add(column);  
+        AppendColumn(this, column);
+        cols.Add(column);
     }
 
     public void RemoveColumn(ColumnViewColumn column)
@@ -106,6 +111,23 @@ public class ColumnView : Widget
     void OnItemsChanged(int position, int removed, int added)
         => positions = null;
     
+    IEnumerable<ColumnViewColumn> GetColumnsEnumerable()
+    {
+        var cols = GetColumns(this);
+        var index = 0;
+        while (true)
+        {
+            var ptr = GetColumnItem(cols, index++);
+            if (ptr == 0)
+                yield break;
+
+            var column = new ColumnViewColumn();
+            column.SetInternalHandle(ptr);
+            column.CheckDiagnostics();
+            yield return column;
+        }
+    }
+
     bool IsWidgetInColumnView(Widget w)
     {
         while (true)
@@ -153,6 +175,9 @@ public class ColumnView : Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_sort_by_column", CallingConvention = CallingConvention.Cdecl)]
     extern static void SortByColumn(ColumnView columnView, ColumnViewColumn column, int descending);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_list_model_get_item", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint GetColumnItem(nint columnView, int pos);
 }
 
 delegate void ActivateDelegate(nint _, int pos , nint __);

@@ -17,7 +17,7 @@ public class VolumeMonitor : GObject
 
     public DisposableEnumerable<Volume> GetVolumes()
     {
-        var volumes = _GetVolumes(this);
+        var volumes = GetVolumes(this);
         nint current = volumes;
         var list = new List<Volume>();
         while (current != 0)
@@ -80,7 +80,7 @@ public class VolumeMonitor : GObject
     extern static VolumeMonitor _Get();
 
     [DllImport(Libs.LibGio, EntryPoint = "g_volume_monitor_get_volumes", CallingConvention = CallingConvention.Cdecl)]
-    extern static nint _GetVolumes(VolumeMonitor volumeMonitor);
+    extern static nint GetVolumes(VolumeMonitor volumeMonitor);
 
     [DllImport(Libs.LibGio, EntryPoint = "g_volume_monitor_get_connected_drives", CallingConvention = CallingConvention.Cdecl)]
     extern static nint _GetDrives(VolumeMonitor volumeMonitor);
