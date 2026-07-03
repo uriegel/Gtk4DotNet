@@ -4,33 +4,49 @@ using Gtk4DotNet;
 // TODO Two problems: Two: Window size Ok, then reducing, only one side is adapted
 class PanedSizeAdapter
 {
-    public event Action? OnSizePressure;
-    public event Action? OnSizePressureRelease;
-    public PanedSizeAdapter(Paned paned, Widget widget, Widget other)
+    public event Action? OnLeftSizePressure;
+    public event Action? OnRightSizePressure;
+    public event Action? OnLeftSizePressureRelease;
+    public event Action? OnRightSizePressureRelease;
+    public PanedSizeAdapter(Paned paned, Widget widgetLeft, Widget widgetRight, bool symmetric = false)
     {
         paned["position"].OnNotify += () =>
         {
-            if (panedPos == widget.Width && panedPosOther != other.Width)
+            if (panedPosLeft != -1 && panedPosLeft == widgetLeft.Width)
             {
-                if (threshold == 0)
+                if (thresholdLeft == 0)
                 {
-                    threshold = panedPos;
-                    OnSizePressure?.Invoke();
+                    thresholdLeft = panedPosLeft;
+                    OnLeftSizePressure?.Invoke();
                 }
             }
-            if (panedPos > threshold + 20 && threshold > 0)
+            if (panedPosRight != -1 && panedPosRight == widgetRight.Width)
             {
-                threshold = 0;
-                OnSizePressureRelease?.Invoke();
+                if (thresholdRight == 0)
+                {
+                    thresholdRight = panedPosRight;
+                    OnRightSizePressure?.Invoke();
+                }
             }
-            if (panedPos != widget.Width)
-                panedPos = widget.Width;
-            if (panedPosOther != other.Width)
-                panedPosOther = other.Width;
+            if (panedPosLeft > thresholdLeft + 20 && thresholdLeft > 0)
+            {
+                thresholdLeft = 0;
+                OnLeftSizePressureRelease?.Invoke();
+            }
+            if (panedPosRight > thresholdRight + 20 && thresholdRight > 0)
+            {
+                thresholdRight = 0;
+                OnRightSizePressureRelease?.Invoke();
+            }
+            if (panedPosLeft != widgetLeft.Width)
+                panedPosLeft = widgetLeft.Width;
+            if (panedPosRight != widgetRight.Width)
+                panedPosRight = widgetRight.Width;
         };
     }
 
-    int threshold;
-    int panedPos;
-    int panedPosOther;
+    int thresholdLeft;
+    int thresholdRight;
+    int panedPosLeft = -1;
+    int panedPosRight = -1;
 }

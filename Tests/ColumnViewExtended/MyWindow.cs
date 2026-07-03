@@ -12,12 +12,11 @@ class MyWindow : ApplicationWindow
             StyleProviderPriority.Application);
 
         colAdapter = new(paned, scrolledLeft, scrolledRight);
-        colAdapter2 = new(paned, scrolledRight, scrolledLeft);
 
-        ToggleModel(columnviewLeft, false, colAdapter, true);
-        ToggleModel(columnviewRight, false, colAdapter2, false);
+        ToggleModel(columnviewLeft, false, true);
+        ToggleModel(columnviewRight, false, false);
         AddActions(
-            new BoolAction("new-model", false, newModel => ToggleModel(columnviewLeft, newModel, colAdapter, true), "F3"),
+            new BoolAction("new-model", false, newModel => ToggleModel(columnviewLeft, newModel, true), "F3"),
             new BoolAction("filter", false, FilterModel, "<Ctrl>F"),
             new SimpleAction("find", FindItem),
             new SimpleAction("quit", CloseWindow, "<Ctrl>Q")
@@ -74,7 +73,7 @@ class MyWindow : ApplicationWindow
         });
     }
 
-    async void ToggleModel(ColumnView columnview, bool newModel, PanedSizeAdapter colAdapter, bool left)
+    async void ToggleModel(ColumnView columnview, bool newModel, bool left)
     {
         GC.Collect();
         GC.Collect();
@@ -126,8 +125,16 @@ class MyWindow : ApplicationWindow
             var viewsorter = columnview.GetSorter();
             viewsorter?.OnChanged -= SortOrderChanged;
             sortModel.SetSorter(viewsorter);
-            colAdapter.OnSizePressure += left ? OnSizePressureLeft : OnSizePressureRight;
-            colAdapter.OnSizePressureRelease += left ? OnSizePressureReleaseLeft : OnSizePressureReleaseRight;
+            if (left)
+            {
+                colAdapter.OnLeftSizePressure += OnSizePressureLeft;
+                colAdapter.OnLeftSizePressureRelease += OnSizePressureReleaseLeft;
+            }
+            else
+            {
+                colAdapter.OnRightSizePressure += OnSizePressureRight;
+                colAdapter.OnRightSizePressureRelease += OnSizePressureReleaseRight;
+            }
         }
         else
         {
@@ -186,7 +193,7 @@ class MyWindow : ApplicationWindow
 
             async Task Changer()
             {
-                 var item = model.GetItem<Item>(10);
+                var item = model.GetItem<Item>(10);
                 inChange = true;
                 for (var i = 1; i < 100_000 && inChange; i++)
                 {
@@ -195,8 +202,16 @@ class MyWindow : ApplicationWindow
                 }
                 inChange = false;
             }
-            colAdapter.OnSizePressure -= left ? OnSizePressureLeft : OnSizePressureRight;
-            colAdapter.OnSizePressureRelease -= left ? OnSizePressureReleaseLeft : OnSizePressureReleaseRight;
+            if (left)
+            {
+                colAdapter.OnLeftSizePressure -= OnSizePressureLeft;
+                colAdapter.OnLeftSizePressureRelease -= OnSizePressureReleaseLeft;
+            }
+            else
+            {
+                colAdapter.OnRightSizePressure -= OnSizePressureRight;
+                colAdapter.OnRightSizePressureRelease -= OnSizePressureReleaseRight;
+            }
         }
         columnview.GetModel()?.UnselectAll();
     }
@@ -324,7 +339,6 @@ class MyWindow : ApplicationWindow
     SortListModel sortModel = null!;
 
     PanedSizeAdapter colAdapter;
-    PanedSizeAdapter colAdapter2;
 
     bool filter;
 
