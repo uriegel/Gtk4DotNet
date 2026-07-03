@@ -12,6 +12,18 @@ public class ColumnViewColumn : GObject
         set => SetTitle(this, value);
     }
 
+    public bool Visible
+    {
+        get => GetVisible(this);
+        set => SetVisible(this, value);
+    }
+
+    public bool Resizeable
+    {
+        get => GetResizeable(this);
+        set => SetResizeable(this, value);
+    }
+
     public static ColumnViewColumn New(string title, ListItemFactory factory)
     {
         var res = _New(title, factory);
@@ -44,4 +56,16 @@ public class ColumnViewColumn : GObject
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_column_set_title", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetTitle(ColumnViewColumn column, string title);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_column_get_visible", CallingConvention = CallingConvention.Cdecl)]
+    extern static bool GetVisible(ColumnViewColumn column);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_column_set_visible", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetVisible(ColumnViewColumn column, bool visible);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_column_get_resizable", CallingConvention = CallingConvention.Cdecl)]
+    extern static bool GetResizeable(ColumnViewColumn column);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_column_set_resizable", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetResizeable(ColumnViewColumn column, bool resizable);
 }
