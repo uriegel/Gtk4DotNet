@@ -12,7 +12,9 @@
       </object>
     </child>
     <child>
-      <object class="GtkLabel" id="text"/>
+      <object class="GtkLabel" id="text">
+        <property name="ellipsize">end</property>
+      </object>
     </child>
   </object>
 </interface>

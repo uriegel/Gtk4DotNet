@@ -35,7 +35,7 @@
         <child>
           <object class="GtkPaned" id="paned">
             <property name="end-child">
-              <object class="GtkScrolledWindow">
+              <object class="GtkScrolledWindow" id="scrolledRight">
                 <property name="hscrollbar-policy">never</property>
                 <property name="min-content-width">360</property>
                 <child>
@@ -47,7 +47,7 @@
               </object>
             </property>
             <property name="start-child">
-              <object class="GtkScrolledWindow">
+              <object class="GtkScrolledWindow" id="scrolledLeft">
                 <property name="hscrollbar-policy">never</property>
                 <property name="min-content-width">360</property>
                 <child>

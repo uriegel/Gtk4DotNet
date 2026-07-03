@@ -58,6 +58,11 @@ class MyWindow : ApplicationWindow
 
         columnviewLeft.OnActivate += pos => Console.WriteLine($"Activated {pos} item");
 
+        paned["position"].OnNotify += () =>
+        {
+            Console.WriteLine($"Left width: {scrolledLeft.Width}, Right width: {scrolledRight.Width}");   
+        };
+
         OnClose(async _ =>
         {
             inChange = false;
@@ -105,7 +110,7 @@ class MyWindow : ApplicationWindow
                 });
             var emailfactory = SignalListItemFactory
                 .New()
-                .Setup(listitem => listitem.SetChild(Label.New()))
+                .Setup(listitem => listitem.SetChild(Label.New().SetEllipsize(EllipsizeMode.End)))
                 .Bind(listitem =>
                 {
                     var label = listitem.GetChild<Label>();
@@ -119,7 +124,7 @@ class MyWindow : ApplicationWindow
             using var nameSorter = CustomSorter.New<Contact>((item1, item2) => (item1?.Name ?? "").CompareTo(item2?.Name ?? ""));
             using var mailSorter = CustomSorter.New<Contact>((item1, item2) => (item1?.EMail ?? "").CompareTo(item2?.EMail ?? ""));
             columnview.AppendColumn(ColumnViewColumn.New("Name", namefactory).SideEffect(cvc => cvc.SetSorter(nameSorter)));
-            columnview.AppendColumn(ColumnViewColumn.New("E mail", emailfactory).Expand().SideEffect(cvc => cvc.SetSorter(mailSorter)));
+            columnview.AppendColumn(ColumnViewColumn.New("E mail address (long column)", emailfactory).Expand().SideEffect(cvc => cvc.SetSorter(mailSorter)));
             var viewsorter = columnview.GetSorter();
             viewsorter.OnChanged -= SortOrderChanged;
             sortModel.SetSorter(viewsorter);
@@ -271,6 +276,12 @@ class MyWindow : ApplicationWindow
 
     [Widget]
     readonly ColumnView columnviewRight = null!;
+
+    [Widget]
+    readonly ScrolledWindow scrolledLeft = null!;
+
+    [Widget]
+    readonly ScrolledWindow scrolledRight = null!;
 
     ColumnView? activeView;
     ColumnView lastActiveView = null!;
