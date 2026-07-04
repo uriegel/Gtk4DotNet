@@ -21,6 +21,9 @@ public class ScrolledWindow : Widget
 
     public ScrolledWindow(Builder builder, string? name = null) : base(builder, name) { }
 
+    public ScrolledWindow(Builder builder, string name, Action<nint> replaceParent)
+        : base(builder, name, replaceParent) { }
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_scrolled_window_get_child", CallingConvention = CallingConvention.Cdecl)]
     extern static nint GetChild(ScrolledWindow scrolled);
 }

@@ -302,6 +302,19 @@
             "enableStepFiltering": true,
             "console": "internalConsole"
         }, {
+            "name": "ColumnViewExtended 2",
+            "type": "coreclr",
+            "request": "launch",
+            "requireExactSource": true, 
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Tests/ColumnViewExtended2/bin/Debug/net10.0/ColumnViewExtended2.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Tests/ColumnViewExtended2",
+            "stopAtEntry": false,
+            "justMyCode": false,
+            "enableStepFiltering": true,
+            "console": "internalConsole"
+        }, {
             "name": "first.cpp",
             "type": "cppdbg",
             "request": "launch",

@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../../Gtk4DotNet/Gtk4DotNet.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="./template.ui">
+      <LogicalName>template</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="./columnview.ui">
+      <LogicalName>columnview</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="./style.css">
+      <LogicalName>style</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

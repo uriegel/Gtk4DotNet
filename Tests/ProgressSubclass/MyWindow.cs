@@ -14,9 +14,9 @@ class MyWindow : ApplicationWindow
     }
 
     [Widget]
-    Widget starter = null!;
+    readonly Widget starter = null!;
 
     [Widget(Template = "progress")]
-    ProgressDisplay progressDisplay = null!;
+    readonly ProgressDisplay progressDisplay = null!;
 }
 

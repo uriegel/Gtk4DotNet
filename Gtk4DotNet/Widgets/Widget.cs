@@ -30,7 +30,7 @@ public class Widget : GObject
     }
 
     public int Width { get => GetWidth(this); }
-    public int Height { get => GetHeight(this);  }
+    public int Height { get => GetHeight(this); }
 
     /// <summary>
     /// Sets all 4 Margins at once
@@ -233,7 +233,7 @@ public class Widget : GObject
         if (delegates != null && delegates.Remove(targetProperty, out var delegat))
             DataContext?.PropertyChanged -= delegat;
     }
-    
+
     /// <summary>
     /// Sets a binding from a value in a given and attached DataContext to a css class of this object. The DataContext can be set in a parent widget
     /// </summary>
@@ -367,7 +367,7 @@ public class Widget : GObject
     /// </summary>
     /// <typeparam name="TWidget"></typeparam>
     /// <returns></returns>
-    public TWidget? GetRoot<TWidget>() where TWidget: Widget, new()
+    public TWidget? GetRoot<TWidget>() where TWidget : Widget, new()
     {
         var ptr = GetRoot(this);
         if (ptr == 0)
@@ -385,6 +385,12 @@ public class Widget : GObject
     #region Constructor
 
     public Widget() : base() => AutoDestroyed = true;
+
+    public Widget(Builder builder, string? name, Action<nint> replaceParent)
+        : this(builder, name)
+    {
+        replaceParent(GetInternalHandle());
+    }
 
     public Widget(Builder builder, string? name = null) : this()
     {
@@ -413,34 +419,60 @@ public class Widget : GObject
             {
                 var widgetType = field.Field.FieldType;
                 var ctor = widgetType.GetConstructor([typeof(Builder), typeof(string)]);
-                if (ctor == null)
+                if (ctor != null)
                 {
-                    Console.Error.WriteLine(
-@$"===================================================
-W A R N I N G
-{templateElementName} could not be built from template, ctor(Builder, string) is missing
-                    
-===================================================");
-                    continue;
+                    var instance = (ctor != null
+                        ? field.Attribute.Template != null
+                        ? CreateInnerWidget(ctor, builder, field.Attribute.Template, templateElementName)
+                        : ctor.Invoke([builder, templateElementName])
+                        : Activator.CreateInstance(widgetType)) as Widget;
+                    if (field.Attribute.Template == null)
+                        instance?.SetInternalHandle(p);
+                    field.Field.SetValue(this, instance);
                 }
-                var instance = (ctor != null
-                    ? field.Attribute.Template != null
-                    ? CreateInnerWidget(ctor, builder, field.Attribute.Template, templateElementName)
-                    : ctor.Invoke([builder, templateElementName])
-                    : Activator.CreateInstance(widgetType)) as Widget;
-                if (field.Attribute.Template == null)
-                    instance?.SetInternalHandle(p);
-                field.Field.SetValue(this, instance);
+                else
+                {
+                    ctor = widgetType.GetConstructor([typeof(Builder), typeof(string), typeof(nint)]);
+                    if (ctor == null)
+                    {
+                        Console.Error.WriteLine(
+    @$"===================================================
+    W A R N I N G
+    {templateElementName} could not be built from template, ctor(Builder, string) is missing
+                        
+    ===================================================");
+                        continue;
+                    }
+                    else
+                    {
+                        var instance = (ctor != null
+                            ? field.Attribute.Template != null
+                            ? CreateAndReplaceInnerWidget(ctor, builder, field.Attribute.Template, templateElementName)
+                            : ctor.Invoke([builder, templateElementName])
+                            : Activator.CreateInstance(widgetType)) as Widget;
+                        if (field.Attribute.Template == null)
+                            instance?.SetInternalHandle(p);
+                        field.Field.SetValue(this, instance);
+                    }
+                }
             }
         }
 
         object CreateInnerWidget(ConstructorInfo ctor, Builder builder, string innerTemplate, string name)
         {
             using var innerBuilder = Builder.FromDotNetResource(innerTemplate);
-            var obj = ctor.Invoke([innerBuilder, name]);
             var container = builder.GetWidget<Box>(name);
+            var obj = ctor.Invoke([innerBuilder, name]);
             if (obj is Widget w)
                 container.Append(w);
+            return obj;
+        }
+
+        object CreateAndReplaceInnerWidget(ConstructorInfo ctor, Builder builder, string innerTemplate, string name)
+        {
+            using var innerBuilder = Builder.FromDotNetResource(innerTemplate);
+            var container = builder.GetWidget<Box>(name);
+            var obj = ctor.Invoke([innerBuilder, name, GetParent(container)]);
             return obj;
         }
     }
@@ -606,8 +638,14 @@ W A R N I N G
     public static extern int GetHeight(Widget widget);
 
     [DllImport(Libs.LibGtk, CallingConvention = CallingConvention.Cdecl, EntryPoint = "gtk_widget_get_width")]
-    public static extern int GetWidth(Widget widget);
-    
+    static extern int GetWidth(Widget widget);
+
+    [DllImport(Libs.LibGtk, CallingConvention = CallingConvention.Cdecl, EntryPoint = "gtk_paned_set_start_child")]
+    internal static extern int PanedSetStartChild(nint widget, nint child);
+
+    [DllImport(Libs.LibGtk, CallingConvention = CallingConvention.Cdecl, EntryPoint = "gtk_paned_set_end_child")]
+    internal static extern int PanedSetEndChild(nint widget, nint child);
+
     #endregion
 }
 
@@ -686,5 +724,8 @@ public static class WidgetExtensions
     public static THandle InsertAfter<THandle>(this THandle widget, Widget child, Widget? previous = null)
         where THandle : Widget
         => widget.SideEffect(w => Widget.InsertAfter(child, w, previous ?? new Widget()));
+
+    public static void PanedSetStartChild(this nint paned, nint child) => Widget.PanedSetStartChild(paned, child);
+    public static void PanedSetEndChild(this nint paned, nint child) => Widget.PanedSetEndChild(paned, child);
 }
 

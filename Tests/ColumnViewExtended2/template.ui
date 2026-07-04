@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Created with Cambalache 1.0.3 -->
+<interface>
+  <!-- interface-name window.ui -->
+  <requires lib="gio" version="2.0"/>
+  <requires lib="gtk" version="4.20"/>
+  <requires lib="libadwaita" version="1.7"/>
+  <object class="AdwApplicationWindow" id="window">
+    <property name="content">
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar" id="headerBar">
+            <child type="end">
+              <object class="GtkToggleButton" id="model_button">
+                <property name="action-name">win.new-model</property>
+                <property name="icon-name">list-add</property>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkToggleButton">
+                <property name="action-name">win.filter</property>
+                <property name="icon-name">edit-cut</property>
+                <property name="visible" bind-source="model_button" bind-property="active" bind-flags="sync-create"/>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkToggleButton">
+                <property name="action-name">win.find</property>
+                <property name="icon-name">edit-find</property>
+                <property name="visible" bind-source="model_button" bind-property="active" bind-flags="sync-create"/>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkPaned" id="paned">
+            <property name="end-child">
+              <object class="GtkBox" id="rightView"/>
+            </property>
+            <property name="start-child">
+              <object class="GtkBox" id="leftView"/>
+            </property>
+          </object>
+        </child>
+      </object>
+    </property>
+    <property name="default-height">800</property>
+    <property name="default-width">600</property>
+    <property name="title">ColumnView extended👍</property>
+  </object>
+  <menu id="main-menu">
+    <section>
+      <submenu>
+        <attribute name="label">_Datei</attribute>
+        <section>
+          <item>
+            <attribute name="action">app.test</attribute>
+            <attribute name="label">_Test</attribute>
+          </item>
+        </section>
+        <section>
+          <item>
+            <attribute name="action">win.quit</attribute>
+            <attribute name="label">_Beenden</attribute>
+          </item>
+        </section>
+      </submenu>
+    </section>
+  </menu>
+</interface>
