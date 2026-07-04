@@ -4,6 +4,9 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
+// TODO Special template constructor like Box and Scrolled
+// TODO ListItem without placeholder box
+
 // TODO ToDoApp with Adwaita
 // TODO DrawView
 

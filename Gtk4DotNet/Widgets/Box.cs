@@ -21,6 +21,9 @@ public class Box : Widget
 
     public Box(Builder builder, string? name = null) : base(builder, name) { }
 
+    public Box(Builder builder, string name, Action<nint> replaceParent)
+        : base(builder, name, replaceParent) { }
+
     public Box Append(Widget widget)
     {
         Append(this, widget);
@@ -29,7 +32,6 @@ public class Box : Widget
 
     public Box SetSpacing(int spacing)
         => this.SideEffect(_ => SetSpacing(this, spacing));
-
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_box_new", CallingConvention = CallingConvention.Cdecl)]
     extern static Box _New(Orientation orientation, int spacing = 0);
