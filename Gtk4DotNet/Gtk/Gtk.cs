@@ -4,9 +4,8 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
-// TODO GetColumns in ColumnView
-// TODO when one side is not changing any more, but the other: collapse column, recollapse when size exceeds treshold + 20
-// TODO Test in ColumnViewExtended
+// TODO Threshold in ColumnViewExtended: when size reaches threshold minimze column titles and vice versa
+
 
 // TODO ToDoApp with Adwaita
 // TODO DrawView
