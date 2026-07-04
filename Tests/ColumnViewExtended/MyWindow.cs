@@ -11,7 +11,7 @@ class MyWindow : ApplicationWindow
             CssProvider.New().FromResource("style"),
             StyleProviderPriority.Application);
 
-        colAdapter = new(paned, scrolledLeft, scrolledRight);
+        paned["position"].OnNotify += OnPosition;
 
         ToggleModel(columnviewLeft, false, true);
         ToggleModel(columnviewRight, false, false);
@@ -131,16 +131,6 @@ class MyWindow : ApplicationWindow
             var viewsorter = columnview.GetSorter();
             viewsorter?.OnChanged -= SortOrderChanged;
             sortModel.SetSorter(viewsorter);
-            if (left)
-            {
-                colAdapter.OnLeftSizePressure += OnSizePressureLeft;
-                colAdapter.OnLeftSizePressureRelease += OnSizePressureReleaseLeft;
-            }
-            else
-            {
-                colAdapter.OnRightSizePressure += OnSizePressureRight;
-                colAdapter.OnRightSizePressureRelease += OnSizePressureReleaseRight;
-            }
         }
         else
         {
@@ -195,7 +185,7 @@ class MyWindow : ApplicationWindow
             viewsorter.OnChanged += SortOrderChanged;
             sortModel.SetSorter(viewsorter);
 
-            await Changer();        
+            await Changer();
 
             async Task Changer()
             {
@@ -208,18 +198,38 @@ class MyWindow : ApplicationWindow
                 }
                 inChange = false;
             }
-            if (left)
-            {
-                colAdapter.OnLeftSizePressure -= OnSizePressureLeft;
-                colAdapter.OnLeftSizePressureRelease -= OnSizePressureReleaseLeft;
-            }
-            else
-            {
-                colAdapter.OnRightSizePressure -= OnSizePressureRight;
-                colAdapter.OnRightSizePressureRelease -= OnSizePressureReleaseRight;
-            }
         }
         columnview.GetModel()?.UnselectAll();
+    }
+
+    void OnPosition()
+    {
+        if (columnviewLeft.Width == 0 && columnviewRight.Width == 0)
+            return;
+        OnWidth(columnviewLeft, ref implodedLeft);
+        OnWidth(columnviewRight, ref implodedRight);
+    }
+
+    static void OnWidth(ColumnView view, ref bool imploded)
+    {
+        if (!imploded && view.Width < 280)
+        {
+            using var cols = view.GetColumns();
+            var colArray = cols.ToArray();
+            colArray[0].Title = "N";
+            if (colArray.Length > 1)
+                colArray[1].Title = "E";
+            imploded = true;
+        }
+        else if (imploded && view.Width > 280)
+        {
+            using var cols = view.GetColumns();
+            var colArray = cols.ToArray();
+            colArray[0].Title = "Name";
+            if (colArray.Length > 1)
+                colArray[1].Title = "E mail address (long column)";
+            imploded = false;
+        }
     }
     
     void SortOrderChanged(bool reverse, ColumnViewColumn? _,  SorterChange __) 
@@ -273,32 +283,6 @@ class MyWindow : ApplicationWindow
         return false;
     }
 
-    void OnSizePressureLeft()
-    {
-        using var cols = columnviewLeft.GetColumns();
-        cols.FirstOrDefault()?.Title = "N";
-        cols.Skip(1).FirstOrDefault()?.Title = "E";
-    }
-    void OnSizePressureReleaseLeft()
-    {
-        using var cols = columnviewLeft.GetColumns();
-        cols.FirstOrDefault()?.Title = "Name";
-        cols.Skip(1).FirstOrDefault()?.Title = "E mail address (long column)";
-    }
-        
-    void OnSizePressureRight()
-    {
-        using var cols = columnviewRight.GetColumns();
-        cols.FirstOrDefault()?.Title = "N";
-        cols.Skip(1).FirstOrDefault()?.Title = "E";
-    }
-    void OnSizePressureReleaseRight()
-    {
-        using var cols = columnviewRight.GetColumns();
-        cols.FirstOrDefault()?.Title = "Name";
-        cols.Skip(1).FirstOrDefault()?.Title = "E mail address (long column)";
-    }
-
     int GetNumberOfVisibleRows(ColumnView? view)
     {
         if (view == null)
@@ -344,12 +328,12 @@ class MyWindow : ApplicationWindow
 
     SortListModel sortModel = null!;
 
-    PanedSizeAdapter colAdapter;
-
     bool filter;
 
     bool reverseSortOrder;
     bool inChange;
+    bool implodedLeft;
+    bool implodedRight;
 }
 record Contact(string Name, string EMail, int Number, string IconName);
 
