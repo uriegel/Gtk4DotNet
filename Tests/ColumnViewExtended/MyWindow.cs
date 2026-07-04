@@ -310,12 +310,6 @@ class MyWindow : ApplicationWindow
     [Widget]
     readonly ColumnView columnviewRight = null!;
 
-    [Widget]
-    readonly ScrolledWindow scrolledLeft = null!;
-
-    [Widget]
-    readonly ScrolledWindow scrolledRight = null!;
-
     ColumnView? activeView;
     ColumnView lastActiveView = null!;
 
