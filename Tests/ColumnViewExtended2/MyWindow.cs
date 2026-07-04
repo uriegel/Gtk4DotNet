@@ -10,6 +10,8 @@ class MyWindow : ApplicationWindow
             StyleProviderPriority.Application);
 
         paned["position"].OnNotify += OnPosition;
+        _ = leftView;
+        _ = rightView;
     }
 
     void OnPosition()
