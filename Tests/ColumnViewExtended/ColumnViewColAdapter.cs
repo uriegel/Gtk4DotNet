@@ -1,7 +1,5 @@
 using Gtk4DotNet;
 
-// TODO Two problems: One: Initial window size too small
-// TODO Two problems: Two: Window size Ok, then reducing, only one side is adapted
 class PanedSizeAdapter
 {
     public event Action? OnLeftSizePressure;

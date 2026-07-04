@@ -5,6 +5,7 @@ using Gtk4DotNet.Internals;
 namespace Gtk4DotNet;
 
 // TODO Threshold in ColumnViewExtended: when size reaches threshold minimze column titles and vice versa
+// TODO EditableLabel StartEditing Text property
 
 
 // TODO ToDoApp with Adwaita
