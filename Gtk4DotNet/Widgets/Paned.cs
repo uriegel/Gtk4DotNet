@@ -14,6 +14,9 @@ public class Paned : Widget
 
     public Paned(Builder builder, string? name = null) : base(builder, name) { }
 
+    public Paned(Builder builder, string name, Action<nint> replaceParent)
+        : base(builder, name, replaceParent) { }
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_paned_get_position", CallingConvention = CallingConvention.Cdecl)]
     extern static int GetPosition(Paned paned);
 

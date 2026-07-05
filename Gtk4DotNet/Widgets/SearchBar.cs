@@ -22,6 +22,9 @@ public class SearchBar : Widget
 
     public SearchBar(Builder builder, string? name = null) : base(builder, name) { }
 
+    public SearchBar(Builder builder, string name, Action<nint> replaceParent)
+        : base(builder, name, replaceParent) { }
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_search_bar_get_search_mode", CallingConvention = CallingConvention.Cdecl)]
     extern static bool GetSearchMode(SearchBar widget);
 

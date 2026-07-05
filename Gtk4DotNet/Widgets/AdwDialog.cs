@@ -41,7 +41,7 @@ public class AdwDialog : Widget
     public AdwDialog() : base() { }
 
     public AdwDialog(Builder builder, string? name = null) : base(builder, name) { }
-
+    
     [DllImport(Libs.LibAdw, EntryPoint = "adw_dialog_present", CallingConvention = CallingConvention.Cdecl)]
     extern static void Present(AdwDialog dialog, Widget parent);
 

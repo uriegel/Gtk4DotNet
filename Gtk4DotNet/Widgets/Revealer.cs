@@ -16,6 +16,9 @@ public class Revealer : Widget
 
     public Revealer(Builder builder, string? name = null) : base(builder, name) { }
 
+    public Revealer(Builder builder, string name, Action<nint> replaceParent)
+        : base(builder, name, replaceParent) { }
+
     public Revealer Child(Widget child) =>
         this.SideEffect(_ => SetChild(this, child));
 

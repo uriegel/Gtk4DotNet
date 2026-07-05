@@ -165,6 +165,9 @@ public class ListBox : Widget
 
     public ListBox(Builder builder, string? name = null) : base(builder, name) { }
 
+    public ListBox(Builder builder, string name, Action<nint> replaceParent)
+        : base(builder, name, replaceParent) { }
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_new", CallingConvention = CallingConvention.Cdecl)]
     extern static ListBox _New();
 

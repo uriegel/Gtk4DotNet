@@ -8,4 +8,6 @@ public class ComboBoxText : Widget
 
     public ComboBoxText(Builder builder, string? name = null) : base(builder, name) { }
 
+    public ComboBoxText(Builder builder, string name, Action<nint> replaceParent)
+        : base(builder, name, replaceParent) { }
 }

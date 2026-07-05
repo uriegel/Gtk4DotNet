@@ -118,6 +118,9 @@ public class Window : Widget
 
     public Window(Builder builder, string? name = null) : base(builder, name) { }
 
+    public Window(Builder builder, string name, Action<nint> replaceParent)
+        : base(builder, name, replaceParent) { }
+
     public Window() : base() { }
 
     protected void Construct()

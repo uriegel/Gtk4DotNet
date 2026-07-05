@@ -27,4 +27,7 @@ public class Entry : Widget
     public Entry() : base() { }
 
     public Entry(Builder builder, string? name = null) : base(builder, name) { }
+
+    public Entry(Builder builder, string name, Action<nint> replaceParent)
+        : base(builder, name, replaceParent) { }
 }

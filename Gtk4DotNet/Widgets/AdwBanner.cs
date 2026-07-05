@@ -73,6 +73,9 @@ public class AdwBanner : Widget
     /// <param name="name"></param>
     public AdwBanner(Builder builder, string? name = null) : base(builder, name) { }
 
+    public AdwBanner(Builder builder, string name, Action<nint> replaceParent)
+        : base(builder, name, replaceParent) { }
+
     public AdwBanner() : base() { }
 
     [DllImport(Libs.LibAdw, EntryPoint = "adw_banner_new", CallingConvention = CallingConvention.Cdecl)]

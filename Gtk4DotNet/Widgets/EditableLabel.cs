@@ -28,6 +28,9 @@ public class EditableLabel : Widget
 
     public EditableLabel(Builder builder, string? name = null) : base(builder, name) { }
 
+    public EditableLabel(Builder builder, string name, Action<nint> replaceParent)
+        : base(builder, name, replaceParent) { }
+
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_editable_label_new", CallingConvention = CallingConvention.Cdecl)]
     extern static EditableLabel _New(string label);

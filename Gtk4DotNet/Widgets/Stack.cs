@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using Gtk4DotNet.Extensions;
 
 namespace Gtk4DotNet;
 
@@ -11,6 +12,12 @@ namespace Gtk4DotNet;
 /// </summary>
 public class Stack : Widget
 {
+    public string VisibleChildName
+    {
+        get => GetVisibleChildName(this).PtrToString(false) ?? "";
+        set => SetVisibleChildName(this, value);
+    }
+
     /// <summary>
     /// Adds a child to stack. The child is identified by the name. The title will be used by GtkStackSwitcher to represent child in a tab bar, so it should be short.
     /// </summary>
@@ -20,7 +27,7 @@ public class Stack : Widget
     public void AddTitled(Widget child, string name, string title) => AddTitled(this, child, name, title);
 
     public T? GetVisibleChild<T>()
-        where T: Widget, new() 
+        where T : Widget, new()
     {
         var t = new T();
         var ptr = GetVisibleChild(this);
@@ -31,14 +38,29 @@ public class Stack : Widget
         t.AutoDestroyed = true;
         return t;
     }
-    
+
+    public void SetVisibleChild(Widget child) => SetVisibleChild(this, child);
+
     public Stack() : base() { }
 
     public Stack(Builder builder, string? name = null) : base(builder, name) { }
+
+    public Stack(Builder builder, string name, Action<nint> replaceParent)
+        : base(builder, name, replaceParent) { }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_stack_add_titled", CallingConvention = CallingConvention.Cdecl)]
     extern static void AddTitled(Stack stack, Widget child, string name, string title);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_stack_get_visible_child", CallingConvention = CallingConvention.Cdecl)]
     extern static nint GetVisibleChild(Stack stack);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_stack_get_visible_child_name", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint GetVisibleChildName(Stack stack);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_stack_set_visible_child_name", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetVisibleChildName(Stack stack, string name);
+    
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_stack_set_visible_child", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetVisibleChild(Stack stack, Widget child);
+    
 }

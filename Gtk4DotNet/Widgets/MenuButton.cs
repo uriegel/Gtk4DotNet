@@ -37,6 +37,9 @@ public class MenuButton : Widget
 
     public MenuButton(Builder builder, string? name = null) : base(builder, name) { }
 
+    public MenuButton(Builder builder, string name, Action<nint> replaceParent)
+        : base(builder, name, replaceParent) { }
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_menu_button_new", CallingConvention = CallingConvention.Cdecl)]
     extern static MenuButton _New();
 

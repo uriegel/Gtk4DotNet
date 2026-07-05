@@ -47,6 +47,9 @@ public class Button : Widget
 
     public Button(Builder builder, string? name = null) : base(builder, name) { }
 
+    public Button(Builder builder, string name, Action<nint> replaceParent)
+        : base(builder, name, replaceParent) { }
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_button_new_with_label", CallingConvention = CallingConvention.Cdecl)]
     extern static Button _NewWithLabel(string label);
 

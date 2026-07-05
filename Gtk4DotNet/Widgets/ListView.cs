@@ -11,6 +11,9 @@ public class ListView : Widget
 
     public ListView(Builder builder, string? name = null) : base(builder, name) { }
 
+    public ListView(Builder builder, string name, Action<nint> replaceParent)
+        : base(builder, name, replaceParent) { }
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_view_set_model", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetModel(ListView listview, SelectionModel selectionModel);
 

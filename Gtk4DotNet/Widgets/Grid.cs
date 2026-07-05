@@ -35,6 +35,9 @@ public class Grid : Widget
 
     public Grid(Builder builder, string? name = null) : base(builder, name) { }
 
+    public Grid(Builder builder, string name, Action<nint> replaceParent)
+        : base(builder, name, replaceParent) { }
+
     [DllImport(Libs.LibGtk, EntryPoint="gtk_grid_new", CallingConvention = CallingConvention.Cdecl)]
     extern static Grid _New();
 

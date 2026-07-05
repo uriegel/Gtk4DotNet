@@ -86,6 +86,9 @@ public class Label : Widget
 
     public Label(Builder builder, string? name = null) : base(builder, name) { }
 
+    public Label(Builder builder, string name, Action<nint> replaceParent)
+        : base(builder, name, replaceParent) { }
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_label_new", CallingConvention = CallingConvention.Cdecl)]
     extern static Label _New(string text);
 

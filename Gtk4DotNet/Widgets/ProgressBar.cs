@@ -27,6 +27,9 @@ public class ProgressBar : Widget
 
     public ProgressBar(Builder builder, string? name = null) : base(builder, name) { }
 
+    public ProgressBar(Builder builder, string name, Action<nint> replaceParent)
+        : base(builder, name, replaceParent) { }
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_progress_bar_new", CallingConvention = CallingConvention.Cdecl)]
     extern static ProgressBar _New();
 

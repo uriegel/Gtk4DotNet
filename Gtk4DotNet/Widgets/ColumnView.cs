@@ -67,6 +67,15 @@ public class ColumnView : Widget
             cols.Clear();
         });
 
+    public ColumnView(Builder builder, string name, Action<nint> replaceParent)
+        : base(builder, name, replaceParent) 
+        => OnFinalize(() =>
+        {
+            foreach (var col in cols)
+                col.Dispose();
+            cols.Clear();
+        });
+
     public int GetFocusedItemPos()
     {
         positions ??= CreatePositions();

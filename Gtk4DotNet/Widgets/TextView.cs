@@ -32,6 +32,9 @@ public class TextView : Widget
 
     public TextView(Builder builder, string? name = null) : base(builder, name) { }
 
+    public TextView(Builder builder, string name, Action<nint> replaceParent)
+        : base(builder, name, replaceParent) { }
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_text_view_get_buffer", CallingConvention = CallingConvention.Cdecl)]
     extern static TextBuffer GetBuffer(TextView textView);
 

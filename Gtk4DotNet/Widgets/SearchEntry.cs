@@ -31,4 +31,7 @@ public class SearchEntry : Widget
     public SearchEntry() : base() { }
 
     public SearchEntry(Builder builder, string? name = null) : base(builder, name) { }
+
+    public SearchEntry(Builder builder, string name, Action<nint> replaceParent)
+        : base(builder, name, replaceParent) { }
 }

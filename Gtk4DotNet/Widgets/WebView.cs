@@ -136,6 +136,9 @@ public class WebView : Widget
 
     public WebView(Builder builder, string? name = null) : base(builder, name) { }
 
+    public WebView(Builder builder, string name, Action<nint> replaceParent)
+        : base(builder, name, replaceParent) { }
+
     [DllImport(Libs.LibWebKit, EntryPoint = "webkit_web_view_new", CallingConvention = CallingConvention.Cdecl)]
     extern static WebView _New();
 

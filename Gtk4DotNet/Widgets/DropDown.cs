@@ -16,6 +16,9 @@ public class DropDown : Widget
 
     public DropDown(Builder builder, string? name = null) : base(builder, name) { }
 
+    public DropDown(Builder builder, string name, Action<nint> replaceParent)
+        : base(builder, name, replaceParent) { }
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_drop_down_get_selected", CallingConvention = CallingConvention.Cdecl)]
     extern static int GetSelected(DropDown dropDown);
 

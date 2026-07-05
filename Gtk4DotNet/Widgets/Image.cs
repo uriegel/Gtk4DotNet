@@ -65,6 +65,9 @@ public class Image : Widget
 
     public Image(Builder builder, string? name = null) : base(builder, name) { }
 
+    public Image(Builder builder, string name, Action<nint> replaceParent)
+        : base(builder, name, replaceParent) { }
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_image_new", CallingConvention = CallingConvention.Cdecl)]
     extern static Image _New();
 

@@ -26,6 +26,9 @@ public class CheckButton : Widget
 
     public CheckButton(Builder builder, string? name = null) : base(builder, name) { }
 
+    public CheckButton(Builder builder, string name, Action<nint> replaceParent)
+        : base(builder, name, replaceParent) { }
+
     public event Action<bool> OnToggled
     {
         add

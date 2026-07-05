@@ -7,4 +7,7 @@ public class Dialog : Window
     public Dialog() : base() { }
 
     public Dialog(Builder builder, string? name = null) : base(builder, name) { }
+
+    public Dialog(Builder builder, string name, Action<nint> replaceParent)
+        : base(builder, name, replaceParent) { }
 }
