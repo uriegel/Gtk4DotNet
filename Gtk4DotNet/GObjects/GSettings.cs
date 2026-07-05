@@ -156,7 +156,7 @@ public class GSettings : GObject
     [DllImport(Libs.LibGtk, EntryPoint = "g_settings_get_string", CallingConvention = CallingConvention.Cdecl)]
     extern static nint GetString(GSettings settings, string key);
 
-    [DllImport(Libs.LibGtk, EntryPoint = "g_settings_get_string", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(Libs.LibGtk, EntryPoint = "g_settings_set_string", CallingConvention = CallingConvention.Cdecl)]
     extern static bool SetString(GSettings settings, string key, string value);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_settings_set_boolean", CallingConvention = CallingConvention.Cdecl)]
