@@ -213,6 +213,19 @@
             "enableStepFiltering": true,
             "console": "internalConsole"
         }, {
+            "name": "Video",
+            "type": "coreclr",
+            "request": "launch",
+            "requireExactSource": true, 
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Tests/Video/bin/Debug/net10.0/Video.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Tests/Video",
+            "stopAtEntry": false,
+            "justMyCode": false,
+            "enableStepFiltering": true,
+            "console": "internalConsole"
+        }, {
             "name": "Gtk4 Example",
             "type": "coreclr",
             "request": "launch",
