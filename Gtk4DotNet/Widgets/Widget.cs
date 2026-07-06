@@ -235,7 +235,8 @@ public class Widget : GObject
     }
 
     /// <summary>
-    /// Sets a binding from a value in a given and attached DataContext to a css class of this object. The DataContext can be set in a parent widget
+    /// Sets a binding from a value in a given and attached DataContext to a css class of this object. 
+    /// The DataContext can be set in a parent widget
     /// </summary>
     /// <param name="cssClass"></param>
     /// <param name="property"></param>
@@ -246,8 +247,20 @@ public class Widget : GObject
         if (dataContext != null)
         {
             AddCssClass(cssClass, GetValue());
+
+            var delegates = BindingsDelegates;
+            if (delegates == null)
+            {
+                delegates = [];
+                BindingsDelegates = delegates;
+            }
+            delegates.Add("css:" + cssClass, OnChanged);
             dataContext.PropertyChanged += OnChanged;
-            AddWeakRef(() => dataContext.PropertyChanged -= OnChanged);
+            AddWeakRef(() =>
+            {
+                delegates.Remove("css:" + cssClass);
+                dataContext.PropertyChanged -= OnChanged;
+        }   );
 
             void OnChanged(object? sender, PropertyChangedEventArgs e)
             {
@@ -265,6 +278,13 @@ public class Widget : GObject
         }
         else
             Console.Error.WriteLine($"Binding to css not possible: DataContext not set");
+    }
+
+    public void UnsetBindingToCss(string cssClass)
+    {
+        var delegates = BindingsDelegates;
+        if (delegates != null && delegates.Remove("css:" + cssClass, out var delegat))
+            DataContext?.PropertyChanged -= delegat;
     }
 
     /// <summary>
@@ -354,7 +374,7 @@ public class Widget : GObject
     }
 
     /// <summary>
-    /// Gets a registered widgets by its Gtk handle
+    /// Gets a registered widget by its Gtk handle
     /// </summary>
     /// <typeparam name="TWidget"></typeparam>
     /// <param name="widgetKey"></param>
