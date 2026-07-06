@@ -76,13 +76,14 @@ public class Window : Widget
         {
             if (forceClose)
                 return false;
+            var prevent = true;
             Run();
-            return true;
+            return prevent;
 
             async void Run()
             {
-                var ret = await preventClosing(this);
-                if (!ret)
+                prevent = await preventClosing(this);
+                if (!prevent)
                 {
                     forceClose = true;
                     CloseWindow();
