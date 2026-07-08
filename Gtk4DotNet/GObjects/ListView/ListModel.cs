@@ -40,7 +40,7 @@ public abstract class ListModel : GObject
         return obj.GetManagedData<T>(Quark.ListData);
     }
 
-    public int GetItems() => GetItems(this);
+    public int GetItemsCount() => GetItemsCount(this);
 
     public int ItemsCount() => GetRawItems().Count();
 
@@ -73,7 +73,7 @@ public abstract class ListModel : GObject
     extern static nint GetRawItem(ListModel model, int position);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_list_model_get_n_items", CallingConvention = CallingConvention.Cdecl)]
-    extern static int GetItems(ListModel model);
+    extern static int GetItemsCount(ListModel model);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_list_model_items_changed", CallingConvention = CallingConvention.Cdecl)]
     extern static void ItemsChanged(ListModel model, int position, int removed, int added);
