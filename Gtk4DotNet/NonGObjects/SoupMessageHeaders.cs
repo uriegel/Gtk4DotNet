@@ -8,7 +8,14 @@ namespace Gtk4DotNet;
 
 public class SoupMessageHeaders : BaseHandle
 {
-    public static SoupMessageHeaders New(SoupMessageHeaderType type) => _New(type);
+    public static SoupMessageHeaders New(SoupMessageHeaderType type)
+    {
+        var p = _New(type);
+        var res = new SoupMessageHeaders();
+        res.SetInternalHandle(p);
+        return res;
+    } 
+    
     public SoupMessageHeaders() : base() { }
 
     public IEnumerable<MessageHeader> Get()
@@ -34,7 +41,8 @@ public class SoupMessageHeaders : BaseHandle
     extern static void Foreach(SoupMessageHeaders headers, SoupMessageHeadersDelegate foreachHeader);
 
     [DllImport(Libs.LibWebKit, EntryPoint = "soup_message_headers_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static SoupMessageHeaders _New(SoupMessageHeaderType type);
+    extern static nint _New(SoupMessageHeaderType type);
+    
     [DllImport(Libs.LibWebKit, EntryPoint = "soup_message_headers_unref", CallingConvention = CallingConvention.Cdecl)]
     extern static void Unref(nint headers);
 }
