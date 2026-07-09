@@ -5,7 +5,12 @@ namespace Gtk4DotNet;
 public class EventController : GObject
 {
     public void SetPropagationPhase(PropagationPhase phase) => SetPropagationPhase(this, phase);
-    
+
+    public KeyModifiers GetEventCurrentState() => GetEventCurrentState(this);
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_event_controller_set_propagation_phase", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetPropagationPhase(EventController controller, PropagationPhase phase);
+    
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_event_controller_get_current_event_state", CallingConvention = CallingConvention.Cdecl)]
+    extern static KeyModifiers GetEventCurrentState(EventController controller);
 }

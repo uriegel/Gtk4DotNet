@@ -12,11 +12,12 @@ public class ClickGesture : SingleGesture
         return click;
     }
 
-    public event Action<int, double, double> OnPressed
+    public event Action<int, double, double, KeyModifiers> OnPressed
     {
         add
         {
-            PressedGestureDelegate unmanagedDelegate = (_, pressCount, x, y, _) => value(pressCount, x, y);
+            PressedGestureDelegate unmanagedDelegate = (_, pressCount, x, y, _) =>
+                value(pressCount, x, y, GetEventCurrentState());
             var id = SignalConnectForEvent("pressed", unmanagedDelegate);
             eventDatas.TryAdd(value, new(id, value, unmanagedDelegate));
         }

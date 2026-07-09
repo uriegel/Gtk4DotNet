@@ -28,7 +28,7 @@ class MyWindow : ApplicationWindow
         };
         AddController(keyController);
 
-        EventController CreatePressed() => ClickGesture.New().SideEffect(c => c.OnPressed += (n, x, y) =>
+        EventController CreatePressed() => ClickGesture.New().SideEffect(c => c.OnPressed += (n, x, y, m) =>
         {
             if (n == 2)
             {
