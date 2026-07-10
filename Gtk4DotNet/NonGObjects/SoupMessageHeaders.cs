@@ -28,9 +28,12 @@ public class SoupMessageHeaders : BaseHandle
     public void Set(IEnumerable<MessageHeader> headerList)
         => headerList.ForEach(hv => Append(this, hv.Key, hv.Value));
 
+    internal bool AutoDestroyed;
+
     protected override bool ReleaseHandle()
     {
-        Unref(handle);
+        if (!AutoDestroyed)
+            Unref(handle);
         return true;
     }
 

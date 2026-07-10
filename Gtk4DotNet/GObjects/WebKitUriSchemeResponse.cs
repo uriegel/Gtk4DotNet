@@ -8,7 +8,10 @@ public class WebKitUriSchemeResponse : GObject
     public extern static WebKitUriSchemeResponse New(InputStream stream, long length);
 
     public void HttpHeaders(SoupMessageHeaders headers)
-        => SetHttpHeaders(this, headers);
+    {
+        headers.AutoDestroyed = true;
+        SetHttpHeaders(this, headers);
+    }
 
     public void Status(int status, string statusPhrase)
         => SetStatus(this, status, statusPhrase);

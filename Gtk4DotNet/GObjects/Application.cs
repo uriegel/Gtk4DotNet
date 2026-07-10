@@ -120,7 +120,7 @@ public class Application : GObject
         // Allocate argv array
         var argvPtrs = new IntPtr[args.Length];
         for (int i = 0; i < args.Length; i++)
-            argvPtrs[i] = Marshal.StringToHGlobalAnsi(args[i]);
+            argvPtrs[i] = Marshal.StringToHGlobalAnsi(args[i]); // TODO tested => utf8
         var argv = Marshal.AllocHGlobal(IntPtr.Size * args.Length);
         for (int i = 0; i < args.Length; i++)
             Marshal.WriteIntPtr(argv, i * IntPtr.Size, argvPtrs[i]);
