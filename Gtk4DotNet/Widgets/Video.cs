@@ -11,6 +11,9 @@ public class Video : Widget
     }
 
     public void SetFileName(string file) => SetFileName(this, file);
+
+    public void SetMediaStream(IMediaStream stream) => SetMediaStream(this, stream.GetRaw());
+    
     public Video() : base() { }
 
     public Video(Builder builder, string? name = null) : base(builder, name) { }
@@ -21,6 +24,9 @@ public class Video : Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_video_set_filename", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetFileName(Video video, string file);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_video_set_media_stream", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetMediaStream(Video video, nint stream);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_video_get_autoplay", CallingConvention = CallingConvention.Cdecl)]
     extern static bool GetAutoPlay(Video video);

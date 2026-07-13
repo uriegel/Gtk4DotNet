@@ -68,6 +68,11 @@ if you want to use webkit webview whereas for KDE neon 6.0 you have to install
 sudo apt install libadwaita-1-dev
 sudo apt install libwebkitgtk-6.0-dev
 ``` 
+
+You also need ```build-essential``` to compile a few C code files:
+``` 
+sudo apt install build-essential
+``` 
 ## Setup of a Gtk4DotNet program
 
 You have to setup a .NET 10 console app.To access the library, you need a reference to the nuget package  [Gtk4DotNet](https://www.nuget.org/packages/Gtk4DotNet/). In your project, add it with the help of this command line command:

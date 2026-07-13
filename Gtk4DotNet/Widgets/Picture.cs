@@ -16,6 +16,12 @@ public class Picture : Widget
         set => SetCanShrink(this, value);
     }
 
+    public bool KeepAspectRatio
+    {
+        get => GetKeepAspectRatio(this);
+        set => SetKeepAspectRatio(this, value);
+    }
+
     public static Picture New()
     {
         var res = _New();
@@ -39,6 +45,8 @@ public class Picture : Widget
 
     public void SetFileName(string file) => SetFileName(this, file);
 
+    public void SetPaintable(IPaintable paintable) => SetPaintable(this, paintable.GetRaw());
+
     public Picture() : base() { }
 
     public Picture(Builder builder, string? name = null) : base(builder, name) { }
@@ -61,6 +69,9 @@ public class Picture : Widget
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_picture_set_filename", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetFileName(Picture picture, string file);
 
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_picture_set_paintable", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetPaintable(Picture picture, nint paintable);
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_picture_get_content_fit", CallingConvention = CallingConvention.Cdecl)]
     extern static ContentFit GetContentFit(Picture picture);
 
@@ -72,5 +83,11 @@ public class Picture : Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "set_can_shrink", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetCanShrink(Picture picture, bool shrink);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_picture_get_keep_aspect_ratio", CallingConvention = CallingConvention.Cdecl)]
+    extern static bool GetKeepAspectRatio(Picture picture);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_picture_set_keep_aspect_ratio", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetKeepAspectRatio(Picture picture, bool aspectRatio);
 }
 

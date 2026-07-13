@@ -7,6 +7,9 @@ namespace Gtk4DotNet;
 // TODO GtkVideo with GtkMediaStream
 // TODO WebsiteFromResouce with location/index.html and /index.html
 
+// TODO Editable as Interface
+// TODO Filter, Models, ... as Interface
+
 // TODO ListItem without placeholder box
 // TODO ProgressControlSubclassed without Box
 

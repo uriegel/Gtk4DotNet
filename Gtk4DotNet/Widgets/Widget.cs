@@ -364,6 +364,21 @@ public class Widget : GObject
         }
     }
 
+    public event Action OnTick
+    {
+        add
+        {
+            ThreePointerDelegate unmanagedDelegate = (_, __, ___) => value();
+            var id = AddTickCallback(this, Marshal.GetFunctionPointerForDelegate((Delegate)unmanagedDelegate), 0, 0);
+            eventDatas.TryAdd(value, new(id, value, unmanagedDelegate));
+        }
+        remove
+        {
+            if (eventDatas.Remove(value, out var data))
+                RemoveTickCallback(this, (int)data.Id);
+        }
+    }
+
     /// <summary>
     /// Used to register a widget so it can be found by its Gtk handle value. Used for example in a ListBox, when callbacks delivering handles
     /// </summary>
@@ -666,6 +681,12 @@ public class Widget : GObject
     [DllImport(Libs.LibGtk, CallingConvention = CallingConvention.Cdecl, EntryPoint = "gtk_paned_set_end_child")]
     internal static extern int PanedSetEndChild(nint widget, nint child);
 
+    [DllImport(Libs.LibGtk, CallingConvention = CallingConvention.Cdecl, EntryPoint = "gtk_widget_add_tick_callback")]
+    static extern int AddTickCallback(Widget widget, nint cb, nint _, nint __);
+
+    [DllImport(Libs.LibGtk, CallingConvention = CallingConvention.Cdecl, EntryPoint = "gtk_widget_remove_tick_callback")]
+    static extern void RemoveTickCallback(Widget widget, int id);
+    
     #endregion
 }
 
