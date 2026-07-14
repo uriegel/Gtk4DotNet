@@ -1,4 +1,7 @@
+using System.Reflection;
 using System.Runtime.InteropServices;
+using CsTools;
+using CsTools.Extensions;
 
 namespace Gtk4DotNet;
 
@@ -7,8 +10,24 @@ public class AspectContainer : Widget
     public static nint GetObjectType() => getType();
     static AspectContainer()
     {
-        lib = NativeLibrary.Load("/mnt/Home/Projekte/Gtk4DotNet/C-Code/gtk4dotnet/libtgtk4dotnet.so");
-        getType = Marshal.GetDelegateForFunctionPointer<GetTypeDelegate>(NativeLibrary.GetExport(lib,"tgtk_aspect_container_get_type"));
+        string targetFileName = "";
+        try
+        {
+            targetFileName =
+                Environment
+                    .GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+                    .AppendPath(@$"{"de.uriegel.gtk4dotnet"}")
+                    .EnsureDirectoryExists()
+                    .AppendPath("libgtk4dotnet.so");
+            using var targetFile = File.Create(targetFileName);
+            Assembly
+                .GetExecutingAssembly()
+                .GetManifestResourceStream("libgtk4dotnet")
+                ?.CopyTo(targetFile);
+        }
+        catch {}
+        lib = NativeLibrary.Load(targetFileName);
+        getType = Marshal.GetDelegateForFunctionPointer<GetTypeDelegate>(NativeLibrary.GetExport(lib, "tgtk_aspect_container_get_type"));
     }
 
     static GetTypeDelegate getType;

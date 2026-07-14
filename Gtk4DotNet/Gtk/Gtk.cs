@@ -6,8 +6,7 @@ using Gtk4DotNet.Internals;
 namespace Gtk4DotNet;
 
 // TODO WebsiteFromResouce with location/index.html and /index.html
-// TODO unpack lib.so to .config, if not accessed
-// TODO call function from there
+// TODO dst functions
 
 // TODO Editable as Interface
 // TODO Filter, Models, ... as Interface
