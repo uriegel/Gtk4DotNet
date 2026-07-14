@@ -51,3 +51,4 @@ Tests/ColumnViewExtended/bin
 Tests/ColumnViewExtended/obj
 Tests/Video/bin
 Tests/Video/obj
+C-Code/gtk4dotnet/libtgtk4dotnet.so

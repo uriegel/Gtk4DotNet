@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<library>
+  <namespace name="Tgtk4DotNet">
+    <object class="TgtkAspectContainer"
+            name="TgtkAspectContainer">
+      <property name="ratio"
+                type="gdouble"/>
+    </object>
+  </namespace>
+</library>

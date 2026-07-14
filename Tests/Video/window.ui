@@ -8,19 +8,13 @@
     <property name="default-width">800</property>
     <property name="title">Hello Video👍</property>
     <child>
-      <object class="GtkOverlay">
+      <object class="GtkOverlay" id="overlay">
         <child>
-          <object class="GtkAspectFrame">
-            <property name="ratio">1.7777</property>
-            <property name="halign">fill</property>
-            <property name="valign">fill</property>    
-            <property name="hexpand">True</property>
-            <property name="vexpand">True</property>                   
+          <object class="TgtkAspectContainer" id="videoContainer">
+            <property name="aspect-ratio">1.77777</property>
             <child>
               <object class="GtkPicture" id="video">
                 <property name="keep-aspect-ratio">False</property>
-                <property name="halign">fill</property>
-                <property name="valign">fill</property>
               </object>
             </child>
           </object>

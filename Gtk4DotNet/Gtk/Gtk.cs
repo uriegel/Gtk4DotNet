@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Runtime.InteropServices;
 using CsTools.Extensions;
 using Gtk4DotNet.Internals;
@@ -148,7 +149,11 @@ public static class Gtk
         Console.WriteLine($"=========================================================================================");
     }
 
-    internal static bool Diagnostics
+    internal static void InitializeAdditionals()
+        // TODO SingleFileExe:
+        => NativeLibrary.SetDllImportResolver(Assembly.GetExecutingAssembly()!, ResolveLibrary);
+ 
+     internal static bool Diagnostics
     {
         get;
         set;
@@ -184,10 +189,27 @@ public static class Gtk
 
     internal static char RawKeyValToUnicode(int keyVal) => (char)_KeyValToUnicode(keyVal);
 
-    internal static void Init() =>
+    internal static void Init()
+    {
+        InitializeAdditionals();
         SynchronizationContext.SetSynchronizationContext(
             new GtkSynchronizationContext()
                 .SideEffect(_ => mainThreadId = Environment.CurrentManagedThreadId));
+    }
+
+    static nint ResolveLibrary(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
+    {
+        // TODO optimizing
+        Console.WriteLine($"Lade {libraryName}");
+        if (libraryName == Libs.LibDotNet)
+        {
+            // TODO real path
+            string path = "/mnt/Home/Projekte/Gtk4DotNet/C-Code/gtk4dotnet/libtgtk4dotnet.so";
+            return NativeLibrary.Load(path);
+        }
+
+        return 0;
+    }
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_idle_add_full", CallingConvention = CallingConvention.Cdecl)]
     extern static void IdleAddFull(int priority, nint func, nint nil, nint nil2);

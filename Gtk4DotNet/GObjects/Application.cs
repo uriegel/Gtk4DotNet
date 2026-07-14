@@ -90,6 +90,16 @@ public class Application : GObject
     }
 
     /// <summary>
+    /// 
+    /// </summary>
+    /// <returns>Application for chaining calls</returns>
+    public Application WithAdditionals()
+    {
+        AspectContainerGetType();
+        return this;
+    }
+
+    /// <summary>
     /// Using globally GSettings via the static <see cref="Settings"/>. There has to be a gschema.xml present an a build chain in the csproj project file,
     /// see README.md in https://github.com/uriegel/Gtk4DotNet/blob/Main/README.md
     /// </summary>
@@ -206,6 +216,9 @@ public class Application : GObject
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_remove_window", CallingConvention = CallingConvention.Cdecl)]
     extern static void RemoveWindow(Application app, Window window);
+
+    [DllImport(Libs.LibDotNet, EntryPoint ="tgtk_aspect_container_get_type", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint AspectContainerGetType();
 
     readonly GtkActions actions = new(false);
 }
