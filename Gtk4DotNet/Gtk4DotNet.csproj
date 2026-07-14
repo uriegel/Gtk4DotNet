@@ -28,6 +28,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="../C-Code/gtk4dotnet/libtgtk4dotnet.so">
+      <LogicalName>libgtk4dotnet</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
       <None Include="..\LICENSE" Pack="true" PackagePath="" />
       <None Include="..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>

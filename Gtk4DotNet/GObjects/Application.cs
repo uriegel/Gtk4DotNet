@@ -95,7 +95,7 @@ public class Application : GObject
     /// <returns>Application for chaining calls</returns>
     public Application WithAdditionals()
     {
-        AspectContainerGetType();
+        AspectContainer.GetObjectType();
         return this;
     }
 
@@ -216,9 +216,6 @@ public class Application : GObject
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_remove_window", CallingConvention = CallingConvention.Cdecl)]
     extern static void RemoveWindow(Application app, Window window);
-
-    [DllImport(Libs.LibDotNet, EntryPoint ="tgtk_aspect_container_get_type", CallingConvention = CallingConvention.Cdecl)]
-    extern static nint AspectContainerGetType();
 
     readonly GtkActions actions = new(false);
 }

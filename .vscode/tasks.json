@@ -7,6 +7,7 @@
             "label": "build",
             "command": "dotnet",
             "type": "shell",
+            "dependsOn": "build additional",
             "args": [
                 "build",
                 // Ask dotnet build to generate full paths for file names.
@@ -19,6 +20,10 @@
                 "reveal": "silent"
             },
             "problemMatcher": "$msCompile"
+        }, {
+            "label": "build additional",
+            "type": "shell",
+            "command": "gcc -shared -fPIC C-Code/gtk4dotnet/tgtk_aspect_container.c -o C-Code/gtk4dotnet/libtgtk4dotnet.so $(pkg-config --cflags --libs gtk4)"
         }, {
             "label": "build first.cpp",
             "type": "shell",

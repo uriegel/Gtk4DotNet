@@ -277,5 +277,3 @@ tgtk_aspect_container_buildable_init(
     iface->add_child =
         tgtk_aspect_container_buildable_add_child;
 }
-
-// gcc -shared -fPIC     tgtk_aspect_container.c     -o libtgtk4dotnet.so     $(pkg-config --cflags --libs gtk4)

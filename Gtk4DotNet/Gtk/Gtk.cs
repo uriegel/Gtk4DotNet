@@ -5,8 +5,9 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
-// TODO GtkVideo with GtkMediaStream
 // TODO WebsiteFromResouce with location/index.html and /index.html
+// TODO unpack lib.so to .config, if not accessed
+// TODO call function from there
 
 // TODO Editable as Interface
 // TODO Filter, Models, ... as Interface
@@ -149,11 +150,7 @@ public static class Gtk
         Console.WriteLine($"=========================================================================================");
     }
 
-    internal static void InitializeAdditionals()
-        // TODO SingleFileExe:
-        => NativeLibrary.SetDllImportResolver(Assembly.GetExecutingAssembly()!, ResolveLibrary);
- 
-     internal static bool Diagnostics
+    internal static bool Diagnostics
     {
         get;
         set;
@@ -191,24 +188,9 @@ public static class Gtk
 
     internal static void Init()
     {
-        InitializeAdditionals();
         SynchronizationContext.SetSynchronizationContext(
             new GtkSynchronizationContext()
                 .SideEffect(_ => mainThreadId = Environment.CurrentManagedThreadId));
-    }
-
-    static nint ResolveLibrary(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
-    {
-        // TODO optimizing
-        Console.WriteLine($"Lade {libraryName}");
-        if (libraryName == Libs.LibDotNet)
-        {
-            // TODO real path
-            string path = "/mnt/Home/Projekte/Gtk4DotNet/C-Code/gtk4dotnet/libtgtk4dotnet.so";
-            return NativeLibrary.Load(path);
-        }
-
-        return 0;
     }
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_idle_add_full", CallingConvention = CallingConvention.Cdecl)]
