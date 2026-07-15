@@ -45,7 +45,7 @@ public class Picture : Widget
 
     public void SetFileName(string file) => SetFileName(this, file);
 
-    public void SetPaintable(IPaintable paintable) => SetPaintable(this, paintable.GetRaw());
+    public void SetPaintable(IPaintable? paintable) => SetPaintable(this, paintable?.GetRaw() ?? 0);
 
     public Picture() : base() { }
 
