@@ -6,7 +6,6 @@ using Gtk4DotNet.Internals;
 namespace Gtk4DotNet;
 
 // TODO WebsiteFromResouce with location/index.html and /index.html
-// TODO dst functions
 
 // TODO Editable as Interface
 // TODO Filter, Models, ... as Interface
@@ -149,7 +148,7 @@ public static class Gtk
         Console.WriteLine($"=========================================================================================");
     }
 
-    internal static bool Diagnostics
+    public static bool Diagnostics
     {
         get;
         set;

@@ -8,6 +8,15 @@ namespace Gtk4DotNet;
 public class AspectContainer : Widget
 {
     public static nint GetObjectType() => getType();
+    public double AspectRatio { set => setAspectRatio(GetInternalHandle(), value); }
+
+    public AspectContainer() : base() { }
+
+    public AspectContainer(Builder builder, string? name = null) : base(builder, name) { }
+
+    public AspectContainer(Builder builder, string name, Action<nint> replaceParent)
+        : base(builder, name, replaceParent) { }
+
     static AspectContainer()
     {
         string targetFileName = "";
@@ -25,17 +34,22 @@ public class AspectContainer : Widget
                 .GetManifestResourceStream("libgtk4dotnet")
                 ?.CopyTo(targetFile);
         }
-        catch {}
+        catch { }
         lib = NativeLibrary.Load(targetFileName);
         getType = Marshal.GetDelegateForFunctionPointer<GetTypeDelegate>(NativeLibrary.GetExport(lib, "tgtk_aspect_container_get_type"));
+        setAspectRatio = Marshal.GetDelegateForFunctionPointer<SetAspectRatioDelegate>(NativeLibrary.GetExport(lib, "tgtk_aspect_container_set_aspect_ratio"));
     }
 
-    static GetTypeDelegate getType;
-    
+    static readonly GetTypeDelegate getType;
+    static readonly SetAspectRatioDelegate setAspectRatio;
+
     static readonly nint lib;
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     delegate nint GetTypeDelegate();
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    delegate void SetAspectRatioDelegate(nint p, double valaue);
 
     // [DllImport("libtgtk4dotnet.so", CallingConvention = CallingConvention.Cdecl)]
     // static extern nint tgtk_aspect_container_new();

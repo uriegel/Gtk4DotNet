@@ -25,6 +25,7 @@ public class GtkException : Exception
         {
             Quarks.Gio => new GioException(error),
             Quarks.File => new FileException(error),
+            Quarks.StreamerResource => new StreamerResourceException(error),
             null => new Exception("Unknown exception"),
             _ => new GtkException(error)
         };

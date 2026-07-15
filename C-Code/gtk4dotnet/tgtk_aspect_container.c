@@ -24,7 +24,7 @@ static void
 tgtk_aspect_container_init(
     TgtkAspectContainer *self)
 {
-    self->aspect_ratio = 16.0 / 9.0;
+    self->aspect_ratio = 1.0 / 1.0;
     self->child = NULL;
 }
 
@@ -276,4 +276,9 @@ tgtk_aspect_container_buildable_init(
 {
     iface->add_child =
         tgtk_aspect_container_buildable_add_child;
+}
+
+void tgtk_aspect_container_set_aspect_ratio(TgtkAspectContainer *self, double ratio)
+{
+    self->aspect_ratio = ratio;
 }
