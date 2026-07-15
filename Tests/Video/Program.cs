@@ -1,21 +1,18 @@
 ﻿using System.Runtime.InteropServices;
 using Gtk4DotNet;
 
-// int c = 0;
-// nint n = 0;
-// gst_init(ref c, ref n);
-// var dst = gst_discoverer_new(1, out var e);
-// var info = gst_discoverer_discover_uri(dst, "file:///mnt/Home/uwe/B%C3%BCro.mkv", out var err);
-// var dauert = gst_discoverer_info_get_duration(info);
-// var i = gst_discoverer_info_get_video_streams(info);
-// var glist = Marshal.PtrToStructure<GList>(i);
-// var p1 = gst_discoverer_video_info_get_par_num(glist.Data);
-// var p2 = gst_discoverer_video_info_get_par_denom(glist.Data);
-// var w = gst_discoverer_video_info_get_width(glist.Data);
-// var h = gst_discoverer_video_info_get_height(glist.Data);
-// var dar = (double)w * p1 / (h * p2);
-
-// gst_deinit();
+Streamer.Init();
+var dst = gst_discoverer_new(1, out var e);
+var info = gst_discoverer_discover_uri(dst, "file:///mnt/Home/uwe/B%C3%BCro.mkv", out var err); // GObject, TODO error handling
+var dauert = gst_discoverer_info_get_duration(info);
+var i = gst_discoverer_info_get_video_streams(info);
+var glist = Marshal.PtrToStructure<GList>(i);
+var p1 = gst_discoverer_video_info_get_par_num(glist.Data);
+var p2 = gst_discoverer_video_info_get_par_denom(glist.Data);
+var w = gst_discoverer_video_info_get_width(glist.Data);
+var h = gst_discoverer_video_info_get_height(glist.Data);
+var dar = (double)w * p1 / (h * p2);
+//Streamer.Deinit();
 
 Application
     .NewAdwaita("de.uriegel.gtk4dotnet")
@@ -28,12 +25,6 @@ Application
         .Show();
     }
     ).Run();
-
-[DllImport("libgtk-4.so.1", CallingConvention = CallingConvention.Cdecl)]
-static extern void gst_init(ref int argc, ref IntPtr argv);
-
-[DllImport("libgtk-4.so.1", CallingConvention = CallingConvention.Cdecl)]
-static extern void gst_deinit();
 
 [DllImport("libgtk-4.so.1", CallingConvention = CallingConvention.Cdecl)]
 static extern nint gst_discoverer_new(long timeout, out nint error);
