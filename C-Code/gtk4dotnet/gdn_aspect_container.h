@@ -4,24 +4,24 @@
 
 G_BEGIN_DECLS
 
-#define TGTK_TYPE_ASPECT_CONTAINER (tgtk_aspect_container_get_type())
+#define GDN_TYPE_ASPECT_CONTAINER (gdn_aspect_container_get_type())
 
-typedef struct _TgtkAspectContainer TgtkAspectContainer;
-typedef struct _TgtkAspectContainerClass TgtkAspectContainerClass;
+typedef struct _GdnAspectContainer GdnAspectContainer;
+typedef struct _GdnAspectContainerClass GdnAspectContainerClass;
 
-struct _TgtkAspectContainerClass
+struct _GdnAspectContainerClass
 {
     GtkWidgetClass parent_class;
 };
 
-GType tgtk_aspect_container_get_type(void);
+GType gdn_aspect_container_get_type(void);
 
-GtkWidget *tgtk_aspect_container_new(void);
+GtkWidget *gdn_aspect_container_new(void);
 
-#define TGTK_ASPECT_CONTAINER(obj) \
-    ((TgtkAspectContainer *)(obj))
+#define GDN_ASPECT_CONTAINER(obj) \
+    ((GdnAspectContainer *)(obj))
 
-void tgtk_aspect_container_set_child(TgtkAspectContainer *self, GtkWidget *child);
+void gdn_aspect_container_set_child(GdnAspectContainer *self, GtkWidget *child);
 
 enum
 {

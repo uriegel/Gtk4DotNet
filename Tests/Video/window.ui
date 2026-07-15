@@ -10,7 +10,7 @@
     <child>
       <object class="GtkOverlay" id="overlay">
         <child>
-          <object class="TgtkAspectContainer" id="videoContainer">
+          <object class="GdnAspectContainer" id="videoContainer">
             <property name="aspect-ratio">1.77777</property>
             <child>
               <object class="GtkPicture" id="video">

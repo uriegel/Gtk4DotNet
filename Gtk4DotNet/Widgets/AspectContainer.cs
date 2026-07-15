@@ -36,8 +36,8 @@ public class AspectContainer : Widget
         }
         catch { }
         lib = NativeLibrary.Load(targetFileName);
-        getType = Marshal.GetDelegateForFunctionPointer<GetTypeDelegate>(NativeLibrary.GetExport(lib, "tgtk_aspect_container_get_type"));
-        setAspectRatio = Marshal.GetDelegateForFunctionPointer<SetAspectRatioDelegate>(NativeLibrary.GetExport(lib, "tgtk_aspect_container_set_aspect_ratio"));
+        getType = Marshal.GetDelegateForFunctionPointer<GetTypeDelegate>(NativeLibrary.GetExport(lib, "gdn_aspect_container_get_type"));
+        setAspectRatio = Marshal.GetDelegateForFunctionPointer<SetAspectRatioDelegate>(NativeLibrary.GetExport(lib, "gdn_aspect_container_set_aspect_ratio"));
     }
 
     static readonly GetTypeDelegate getType;
