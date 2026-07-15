@@ -4,9 +4,9 @@ class MyWindow : ApplicationWindow
 {
     public MyWindow(WindowBuilder builder) : base(builder)
     {
-        //var videoFile = "/mnt/Home/uwe/Büro.mkv";
+        var videoFile = "/mnt/Home/uwe/Büro.mkv";
         //var videoFile = "/run/media/uwe/Daten/Videos/Boing Boing.mp4";
-        var videoFile = "/run/media/uwe/Daten/Videos/essen.mkv";
+        //var videoFile = "/run/media/uwe/Daten/Videos/essen.mkv";
         Streamer.Init();
         using var discoverer = new Discoverer(TimeSpan.FromSeconds(10));
         using var info = discoverer.DiscoverUri($"file://{videoFile}");

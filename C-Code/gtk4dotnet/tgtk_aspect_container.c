@@ -1,15 +1,15 @@
 #include "tgtk_aspect_container.h"
 
+
+static void tgtk_aspect_container_buildable_init(GtkBuildableIface *iface);
+
 struct _TgtkAspectContainer
 {
-    GtkWidget parent_instance;
+    GtkWidget parent_instance; // Inheritance, pointer to base class object
 
     double aspect_ratio;
     GtkWidget *child;
 };
-
-static void
-tgtk_aspect_container_buildable_init(GtkBuildableIface *iface);
 
 G_DEFINE_TYPE_WITH_CODE(
     TgtkAspectContainer,
@@ -20,24 +20,14 @@ G_DEFINE_TYPE_WITH_CODE(
         tgtk_aspect_container_buildable_init))
 
 
-static void
-tgtk_aspect_container_init(
-    TgtkAspectContainer *self)
+static void tgtk_aspect_container_init(TgtkAspectContainer *self)
 {
     self->aspect_ratio = 1.0 / 1.0;
     self->child = NULL;
 }
 
-
-static void
-tgtk_aspect_container_measure(
-    GtkWidget *widget,
-    GtkOrientation orientation,
-    int for_size,
-    int *minimum,
-    int *natural,
-    int *minimum_baseline,
-    int *natural_baseline)
+static void tgtk_aspect_container_measure(GtkWidget *widget, GtkOrientation orientation, int for_size, int *minimum, int *natural,
+    int *minimum_baseline, int *natural_baseline)
 {
     *minimum = 100;
     *natural = 400;
@@ -46,15 +36,9 @@ tgtk_aspect_container_measure(
     *natural_baseline = -1;
 }
 
-static void
-tgtk_aspect_container_size_allocate(
-    GtkWidget *widget,
-    int width,
-    int height,
-    int baseline)
+static void tgtk_aspect_container_size_allocate( GtkWidget *widget, int width, int height, int baseline)
 {
-    TgtkAspectContainer *self =
-        TGTK_ASPECT_CONTAINER(widget);
+    TgtkAspectContainer *self = TGTK_ASPECT_CONTAINER(widget);
 
     if (self->child == NULL)
         return;
@@ -91,21 +75,12 @@ tgtk_aspect_container_size_allocate(
     };
 
 
-    gtk_widget_size_allocate(
-        self->child,
-        &allocation,
-        baseline);
+    gtk_widget_size_allocate(self->child, &allocation, baseline);
 }
 
-static void
-tgtk_aspect_container_set_property(
-    GObject *object,
-    guint property_id,
-    const GValue *value,
-    GParamSpec *pspec)
+static void tgtk_aspect_container_set_property(GObject *object, guint property_id, const GValue *value, GParamSpec *pspec)
 {
-    TgtkAspectContainer *self =
-        TGTK_ASPECT_CONTAINER(object);
+    TgtkAspectContainer *self = TGTK_ASPECT_CONTAINER(object);
 
     switch (property_id)
     {
@@ -125,16 +100,9 @@ tgtk_aspect_container_set_property(
     }
 }
 
-
-static void
-tgtk_aspect_container_get_property(
-    GObject *object,
-    guint property_id,
-    GValue *value,
-    GParamSpec *pspec)
+static void tgtk_aspect_container_get_property(GObject *object, guint property_id, GValue *value, GParamSpec *pspec)
 {
-    TgtkAspectContainer *self =
-        TGTK_ASPECT_CONTAINER(object);
+    TgtkAspectContainer *self = TGTK_ASPECT_CONTAINER(object);
 
     switch (property_id)
     {
@@ -152,13 +120,9 @@ tgtk_aspect_container_get_property(
     }
 }
 
-
-static void
-tgtk_aspect_container_dispose(
-    GObject *object)
+static void tgtk_aspect_container_dispose(GObject *object)
 {
-    TgtkAspectContainer *self =
-        TGTK_ASPECT_CONTAINER(object);
+    TgtkAspectContainer *self = TGTK_ASPECT_CONTAINER(object);
 
     if (self->child != NULL)
     {
@@ -169,31 +133,18 @@ tgtk_aspect_container_dispose(
     G_OBJECT_CLASS(tgtk_aspect_container_parent_class)->dispose(object);    
 }
 
-static void
-tgtk_aspect_container_class_init(
-    TgtkAspectContainerClass *klass)
+static void tgtk_aspect_container_class_init(TgtkAspectContainerClass *klass)
 {
-    GtkWidgetClass *widget_class =
-        GTK_WIDGET_CLASS(klass);
+    GtkWidgetClass *widget_class = GTK_WIDGET_CLASS(klass);
 
-    widget_class->measure =
-        tgtk_aspect_container_measure;
+    widget_class->measure = tgtk_aspect_container_measure;
+    widget_class->size_allocate = tgtk_aspect_container_size_allocate;        
 
-    widget_class->size_allocate =
-        tgtk_aspect_container_size_allocate;        
+    GObjectClass *object_class = G_OBJECT_CLASS(klass);
 
-GObjectClass *object_class =
-        G_OBJECT_CLASS(klass);
-
-        object_class->dispose =
-        tgtk_aspect_container_dispose;
-
-    object_class->set_property =
-        tgtk_aspect_container_set_property;
-
-    object_class->get_property =
-        tgtk_aspect_container_get_property;
-
+    object_class->dispose = tgtk_aspect_container_dispose;
+    object_class->set_property = tgtk_aspect_container_set_property;
+    object_class->get_property = tgtk_aspect_container_get_property;
 
     properties[PROP_ASPECT_RATIO] =
         g_param_spec_double(
@@ -202,30 +153,19 @@ GObjectClass *object_class =
             "Width / height ratio",
             0.1,
             10.0,
-            16.0 / 9.0,
+            1.0 / 1.0,
             G_PARAM_READWRITE |
             G_PARAM_EXPLICIT_NOTIFY);
 
-
-    g_object_class_install_properties(
-        object_class,
-        N_PROPERTIES,
-        properties);        
+    g_object_class_install_properties(object_class, N_PROPERTIES, properties);        
 }
 
-
-GtkWidget *
-tgtk_aspect_container_new(void)
+GtkWidget *tgtk_aspect_container_new(void)
 {
-    return g_object_new(
-        TGTK_TYPE_ASPECT_CONTAINER,
-        NULL);
+    return g_object_new(TGTK_TYPE_ASPECT_CONTAINER, NULL);
 }
 
-void
-tgtk_aspect_container_set_child(
-    TgtkAspectContainer *self,
-    GtkWidget *child)
+void tgtk_aspect_container_set_child(TgtkAspectContainer *self, GtkWidget *child)
 {
     if (self->child)
     {
@@ -246,19 +186,9 @@ tgtk_aspect_container_set_child(
         GTK_WIDGET(self));
 }
 
-
-
-
-
-static void
-tgtk_aspect_container_buildable_add_child(
-    GtkBuildable *buildable,
-    GtkBuilder *builder,
-    GObject *child,
-    const char *type)
+static void tgtk_aspect_container_buildable_add_child(GtkBuildable *buildable, GtkBuilder *builder, GObject *child, const char *type)
 {
-    TgtkAspectContainer *self =
-        TGTK_ASPECT_CONTAINER(buildable);
+    TgtkAspectContainer *self = TGTK_ASPECT_CONTAINER(buildable);
 
     if (GTK_IS_WIDGET(child))
     {
@@ -270,12 +200,9 @@ tgtk_aspect_container_buildable_add_child(
     }
 }
 
-static void
-tgtk_aspect_container_buildable_init(
-    GtkBuildableIface *iface)
+static void tgtk_aspect_container_buildable_init(GtkBuildableIface *iface)
 {
-    iface->add_child =
-        tgtk_aspect_container_buildable_add_child;
+    iface->add_child = tgtk_aspect_container_buildable_add_child;
 }
 
 void tgtk_aspect_container_set_aspect_ratio(TgtkAspectContainer *self, double ratio)

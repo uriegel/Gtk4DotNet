@@ -18,14 +18,10 @@ GType tgtk_aspect_container_get_type(void);
 
 GtkWidget *tgtk_aspect_container_new(void);
 
-
 #define TGTK_ASPECT_CONTAINER(obj) \
     ((TgtkAspectContainer *)(obj))
 
-void
-tgtk_aspect_container_set_child(
-    TgtkAspectContainer *self,
-    GtkWidget *child);
+void tgtk_aspect_container_set_child(TgtkAspectContainer *self, GtkWidget *child);
 
 enum
 {
