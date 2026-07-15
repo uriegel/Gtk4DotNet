@@ -5,6 +5,9 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
+// TODO MediaControls or MediaFile .start
+// TODO fileName of Pivture and MediaControls may be null
+
 // TODO Editable as Interface
 // TODO Filter, Models, ... as Interface
 
