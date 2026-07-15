@@ -13,13 +13,13 @@
 
   <ItemGroup>
     <EmbeddedResource Include="webroot/index.html">
-      <LogicalName>$([System.String]::new('%(RelativeDir)').SubString(8).Replace('\','/'))%(FileName)%(Extension)</LogicalName>
+      <LogicalName>website/$([System.String]::new('%(RelativeDir)').SubString(8).Replace('\','/'))%(FileName)%(Extension)</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="webroot/css/*.css">
-      <LogicalName>$([System.String]::new('%(RelativeDir)').SubString(8).Replace('\','/'))%(FileName)%(Extension)</LogicalName>
+      <LogicalName>website/$([System.String]::new('%(RelativeDir)').SubString(8).Replace('\','/'))%(FileName)%(Extension)</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="webroot/images/image.jpg">
-      <LogicalName>$([System.String]::new('%(RelativeDir)').SubString(8).Replace('\','/'))%(FileName)%(Extension)</LogicalName>
+      <LogicalName>website/$([System.String]::new('%(RelativeDir)').SubString(8).Replace('\','/'))%(FileName)%(Extension)</LogicalName>
     </EmbeddedResource>
   </ItemGroup> 
 

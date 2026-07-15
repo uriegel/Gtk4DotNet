@@ -5,8 +5,6 @@ using Gtk4DotNet.Internals;
 
 namespace Gtk4DotNet;
 
-// TODO WebsiteFromResouce with location/index.html and /index.html
-
 // TODO Editable as Interface
 // TODO Filter, Models, ... as Interface
 

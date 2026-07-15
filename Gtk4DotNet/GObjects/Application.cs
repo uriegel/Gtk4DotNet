@@ -53,7 +53,15 @@ public class Application : GObject
     /// <param name="activate"></param>
     /// <returns>Application for chaining calls</returns>
     public Application OnActivate(Action<Application> activate)
-        => this.SideEffect(_ => SignalConnect<OnePointerDelegate>("activate", _ => activate(this)));
+        => this.SideEffect(_ => SignalConnect<OnePointerDelegate>("activate", _ =>
+        {
+            if (withWebsiteFromResource)
+            {
+                WebKitWebContext.GetDefault().RegisterUriScheme("res", WebView.OnResRequest);
+                OnFinalize(WebKitWebContext.DisposeUriSchemes);
+            }
+            activate(this);
+        }));
 
     public Application OnOpen(Action<Application, GFile[]> onOpen)
     {
@@ -86,6 +94,16 @@ public class Application : GObject
         Gtk.GObjectTracing = gobjectTracing;
         CheckDiagnostics();
         Console.WriteLine($"Running process: {Environment.ProcessId}");
+        return this;
+    }
+
+    /// <summary>
+    /// Registers the res:// scheme for WebView and delivers website from .NET Resource
+    /// </summary>
+    /// <returns>Application for chaining calls</returns>
+    public Application WithWebsiteFromResource()
+    {
+        withWebsiteFromResource = true;
         return this;
     }
 
@@ -196,6 +214,10 @@ public class Application : GObject
 
     public void SetAccelsForAction(string action, [In] string?[] accels) => SetAccelsForAction(this, action, accels);
 
+
+    readonly GtkActions actions = new(false);
+    bool withWebsiteFromResource;
+
     [DllImport(Libs.LibAdw, EntryPoint = "adw_application_new", CallingConvention = CallingConvention.Cdecl)]
     extern static Application _NewAdw(string id, ApplicationFlags flags);
 
@@ -216,8 +238,6 @@ public class Application : GObject
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_remove_window", CallingConvention = CallingConvention.Cdecl)]
     extern static void RemoveWindow(Application app, Window window);
-
-    readonly GtkActions actions = new(false);
 }
 
 public static class ApplicationExtensions
