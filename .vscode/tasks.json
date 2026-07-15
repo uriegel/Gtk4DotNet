@@ -23,7 +23,7 @@
         }, {
             "label": "build additional",
             "type": "shell",
-            "command": "gcc -shared -fPIC C-Code/gtk4dotnet/tgtk_aspect_container.c -o C-Code/gtk4dotnet/libtgtk4dotnet.so $(pkg-config --cflags --libs gtk4)"
+            "command": "gcc -shared -fPIC C-Code/gtk4dotnet/gdn_aspect_container.c -o C-Code/gtk4dotnet/libtgtk4dotnet.so $(pkg-config --cflags --libs gtk4)"
         }, {
             "label": "build first.cpp",
             "type": "shell",
