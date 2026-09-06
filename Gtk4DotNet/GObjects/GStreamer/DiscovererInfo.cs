@@ -11,9 +11,14 @@ public class DiscovererInfo : GObject
 
     public VideoStreams GetVideoStreams() => new(gst_discoverer_info_get_video_streams(this));
 
+    public GstTagList GetTagList() => new(gst_discoverer_info_get_tags(this));
+
     [DllImport(Libs.LibGtk, CallingConvention = CallingConvention.Cdecl)]
     static extern long gst_discoverer_info_get_duration(DiscovererInfo info);
 
     [DllImport(Libs.LibGtk, CallingConvention = CallingConvention.Cdecl)]
     static extern nint gst_discoverer_info_get_video_streams(DiscovererInfo info);
+
+    [DllImport(Libs.LibGtk, CallingConvention = CallingConvention.Cdecl)]
+    static extern nint gst_discoverer_info_get_tags(DiscovererInfo info);
 }
