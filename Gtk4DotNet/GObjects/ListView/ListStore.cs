@@ -3,40 +3,44 @@ using CsTools.Extensions;
 
 namespace Gtk4DotNet;
 
-public class ListStore : ListModel
+// TODO SetDictionary<T, U>(Func<T, U> selector)
+// TODO where T : class  => where T : ListItem 
+// TODO class ListItem(string Key)
+
+// TODO SetDictionary() with StoreDictionary with callbacks
+
+public class ListStore<T> : ListModel
 {
-    public static ListStore New()
+    public ListStore()
     {
-        var res = New(Type());
-        res.CheckDiagnostics();
-        res.AutoDestroyed = true;
-        return res;
+        var handle = ListStorePinvoke.New(Type());
+        SetInternalHandle(handle);
+        CheckDiagnostics();
+        AutoDestroyed = true;
     }
 
-    public ListStore Append<T>(T t)
-        where T : class
+    public ListStore<T> Append(T t)
     {
-        var obj = NewObject(Type(), 0);
+        var obj = ListStorePinvoke.NewObject(Type(), 0);
         SetManagedData(obj, Quark.ListData, t);
-        Append(this, obj);
+        ListStorePinvoke.Append(GetInternalHandle(), obj);
         Unref(obj);
         return this;
     }
 
-    public void Initialize<T>(IEnumerable<T> items)
-        where T : class
+    public void Initialize(IEnumerable<T> items)
     {
         foreach (var item in items)
             Append(item);
     }
 
-    public void Splice<T>(int pos, int removals, IEnumerable<T> objs)
+    public void Splice(int pos, int removals, IEnumerable<T> objs)
     {
         var idx = 0;
         foreach (var obj in
             objs.Select(o =>
             {
-                var obj = NewObject(Type(), 0);
+                var obj = ListStorePinvoke.NewObject(Type(), 0);
                 SetManagedData(obj, Quark.ListData, o);
                 return obj;
             }).Windowed(9_000).Select(n => n.ToArray()))
@@ -46,14 +50,14 @@ public class ListStore : ListModel
         }
     }
 
-    public void Remove(int position) => Remove(this, position);
+    public void Remove(int position) => ListStorePinvoke.Remove(GetInternalHandle(), position);
 
-    public void RemoveItems(int pos, int removals) => Splice(this, pos, removals, 0, 0);
+    public void RemoveItems(int pos, int removals) => ListStorePinvoke.Splice(GetInternalHandle(), pos, removals, 0, 0);
 
     void InternalSplice(int pos, int removals, nint[] objs)
     {
         var unmanagedPtr = MakeObjArray(objs, objs.Length);
-        Splice(this, pos, removals, unmanagedPtr, objs.Length);
+        ListStorePinvoke.Splice(GetInternalHandle(), pos, removals, unmanagedPtr, objs.Length);
         Marshal.FreeHGlobal(unmanagedPtr);
         foreach (var obj in objs)
             Unref(obj);
@@ -70,23 +74,26 @@ public class ListStore : ListModel
         }
     }
 
-    public void RemoveAll() => RemoveAll(this);
+    public void RemoveAll() => ListStorePinvoke.RemoveAll(GetInternalHandle());
+}
 
+static class ListStorePinvoke
+{
     [DllImport(Libs.LibGtk, EntryPoint = "g_list_store_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static ListStore New(nint type);
+    internal extern static nint New(nint type);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_list_store_append", CallingConvention = CallingConvention.Cdecl)]
-    extern static void Append(ListStore store, nint obj);
+    internal extern static void Append(nint store, nint obj);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_list_store_remove", CallingConvention = CallingConvention.Cdecl)]
-    extern static void Remove(ListStore store, int position);
+    internal extern static void Remove(nint store, int position);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_new", CallingConvention = CallingConvention.Cdecl)]
-    static extern nint NewObject(nint type, nint _);
+    internal static extern nint NewObject(nint type, nint _);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_list_store_remove_all", CallingConvention = CallingConvention.Cdecl)]
-    extern static void RemoveAll(ListStore store);
+    internal extern static void RemoveAll(nint store);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_list_store_splice", CallingConvention = CallingConvention.Cdecl)]
-    extern static void Splice(ListStore store, int pos, int removalCount, nint nullArray, int length);
+    internal extern static void Splice(nint store, int pos, int removalCount, nint nullArray, int length);
 }

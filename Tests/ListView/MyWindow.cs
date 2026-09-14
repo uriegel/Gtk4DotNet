@@ -4,7 +4,7 @@ class MyWindow : ApplicationWindow
 {
     public MyWindow(WindowBuilder builder) : base(builder)
     {
-        var store = ListStore.New();
+        var store = new ListStore<Item>();
         var items = Enumerable
             .Range(0, 100_000)
             .Select(n => new Item(n + 1));

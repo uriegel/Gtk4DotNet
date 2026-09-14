@@ -86,7 +86,7 @@ class MyWindow : ApplicationWindow
         inChange = false;
         if (!newModel)
         {
-            var store = ListStore.New()
+            var store = new ListStore<Contact>()
                 .Append(new Contact("Uwe Riegel", "riegel@domain.de", 1965, "mail-read"))
                 .Append(new Contact("Jim Doe", "jdoe@domain.de", 222, "mail-unread"))
                 .Append(new Contact("Jane Doe", "zjadoe@domain.de", 9999, "mail"));
@@ -135,10 +135,10 @@ class MyWindow : ApplicationWindow
         else
         {
             filter = false;
-            var store = ListStore.New();
+            var store = new ListStore<Item>();
             var oldModel = model;
             filterNumbers = CustomFilter.New<Item>(item => !filter || (item?.Number ?? 0) % 2 == 0);
-            sortModel = SortListModel.New(FilterListModel.New(store, filterNumbers), null);
+            sortModel = SortListModel.New(new FilterListModel<Item>(store, filterNumbers), null);
             model = MultiSelection.New(sortModel);
             oldModel?.Dispose();
 

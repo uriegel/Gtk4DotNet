@@ -11,7 +11,7 @@ class MyWindow : ApplicationWindow
         var shortcuts = new Window(shortcutsBuilder, "help_overlay");
         SetHelpOverlay(shortcuts);
 
-        store = ListStore.New();
+        store = new();
         store.Initialize(Persistence.Retrieve());
 
         var factory = SignalListItemFactory.New();
@@ -29,7 +29,7 @@ class MyWindow : ApplicationWindow
                 taskRow?.SetTask(item);
         });
 
-        filterListModel = FilterListModel.New(store, GetFilter(Application.Settings));
+        filterListModel = new(store, GetFilter(Application.Settings));
         var model = SingleSelection.New(filterListModel);
         tasksList.SetModel(model);
         tasksList.SetFactory(factory);
@@ -90,9 +90,9 @@ class MyWindow : ApplicationWindow
     [Widget]
     readonly Entry entry = null!;
 
-    readonly ListStore store;
+    readonly ListStore<TaskItem> store;
 
-    FilterListModel filterListModel = null!;
+    FilterListModel<TaskItem> filterListModel = null!;
 }
 
 record TaskItem(string Content)

@@ -2,30 +2,32 @@ using System.Runtime.InteropServices;
 
 namespace Gtk4DotNet;
 
-public class FilterListModel : ListModel
+public class FilterListModel<T> : ListModel
 {
-    public static FilterListModel New(ListStore model, Filter? filter)
+    public FilterListModel(ListStore<T> model, Filter? filter)
     {
-        var res = New(model, filter?.GetInternalHandle() ?? 0);
-        res.CheckDiagnostics();
+        var handle = FilterListModelPinvoke.New(model.GetInternalHandle(), filter?.GetInternalHandle() ?? 0);
+        SetInternalHandle(handle);
+        CheckDiagnostics();
         filter?.AutoDestroyed = true;
-        return res;
     }
 
     public void SetFilter(Filter? filter)
     {
         var ptr = filter?.GetInternalHandle() ?? 0;
-        SetFilter(this, ptr);
+        FilterListModelPinvoke.SetFilter(GetInternalHandle(), ptr);
         if (ptr != 0)
             Unref(ptr);
         filter?.CheckDiagnostics();
         filter?.AutoDestroyed = true;
     }
-    
+}
 
+static class FilterListModelPinvoke
+{
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_filter_list_model_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static FilterListModel New(ListStore model, nint filter);
-    
+    internal extern static nint New(nint model, nint filter);
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_filter_list_model_set_filter", CallingConvention = CallingConvention.Cdecl)]
-    extern static void SetFilter(FilterListModel model, nint filter);
+    internal extern static void SetFilter(nint model, nint filter);
 }

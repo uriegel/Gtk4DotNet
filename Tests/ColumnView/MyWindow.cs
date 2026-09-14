@@ -22,7 +22,7 @@ class MyWindow : ApplicationWindow
     {
         if (!newModel)
         {
-            var store = ListStore.New()
+            var store = new ListStore<Contact>()
                 .Append(new Contact("Uwe Riegel", "riegel@domain.de", 1965, "mail-read"))
                 .Append(new Contact("Jim Doe", "jdoe@domain.de", 222, "mail-unread"))
                 .Append(new Contact("Jane Doe", "zjadoe@domain.de", 9999, "mail"));
@@ -67,10 +67,10 @@ class MyWindow : ApplicationWindow
         else
         {
             filter = false;
-            var store = ListStore.New();
+            var store = new ListStore<Item>();
             var oldModel = model;
             filterNumbers = CustomFilter.New<Item>(item => !filter || (item?.Number ?? 0)  % 2 == 0);
-            model = SingleSelection.New(FilterListModel.New(store, filterNumbers));
+            model = SingleSelection.New(new FilterListModel<Item>(store, filterNumbers));
             oldModel?.Dispose();
 
             var namefactory = SignalListItemFactory.New();
