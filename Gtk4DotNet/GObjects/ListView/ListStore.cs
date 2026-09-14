@@ -3,12 +3,6 @@ using CsTools.Extensions;
 
 namespace Gtk4DotNet;
 
-// TODO SetDictionary<T, U>(Func<T, U> selector)
-// TODO where T : class  => where T : ListItem 
-// TODO class ListItem(string Key)
-
-// TODO SetDictionary() with StoreDictionary with callbacks
-
 public class ListStore<T> : ListModel
 {
     public ListStore()
@@ -19,7 +13,7 @@ public class ListStore<T> : ListModel
         AutoDestroyed = true;
     }
 
-    public ListStore<T> Append(T t)
+    public virtual ListStore<T> Append(T t)
     {
         var obj = ListStorePinvoke.NewObject(Type(), 0);
         SetManagedData(obj, Quark.ListData, t);
@@ -97,3 +91,4 @@ static class ListStorePinvoke
     [DllImport(Libs.LibGtk, EntryPoint = "g_list_store_splice", CallingConvention = CallingConvention.Cdecl)]
     internal extern static void Splice(nint store, int pos, int removalCount, nint nullArray, int length);
 }
+
