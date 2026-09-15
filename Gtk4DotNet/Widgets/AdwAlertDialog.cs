@@ -12,6 +12,18 @@ namespace Gtk4DotNet;
 /// </summary>
 public class AdwAlertDialog : AdwDialog
 {
+    public string Heading
+    {
+        get => _GetHeading(this).PtrToString(false) ?? "";
+        set => _SetHeading(this, value);
+    }
+
+    public string Body
+    {
+        get => _GetBody(this).PtrToString(false) ?? "";
+        set => _SetBody(this, value);
+    }
+
     /// <summary>
     /// Constructs a new <see cref="AdwAlertDialog"/> with a (optional) heading an a (optional) body.
     /// </summary>
@@ -96,6 +108,18 @@ public class AdwAlertDialog : AdwDialog
 
     [DllImport(Libs.LibAdw, EntryPoint = "adw_alert_dialog_set_response_appearance", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetResponseAppearance(AdwAlertDialog dialog, string id, AdwResponseAppearance appearance);
+
+    [DllImport(Libs.LibAdw, EntryPoint = "adw_alert_dialog_get_body", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint _GetBody(AdwAlertDialog dialog);
+
+    [DllImport(Libs.LibAdw, EntryPoint = "adw_alert_dialog_set_body", CallingConvention = CallingConvention.Cdecl)]
+    extern static void _SetBody(AdwAlertDialog dialog, string body);
+
+    [DllImport(Libs.LibAdw, EntryPoint = "adw_alert_dialog_get_heading", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint _GetHeading(AdwAlertDialog dialog);
+
+    [DllImport(Libs.LibAdw, EntryPoint = "adw_alert_dialog_set_body", CallingConvention = CallingConvention.Cdecl)]
+    extern static void _SetHeading(AdwAlertDialog dialog, string heading);
 }
 
 public record AlertDialogResponse(
