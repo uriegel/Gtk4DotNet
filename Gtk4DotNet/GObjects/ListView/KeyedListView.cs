@@ -33,9 +33,9 @@ public class KeyedListStore<T, TKey> : ListStore<T>
 
     public void ReplaceAll(IEnumerable<T> objs)
     {
-        var count = dictionary.Count;
         dictionary = objs.ToDictionary(n => selector(n));
-        base.Splice(0, count, objs);
+        RemoveAll();
+        base.Splice(0, 0, objs);
     }
 
     public T? GetValue(TKey key) => dictionary.TryGetValue(key, out var ret) ? ret : null;

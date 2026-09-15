@@ -17,6 +17,8 @@ public struct Editable
         set => SetText(editable, value);
     }
 
+    public readonly void SelectRegion(int start, int end) => SelectRegion(editable, start, end);
+
     internal Editable(nint editable) => this.editable = editable;
 
     nint editable;
@@ -26,5 +28,8 @@ public struct Editable
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_editable_set_text", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetText(nint editable, string text);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_editable_select_region", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SelectRegion(nint editable, int start, int end);
 }
 
