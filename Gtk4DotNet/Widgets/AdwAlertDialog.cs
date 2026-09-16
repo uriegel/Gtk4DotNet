@@ -118,7 +118,7 @@ public class AdwAlertDialog : AdwDialog
     [DllImport(Libs.LibAdw, EntryPoint = "adw_alert_dialog_get_heading", CallingConvention = CallingConvention.Cdecl)]
     extern static nint _GetHeading(AdwAlertDialog dialog);
 
-    [DllImport(Libs.LibAdw, EntryPoint = "adw_alert_dialog_set_body", CallingConvention = CallingConvention.Cdecl)]
+    [DllImport(Libs.LibAdw, EntryPoint = "adw_alert_dialog_set_heading", CallingConvention = CallingConvention.Cdecl)]
     extern static void _SetHeading(AdwAlertDialog dialog, string heading);
 }
 
