@@ -13,7 +13,11 @@ public class DrawingArea : Widget
         return res;
     }
 
-    public DrawingArea() : base() { }
+    public DrawingArea() : base()
+    {
+        SetInternalHandle(NewHandle());
+        CheckDiagnostics();
+    }
 
     public DrawingArea(Builder builder, string? name = null) : base(builder, name) { }
 
@@ -40,6 +44,9 @@ public class DrawingArea : Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_drawing_area_new", CallingConvention = CallingConvention.Cdecl)]
     extern static DrawingArea _New();
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_drawing_area_new", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint NewHandle();
 }
 
 

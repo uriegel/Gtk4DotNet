@@ -73,6 +73,8 @@ public class AdwAlertDialog : AdwDialog
             SignalConnect<ThreePointerDelegate>("response", (_, id, ___) => onResponse(id.PtrToString(false) ?? ""));
     }
 
+    public void SetExtraChild(Widget child) => SetExtraChild(this, child);
+
     /// <summary>
     /// Shows an AdwAlertDialog dialog and waits asynchronously until the dialog is closed. It returns on the UI thread and has to be called on the UI thread.
     /// </summary>
@@ -120,6 +122,9 @@ public class AdwAlertDialog : AdwDialog
 
     [DllImport(Libs.LibAdw, EntryPoint = "adw_alert_dialog_set_heading", CallingConvention = CallingConvention.Cdecl)]
     extern static void _SetHeading(AdwAlertDialog dialog, string heading);
+
+    [DllImport(Libs.LibAdw, EntryPoint = "adw_alert_dialog_set_extra_child", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetExtraChild(AdwAlertDialog dialog, Widget child);
 }
 
 public record AlertDialogResponse(
