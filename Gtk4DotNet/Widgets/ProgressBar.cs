@@ -23,6 +23,14 @@ public class ProgressBar : Widget
         get => GetFraction(this);
     }
 
+    public double PulseStep
+    {
+        set => SetPulseStep(this, value);
+        get => GetPulseStep(this);
+    }
+
+    public void Pulse() => Pulse(this);
+
     public ProgressBar() : base() { }
 
     public ProgressBar(Builder builder, string? name = null) : base(builder, name) { }
@@ -44,6 +52,15 @@ public class ProgressBar : Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_progress_bar_get_fraction", CallingConvention = CallingConvention.Cdecl)]
     extern static double GetFraction(ProgressBar progressBar);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_progress_bar_set_pulse_step", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetPulseStep(ProgressBar progressBar, double fraction);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_progress_bar_get_pulse_step", CallingConvention = CallingConvention.Cdecl)]
+    extern static double GetPulseStep(ProgressBar progressBar);
+    
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_progress_bar_pulse", CallingConvention = CallingConvention.Cdecl)]
+    extern static void Pulse(ProgressBar progressBar);
 }
 
 
