@@ -43,6 +43,12 @@ public class ColumnView : Widget
         cols.Add(column);
     }
 
+    public void InsertColumn(int position, ColumnViewColumn column)
+    {
+        InsertColumn(this, position, column);
+        cols.Insert(position, column);
+    }
+
     public void RemoveColumn(ColumnViewColumn column)
     {
         RemoveColumn(this, column);
@@ -153,13 +159,18 @@ public class ColumnView : Widget
     Dictionary<nint, int>? CreatePositions()
         => GetModel()?.GetRawItems().Select((n, i) => (n, i)).ToDictionary();
 
-    Dictionary<nint, int>? positions;    
+    Dictionary<nint, int>? positions;
 
-    readonly List<ColumnViewColumn> cols = [];   [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_set_model", CallingConvention = CallingConvention.Cdecl)]
+    readonly List<ColumnViewColumn> cols = [];   
+    
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_set_model", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetModel(ColumnView columnView, nint selectionModel);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_append_column", CallingConvention = CallingConvention.Cdecl)]
     extern static void AppendColumn(ColumnView columnView, ColumnViewColumn column);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_insert_column", CallingConvention = CallingConvention.Cdecl)]
+    extern static void InsertColumn(ColumnView columnView, int position, ColumnViewColumn column);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_get_enable_rubberband", CallingConvention = CallingConvention.Cdecl)]
     extern static bool GetEnableRubberband(ColumnView columnView);
