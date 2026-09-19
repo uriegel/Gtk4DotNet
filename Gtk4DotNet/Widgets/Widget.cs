@@ -534,6 +534,8 @@ public class Widget : GObject
         return res;
     }
 
+    public bool IsFocus() => IsFocus(this);
+
     Dictionary<string, PropertyChangedEventHandler>? BindingsDelegates
     {
         get => GetManagedData<Dictionary<string, PropertyChangedEventHandler>>(BINDINGS_DELEGATES);
@@ -686,7 +688,10 @@ public class Widget : GObject
 
     [DllImport(Libs.LibGtk, CallingConvention = CallingConvention.Cdecl, EntryPoint = "gtk_widget_remove_tick_callback")]
     static extern void RemoveTickCallback(Widget widget, int id);
-    
+
+    [DllImport(Libs.LibGtk, CallingConvention = CallingConvention.Cdecl, EntryPoint = "gtk_widget_is_focus")]
+    static extern bool IsFocus(Widget widget);
+        
     #endregion
 }
 

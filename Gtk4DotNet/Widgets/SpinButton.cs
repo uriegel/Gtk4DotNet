@@ -23,6 +23,14 @@ public class SpinButton : Widget
         return res;
     }
 
+    public double Value
+    {
+        get => GetValue(this);
+        set => SetValue(this, value);
+    }
+
+    public int ValueAsInt { get => GetValueAsInt(this); }
+
     public event Action OnActivate
     {
         add
@@ -48,4 +56,14 @@ public class SpinButton : Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_spin_button_new_with_range", CallingConvention = CallingConvention.Cdecl)]
     extern static SpinButton _New(double min, double max, double step);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_spin_button_set_value", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetValue(SpinButton spinButton, double value);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_spin_button_get_value", CallingConvention = CallingConvention.Cdecl)]
+    extern static double GetValue(SpinButton spinButton);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_spin_button_get_value_as_int", CallingConvention = CallingConvention.Cdecl)]
+    extern static int GetValueAsInt(SpinButton spinButton);
+    
 }
