@@ -26,7 +26,7 @@ public class SearchEntry : Widget
         }
     }
 
-    public Editable AsEditable() => new(GetInternalHandle());
+    public Editable AsEditable() => new(this);
 
     public SearchEntry() : base() { }
 

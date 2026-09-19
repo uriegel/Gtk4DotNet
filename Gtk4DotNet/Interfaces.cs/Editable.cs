@@ -17,19 +17,39 @@ public struct Editable
         set => SetText(editable, value);
     }
 
+    public event Action OnInsertText
+    {
+        add
+        {
+            InsertTextDelegate unmanagedDelegate = (_, text, length, position, __) =>
+            {
+                value();
+            };
+            
+            var id = editable.SignalConnectForEvent("insert-text", unmanagedDelegate);
+            Widget.eventDatas.TryAdd(value, new(id, value, unmanagedDelegate));
+        }
+        remove
+        {
+            if (Widget.eventDatas.Remove(value, out var data))
+                editable.SignalDisconnectEvent(data.Id);
+        }
+    }
+
     public readonly void SelectRegion(int start, int end) => SelectRegion(editable, start, end);
 
-    internal Editable(nint editable) => this.editable = editable;
+    internal Editable(Widget editable) => this.editable = editable;
 
-    nint editable;
+    Widget editable;
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_editable_get_text", CallingConvention = CallingConvention.Cdecl)]
-    extern static nint GetText(nint editable);
+    extern static nint GetText(Widget editable);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_editable_set_text", CallingConvention = CallingConvention.Cdecl)]
-    extern static void SetText(nint editable, string text);
+    extern static void SetText(Widget editable, string text);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_editable_select_region", CallingConvention = CallingConvention.Cdecl)]
-    extern static void SelectRegion(nint editable, int start, int end);
+    extern static void SelectRegion(Widget editable, int start, int end);
 }
 
+delegate void InsertTextDelegate(nint _, string text, int length, nint position, nint __);
