@@ -274,6 +274,12 @@ public class GObject : BaseHandle
         return SignalConnect(this, name, Marshal.GetFunctionPointerForDelegate(callback), 0, 0);
     }
 
+    internal long SignalConnectForEvent(nint p, string name, Delegate callback, bool manualFreeing = false)
+    {
+        EventFinalizer();
+        return SignalConnect(p, name, Marshal.GetFunctionPointerForDelegate(callback), 0, 0);
+    }
+
     public void SignalDisconnect(DelegateId id)
     {
         SignalDisconnect(this, id.SignalId);
@@ -375,6 +381,9 @@ public class GObject : BaseHandle
     [DllImport(Libs.LibGtk, EntryPoint = "g_signal_connect_object", CallingConvention = CallingConvention.Cdecl)]
     protected extern static long SignalConnect(GObject obj, string name, nint callback, nint o, int n3);
 
+    [DllImport(Libs.LibGtk, EntryPoint = "g_signal_connect_object", CallingConvention = CallingConvention.Cdecl)]
+    protected extern static long SignalConnect(nint p, string name, nint callback, nint o, int n3);
+
     [DllImport(Libs.LibGtk, EntryPoint = "g_signal_handler_disconnect", CallingConvention = CallingConvention.Cdecl)]
     protected extern static void SignalDisconnect(GObject obj, long signalId);
 
@@ -419,6 +428,12 @@ public class GObject : BaseHandle
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_object_ref", CallingConvention = CallingConvention.Cdecl)]
     static extern nint Ref(GObject obj);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_signal_stop_emission_by_name", CallingConvention = CallingConvention.Cdecl)]
+    static extern void StopSignalEmissionByName(GObject obj, string signal);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "g_signal_stop_emission_by_name", CallingConvention = CallingConvention.Cdecl)]
+    internal static extern void StopSignalEmissionByName(nint obj, string signal);
 
     bool diagnosticsSet;
 
