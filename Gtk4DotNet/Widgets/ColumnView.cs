@@ -49,6 +49,14 @@ public class ColumnView : Widget
         cols.Insert(position, column);
     }
 
+    public void RemoveColumn(int pos)
+    {
+        using var cols = GetColumns();
+        var col = cols.Skip(pos).FirstOrDefault();
+        if (col != null)
+            RemoveColumn(col);
+    }
+
     public void RemoveColumn(ColumnViewColumn column)
     {
         RemoveColumn(this, column);
