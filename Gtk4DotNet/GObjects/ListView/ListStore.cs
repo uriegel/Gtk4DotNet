@@ -13,7 +13,7 @@ public class ListStore<T> : ListModel
         AutoDestroyed = true;
     }
 
-    public virtual ListStore<T> Append(T t)
+    public ListStore<T> Append(T t)
     {
         var obj = ListStorePinvoke.NewObject(Type(), 0);
         SetManagedData(obj, Quark.ListData, t);

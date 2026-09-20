@@ -6,15 +6,19 @@ public class KeyedListStore<T, TKey> : ListStore<T>
 {
     public KeyedListStore(Func<T, TKey> selector) => this.selector = selector;
 
-    public override ListStore<T> Append(T t)
+    public new bool Append(T t)
     {
         var key = selector(t);
-        dictionary.TryAdd(key, t);
-        base.Append(t);
-        return this;
+        if (dictionary.TryAdd(key, t))
+        {
+            base.Append(t);
+            return true;
+        }
+        else
+            return false;
     }
 
-    public void Delete(TKey key)
+    public bool Delete(TKey key)
     {
         if (dictionary.TryGetValue(key, out var t))
         {
@@ -22,13 +26,16 @@ public class KeyedListStore<T, TKey> : ListStore<T>
 
             var idx = 0;
             foreach (var item in GetItems<T>())
-            {               
+            {
                 if (ReferenceEquals(item, t))
                     break;
                 idx++;
             }
             base.Remove(idx);
+            return true;
         }
+        else 
+            return false;
     }
 
     public void ReplaceAll(IEnumerable<T> objs)
