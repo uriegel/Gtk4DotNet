@@ -523,6 +523,32 @@ public class Widget : GObject
         return res;
     }
 
+    public Widget? GetNextSibling()
+    {
+        var p = GetNextSibling(this);
+        if (p == 0)
+            return null;
+        var res = new Widget();
+        res.SetInternalHandle(p);
+        res.AutoDestroyed = true;
+        return res;
+    }
+
+    public IEnumerable<Widget> GetChildren()
+    {
+        var w = GetFirstChild();
+        if (w == null)
+            yield break; 
+        yield return w;
+        while (true)
+        {
+            w = w.GetNextSibling();
+            if (w == null)
+                yield break;
+            yield return w;
+        }
+    }
+
     public TWidget? GetFirstChild<TWidget>() where TWidget : Widget, new()
     {
         var p = GetFirstChild(this);
@@ -667,6 +693,9 @@ public class Widget : GObject
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_first_child", CallingConvention = CallingConvention.Cdecl)]
     extern static nint GetFirstChild(Widget widget);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_next_sibling", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint GetNextSibling(Widget widget);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_widget_get_root", CallingConvention = CallingConvention.Cdecl)]
     extern static nint GetRoot(Widget widget);

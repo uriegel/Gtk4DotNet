@@ -12,7 +12,16 @@ public class EditableLabel : Widget
         res.CheckDiagnostics();
         return res;
     }
-    
+
+    /// <summary>
+    /// Is the label text selectable?
+    /// </summary>
+    public EllipsizeMode Ellipsize
+    {
+        get => FindLabel(this)?.Ellipsize ?? EllipsizeMode.None;
+        set => FindLabel(this)?.Ellipsize = value;
+    }
+
     public  void StartEditing() => StartEditing(this);
 
     public void StopEditing(bool commit) => StopEditing(this, commit);
@@ -26,6 +35,19 @@ public class EditableLabel : Widget
     public EditableLabel(Builder builder, string name, Action<nint> replaceParent)
         : base(builder, name, replaceParent) { }
 
+
+    static Label? FindLabel(EditableLabel el)
+    {
+        var stack = el.GetChildren().FirstOrDefault(n => n.WidgetName == "GtkStack");
+        var labelPtr = stack?.GetChildren().FirstOrDefault(n => n.WidgetName == "GtkLabel");
+        if (labelPtr == null)
+            return null;
+        var label = new Label();
+        label.SetInternalHandle(labelPtr.GetInternalHandle());
+        label.AutoDestroyed = true;
+        label.CheckDiagnostics();
+        return label;
+    }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_editable_label_new", CallingConvention = CallingConvention.Cdecl)]
     extern static EditableLabel _New(string label);
