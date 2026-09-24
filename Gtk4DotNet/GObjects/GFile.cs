@@ -152,7 +152,10 @@ public class GFile : GObject
 
                     try
                     {
-                        await CopyAsync(destination, flags, true, cb, cancellation);
+                        if (move)
+                            await MoveAsync(destination, flags, true, cb, cancellation);
+                        else
+                            await CopyAsync(destination, flags, true, cb, cancellation);    
                         tcs.TrySetResult();
                     }
                     catch (Exception e)
