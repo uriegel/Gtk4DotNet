@@ -47,6 +47,8 @@ public class Picture : Widget
 
     public void SetPaintable(IPaintable? paintable) => SetPaintable(this, paintable?.GetRaw() ?? 0);
 
+    public void SetPixbuf(Pixbuf pic) => SetPixbuf(this, pic);
+
     public Picture() : base() { }
 
     public Picture(Builder builder, string? name = null) : base(builder, name) { }
@@ -71,6 +73,9 @@ public class Picture : Widget
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_picture_set_paintable", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetPaintable(Picture picture, nint paintable);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_picture_set_pixbuf", CallingConvention = CallingConvention.Cdecl)]
+    extern static void SetPixbuf(Picture picture, Pixbuf paintable);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_picture_get_content_fit", CallingConvention = CallingConvention.Cdecl)]
     extern static ContentFit GetContentFit(Picture picture);

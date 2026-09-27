@@ -83,6 +83,19 @@
             "enableStepFiltering": true,
             "console": "internalConsole"
         }, {
+            "name": "Picture",
+            "type": "coreclr",
+            "request": "launch",
+            "requireExactSource": true, 
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/Tests/Picture/bin/Debug/net10.0/Picture.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/Tests/Picture",
+            "stopAtEntry": false,
+            "justMyCode": false,
+            "enableStepFiltering": true,
+            "console": "internalConsole"
+        }, {
             "name": "Multiple Windows",
             "type": "coreclr",
             "request": "launch",

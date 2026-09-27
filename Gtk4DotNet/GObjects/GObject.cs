@@ -280,6 +280,8 @@ public class GObject : BaseHandle
         return SignalConnect(p, name, Marshal.GetFunctionPointerForDelegate(callback), 0, 0);
     }
 
+    internal void ResetDiagnostics() => diagnosticsSet = false;
+
     public void SignalDisconnect(DelegateId id)
     {
         SignalDisconnect(this, id.SignalId);
