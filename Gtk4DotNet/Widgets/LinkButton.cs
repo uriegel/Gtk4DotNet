@@ -7,13 +7,8 @@ namespace Gtk4DotNet;
 /// </summary>
 public class LinkButton : Button
 {
-    public static LinkButton New(string uri, string label)
-    {
-        var btn = _NewWithLabel(uri, label);
-        btn.CheckDiagnostics();
-        return btn;
-    }
+    public LinkButton(string uri, string label) : base(NewWithLabel(uri, label)) { }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_link_button_new_with_label", CallingConvention = CallingConvention.Cdecl)]
-    extern static LinkButton _NewWithLabel(string uri, string label);
+    extern static nint NewWithLabel(string uri, string label);
 }

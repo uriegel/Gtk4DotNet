@@ -6,12 +6,12 @@ var copyDir = $"{CsTools.Directory.GetHomeDir()}/Copy";
 var app = new AdwApplication("de.uriegel.gtk4dotnet");
 app.WithDiagnostics();
 app.OnActivate += () =>
-    app.NewWindow()
-    .Title("Copy File👍")
-    .DefaultSize(600, 200)
-    .Pipe(w => w.Child(
-        Button
-            .NewWithLabel($@"
+{
+    using var window = app.NewWindow();
+    window.Title = "Copy File👍";
+    window.SetDefaultSize(600, 200);
+    window.SetChild(
+        new Button($@"
 To test copying a file, take a large file
 and put it in the sub directory '{copyDir}'.
 A copy will be created when pressing this button.")
@@ -19,8 +19,9 @@ A copy will be created when pressing this button.")
             .MarginEnd(20)
             .MarginTop(20)
             .MarginBottom(20)
-            .SideEffect(b => b.OnClicked += TestCopy)))
-    .Show();
+            .SideEffect(b => b.OnClicked += TestCopy));
+    window.Show();
+};
 app.Run();
 
 async void TestCopy()

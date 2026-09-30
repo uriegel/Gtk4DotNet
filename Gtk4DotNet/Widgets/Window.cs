@@ -184,27 +184,3 @@ public class Window : Widget
     bool forceClose;
 }
 
-public static class WindowExtensions
-{
-    public static THandle Title<THandle>(this THandle window, string title)
-            where THandle : Window
-            => window.SideEffect(w => w.Title = title);
-
-    public static THandle DefaultSize<THandle>(this THandle window, int width, int height)
-        where THandle : Window
-        => window.SideEffect(w => w.SetDefaultSize(width, height));
-
-    public static THandle Child<THandle>(this THandle window, Widget child)
-        where THandle : Window
-        => window.SideEffect(w => w.SetChild(child));
-
-    public static THandle Closing<THandle>(this THandle window, Func<Window, bool> preventClosing)
-        where THandle : Window
-        => window.SideEffect(a => window.OnClose((Window win) => preventClosing(win)));
-
-    public static THandle Closing<THandle>(this THandle window, Func<Window, Task<bool>> preventClosing)
-        where THandle : Window
-        => window.SideEffect(a => window.OnClose((Window win) => preventClosing(win)));
-}
-
-

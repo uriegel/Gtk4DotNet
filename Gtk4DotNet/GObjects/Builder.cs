@@ -27,18 +27,7 @@ Resource '{path}' could not be found! Could not create Builder.
     public void GetWindow(Window window, string objectName)
         => window.SetInternalHandle(_GetWidget(this, objectName));
     
-    public THandle GetWidget<THandle>(string objectName)
-            where THandle : Widget, new()
-    {
-        var p = _GetWidget(this, objectName);
-        var res = new THandle();
-        res.SetInternalHandle(p);
-        res.CheckDiagnostics();
-        return res;
-    }
-
-    internal nint GetWidgetPtr(string objectName)
-        => _GetWidget(this, objectName);
+    internal nint GetWidgetPtr(string objectName) => _GetWidget(this, objectName);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_builder_new_from_resource", CallingConvention = CallingConvention.Cdecl)]
     extern static Builder _FromResource(string path);

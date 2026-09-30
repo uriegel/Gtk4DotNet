@@ -10,14 +10,12 @@ public class Box : Widget
         get => GetSpacing(this);
         set => SetSpacing(this, value);
     }
-    public static Box New(Orientation orientation, int spacing = 0)
+    public Box(Orientation orientation, int spacing = 0) : base()
     {
-        var res = _New(orientation, spacing);
-        res.CheckDiagnostics();
-        return res;
+        var handle = New(orientation, spacing);
+        SetInternalHandle(handle);
+        CheckDiagnostics();
     }
-
-    public Box() : base() { }
 
     public Box(Builder builder, string? name = null) : base(builder, name) { }
 
@@ -33,8 +31,10 @@ public class Box : Widget
     public Box SetSpacing(int spacing)
         => this.SideEffect(_ => SetSpacing(this, spacing));
 
+    internal Box() : base() {}
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_box_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static Box _New(Orientation orientation, int spacing = 0);
+    extern static nint New(Orientation orientation, int spacing = 0);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_box_append", CallingConvention = CallingConvention.Cdecl)]
     extern static void Append(Box box, Widget widget);

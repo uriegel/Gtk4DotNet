@@ -4,14 +4,16 @@ using Gtk4DotNet;
 var app = new AdwApplication("de.uriegel.gtk4dotnet");
 app.WithDiagnostics();
 app.OnActivate += () =>
-    app.NewWindow()
-        .Title("Hello WebView👍")
-        .DefaultSize(800, 600)
-        .Child(WebView
-            .New()
-            .BackgroundColor(Color.Transparent)
-            .LoadUri("https://github.com/uriegel/Gtk4DotNet"))
-        .Show();
+{
+    using var window = app.NewWindow();
+    window.Title = "Hello WebView👍";
+    window.SetDefaultSize(800, 600);
+    window.SetChild(WebView
+        .New()
+        .BackgroundColor(Color.Transparent)
+        .LoadUri("https://github.com/uriegel/Gtk4DotNet"));
+    window.Show();
+};
 app.Run();
 
 

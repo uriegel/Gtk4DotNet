@@ -21,11 +21,11 @@ public class MenuButton : Widget
         set => SetIconName(this, value);
     }
 
-    public static MenuButton New()
+    public MenuButton() : base()
     {
-        var res = _New();
-        res.CheckDiagnostics();
-        return res;
+        var p = New();
+        SetInternalHandle(p);
+        CheckDiagnostics();
     }
 
     public void Popup() => Popup(this);
@@ -33,15 +33,13 @@ public class MenuButton : Widget
 
     public void SetChild(Widget child) => SetChild(this, child);
 
-    public MenuButton() : base() { }
-
     public MenuButton(Builder builder, string? name = null) : base(builder, name) { }
 
     public MenuButton(Builder builder, string name, Action<nint> replaceParent)
         : base(builder, name, replaceParent) { }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_menu_button_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static MenuButton _New();
+    extern static nint New();
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_menu_button_popup", CallingConvention = CallingConvention.Cdecl)]
     extern static void Popup(MenuButton button);

@@ -20,13 +20,7 @@ public class Button : Widget
     /// Creates a new button with a label.
     /// </summary>
     /// <param name="label"></param>
-    /// <returns></returns>
-    public static Button NewWithLabel(string label)
-    {
-        var res = _NewWithLabel(label);
-        res.CheckDiagnostics();
-        return res;
-    }
+    public Button(string label) : this(NewWithLabel(label)) { }
 
     public event Action OnClicked
     {
@@ -43,15 +37,19 @@ public class Button : Widget
         }
     }
 
-    public Button() : base() { }
-
     public Button(Builder builder, string? name = null) : base(builder, name) { }
 
     public Button(Builder builder, string name, Action<nint> replaceParent)
         : base(builder, name, replaceParent) { }
 
+    internal Button(nint handle)  : base() 
+    {
+        SetInternalHandle(handle);
+        CheckDiagnostics();
+    }
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_button_new_with_label", CallingConvention = CallingConvention.Cdecl)]
-    extern static Button _NewWithLabel(string label);
+    extern static nint NewWithLabel(string label);
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_button_get_icon_name", CallingConvention = CallingConvention.Cdecl)]
     extern static IntPtr GetIconName(Button button);
@@ -60,17 +58,4 @@ public class Button : Widget
     extern static void SetIconName(Button button, string iconName);
 }
 
-public static class ButtonExtensions
-{
-    /// <summary>
-    /// A button can contain an icon by name
-    /// </summary>
-    /// <typeparam name="THandle"></typeparam>
-    /// <param name="button"></param>
-    /// <param name="iconName"></param>
-    /// <returns>This button so that chained method calls are possible</returns>
-    public static THandle IconName<THandle>(this THandle button, string iconName)
-        where THandle : Button
-        => button.SideEffect(b => b.IconName = iconName);
-}
 

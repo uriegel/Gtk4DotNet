@@ -4,23 +4,24 @@ using Gtk4DotNet;
 var app = new Application("de.uriegel.gtk4dotnet");
 app.WithDiagnostics(true);
 app.OnActivate += () =>
-    app.NewWindow()
-    .Title("With Style👍")
-    .DefaultSize(200, 200)
-    .SideEffect(_ => StyleContext.AddProviderForDisplay(
+{
+    using var window = app.NewWindow();
+    window.Title = "With Style👍";
+    window.SetDefaultSize(200, 200);
+    StyleContext.AddProviderForDisplay(
         Display.GetDefault(),
         CssProvider.New().FromResource("style"),
-        StyleProviderPriority.Application))
-    .Child(Box
-        .New(Orientation.Vertical, 10)
+        StyleProviderPriority.Application);
+    window.SetChild(new Box(Orientation.Vertical, 10)
         .Margin(10)
-        .Append(Button.NewWithLabel("Button 1"))
-        .Append(Button.NewWithLabel("Button 2").CssClass("button-1"))
-        .Append(Button.NewWithLabel("Hover me!").SetName("button-2"))
-        .Append(MenuButton.New())
-        .Append(Button.NewWithLabel("Suggested").CssClass("destructive-action"))
-        .Append(Button.NewWithLabel("Destructive").CssClass("suggested-action")))
-    .Show();
+        .Append(new Button("Button 1"))
+        .Append(new Button("Button 2").CssClass("button-1"))
+        .Append(new Button("Hover me!").SetName("button-2"))
+        .Append(new MenuButton())
+        .Append(new Button("Suggested").CssClass("destructive-action"))
+        .Append(new Button("Destructive").CssClass("suggested-action")));
+    window.Show();
+};
 app.Run();
 
 

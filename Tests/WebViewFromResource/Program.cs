@@ -7,14 +7,16 @@ var app = new AdwApplication("de.uriegel.gtk4dotnet")
 };
 app.WithDiagnostics();
 app.OnActivate += () =>
-    app.NewWindow()
-    .Title("WebView from Resource👍")
-    .DefaultSize(800, 600)
-    .Child(WebView
+{
+    using var window = app.NewWindow();
+    window.Title = "WebView from Resource👍";
+    window.SetDefaultSize(800, 600);
+    window.SetChild(WebView
         .New()
         .BackgroundColor(Color.Transparent)
-        .LoadUri("res://website/index.html"))
-    .Show();
+        .LoadUri("res://website/index.html"));
+    window.Show();
+};
 app.Run();
 
 

@@ -7,23 +7,24 @@ using Gtk4DotNet.Extensions;
 var app = new Application("de.uriegel.gtk4dotnet");
 app.WithDiagnostics(true);
 app.OnActivate += () =>
-    app.NewWindow()
-    .Title("Hello Icons👍")
-    .DefaultSize(600, 200)
-    .Child(LinkButton
-        .New("http://localhost:9865", "Open Website to show Icons"))
-    .SideEffect(_ => WebServer
-                        .New()
-                        .Logging(LogLevel.Info)
-                        .Http(9865)
-                        .WebsiteFromResource()
-                        .Route(MethodRoute
-                        .New(Method.Get)
-                            .Add(PathRoute.New("/iconfromname").Request(GetIconFromName))
-                            .Add(PathRoute.New("/iconfromext").Request(GetIconFromExtension)))
-                        .Build()
-                        .Start())
-    .Show();
+{
+    using var window = app.NewWindow();
+    window.Title = "Hello Icons👍";
+    window.SetDefaultSize(600, 200);
+    window.SetChild(new LinkButton("http://localhost:9865", "Open Website to show Icons"));
+    WebServer
+        .New()
+        .Logging(LogLevel.Info)
+        .Http(9865)
+        .WebsiteFromResource()
+        .Route(MethodRoute
+        .New(Method.Get)
+            .Add(PathRoute.New("/iconfromname").Request(GetIconFromName))
+            .Add(PathRoute.New("/iconfromext").Request(GetIconFromExtension)))
+        .Build()
+        .Start();
+    window.Show();
+};
 app.Run();
 
 static async Task<bool> GetIconFromName(IRequest request)

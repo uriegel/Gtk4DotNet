@@ -16,11 +16,11 @@ public class Grid : Widget
         set => SetColumnSpacing(this, value);
     }
 
-    public static Grid New()
+    public Grid() : base()
     {
-        var grid = _New();
-        grid.CheckDiagnostics();
-        return grid;
+        var handle = New();
+        SetInternalHandle(handle);
+        CheckDiagnostics();
     }
     public Grid Attach(Widget widget, int column, int row, int columnSpan, int rowSpan)
         => this.SideEffect(g => Attach(this, widget, column, row, columnSpan, rowSpan));
@@ -31,15 +31,13 @@ public class Grid : Widget
     public Grid SetColumnSpacing(int spacing)
         => this.SideEffect(g => SetColumnSpacing(this, spacing));
 
-    public Grid() : base() { }
-
     public Grid(Builder builder, string? name = null) : base(builder, name) { }
 
     public Grid(Builder builder, string name, Action<nint> replaceParent)
         : base(builder, name, replaceParent) { }
 
     [DllImport(Libs.LibGtk, EntryPoint="gtk_grid_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static Grid _New();
+    extern static nint New();
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_grid_attach", CallingConvention = CallingConvention.Cdecl)]
     extern static void Attach(Grid grid, Widget widget, int column, int row, int columnSpan, int rowSpan);

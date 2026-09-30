@@ -11,7 +11,6 @@ class IconNameItem : Box
     public void SetFromIconName(string name)
         => image.SetFromIconName(name);
 
-    public IconNameItem() : base() {}
     public IconNameItem(Builder builder) : base(builder, "listitem") { }
 
     [Widget]

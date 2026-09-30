@@ -496,7 +496,10 @@ public class Widget : GObject
         object CreateInnerWidget(ConstructorInfo ctor, Builder builder, string innerTemplate, string name)
         {
             using var innerBuilder = Builder.FromDotNetResource(innerTemplate);
-            var container = builder.GetWidget<Box>(name);
+
+            var container = new Box();
+            container.SetInternalHandle(builder.GetWidgetPtr(name));
+            container.CheckDiagnostics();
             var obj = ctor.Invoke([innerBuilder, name]);
             if (obj is Widget w)
                 container.Append(w);
@@ -506,7 +509,9 @@ public class Widget : GObject
         object CreateAndReplaceInnerWidget(ConstructorInfo ctor, Builder builder, string innerTemplate, string name)
         {
             using var innerBuilder = Builder.FromDotNetResource(innerTemplate);
-            var container = builder.GetWidget<Box>(name);
+            var container = new Box();
+            container.SetInternalHandle(builder.GetWidgetPtr(name));
+            container.CheckDiagnostics();
             var obj = ctor.Invoke([innerBuilder, name, GetParent(container)]);
             return obj;
         }

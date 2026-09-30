@@ -5,9 +5,9 @@ app.WithDiagnostics(true);
 app.OnActivate += () =>
 {
     using var window = app.NewWindow();
-    window.Title("Hello World👍")
-    .DefaultSize(600, 200)
-    .Show();
+    window.Title = "Hello World👍";
+    window.SetDefaultSize(600, 200);
+    window.Show();
 };
 app.Run();
 

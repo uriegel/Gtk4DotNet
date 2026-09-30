@@ -21,8 +21,8 @@ public class AdwApplication : Application
     {
         var app = NewAdw(applicationId, flags);
         Gtk.Init();
-        CheckDiagnostics();
         SetInternalHandle(app);
+        CheckDiagnostics();
     }
 
     [DllImport(Libs.LibAdw, EntryPoint = "adw_application_new", CallingConvention = CallingConvention.Cdecl)]
