@@ -20,66 +20,69 @@ public class Application : GObject
     public static string ApplicationId { get; private set; } = null!;
 
     /// <summary>
+    /// Registers the res:// scheme for WebView and delivers website from .NET Resource
+    /// </summary>
+    /// <returns>Application for chaining calls</returns>
+    public bool WebsiteFromResource { get; set; }
+
+    /// <summary>
+    /// The most neccesary event: when the application is activated, the main window should be created.
+    /// </summary>
+    public event Action OnActivate
+    {
+        add
+        {
+            SignalConnect<OnePointerDelegate>("activate", _ =>
+            {
+                if (WebsiteFromResource)
+                {
+                    WebKitWebContext.GetDefault().RegisterUriScheme("res", WebView.OnResRequest);
+                    OnFinalize(WebKitWebContext.DisposeUriSchemes);
+                }
+                value();
+            });
+        }
+        remove
+        {
+        }
+    }
+
+    public event Action<GFile[]> OnOpen
+    {
+        add
+        {
+            SignalConnect<FivePointerDelegate>("open", (_, filesPtr, n, _, _) =>
+            {
+                var files = Enumerable.Range(0, (int)n).Select(n =>
+                {
+                    var p = Marshal.ReadIntPtr(filesPtr, n * IntPtr.Size);
+                    var gfile = new GFile();
+                    gfile.SetInternalHandle(p);
+                    gfile.AutoDestroyed = true;
+                    gfile.CheckDiagnostics();
+                    return gfile;
+
+                }).ToArray();
+                value(files);
+            });
+        }
+        remove
+        {
+        }
+    }
+
+    /// <summary>
     /// Creates a new GtkApplication. It is not neccessary to call Gtk.Init
     /// </summary>
     /// <param name="applicationId">The Gtk Application ID this appltcation is connected to</param>
     /// <param name="flags"></param>
-    /// <returns>Application for chaining calls</returns>
-    public static Application New(string applicationId, ApplicationFlags flags = ApplicationFlags.None)
+    public Application(string applicationId, ApplicationFlags flags = ApplicationFlags.None)
     {
-        var app = _New(applicationId, flags);
+        var app = New(applicationId, flags);
         ApplicationId = applicationId;
         Gtk.Init();
-        return app;
-    }
-
-    /// <summary>
-    /// Creates a new Adwaita application
-    /// </summary>
-    /// <param name="applicationId">The Gtk Application ID this application is connected to</param>
-    /// <param name="flags"></param>
-    /// <returns>Application for chaining calls</returns>
-    public static Application NewAdwaita(string applicationId, ApplicationFlags flags = ApplicationFlags.None)
-    {
-        var app = _NewAdw(applicationId, flags);
-        ApplicationId = applicationId;
-        Gtk.Init();
-        return app;
-    }
-
-    /// <summary>
-    /// The most neccesary callback: when the application is activated, the main window should be created.
-    /// </summary>
-    /// <param name="activate"></param>
-    /// <returns>Application for chaining calls</returns>
-    public Application OnActivate(Action<Application> activate)
-        => this.SideEffect(_ => SignalConnect<OnePointerDelegate>("activate", _ =>
-        {
-            if (withWebsiteFromResource)
-            {
-                WebKitWebContext.GetDefault().RegisterUriScheme("res", WebView.OnResRequest);
-                OnFinalize(WebKitWebContext.DisposeUriSchemes);
-            }
-            activate(this);
-        }));
-
-    public Application OnOpen(Action<Application, GFile[]> onOpen)
-    {
-        SignalConnect<FivePointerDelegate>("open", (_, filesPtr, n, _, _) =>
-        {
-            var files = Enumerable.Range(0, (int)n).Select(n =>
-            {
-                var p = Marshal.ReadIntPtr(filesPtr, n * IntPtr.Size);
-                var gfile = new GFile();
-                gfile.SetInternalHandle(p);
-                gfile.AutoDestroyed = true;
-                gfile.CheckDiagnostics();
-                return gfile;
-
-            }).ToArray();
-            onOpen(this, files);
-        });
-        return this;
+        CheckDiagnostics();
+        SetInternalHandle(app);
     }
 
     /// <summary>
@@ -87,55 +90,30 @@ public class Application : GObject
     /// This method has to called before other GObject base types are created.
     /// </summary>
     /// <param name="gobjectTracing">Eyery time a GObject is freed, this will be logged</param>
-    /// <returns>Application for chaining calls</returns>
-    public Application WithDiagnostics(bool gobjectTracing = false)
+    public void WithDiagnostics(bool gobjectTracing = false)
     {
         Gtk.Diagnostics = true;
         Gtk.GObjectTracing = gobjectTracing;
         CheckDiagnostics();
         Console.WriteLine($"Running process: {Environment.ProcessId}");
-        return this;
     }
 
-    /// <summary>
-    /// Registers the res:// scheme for WebView and delivers website from .NET Resource
-    /// </summary>
-    /// <returns>Application for chaining calls</returns>
-    public Application WithWebsiteFromResource()
-    {
-        withWebsiteFromResource = true;
-        return this;
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns>Application for chaining calls</returns>
-    public Application WithAdditionals()
-    {
-        AspectContainer.GetObjectType();
-        return this;
-    }
+    public void WithAdditionals() => AspectContainer.GetObjectType();
 
     /// <summary>
     /// Using globally GSettings via the static <see cref="Settings"/>. There has to be a gschema.xml present an a build chain in the csproj project file,
     /// see README.md in https://github.com/uriegel/Gtk4DotNet/blob/Main/README.md
     /// </summary>
     /// <returns>Application for chaining calls</returns>
-    public Application WithSettings()
-    {
-        Settings = GSettings.NewFromResource(ApplicationId, true);
-        return this;
-    }
+    public void WithSettings() => Settings = GSettings.NewFromResource(ApplicationId, true);
 
     /// <summary>
     /// If a Webkit Webview is used and defined in a template.ui this method has to be called to register the WebKit for using with a builder
     /// </summary>
     /// <returns>Application for chaining calls</returns>
-    public Application WithWebKit()
+    public void WithWebKit()
     {
         var t = WebView.Type();
-        return this;
     }
 
     /// <summary>
@@ -214,15 +192,13 @@ public class Application : GObject
 
     public void SetAccelsForAction(string action, [In] string?[] accels) => SetAccelsForAction(this, action, accels);
 
+    internal Application() {}
+    internal Application(string applicationId) => ApplicationId = applicationId;
 
     readonly GtkActions actions = new(false);
-    bool withWebsiteFromResource;
-
-    [DllImport(Libs.LibAdw, EntryPoint = "adw_application_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static Application _NewAdw(string id, ApplicationFlags flags);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static Application _New(string id, ApplicationFlags flags);
+    extern static nint New(string id, ApplicationFlags flags);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_application_run", CallingConvention = CallingConvention.Cdecl)]
     extern static int _Run(Application app, int c, nint a);
@@ -238,27 +214,6 @@ public class Application : GObject
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_remove_window", CallingConvention = CallingConvention.Cdecl)]
     extern static void RemoveWindow(Application app, Window window);
-}
-
-public static class ApplicationExtensions
-{
-
-    /// <summary>
-    /// Adds an array of <see cref="GtkAction"/> to this ActionMap.
-    /// </summary>
-    /// <remarks>
-    /// Important: when setting actions with shortcuts, add those with more specific shortcuts like <c>&lt;Ctrl&gt;F3</c>  b e f o r e  those with less specific shortcuts like <c>F3</c>. 
-    /// </remarks>
-    /// <param name="app"></param>
-    /// <param name="actions">An array of <see cref="GtkAction"/> to be added to the application</param>
-    /// <returns>Application for chaining calls</returns>
-    public static TApplication Actions<TApplication>(this TApplication app, params GtkAction[] actions)
-        where TApplication : Application
-        => app.SideEffect(app => app.AddActions(actions));
-
-    public static TApplication AccelsForAction<TApplication>(this TApplication app, string action, string?[] accels)
-        where TApplication : Application
-        => app.SideEffect(app => app.SetAccelsForAction(action, accels));
 }
 
 /// <summary>

@@ -3,26 +3,25 @@ using Gtk4DotNet;
 
 var copyDir = $"{CsTools.Directory.GetHomeDir()}/Copy";
 
-Application
-    .New("de.uriegel.gtk4dotnet")
-    .WithDiagnostics(true)
-    .OnActivate(app => app
-        .NewWindow()
-        .Title("Copy File👍")
-        .DefaultSize(600, 200)
-        .Pipe(w => w.Child(
-            Button
-                .NewWithLabel($@"
+var app = new AdwApplication("de.uriegel.gtk4dotnet");
+app.WithDiagnostics();
+app.OnActivate += () =>
+    app.NewWindow()
+    .Title("Copy File👍")
+    .DefaultSize(600, 200)
+    .Pipe(w => w.Child(
+        Button
+            .NewWithLabel($@"
 To test copying a file, take a large file
 and put it in the sub directory '{copyDir}'.
 A copy will be created when pressing this button.")
-                .MarginStart(20)
-                .MarginEnd(20)
-                .MarginTop(20)
-                .MarginBottom(20)
-                .SideEffect(b => b.OnClicked += TestCopy)))
-        .Show()
-    ).Run();
+            .MarginStart(20)
+            .MarginEnd(20)
+            .MarginTop(20)
+            .MarginBottom(20)
+            .SideEffect(b => b.OnClicked += TestCopy)))
+    .Show();
+app.Run();
 
 async void TestCopy()
 {

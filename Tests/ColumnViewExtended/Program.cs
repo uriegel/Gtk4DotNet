@@ -1,11 +1,10 @@
 ﻿using Gtk4DotNet;
 
-Application
-    .NewAdwaita("de.uriegel.gtk4dotnet")
-    .WithDiagnostics()
-    .OnActivate(app => app
-        .WindowFromBuilder("template", "window", p => new MyWindow(p))
-        .Show()
-    ).Run();
+var app = new AdwApplication("de.uriegel.gtk4dotnet");
+app.WithDiagnostics();
+app.OnActivate += () =>
+    app.WindowFromBuilder("template", "window", p => new MyWindow(p))
+        .Show();
+app.Run();
 
 

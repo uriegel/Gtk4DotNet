@@ -96,7 +96,13 @@ public class Window : Widget
     /// </summary>
     /// <returns></returns>
     public Application GetApplication()
-        => _GetApplication(this).SideEffect(a => a.AutoDestroyed = true);
+    {
+        var app = new Application();
+        var p = GetApplication(this);
+        app.AutoDestroyed = true;
+        app.SetInternalHandle(p);
+        return app;
+    }
 
     public TWidget GetFocus<TWidget>() where TWidget : Widget, new()
     {
@@ -158,7 +164,7 @@ public class Window : Widget
     extern static void CloseWindow(Window window);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_get_application", CallingConvention = CallingConvention.Cdecl)]
-    extern static Application _GetApplication(Window window);
+    extern static nint GetApplication(Window window);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_get_default_size", CallingConvention = CallingConvention.Cdecl)]
     extern static void GetSize(Window window, out int width, out int height);

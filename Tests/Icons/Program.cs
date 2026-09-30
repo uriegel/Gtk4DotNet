@@ -4,28 +4,27 @@ using WebServerLight;
 using WebServerLight.Routing;
 using Gtk4DotNet.Extensions;
 
-Application
-    .New("de.uriegel.gtk4dotnet")
-    .WithDiagnostics(true)
-    .OnActivate(app => app
-        .NewWindow()
-        .Title("Hello Icons👍")
-        .DefaultSize(600, 200)
-        .Child(LinkButton
-            .New("http://localhost:9865", "Open Website to show Icons"))
-        .SideEffect(_ => WebServer
-                            .New()
-                            .Logging(LogLevel.Info)
-                            .Http(9865)
-                            .WebsiteFromResource()
-                            .Route(MethodRoute
-                            .New(Method.Get)
-                                .Add(PathRoute.New("/iconfromname").Request(GetIconFromName))
-                                .Add(PathRoute.New("/iconfromext").Request(GetIconFromExtension)))
-                            .Build()
-                            .Start())
-        .Show()
-    ).Run();
+var app = new Application("de.uriegel.gtk4dotnet");
+app.WithDiagnostics(true);
+app.OnActivate += () =>
+    app.NewWindow()
+    .Title("Hello Icons👍")
+    .DefaultSize(600, 200)
+    .Child(LinkButton
+        .New("http://localhost:9865", "Open Website to show Icons"))
+    .SideEffect(_ => WebServer
+                        .New()
+                        .Logging(LogLevel.Info)
+                        .Http(9865)
+                        .WebsiteFromResource()
+                        .Route(MethodRoute
+                        .New(Method.Get)
+                            .Add(PathRoute.New("/iconfromname").Request(GetIconFromName))
+                            .Add(PathRoute.New("/iconfromext").Request(GetIconFromExtension)))
+                        .Build()
+                        .Start())
+    .Show();
+app.Run();
 
 static async Task<bool> GetIconFromName(IRequest request)
 {
