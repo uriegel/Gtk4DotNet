@@ -29,7 +29,7 @@ class MyWindow : ApplicationWindow
                 if (driv != null)
                     await driv.StopOrEjectAsync(async (msg, _, processes) =>
                     {
-                        var dialog = AdwAlertDialog.New("Cannot unmount", $"{msg}\n{string.Join("\n", processes.Select(n => n.ProcessName))}");
+                        var dialog = new AdwAlertDialog("Cannot unmount", $"{msg}\n{string.Join("\n", processes.Select(n => n.ProcessName))}");
                         dialog.SetResponses([
                                 new("retry", "Retry", Default: true, Appearance: AdwResponseAppearance.Suggested),
                                 new("cancel", "_Cancel", Cancel: true)

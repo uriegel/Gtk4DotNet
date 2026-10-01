@@ -30,11 +30,10 @@ public class AdwAlertDialog : AdwDialog
     /// <param name="heading"></param>
     /// <param name="body"></param>
     /// <returns></returns>
-    public static AdwAlertDialog New(string? heading = null, string? body = null)
+    public AdwAlertDialog(string? heading = null, string? body = null) 
     {
-        var dialog = _New(heading, body);
-        dialog.CheckDiagnostics();
-        return dialog;
+        SetInternalHandle(New(heading, body));
+        CheckDiagnostics();
     }
 
     /// <summary>
@@ -96,7 +95,7 @@ public class AdwAlertDialog : AdwDialog
         => SignalConnect<AlertDialogResponseDelegate>("response", (_, response, __) => onResponse(response));
 
     [DllImport(Libs.LibAdw, EntryPoint = "adw_alert_dialog_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static AdwAlertDialog _New(string? heading, string? body);
+    extern static nint New(string? heading, string? body);
 
     [DllImport(Libs.LibAdw, EntryPoint = "adw_alert_dialog_add_response", CallingConvention = CallingConvention.Cdecl)]
     extern static void AddResponse(AdwAlertDialog dialog, string id, string label);

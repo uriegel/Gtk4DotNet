@@ -12,7 +12,7 @@ class MyWindow : ApplicationWindow
 
     async void OnDialog()
     {
-        var dialog = AdwAlertDialog.New("Save changes?", "Do you want to save your changes?");
+        var dialog = new AdwAlertDialog("Save changes?", "Do you want to save your changes?");
         dialog.SetResponses([
                 new("yes", "_Yes", Default: true, Appearance: AdwResponseAppearance.Suggested),
                 new("no", "_No", Appearance: AdwResponseAppearance.Destructive),
@@ -29,7 +29,7 @@ class MyWindow : ApplicationWindow
 
     async Task<bool> PreventClosing(Window window)
     {
-        var dialog = AdwAlertDialog.New("Close Window?", "Do you want to close the application?");
+        var dialog = new AdwAlertDialog("Close Window?", "Do you want to close the application?");
         dialog.SetResponses([
                 new("ok", "_Ok", Default: true),
                 new("cancel", "_Cancel", Cancel: true)
