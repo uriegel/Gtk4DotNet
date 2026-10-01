@@ -11,7 +11,7 @@ class MyWindow : ApplicationWindow
         store.OnItemsChanged += (p, r, a) => tasksList.Visible = store.GetItemsCount() > 0;
 
         filterListModel = new(store, GetFilter(Application.Settings));
-        var model = NoSelection.New(filterListModel);
+        var model = new NoSelection(filterListModel);
 
         tasksList.BindModel<TaskItem>(model, "taskrow", CreateTaskRow);
 
@@ -89,7 +89,7 @@ class MyWindow : ApplicationWindow
 
     readonly ListStore<TaskItem> store;
 
-    FilterListModel<TaskItem> filterListModel = null!;
+    readonly FilterListModel<TaskItem> filterListModel = null!;
 }
 
 record TaskItem(string Content)

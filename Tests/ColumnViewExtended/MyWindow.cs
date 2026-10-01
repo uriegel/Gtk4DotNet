@@ -92,7 +92,7 @@ class MyWindow : ApplicationWindow
                 .Append(new Contact("Jane Doe", "zjadoe@domain.de", 9999, "mail"));
             var oldModel = model;
             sortModel = new(store, null);
-            model = NoSelection.New(sortModel);
+            model = new NoSelection(sortModel);
             oldModel?.Dispose();
 
             var namefactory = new SignalListItemFactory()
@@ -137,7 +137,7 @@ class MyWindow : ApplicationWindow
             var oldModel = model;
             filterNumbers = CustomFilter.New<Item>(item => !filter || (item?.Number ?? 0) % 2 == 0);
             sortModel = new(new FilterListModel<Item>(store, filterNumbers), null);
-            model = MultiSelection.New(sortModel);
+            model = new MultiSelection(sortModel);
             oldModel?.Dispose();
 
             var namefactory = new SignalListItemFactory()

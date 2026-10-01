@@ -4,15 +4,15 @@ namespace Gtk4DotNet;
 
 public class NoSelection : SelectionModel
 {
-    public static NoSelection New(ListModel model)
+    public NoSelection(ListModel model)
     {
-        var res = _New(model);
+        var handle = New(model);
         model.AutoDestroyed = true;
-        res.CheckDiagnostics();
-        return res;
+        SetInternalHandle(handle);
+        CheckDiagnostics();
     }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_no_selection_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static NoSelection _New(ListModel model);
+    extern static nint New(ListModel model);
 }
 

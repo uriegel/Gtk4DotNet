@@ -4,15 +4,15 @@ namespace Gtk4DotNet;
 
 public class MultiSelection : SelectionModel
 {
-    public static MultiSelection New(ListModel model)
+    public MultiSelection(ListModel model)
     {
-        var res = _New(model);
+        var handle = New(model);
         model.AutoDestroyed = true;
-        res.CheckDiagnostics();
-        return res;
+        SetInternalHandle(handle);
+        CheckDiagnostics();
     }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_multi_selection_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static MultiSelection _New(ListModel model);
+    extern static nint New(ListModel model);
 }
 
