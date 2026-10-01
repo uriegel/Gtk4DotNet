@@ -14,7 +14,7 @@ class MyWindow : AdwApplicationWindow
         var settings = webView.GetSettings();
         settings.EnableDeveloperExtras = true;
         webView.DisableContextMenu();
-        webView.OnAlert((_,_) => Console.WriteLine("Tst"));
+        webView.OnAlert((_,_) => Console.WriteLine("Test"));
         webView.LoadUri("https://github.com/uriegel/Gtk4DotNet");
     }
 

@@ -4,13 +4,11 @@ namespace Gtk4DotNet;
 
 public class MediaFile : GObject, IMediaStream, IPaintable
 {
-    public static MediaFile New(string fileName)
+    public MediaFile(string fileName)
     {
         var p = NewForFilename(fileName);
-        var res = new MediaFile();
-        res.SetInternalHandle(p);
-        res.CheckDiagnostics();
-        return res;
+        SetInternalHandle(p);
+        CheckDiagnostics();
     }
     
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_media_file_new_for_filename", CallingConvention = CallingConvention.Cdecl)]

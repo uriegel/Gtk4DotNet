@@ -12,11 +12,10 @@ namespace Gtk4DotNet;
 /// </summary>
 public class WebView : Widget
 {
-    public static WebView New()
+    public WebView() 
     {
-        var webview = _New();
-        webview.CheckDiagnostics();
-        return webview;
+        SetInternalHandle(New());
+        CheckDiagnostics();
     }
 
     public WebView LoadUri(string uri)
@@ -133,8 +132,6 @@ public class WebView : Widget
         }
     }
 
-    public WebView() : base() { }
-
     public WebView(Builder builder, string? name = null) : base(builder, name) { }
 
     public WebView(Builder builder, string name, Action<nint> replaceParent)
@@ -180,7 +177,7 @@ public class WebView : Widget
     }
 
     [DllImport(Libs.LibWebKit, EntryPoint = "webkit_web_view_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static WebView _New();
+    extern static nint New();
 
     [DllImport(Libs.LibWebKit, EntryPoint = "webkit_web_view_load_uri", CallingConvention = CallingConvention.Cdecl)]
     extern static void LoadUri(WebView webView, string uri);

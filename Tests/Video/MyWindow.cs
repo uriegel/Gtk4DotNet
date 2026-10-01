@@ -18,7 +18,7 @@ class MyWindow : ApplicationWindow
         var orientation = taglist.Get("image-orientation");
         dar = orientation?.Contains("90") == true || orientation?.Contains("270") == true ? 1 / dar : dar;
         videoContainer.AspectRatio = dar;
-        mediaFile = MediaFile.New(videoFile);
+        mediaFile = new(videoFile);
         var asp = (mediaFile as IPaintable).IntrinsicAspectRatio;
         var w = (mediaFile as IPaintable).IntrinsicWidth;
         var h = (mediaFile as IPaintable).IntrinsicHeight;
