@@ -93,7 +93,7 @@ public class ColumnView : Widget
     public int GetFocusedItemPos()
     {
         positions ??= CreatePositions();
-        var row = GetRoot<Window>()?.GetFocus();
+        var row = GetRoot()?.AsWindow().GetFocus();
         if (row == null || !IsWidgetInColumnView(row))
             return -1;
         if (!row.IsInvalid && row.WidgetName == "GtkColumnViewRowWidget")

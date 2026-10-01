@@ -129,23 +129,68 @@ public class Widget : GObject
 
     #endregion
 
+    #region Events
+
+    public event Action OnRealize
+    {
+        add
+        {
+            TwoPointerDelegate unmanagedDelegate = (_, __) => value();
+            var id = SignalConnectForEvent("realize", unmanagedDelegate);
+            eventDatas.TryAdd(value, new(id, value, unmanagedDelegate));
+        }
+        remove
+        {
+            if (eventDatas.Remove(value, out var data))
+                SignalDisconnectEvent(data.Id);
+        }
+    }
+
+    public event Action OnUnrealize
+    {
+        add
+        {
+            TwoPointerDelegate unmanagedDelegate = (_, __) => value();
+            var id = SignalConnectForEvent("unrealize", unmanagedDelegate);
+            eventDatas.TryAdd(value, new(id, value, unmanagedDelegate));
+        }
+        remove
+        {
+            if (eventDatas.Remove(value, out var data))
+                SignalDisconnectEvent(data.Id);
+        }
+    }
+
+    public event Action OnTick
+    {
+        add
+        {
+            ThreePointerDelegate unmanagedDelegate = (_, __, ___) => value();
+            var id = AddTickCallback(this, Marshal.GetFunctionPointerForDelegate((Delegate)unmanagedDelegate), 0, 0);
+            eventDatas.TryAdd(value, new(id, value, unmanagedDelegate));
+        }
+        remove
+        {
+            if (eventDatas.Remove(value, out var data))
+                RemoveTickCallback(this, (int)data.Id);
+        }
+    }
+
+    #endregion
+
     #region Methods
 
     public void Show() => Show(this);
     public void Hide() => Hide(this);
 
-    public Widget? GetParent() => GetParent<Widget>();
-
-    public TWidget? GetParent<TWidget>() where TWidget : Widget, new()
+    public Widget? GetParent() 
     {
         var ptr = GetParent(this);
         if (ptr == 0)
             return null;
-        var res = new TWidget
-        {
-            AutoDestroyed = true
-        };
+        var res = new Widget();
         res.SetInternalHandle(ptr);
+        res.CheckDiagnostics();
         return res;
     }
 
@@ -334,51 +379,6 @@ public class Widget : GObject
         AddController(shortcutController);
     }
 
-    public event Action OnRealize
-    {
-        add
-        {
-            TwoPointerDelegate unmanagedDelegate = (_, __) => value();
-            var id = SignalConnectForEvent("realize", unmanagedDelegate);
-            eventDatas.TryAdd(value, new(id, value, unmanagedDelegate));
-        }
-        remove
-        {
-            if (eventDatas.Remove(value, out var data))
-                SignalDisconnectEvent(data.Id);
-        }
-    }
-
-    public event Action OnUnrealize
-    {
-        add
-        {
-            TwoPointerDelegate unmanagedDelegate = (_, __) => value();
-            var id = SignalConnectForEvent("unrealize", unmanagedDelegate);
-            eventDatas.TryAdd(value, new(id, value, unmanagedDelegate));
-        }
-        remove
-        {
-            if (eventDatas.Remove(value, out var data))
-                SignalDisconnectEvent(data.Id);
-        }
-    }
-
-    public event Action OnTick
-    {
-        add
-        {
-            ThreePointerDelegate unmanagedDelegate = (_, __, ___) => value();
-            var id = AddTickCallback(this, Marshal.GetFunctionPointerForDelegate((Delegate)unmanagedDelegate), 0, 0);
-            eventDatas.TryAdd(value, new(id, value, unmanagedDelegate));
-        }
-        remove
-        {
-            if (eventDatas.Remove(value, out var data))
-                RemoveTickCallback(this, (int)data.Id);
-        }
-    }
-
     /// <summary>
     /// Used to register a widget so it can be found by its Gtk handle value. Used for example in a ListBox, when callbacks delivering handles
     /// </summary>
@@ -400,20 +400,67 @@ public class Widget : GObject
     /// <summary>
     /// Returns the root like a Window, or null if the widget is not contained inside a widget tree with a root widget
     /// </summary>
-    /// <typeparam name="TWidget"></typeparam>
     /// <returns></returns>
-    public TWidget? GetRoot<TWidget>() where TWidget : Widget, new()
+    public Widget? GetRoot()
     {
         var ptr = GetRoot(this);
         if (ptr == 0)
             return null;
-        var res = new TWidget
-        {
-            AutoDestroyed = true
-        };
+        var res = new Widget();
         res.SetInternalHandle(ptr);
+        res.CheckDiagnostics();
         return res;
     }
+
+    public Widget? GetFirstChild()
+    {
+        var p = GetFirstChild(this);
+        if (p == 0)
+            return null;
+        var res = new Widget();
+        res.SetInternalHandle(p);
+        res.AutoDestroyed = true;
+        return res;
+    }
+
+    public Widget? GetNextSibling()
+    {
+        var p = GetNextSibling(this);
+        if (p == 0)
+            return null;
+        var res = new Widget();
+        res.SetInternalHandle(p);
+        res.AutoDestroyed = true;
+        return res;
+    }
+
+    public IEnumerable<Widget> GetChildren()
+    {
+        var w = GetFirstChild();
+        if (w == null)
+            yield break; 
+        yield return w;
+        while (true)
+        {
+            w = w.GetNextSibling();
+            if (w == null)
+                yield break;
+            yield return w;
+        }
+    }
+
+    public TWidget? GetFirstChild<TWidget>() where TWidget : Widget, new()
+    {
+        var p = GetFirstChild(this);
+        if (p == 0)
+            return null;
+        var res = new TWidget();
+        res.SetInternalHandle(p);
+        res.AutoDestroyed = true;
+        return res;
+    }
+
+    public bool IsFocus() => IsFocus(this);
 
     #endregion
 
@@ -517,65 +564,15 @@ public class Widget : GObject
         }
     }
 
-    public Widget? GetFirstChild()
-    {
-        var p = GetFirstChild(this);
-        if (p == 0)
-            return null;
-        var res = new Widget();
-        res.SetInternalHandle(p);
-        res.AutoDestroyed = true;
-        return res;
-    }
+    #endregion
 
-    public Widget? GetNextSibling()
-    {
-        var p = GetNextSibling(this);
-        if (p == 0)
-            return null;
-        var res = new Widget();
-        res.SetInternalHandle(p);
-        res.AutoDestroyed = true;
-        return res;
-    }
-
-    public IEnumerable<Widget> GetChildren()
-    {
-        var w = GetFirstChild();
-        if (w == null)
-            yield break; 
-        yield return w;
-        while (true)
-        {
-            w = w.GetNextSibling();
-            if (w == null)
-                yield break;
-            yield return w;
-        }
-    }
-
-    public TWidget? GetFirstChild<TWidget>() where TWidget : Widget, new()
-    {
-        var p = GetFirstChild(this);
-        if (p == 0)
-            return null;
-        var res = new TWidget();
-        res.SetInternalHandle(p);
-        res.AutoDestroyed = true;
-        return res;
-    }
-
-    public bool IsFocus() => IsFocus(this);
+    #region Internals
 
     Dictionary<string, PropertyChangedEventHandler>? BindingsDelegates
     {
         get => GetManagedData<Dictionary<string, PropertyChangedEventHandler>>(BINDINGS_DELEGATES);
         set => SetManagedData(BINDINGS_DELEGATES, value);
     }
-
-    #endregion
-
-    #region Internals
 
     protected override void OnDiagnostics()
         => Console.WriteLine(Name != null ? $"{GetType().Name} {Name} finalized" : $"{GetType().Name} finalized");
