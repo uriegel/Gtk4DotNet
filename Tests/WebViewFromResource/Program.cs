@@ -5,7 +5,7 @@ var app = new AdwApplication("de.uriegel.gtk4dotnet")
 {
     WebsiteFromResource = true
 };
-app.WithDiagnostics();
+app.WithDiagnostics(true);
 app.OnActivate += () =>
 {
     using var window = app.NewWindow();

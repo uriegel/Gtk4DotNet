@@ -1,7 +1,7 @@
 ﻿using Gtk4DotNet;
 
 var app = new AdwApplication("de.uriegel.exampleapp", ApplicationFlags.HandlesOpen);
-app.WithDiagnostics();
+app.WithDiagnostics(true);
 app.WithSettings();
 app.OnOpen += files =>
 {

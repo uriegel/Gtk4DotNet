@@ -5,7 +5,6 @@ class MyWindow : Window
     public MyWindow(Application app) 
     {
         Title = "My custom Window";
-        using var button = new Button("Kaputt");
         app.AddWindow(this);
     }   
 }

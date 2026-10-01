@@ -2,7 +2,7 @@
 using Gtk4DotNet;
 
 var app = new AdwApplication("de.uriegel.gtk4dotnet");
-app.WithDiagnostics();
+app.WithDiagnostics(true);
 app.OnActivate += () =>
 {
     using var window = app.NewWindow();
