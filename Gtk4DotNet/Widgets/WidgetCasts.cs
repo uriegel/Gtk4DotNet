@@ -4,4 +4,6 @@ public static class WidgetCasts
 {
     public static Window AsWindow(this Widget widget) => new(widget.GetInternalHandle());
     public static Label AsLabel(this Widget widget) => new(widget.GetInternalHandle());
+    public static ScrolledWindow AsScrolledWindow(this Widget widget) => new(widget.GetInternalHandle());
+    public static TextView AsTextView(this Widget widget) => new(widget.GetInternalHandle());
 }

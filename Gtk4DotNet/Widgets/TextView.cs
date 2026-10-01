@@ -6,12 +6,10 @@ namespace Gtk4DotNet;
 
 public class TextView : Widget
 {
-    public static TextView New()
+    public TextView() 
     {
-        var res = _New();
-        res.CheckDiagnostics();
-        res.AutoDestroyed = true;
-        return res;
+        SetInternalHandle(New());
+        CheckDiagnostics();
     }
 
     public TextBuffer GetBuffer()
@@ -28,12 +26,16 @@ public class TextView : Widget
 
     public void ResetBuffer() => SetBuffer(this, 0);
 
-    public TextView() : base() { }
-
     public TextView(Builder builder, string? name = null) : base(builder, name) { }
 
     public TextView(Builder builder, string name, Action<nint> replaceParent)
         : base(builder, name, replaceParent) { }
+
+    internal TextView(nint handle) : base()
+    {
+        SetInternalHandle(handle);
+        CheckDiagnostics();
+    }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_text_view_get_buffer", CallingConvention = CallingConvention.Cdecl)]
     extern static TextBuffer GetBuffer(TextView textView);
@@ -42,7 +44,7 @@ public class TextView : Widget
     extern static bool ScrollToIter(TextView textView, ref TextIter iter, double withinMargin, bool useAlign, double xAlign, double yAlign);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_text_view_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static TextView _New();
+    extern static nint New();
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_text_view_set_buffer", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetBuffer(TextView textView, nint b);

@@ -9,7 +9,8 @@ app.OnOpen += files =>
         app.WindowFromBuilder("window", "window", p => new MyWindow(p))
             .Show();
     foreach (var file in files)
-        MyWindow.Instance?.OnOpen(file);
+        MyWindow.Instance
+            ?.OnOpen(file);
 };
 app.OnActivate += () =>
     app.WindowFromBuilder("window", "window", p => new MyWindow(p))

@@ -26,18 +26,15 @@ public class Stack : Widget
     /// <param name="title"></param>
     public void AddTitled(Widget child, string name, string title) => AddTitled(this, child, name, title);
 
-    // TODO new()!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    public T? GetVisibleChild<T>()
-        where T : Widget, new()
+    public Widget? GetVisibleChild()
     {
-        var t = new T();
+        var res = new Widget();
         var ptr = GetVisibleChild(this);
         if (ptr == 0)
             return null;
-        t.SetInternalHandle(ptr);
-        t.CheckDiagnostics();
-        t.AutoDestroyed = true;
-        return t;
+        res.SetInternalHandle(ptr);
+        res.CheckDiagnostics();
+        return res;
     }
 
     public void SetVisibleChild(Widget child) => SetVisibleChild(this, child);

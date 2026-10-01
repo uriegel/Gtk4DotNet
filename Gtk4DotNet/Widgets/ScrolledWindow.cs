@@ -4,14 +4,12 @@ namespace Gtk4DotNet;
 
 public class ScrolledWindow : Widget
 {
-    // TODO new()!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    public T? GetChild<T>()
-        where T: Widget, new() 
+    public Widget? GetChild()
     {
-        var t = new T();
         var ptr = GetChild(this);
         if (ptr == 0)
             return null;
+        var t = new Widget();
         t.SetInternalHandle(ptr);
         t.CheckDiagnostics();
         t.AutoDestroyed = true;
@@ -24,6 +22,12 @@ public class ScrolledWindow : Widget
 
     public ScrolledWindow(Builder builder, string name, Action<nint> replaceParent)
         : base(builder, name, replaceParent) { }
+
+    internal ScrolledWindow(nint handle) : base()
+    {
+        SetInternalHandle(handle);
+        CheckDiagnostics();
+    }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_scrolled_window_get_child", CallingConvention = CallingConvention.Cdecl)]
     extern static nint GetChild(ScrolledWindow scrolled);

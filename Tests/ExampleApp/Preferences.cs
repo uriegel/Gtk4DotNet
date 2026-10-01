@@ -10,8 +10,8 @@ class Preferences : Dialog
     }
 
     [Widget]
-    ComboBoxText transition = null!;
+    readonly ComboBoxText transition = null!;
 
     [Widget]
-    Widget font = null!;
+    readonly Widget font = null!;
 }

@@ -48,7 +48,11 @@ class MyWindow : ApplicationWindow
     void SearchTextChanged()
     {
         var text = searchEntry.AsEditable().Text;
-        var textview = stack.GetVisibleChild<ScrolledWindow>()?.GetChild<TextView>();
+        var textview = stack
+                        .GetVisibleChild()
+                        ?.AsScrolledWindow()
+                        ?.GetChild()
+                        ?.AsTextView();
         using var buffer = textview?.GetBuffer();
         if (textview == null || buffer == null)
             return;
@@ -62,7 +66,11 @@ class MyWindow : ApplicationWindow
 
     void UpdateWords()
     {
-        var textview = stack.GetVisibleChild<ScrolledWindow>()?.GetChild<TextView>();
+        var textview = stack
+                        .GetVisibleChild()
+                        ?.AsScrolledWindow()
+                        ?.GetChild()
+                        ?.AsTextView();
         var buffer = textview?.GetBuffer();
         if (textview == null || buffer == null)
             return;
@@ -78,7 +86,11 @@ class MyWindow : ApplicationWindow
 
     void UpdateLines()
     {
-        var textview = stack.GetVisibleChild<ScrolledWindow>()?.GetChild<TextView>();
+        var textview = stack
+                        .GetVisibleChild()
+                        ?.AsScrolledWindow()
+                        ?.GetChild()
+                        ?.AsTextView();
         var buffer = textview?.GetBuffer();
         if (buffer == null)
             return;
@@ -87,7 +99,6 @@ class MyWindow : ApplicationWindow
 
     static IEnumerable<string> GetWords(TextBuffer buffer)
     {
-
         var start = buffer.GetStartIter();
         var end = new TextIter();
         while (!start.IsEnd())
