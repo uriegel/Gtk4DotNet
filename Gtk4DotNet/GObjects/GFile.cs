@@ -14,11 +14,10 @@ public class GFile : GObject
 
     public string? GetBasename() => GetBasename(this).PtrToString(true);
 
-    public static GFile New(string path)
+    public GFile(string path)
     {
-        var file = _New(path);
-        file.CheckDiagnostics();
-        return file;
+        SetInternalHandle(New(path));
+        CheckDiagnostics();
     }
 
     public string LoadStringContents()
@@ -111,7 +110,7 @@ public class GFile : GObject
         var asyncReady = new ThreePointerDelegate(AsyncReadyCallback);
         AsyncReady.Callbacks[id] = asyncReady;
         using var cancellable = Cancellable.New(cancellation);
-        using var destinationFile = New(destination);
+        using var destinationFile = new GFile(destination);
         var rcb = cb != null ? new TwoLongAndPtrCallback((c, t, _) => cb(c, t)) : null;
         if (rcb != null)
             AsyncReady.ProgressCallbacks[id] = rcb;
@@ -155,7 +154,7 @@ public class GFile : GObject
                         if (move)
                             await MoveAsync(destination, flags, true, cb, cancellation);
                         else
-                            await CopyAsync(destination, flags, true, cb, cancellation);    
+                            await CopyAsync(destination, flags, true, cb, cancellation);
                         tcs.TrySetResult();
                     }
                     catch (Exception e)
@@ -173,9 +172,16 @@ public class GFile : GObject
             }
         }
     }
+    
+    internal GFile(nint handle)
+    {
+        SetInternalHandle(handle);
+        CheckDiagnostics();
+    }
+
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_new_for_path", CallingConvention = CallingConvention.Cdecl)]
-    extern static GFile _New(string path);
+    extern static nint New(string path);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_file_load_contents", CallingConvention = CallingConvention.Cdecl)]
     extern static bool LoadContents(GFile gFile, nint cancellable, out nint content, out int length, nint etagOut, nint error);

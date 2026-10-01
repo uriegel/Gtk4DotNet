@@ -30,7 +30,7 @@ async void TestCopy()
     if (filename != null)
     {
         var cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-        using var feile = GFile.New(filename);
+        using var feile = new GFile(filename);
         try
         {
             await feile.CopyAsync($"{filename}.copy", FileCopyFlags.Overwrite, true,

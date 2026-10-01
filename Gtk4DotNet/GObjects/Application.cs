@@ -55,11 +55,10 @@ public class Application : GObject
             {
                 var files = Enumerable.Range(0, (int)n).Select(n =>
                 {
-                    var p = Marshal.ReadIntPtr(filesPtr, n * IntPtr.Size);
-                    var gfile = new GFile();
-                    gfile.SetInternalHandle(p);
-                    gfile.AutoDestroyed = true;
-                    gfile.CheckDiagnostics();
+                    var gfile = new GFile(Marshal.ReadIntPtr(filesPtr, n * IntPtr.Size))
+                    {
+                        AutoDestroyed = true
+                    };
                     return gfile;
 
                 }).ToArray();
