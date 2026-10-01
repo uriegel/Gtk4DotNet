@@ -5,24 +5,6 @@ namespace Gtk4DotNet;
 
 public class Cairo : GObject
 {
-    public Cairo(bool isWeak = false) : base() => this.isWeak = isWeak;
-
-    internal static Cairo CreateWeak(nint raw)
-        => new Cairo(true)
-        {
-            handle = raw,
-        };
-
-    protected override bool ReleaseHandle()
-    {
-        if (!isWeak)
-            Destroy(handle);
-        return true;
-    }
-                
-    [DllImport(Libs.LibGtk, EntryPoint = "cairo_create", CallingConvention = CallingConvention.Cdecl)]
-    public extern static Cairo Create(Surface surface);
-
     public Cairo SourceRgb(double r, double g, double b)
         => this.SideEffect(c => SetSourceRgb(this, r, g, b));
 
@@ -70,6 +52,23 @@ public class Cairo : GObject
 
     public Cairo Arc(double x, double y, double radius, double angle1, double angle2)
         => this.SideEffect(c => Arc(this, x, y, radius, angle1, angle2));
+
+    internal Cairo(bool isWeak = false) : base() => this.isWeak = isWeak;
+
+    internal static Cairo CreateWeak(nint raw)
+        => new(true)
+        {
+            handle = raw,
+        };
+
+    protected override bool ReleaseHandle()
+    {
+        if (!isWeak)
+            Destroy(handle);
+        return true;
+    }
+
+    readonly bool isWeak;
 
     [DllImport(Libs.LibGtk, EntryPoint = "cairo_destroy", CallingConvention = CallingConvention.Cdecl)]
     extern static void Destroy(nint cairo);
@@ -124,7 +123,5 @@ public class Cairo : GObject
 
     [DllImport(Libs.LibGtk, EntryPoint = "cairo_arc", CallingConvention = CallingConvention.Cdecl)]
     extern static void Arc(Cairo cairo, double x, double y, double radius, double angle1, double angle2);
-
-    readonly bool isWeak;
 }
 

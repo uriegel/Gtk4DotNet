@@ -10,7 +10,7 @@ app.OnActivate += () =>
     window.SetDefaultSize(200, 200);
     StyleContext.AddProviderForDisplay(
         Display.GetDefault(),
-        CssProvider.New().FromResource("style"),
+        CssProvider.FromResource("style"),
         StyleProviderPriority.Application);
     window.SetChild(new Box(Orientation.Vertical, 10)
         .Margin(10)

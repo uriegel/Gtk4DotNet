@@ -7,7 +7,7 @@ class MyWindow : ApplicationWindow
     {
         StyleContext.AddProviderForDisplay(
             Display.GetDefault(),
-            CssProvider.New().FromResource("style"),
+            CssProvider.FromResource("style"),
             StyleProviderPriority.Application);
 
         box.DataContext = dataContext;

@@ -5,7 +5,7 @@ class MyWindow : ApplicationWindow
     public MyWindow(WindowBuilder builder) : base(builder)
     {
         using var display = Display.GetDefault();
-        using var cssProvider = CssProvider.New().FromResource("style");
+        using var cssProvider = CssProvider.FromResource("style");
         StyleContext.AddProviderForDisplay(
             display,
             cssProvider,
