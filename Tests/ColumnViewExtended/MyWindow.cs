@@ -287,7 +287,7 @@ class MyWindow : ApplicationWindow
     {
         if (view == null)
             return 0;
-        var row = GetFocus<Widget>();
+        var row = GetFocus();
         if (!row.IsInvalid && row.WidgetName == "GtkColumnViewRowWidget")
             return (view.Height / (row.Height + 1)) - 4;
         else

@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices;
-using CsTools.Extensions;
 
 namespace Gtk4DotNet;
 
@@ -11,10 +10,10 @@ namespace Gtk4DotNet;
 /// </remarks>
 public class ApplicationWindow : Window
 {
-    public ApplicationWindow() : base() { }
-
     public ApplicationWindow(WindowBuilder builder) : base(builder.Builder, builder.Window)
         => SetApplication(this, builder.Application);
+
+    internal ApplicationWindow(nint handle) : base(handle) => CheckDiagnostics();
 
     /// <summary>
     /// Adds actions to this ActionMap.
@@ -31,18 +30,4 @@ public class ApplicationWindow : Window
     extern static void SetHelpOverlay(ApplicationWindow app, Window window);
 
     readonly GtkActions actions = new(true);
-}
-
-public static class ApplicationWindowExtensions
-{
-    /// <summary>
-    /// Adds actions to this ActionMap.
-    /// </summary>
-    /// <typeparam name="THandle"></typeparam>
-    /// <param name="win"></param>
-    /// <param name="actions"></param>
-    /// <returns>The ApplicationWindow for chaining method calls</returns>
-    public static THandle Actions<THandle>(this THandle win, params GtkAction[] actions)
-        where THandle : ApplicationWindow
-        => win.SideEffect(win => win.AddActions(actions));
 }

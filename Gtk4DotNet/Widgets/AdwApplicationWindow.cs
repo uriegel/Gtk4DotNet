@@ -8,7 +8,5 @@ namespace Gtk4DotNet;
 /// </remarks>
 public class AdwApplicationWindow : ApplicationWindow
 {
-    public AdwApplicationWindow() : base() { }
-
     public AdwApplicationWindow(WindowBuilder builder) : base(builder) { }
 }

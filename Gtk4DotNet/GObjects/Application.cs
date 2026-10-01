@@ -147,12 +147,7 @@ public class Application : GObject
     /// Creates a new <see cref="ApplicationWindow"/>
     /// </summary>
     /// <returns>The newly created <see cref="ApplicationWindow"/></returns>
-    public ApplicationWindow NewWindow()
-    {
-        var res = NewWindow(this);
-        res.CheckDiagnostics();
-        return res;
-    }
+    public ApplicationWindow NewWindow() => new(NewWindow(this));
 
     /// <summary>
     /// Creates a new <see cref="ApplicationWindow"/> from a template.ui. This template has to be included as a .NET resource
@@ -204,7 +199,7 @@ public class Application : GObject
     extern static int _Run(Application app, int c, nint a);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_window_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static ApplicationWindow NewWindow(Application app);
+    extern static nint NewWindow(Application app);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_application_set_accels_for_action", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetAccelsForAction(Application app, string action, [In] string?[] accels);

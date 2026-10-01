@@ -1,6 +1,5 @@
 using System.Drawing;
 using System.Runtime.InteropServices;
-using CsTools.Extensions;
 using Gtk4DotNet.Extensions;
 using Gtk4DotNet.Internals;
 
@@ -104,9 +103,9 @@ public class Window : Widget
         return app;
     }
 
-    public TWidget GetFocus<TWidget>() where TWidget : Widget, new()
+    public Widget GetFocus() 
     {
-        var res = new TWidget();
+        var res = new Widget();
         res.SetInternalHandle(GetFocus(this));
         AutoDestroyed = true;
         return res;
@@ -115,12 +114,10 @@ public class Window : Widget
     /// <summary>
     /// Creates a new Window. This window should be added to the <see cref="Application"/> with the help of <see cref="Application.AddWindow(Window)"/> 
     /// </summary>
-    /// <returns>A newly created Window</returns>
-    public static Window New()
+    public Window() : base()
     {
-        var res = _New();
-        res.CheckDiagnostics();
-        return res;
+        SetInternalHandle(New());
+        CheckDiagnostics();
     }
 
     public Window(Builder builder, string? name = null) : base(builder, name) { }
@@ -128,11 +125,9 @@ public class Window : Widget
     public Window(Builder builder, string name, Action<nint> replaceParent)
         : base(builder, name, replaceParent) { }
 
-    public Window() : base() { }
-
-    protected void Construct()
+    internal Window(nint handle) : base()
     {
-        SetInternalHandle(_New().GetInternalHandle());
+        SetInternalHandle(handle);
         CheckDiagnostics();
     }
 
@@ -170,7 +165,7 @@ public class Window : Widget
     extern static void GetSize(Window window, out int width, out int height);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static Window _New();
+    extern static nint New();
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_present", CallingConvention = CallingConvention.Cdecl)]
     extern static void Present(Window window);
