@@ -22,34 +22,38 @@ public class Picture : Widget
         set => SetKeepAspectRatio(this, value);
     }
 
-    public static Picture New()
+    public Picture() : base() 
     {
-        var res = _New();
-        res.CheckDiagnostics();
-        return res;
+        var handle = New();
+        SetInternalHandle(handle);
+        CheckDiagnostics();
     }
 
-    public static Picture NewForFile(GFile file)
+    public Picture(GFile file) : base() 
     {
-        var res = _NewForFile(file);
-        res.CheckDiagnostics();
-        return res;
+        var handle = NewForFile(file);
+        SetInternalHandle(handle);
+        CheckDiagnostics();
     }
 
-    public static Picture NewForFileName(string file)
+    public Picture(string file) : base()
     {
-        var res = _NewForFileName(file);
-        res.CheckDiagnostics();
-        return res;
+        var handle = NewForFileName(file);
+        SetInternalHandle(handle);
+        CheckDiagnostics();
     }
+    
+    public Picture(Pixbuf pic) : base()
+    {
+        var handle = NewForPixbuf(pic);
+        SetInternalHandle(handle);
+        CheckDiagnostics();
+    }
+    public void SetPixbuf(Pixbuf pic) => SetPixbuf(this, pic);
 
     public void SetFileName(string file) => SetFileName(this, file);
 
     public void SetPaintable(IPaintable? paintable) => SetPaintable(this, paintable?.GetRaw() ?? 0);
-
-    public void SetPixbuf(Pixbuf pic) => SetPixbuf(this, pic);
-
-    public Picture() : base() { }
 
     public Picture(Builder builder, string? name = null) : base(builder, name) { }
 
@@ -57,14 +61,17 @@ public class Picture : Widget
         : base(builder, name, replaceParent) { }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_picture_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static Picture _New();
+    extern static nint New();
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_picture_new_for_file", CallingConvention = CallingConvention.Cdecl)]
-    extern static Picture _NewForFile(GFile file);
+    extern static nint NewForFile(GFile file);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_picture_new_for_filename", CallingConvention = CallingConvention.Cdecl)]
-    extern static Picture _NewForFileName(string file);
+    extern static nint NewForFileName(string file);
 
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_picture_new_for_pixbuf", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint NewForPixbuf(Pixbuf pixbuf);
+    
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_picture_set_file", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetFile(Picture picture, string file);
 

@@ -7,14 +7,10 @@ app.OnActivate += () =>
     using var window = app.NewWindow();
     window.Title = "Hello Picture👍";
     window.SetDefaultSize(800, 800);
-
-    using var pixbuf = new Pixbuf("/run/media/uwe/Daten/Bilder Rest/Tina/2021/10/20211007_172555.jpg");
+    using var pixbuf = new Pixbuf("pic.jpg");
     pixbuf.ApplyEmbeddedOrientation();
-
-    var pic = Picture.New();
-    pic.SetPixbuf(pixbuf);
+    using var pic = new Picture(pixbuf);
     window.SetChild(pic);
-
     window.Show();
 };
 app.Run();
