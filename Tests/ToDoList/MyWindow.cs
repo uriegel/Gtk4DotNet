@@ -92,7 +92,7 @@ class MyWindow : ApplicationWindow
 
     readonly ListStore<TaskItem> store;
 
-    FilterListModel<TaskItem> filterListModel = null!;
+    readonly FilterListModel<TaskItem> filterListModel = null!;
 }
 
 record TaskItem(string Content)

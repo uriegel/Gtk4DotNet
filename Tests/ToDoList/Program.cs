@@ -5,7 +5,7 @@ app.WithDiagnostics(true);
 app.WithSettings();
 app.OnActivate += () =>
     app.WindowFromBuilder("window", "window", p => new MyWindow(p))
-    .Show();
+        .Show();
 app.SetAccelsForAction("win.filter('All')", ["<Ctrl>A"]);
 app.SetAccelsForAction("win.filter('Open')", ["<Ctrl>O"]);
 app.SetAccelsForAction("win.filter('Done')", ["<Ctrl>D"]);
