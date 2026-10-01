@@ -5,7 +5,7 @@ namespace Gtk4DotNet;
 
 public class CustomSorter : Sorter
 {
-    public static CustomSorter New<T>(Func<T?, T?, int> compareFunc)
+    public static CustomSorter Create<T>(Func<T?, T?, int> compareFunc)
     {
         int RawCompare(nint p1, nint p2, nint _)
         {
@@ -22,8 +22,10 @@ public class CustomSorter : Sorter
 
             return compareFunc(obj1.GetManagedData<T>(Quark.ListData), obj2.GetManagedData<T>(Quark.ListData));
         }
+        var res = new CustomSorter();
         CompareDataDelegate compareDataDelegate = RawCompare;
-        var res = New(compareDataDelegate, 0, 0);
+        var handle = New(compareDataDelegate, 0, 0);
+        res.SetInternalHandle(handle);
         var key = GtkDelegates.Instance.GetKey("CustomSorter");
         GtkDelegates.Instance.Add(key, compareDataDelegate);
         res.AddWeakRef(() => GtkDelegates.Instance.Remove(key.Key));
@@ -31,8 +33,10 @@ public class CustomSorter : Sorter
         return res;
     }
 
+    CustomSorter() { }
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_custom_sorter_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static CustomSorter New(CompareDataDelegate compare, nint nil, nint nil2);
+    internal extern static nint New(CompareDataDelegate compare, nint nil, nint nil2);
 }
 
 delegate int CompareDataDelegate(nint data1, nint data2, nint nil);

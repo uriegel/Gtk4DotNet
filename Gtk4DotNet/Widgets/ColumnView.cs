@@ -143,11 +143,7 @@ public class ColumnView : Widget
             var ptr = GetColumnItem(cols, index++);
             if (ptr == 0)
                 yield break;
-
-            var column = new ColumnViewColumn();
-            column.SetInternalHandle(ptr);
-            column.CheckDiagnostics();
-            yield return column;
+            yield return new ColumnViewColumn(ptr);
         }
     }
 

@@ -24,12 +24,12 @@ public class ColumnViewColumn : GObject
         set => SetResizeable(this, value);
     }
 
-    public static ColumnViewColumn New(string title, ListItemFactory factory)
+    public ColumnViewColumn(string title, ListItemFactory factory)
     {
-        var res = _New(title, factory);
-        res.CheckDiagnostics();
+        var handle = New(title, factory);
+        SetInternalHandle(handle);
+        CheckDiagnostics();
         factory.AutoDestroyed = true;
-        return res;
     }
 
     public ColumnViewColumn Expand()
@@ -38,12 +38,17 @@ public class ColumnViewColumn : GObject
         return this;
     }
 
-    internal ColumnViewColumn() { }
-
     public void SetSorter(Sorter sorter) => SetSorter(this, sorter);
 
+    internal ColumnViewColumn(nint handle)
+    {
+        SetInternalHandle(handle);
+        AutoDestroyed = true;
+        CheckDiagnostics();
+    }
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_column_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static ColumnViewColumn _New(string title, ListItemFactory factory);
+    extern static nint New(string title, ListItemFactory factory);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_column_view_column_set_expand", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetExpand(ColumnViewColumn column, bool expand);

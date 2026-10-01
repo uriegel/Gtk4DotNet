@@ -9,6 +9,7 @@ public class Sorter : GObject
     internal Sorter(nint handle)
     {
         SetInternalHandle(handle);
+        CheckDiagnostics();
         AutoDestroyed = true;
     }
 

@@ -40,13 +40,7 @@ public class EditableLabel : Widget
     {
         var stack = el.GetChildren().FirstOrDefault(n => n.WidgetName == "GtkStack");
         var labelPtr = stack?.GetChildren().FirstOrDefault(n => n.WidgetName == "GtkLabel");
-        if (labelPtr == null)
-            return null;
-        var label = new Label();
-        label.SetInternalHandle(labelPtr.GetInternalHandle());
-        label.AutoDestroyed = true;
-        label.CheckDiagnostics();
-        return label;
+        return labelPtr != null ? new Label(labelPtr.GetInternalHandle()) : null;
     }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_editable_label_new", CallingConvention = CallingConvention.Cdecl)]

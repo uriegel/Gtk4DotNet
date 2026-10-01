@@ -16,12 +16,8 @@ public class ColumnViewSorter : Sorter
                 var desc = GetPrimaryOrder(col) != 0;
                 var ptr = GetPrimaryColumn(col);
                 var column = ptr != 0
-                ? new ColumnViewColumn
-                {
-                    AutoDestroyed = true
-                }
+                ? new ColumnViewColumn(ptr)
                 : null;
-                column?.SetInternalHandle(ptr);
                 value(desc, column, sorterChanged);
             };
             var id = SignalConnectForEvent("changed", unmanagedDelegate);

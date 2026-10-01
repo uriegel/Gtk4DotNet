@@ -91,7 +91,7 @@ class MyWindow : ApplicationWindow
                 .Append(new Contact("Jim Doe", "jdoe@domain.de", 222, "mail-unread"))
                 .Append(new Contact("Jane Doe", "zjadoe@domain.de", 9999, "mail"));
             var oldModel = model;
-            sortModel = SortListModel.New(store, null);
+            sortModel = new(store, null);
             model = NoSelection.New(sortModel);
             oldModel?.Dispose();
 
@@ -122,10 +122,10 @@ class MyWindow : ApplicationWindow
             columnview.SetModel(null);
             columnview.ClearColumns();
             columnview.SetModel(model);
-            using var nameSorter = CustomSorter.New<Contact>((item1, item2) => (item1?.Name ?? "").CompareTo(item2?.Name ?? ""));
-            using var mailSorter = CustomSorter.New<Contact>((item1, item2) => (item1?.EMail ?? "").CompareTo(item2?.EMail ?? ""));
-            columnview.AppendColumn(ColumnViewColumn.New("Name", namefactory).SideEffect(cvc => cvc.SetSorter(nameSorter)));
-            columnview.AppendColumn(ColumnViewColumn.New("E mail address (long column)", emailfactory).Expand().SideEffect(cvc => cvc.SetSorter(mailSorter)));
+            using var nameSorter = CustomSorter.Create<Contact>((item1, item2) => (item1?.Name ?? "").CompareTo(item2?.Name ?? ""));
+            using var mailSorter = CustomSorter.Create<Contact>((item1, item2) => (item1?.EMail ?? "").CompareTo(item2?.EMail ?? ""));
+            columnview.AppendColumn(new ColumnViewColumn("Name", namefactory).SideEffect(cvc => cvc.SetSorter(nameSorter)));
+            columnview.AppendColumn(new ColumnViewColumn("E mail address (long column)", emailfactory).Expand().SideEffect(cvc => cvc.SetSorter(mailSorter)));
             var viewsorter = columnview.GetSorter();
             viewsorter?.OnChanged -= SortOrderChanged;
             sortModel.SetSorter(viewsorter);
@@ -136,7 +136,7 @@ class MyWindow : ApplicationWindow
             var store = new ListStore<Item>();
             var oldModel = model;
             filterNumbers = CustomFilter.New<Item>(item => !filter || (item?.Number ?? 0) % 2 == 0);
-            sortModel = SortListModel.New(new FilterListModel<Item>(store, filterNumbers), null);
+            sortModel = new(new FilterListModel<Item>(store, filterNumbers), null);
             model = MultiSelection.New(sortModel);
             oldModel?.Dispose();
 
@@ -164,18 +164,18 @@ class MyWindow : ApplicationWindow
                 .Select(n => new Item($"Item no {n + 1}", n));
             store.Splice(0, 0, items);
 
-            var sorterIsEven = CustomSorter.New<Item>((item1, item2) =>
+            var sorterIsEven = CustomSorter.Create<Item>((item1, item2) =>
             {
                 var order = (item1?.Number ?? 0) % 2 - (item2?.Number ?? 0) % 2;
                 return reverseSortOrder ? -order : order;
             });
-            var sorter = CustomSorter.New<Item>((item1, item2) => (item1?.Number ?? 0) - (item2?.Number ?? 0));
+            var sorter = CustomSorter.Create<Item>((item1, item2) => (item1?.Number ?? 0) - (item2?.Number ?? 0));
             using var multiSorter = MultiSorter
                 .New()
                 .Append(sorterIsEven)
                 .Append(sorter);
 
-            var col = ColumnViewColumn.New("Name", namefactory).Expand().SideEffect(cvc => cvc.SetSorter(multiSorter));
+            var col = new ColumnViewColumn("Name", namefactory).Expand().SideEffect(cvc => cvc.SetSorter(multiSorter));
             columnview.AppendColumn(col);
             columnview.SortByColumn(col);
             columnview.SetModel(model);

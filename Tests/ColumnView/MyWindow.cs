@@ -27,7 +27,7 @@ class MyWindow : ApplicationWindow
                 .Append(new Contact("Jim Doe", "jdoe@domain.de", 222, "mail-unread"))
                 .Append(new Contact("Jane Doe", "zjadoe@domain.de", 9999, "mail"));
             var oldModel = model;
-            sortModel = SortListModel.New(store, null);
+            sortModel = new(store, null);
             model = new SingleSelection(sortModel);
             oldModel?.Dispose();
 
@@ -57,10 +57,10 @@ class MyWindow : ApplicationWindow
 
             columnview.ClearColumns();
             columnview.SetModel(model);
-            using var nameSorter = CustomSorter.New<Contact>((item1, item2) => (item1?.Name ?? "").CompareTo((item2?.Name ?? "")));
-            using var mailSorter = CustomSorter.New<Contact>((item1, item2) => (item1?.EMail ?? "").CompareTo((item2?.EMail ?? "")));
-            columnview.AppendColumn(ColumnViewColumn.New("Name", namefactory).SideEffect(cvc => cvc.SetSorter(nameSorter)));
-            columnview.AppendColumn(ColumnViewColumn.New("E mail", emailfactory).Expand().SideEffect(cvc => cvc.SetSorter(mailSorter)));
+            using var nameSorter = CustomSorter.Create<Contact>((item1, item2) => (item1?.Name ?? "").CompareTo((item2?.Name ?? "")));
+            using var mailSorter = CustomSorter.Create<Contact>((item1, item2) => (item1?.EMail ?? "").CompareTo((item2?.EMail ?? "")));
+            columnview.AppendColumn(new ColumnViewColumn("Name", namefactory).SideEffect(cvc => cvc.SetSorter(nameSorter)));
+            columnview.AppendColumn(new ColumnViewColumn("E mail", emailfactory).Expand().SideEffect(cvc => cvc.SetSorter(mailSorter)));
             using var viewsorter = columnview.GetSorter();
             sortModel.SetSorter(viewsorter);
         }
@@ -89,7 +89,7 @@ class MyWindow : ApplicationWindow
                 .Select(n => new Item($"Item no {n + 1}", n));
             foreach (var item in items)
                 store.Append(item);
-            columnview.AppendColumn(ColumnViewColumn.New("Name", namefactory).Expand());
+            columnview.AppendColumn(new ColumnViewColumn("Name", namefactory).Expand());
             columnview.SetModel(model);
         }
     }
