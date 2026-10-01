@@ -60,6 +60,20 @@ public class Label : Widget
     /// </summary>
     public Widget MnemonicWidget { set => SetMnemonicWidget(this, value); }
 
+    public Label() : base()
+    {
+        var handle = New(0);
+        SetInternalHandle(handle);
+        CheckDiagnostics();
+    }
+
+    public Label(string? text) : base()
+    {
+        var handle = New(text ?? "");
+        SetInternalHandle(handle);
+        CheckDiagnostics();
+    }
+
     public Label SetUseUnderline() => this.SideEffect(l => SetUseUnderline(this, true));
 
     public Label SetMnemonicWidget(Widget widget) => this.SideEffect(l => SetMnemonicWidget(this, widget));
@@ -68,32 +82,22 @@ public class Label : Widget
 
     public Label SetEllipsize(EllipsizeMode mode) => this.SideEffect(l => SetEllipsize(this, mode));
 
-    public static Label New()
-    {
-        var res = New(0);
-        res.CheckDiagnostics();
-        return res;
-    }
-
-    public static Label New(string? text)
-    {
-        var res = _New(text ?? "");
-        res.CheckDiagnostics();
-        return res;
-    }
-
-    public Label() : base() { }
-
     public Label(Builder builder, string? name = null) : base(builder, name) { }
 
     public Label(Builder builder, string name, Action<nint> replaceParent)
         : base(builder, name, replaceParent) { }
 
-    [DllImport(Libs.LibGtk, EntryPoint = "gtk_label_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static Label _New(string text);
+    internal Label(nint handle) : base()
+    {
+        SetInternalHandle(handle);
+        CheckDiagnostics();
+    }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_label_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static Label New(nint nil);
+    extern static nint New(string text);
+
+    [DllImport(Libs.LibGtk, EntryPoint = "gtk_label_new", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint New(nint nil);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_label_get_label", CallingConvention = CallingConvention.Cdecl)]
     extern static nint _GetLabel(Label label);

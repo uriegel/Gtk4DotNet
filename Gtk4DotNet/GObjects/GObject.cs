@@ -154,19 +154,6 @@ public class GObject : BaseHandle
         SetQDataFull(this, key, obj.GetInternalHandle(), Marshal.GetFunctionPointerForDelegate(callback as Delegate));
     }
 
-    public TObject? GetData<TObject>(int key) where TObject : GObject, new()
-    {
-        var p = GetQData(this, key);
-        if (p == 0)
-            return null;
-        var t = new TObject
-        {
-            AutoDestroyed = true
-        };
-        t.SetInternalHandle(p);
-        return t;
-    }
-
     /// <summary>
     /// Sets a string to this object
     /// </summary>
@@ -440,34 +427,6 @@ public class GObject : BaseHandle
     bool diagnosticsSet;
 
     static internal Dictionary<Delegate, EventData> eventDatas = [];        
-}
-
-public static class GObjectExtensions
-{
-    /// <summary>
-    /// Adds a weak reference callback to an object. Weak references are used for notification when an object is disposed. They are called “weak references” 
-    /// because they allow you to safely hold a pointer to an object without calling g_object_ref() (g_object_ref() adds a strong reference, that is, 
-    /// forces the object to stay alive).
-    /// Note that the weak references created by this method are not thread-safe: they cannot safely be used in one thread if the object’s last g_object_unref() might happen in another thread. Use GWeakRef if thread-safety is required.
-    /// </summary>
-    /// <typeparam name="THandle"></typeparam>
-    /// <param name="obj">The GObject instance</param>
-    /// <param name="onDisposing">Is called, when the obeject is disposed</param>
-    /// <returns>The GObject for chaining calls</returns>
-    public static THandle AddWeakRef<THandle>(this GObject obj, Action onDisposing)
-        where THandle : GObject, new()
-        => (THandle)obj.SideEffect(o => o.AddWeakRef(onDisposing));
-
-    /// <summary>
-    /// Add a notification action to notify when this instance is destroyed
-    /// </summary>
-    /// <typeparam name="THandle"></typeparam>
-    /// <param name="obj"></param>
-    /// <param name="onFinalize"></param>
-    /// <returns>The GObject for chaining calls</returns>
-    public static THandle Finalize<THandle>(this THandle obj, Action onFinalize)
-        where THandle : GObject
-        => obj.SideEffect(o => o.OnFinalize(onFinalize));
 }
 
 record EventData(long Id, Delegate Delegate, Delegate EventDelegate);

@@ -26,6 +26,7 @@ public class Stack : Widget
     /// <param name="title"></param>
     public void AddTitled(Widget child, string name, string title) => AddTitled(this, child, name, title);
 
+    // TODO new()!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public T? GetVisibleChild<T>()
         where T : Widget, new()
     {

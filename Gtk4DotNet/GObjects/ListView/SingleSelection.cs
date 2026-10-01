@@ -9,12 +9,12 @@ public class SingleSelection : SelectionModel
         get => GetSelected(this);
         set => SetSelected(this, value);
     }
-    public static SingleSelection New(ListModel model)
+    public SingleSelection(ListModel model)
     {
-        var res = _New(model);
+        var handle = New(model);
         model.AutoDestroyed = true;
-        res.CheckDiagnostics();
-        return res;
+        SetInternalHandle(handle);
+        CheckDiagnostics();
     }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_single_selection_set_selected", CallingConvention = CallingConvention.Cdecl)]
@@ -24,6 +24,6 @@ public class SingleSelection : SelectionModel
     extern static int GetSelected(SingleSelection sel);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_single_selection_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static SingleSelection _New(ListModel model);
+    extern static nint New(ListModel model);
 }
 

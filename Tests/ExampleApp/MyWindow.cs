@@ -71,7 +71,7 @@ class MyWindow : ApplicationWindow
         words.RemoveAll();
         foreach (var word in wordHash)
         {
-            var item = Label.New(word);
+            var item = new Label(word);
             words.Append(item);
         }
     }

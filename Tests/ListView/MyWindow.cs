@@ -12,7 +12,7 @@ class MyWindow : ApplicationWindow
             store.Append(item);
 
         // Simple SingelSelection model
-        var model = SingleSelection.New(store);
+        var model = new SingleSelection(store);
 
         // SingleSelection with filtering
         // var filter = CustomFilter.New<Item>(item => (item?.Number ?? 0)  % 2 == 0);
@@ -27,14 +27,14 @@ class MyWindow : ApplicationWindow
         // var filter = CustomFilter.New<Item>(item => (item?.Number ?? 0)  % 2 == 0);
         // var model = SingleSelection.New(SortListModel.New(FilterListModel.New(store, filter), sorter));
 
-        var factory = SignalListItemFactory.New();
-        factory.Setup(listitem => listitem.SetChild(Label.New()));
-        factory.Bind(listitem =>
-        {
-            var label = listitem.GetChild<Label>();
-            var item = listitem.GetItem<Item>();
-            label.Text = $"Item #{item?.Number}";
-        });
+        var factory = new SignalListItemFactory()
+            .Setup(listitem => listitem.SetChild(new Label()))
+            .Bind(listitem =>
+            {
+                var label = listitem.GetChild().AsLabel();
+                var item = listitem.GetItem<Item>();
+                label.Text = $"Item #{item?.Number}";
+            });
 
         listview.SetModel(model);
         listview.SetFactory(factory);

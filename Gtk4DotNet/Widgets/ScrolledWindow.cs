@@ -4,6 +4,7 @@ namespace Gtk4DotNet;
 
 public class ScrolledWindow : Widget
 {
+    // TODO new()!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public T? GetChild<T>()
         where T: Widget, new() 
     {

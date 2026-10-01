@@ -10,11 +10,11 @@ public class ListBox : Widget
         get => GetSelectionMode(this);
         set => SetSelectionMode(this, value);
     }
-    public static ListBox New()
+    public ListBox() : base()
     {
-        var listbox = _New();
-        listbox.CheckDiagnostics();
-        return listbox;
+        var handle = New();
+        SetInternalHandle(handle);
+        CheckDiagnostics();
     }
 
     /// <summary>
@@ -161,15 +161,13 @@ public class ListBox : Widget
         BindModel(this, model, Marshal.GetFunctionPointerForDelegate((Delegate)callback), 0, 0);
     }
 
-    public ListBox() : base() { }
-
     public ListBox(Builder builder, string? name = null) : base(builder, name) { }
 
     public ListBox(Builder builder, string name, Action<nint> replaceParent)
         : base(builder, name, replaceParent) { }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static ListBox _New();
+    extern static nint New();
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_list_box_remove_all", CallingConvention = CallingConvention.Cdecl)]
     extern static void RemoveAll(ListBox listbox);

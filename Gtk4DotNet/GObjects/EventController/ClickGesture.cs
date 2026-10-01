@@ -5,11 +5,11 @@ namespace Gtk4DotNet;
 
 public class ClickGesture : SingleGesture
 {
-    public static ClickGesture New()
+    public ClickGesture()
     {
-        var click = _New();
-        click.CheckDiagnostics();
-        return click;
+        var handle = New();
+        SetInternalHandle(handle);
+        CheckDiagnostics();
     }
 
     public event Action<int, double, double, KeyModifiers> OnPressed
@@ -44,5 +44,5 @@ public class ClickGesture : SingleGesture
     }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_gesture_click_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static ClickGesture _New();
+    extern static nint New();
 }

@@ -7,8 +7,6 @@ public class ListView : Widget
 
     public void SetFactory(ListItemFactory factory) => SetFactory(this, factory);
 
-    public ListView() : base() { }
-
     public ListView(Builder builder, string? name = null) : base(builder, name) { }
 
     public ListView(Builder builder, string name, Action<nint> replaceParent)

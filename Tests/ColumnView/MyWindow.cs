@@ -28,10 +28,10 @@ class MyWindow : ApplicationWindow
                 .Append(new Contact("Jane Doe", "zjadoe@domain.de", 9999, "mail"));
             var oldModel = model;
             sortModel = SortListModel.New(store, null);
-            model = SingleSelection.New(sortModel);
+            model = new SingleSelection(sortModel);
             oldModel?.Dispose();
 
-            var namefactory = SignalListItemFactory.New();
+            var namefactory = new SignalListItemFactory();
             namefactory.Setup(listitem =>
             {
                 using var builder = Builder.FromDotNetResource("iconnameitem");
@@ -46,11 +46,11 @@ class MyWindow : ApplicationWindow
                 if (item?.IconName != null)
                     iconname?.SetFromIconName(item.IconName);
             });
-            var emailfactory = SignalListItemFactory.New();
-            emailfactory.Setup(listitem => listitem.SetChild(Label.New()));
+            var emailfactory = new SignalListItemFactory();
+            emailfactory.Setup(listitem => listitem.SetChild(new Label()));
             emailfactory.Bind(listitem =>
             {
-                var label = listitem.GetChild<Label>();
+                var label = listitem.GetChild().AsLabel();
                 var item = listitem.GetItem<Contact>();
                 label.Text = item?.EMail ?? "";
             });
@@ -70,14 +70,14 @@ class MyWindow : ApplicationWindow
             var store = new ListStore<Item>();
             var oldModel = model;
             filterNumbers = CustomFilter.New<Item>(item => !filter || (item?.Number ?? 0)  % 2 == 0);
-            model = SingleSelection.New(new FilterListModel<Item>(store, filterNumbers));
+            model = new SingleSelection(new FilterListModel<Item>(store, filterNumbers));
             oldModel?.Dispose();
 
-            var namefactory = SignalListItemFactory.New();
-            namefactory.Setup(listitem => listitem.SetChild(Label.New()));
+            var namefactory = new SignalListItemFactory();
+            namefactory.Setup(listitem => listitem.SetChild(new Label()));
             namefactory.Bind(listitem =>
             {
-                var label = listitem.GetChild<Label>();
+                var label = listitem.GetChild().AsLabel();
                 var item = listitem.GetItem<Item>();
                 label.Text = item?.Name ?? "";
             });

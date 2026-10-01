@@ -4,11 +4,11 @@ using Gtk4DotNet.Internals;
 namespace Gtk4DotNet;
 public class KeyEventController : EventController
 {
-    public static KeyEventController New()
+    public KeyEventController()
     {
-        var controller = _New();
-        controller.CheckDiagnostics();
-        return controller;
+        var handle = New();
+        SetInternalHandle(handle);
+        CheckDiagnostics();
     }
 
     /// <summary>
@@ -30,5 +30,5 @@ public class KeyEventController : EventController
     }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_event_controller_key_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static KeyEventController _New();
+    extern static nint New();
 }

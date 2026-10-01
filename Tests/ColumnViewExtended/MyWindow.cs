@@ -29,7 +29,7 @@ class MyWindow : ApplicationWindow
         );
         activeView = columnviewLeft;
 
-        var keyController = KeyEventController.New();
+        var keyController = new KeyEventController();
         keyController.OnKeyPressed += (chr, key) =>
         {
             if (chr == (char)ConsoleKey.Tab && !key.HasFlag(KeyModifiers.Shift))
@@ -59,7 +59,7 @@ class MyWindow : ApplicationWindow
         columnviewLeft.AddController(leftEvents);
         columnviewRight.AddController(rightEvents);
 
-        var kec = KeyEventController.New();
+        var kec = new KeyEventController();
         kec.SetPropagationPhase(PropagationPhase.Capture);
         kec.OnKeyPressed += (chr, mod) => OnKey(activeView, chr);
         AddController(kec);
@@ -95,8 +95,7 @@ class MyWindow : ApplicationWindow
             model = NoSelection.New(sortModel);
             oldModel?.Dispose();
 
-            var namefactory = SignalListItemFactory
-                .New()
+            var namefactory = new SignalListItemFactory()
                 .Setup(listitem =>
                 {
                     using var builder = Builder.FromDotNetResource("iconnameitem");
@@ -111,12 +110,11 @@ class MyWindow : ApplicationWindow
                     if (item?.IconName != null)
                         iconname?.SetFromIconName(item.IconName);
                 });
-            var emailfactory = SignalListItemFactory
-                .New()
-                .Setup(listitem => listitem.SetChild(Label.New().SetEllipsize(EllipsizeMode.End)))
+            var emailfactory = new SignalListItemFactory()
+                .Setup(listitem => listitem.SetChild(new Label().SetEllipsize(EllipsizeMode.End)))
                 .Bind(listitem =>
                 {
-                    var label = listitem.GetChild<Label>();
+                    var label = listitem.GetChild().AsLabel();
                     var item = listitem.GetItem<Contact>();
                     label.Text = item?.EMail ?? "";
                 });
@@ -142,18 +140,18 @@ class MyWindow : ApplicationWindow
             model = MultiSelection.New(sortModel);
             oldModel?.Dispose();
 
-            var namefactory = SignalListItemFactory.New()
-                .Setup(listitem => listitem.SetChild(Label.New()))
+            var namefactory = new SignalListItemFactory()
+                .Setup(listitem => listitem.SetChild(new Label()))
                 .Bind(listitem =>
                 {
-                    var label = listitem.GetChild<Label>();
+                    var label = listitem.GetChild().AsLabel();
                     var item = listitem.GetItem<Item>();
                     label.DataContext = item;
                     label.SetBinding("label", nameof(item.Name));
                 })
                 .Unbind(listitem =>
                 {
-                    var label = listitem.GetChild<Label>();
+                    var label = listitem.GetChild().AsLabel();
                     label.UnsetBinding("label");
                     label.DataContext = null;
                 });

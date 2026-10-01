@@ -12,11 +12,10 @@ public class ListItem : GObject
         widget.SetManagedData(ListItemData, widget);
     } 
 
-    public T GetChild<T>()
-        where T : Widget, new()
+    public Widget GetChild()
     {
         var ptr = GetChild(this);
-        var t = new T();
+        var t = new Widget();
         t.SetInternalHandle(ptr);
         t.AutoDestroyed = true;
         return t;
@@ -24,7 +23,7 @@ public class ListItem : GObject
 
     public TWidget? GetManagedChild<TWidget>()
         where TWidget : Widget
-        => GetChild<Widget>().GetManagedData<TWidget>(ListItemData);
+        => GetChild().GetManagedData<TWidget>(ListItemData);
 
     public T? GetItem<T>()
         where T : class

@@ -6,11 +6,10 @@ namespace Gtk4DotNet;
 
 public class SignalListItemFactory : ListItemFactory
 {
-    public static SignalListItemFactory New()
+    public SignalListItemFactory()
     {
-        var res = _New();
-        res.CheckDiagnostics();
-        return res;
+        SetInternalHandle(New());
+        CheckDiagnostics();
     }
 
     public SignalListItemFactory Setup(Action<ListItem> onSetup)
@@ -29,7 +28,7 @@ public class SignalListItemFactory : ListItemFactory
                 li.SetInternalHandle(o);
                 li.AutoDestroyed = true;
                 onBind(li);
-                var liChild = li.GetChild<Widget>();
+                var liChild = li.GetChild();
                 if (liChild != null)
                 {
                     var parent = liChild.GetParent();
@@ -49,7 +48,7 @@ public class SignalListItemFactory : ListItemFactory
             }));
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_signal_list_item_factory_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static SignalListItemFactory _New();
+    extern static nint New();
 }
 
 

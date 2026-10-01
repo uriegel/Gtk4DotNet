@@ -449,17 +449,6 @@ public class Widget : GObject
         }
     }
 
-    public TWidget? GetFirstChild<TWidget>() where TWidget : Widget, new()
-    {
-        var p = GetFirstChild(this);
-        if (p == 0)
-            return null;
-        var res = new TWidget();
-        res.SetInternalHandle(p);
-        res.AutoDestroyed = true;
-        return res;
-    }
-
     public bool IsFocus() => IsFocus(this);
 
     #endregion

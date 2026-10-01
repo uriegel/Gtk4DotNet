@@ -14,23 +14,23 @@ class MyWindow : ApplicationWindow
         store = new();
         store.Initialize(Persistence.Retrieve());
 
-        var factory = SignalListItemFactory.New();
-        factory.Setup(listitem =>
-        {
-            using var builder = Builder.FromDotNetResource("taskrow");
-            var taskRow = new TaskRow(builder, "taskrow") ?? throw new Exception("TaskRow is null");
-            listitem.SetManagedChild(taskRow);
-        });
-        factory.Bind(listitem =>
-        {
-            var taskRow = listitem.GetManagedChild<TaskRow>();
-            var item = listitem.GetItem<TaskItem>();
-            if (item != null)
-                taskRow?.SetTask(item);
-        });
+        var factory = new SignalListItemFactory()
+            .Setup(listitem =>
+            {
+                using var builder = Builder.FromDotNetResource("taskrow");
+                var taskRow = new TaskRow(builder, "taskrow") ?? throw new Exception("TaskRow is null");
+                listitem.SetManagedChild(taskRow);
+            })
+            .Bind(listitem =>
+            {
+                var taskRow = listitem.GetManagedChild<TaskRow>();
+                var item = listitem.GetItem<TaskItem>();
+                if (item != null)
+                    taskRow?.SetTask(item);
+            });
 
         filterListModel = new(store, GetFilter(Application.Settings));
-        var model = SingleSelection.New(filterListModel);
+        var model = new SingleSelection(filterListModel);
         tasksList.SetModel(model);
         tasksList.SetFactory(factory);
 
