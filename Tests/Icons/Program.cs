@@ -42,8 +42,8 @@ static async Task<bool> GetIconFromExtension(IRequest request)
     if (subPath == null)
         return false;
     var size = request.QueryParts.GetValue("size")?.ParseInt() ?? 64;
-    using var icon = GIcon.Get(Gio.GuessContentType(subPath) ?? "none");
-    var names = icon.ThemedNames().ToArray();
+    using var icon = GIcon.FromContentType(Gio.GuessContentType(subPath) ?? "none");
+    var names = icon?.ThemedNames().ToArray() ?? [];
     return await GetIcon(request, names[0], size);
 }
 

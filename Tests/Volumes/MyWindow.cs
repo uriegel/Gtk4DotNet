@@ -111,7 +111,7 @@ class MyWindow : ApplicationWindow
     
     void OnThemeChanged() => WriteLine($"Thema, {settings.GetString("gtk-theme")}");
 
-    VolumeMonitor monitor;
-    GSettings settings;
-    string?[] volumeNames = [];
+    readonly VolumeMonitor monitor;
+    readonly GSettings settings;
+    readonly string?[] volumeNames = [];
 }

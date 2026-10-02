@@ -4,11 +4,15 @@ namespace Gtk4DotNet;
 
 public class GIcon : GObject
 {
-    public static GIcon Get(string contentType)
+    public static GIcon? FromContentType(string contentType)
     {
-        var icon = _Get(contentType);
-        icon.CheckDiagnostics();
-        return icon;
+        var handle = Get(contentType);
+        if (handle == 0)
+            return null;
+        var res = new GIcon();
+        res.SetInternalHandle(handle);
+        res.CheckDiagnostics();
+        return res;
     }
 
     public IEnumerable<string> ThemedNames()
@@ -27,7 +31,7 @@ public class GIcon : GObject
     }
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_content_type_get_icon", CallingConvention = CallingConvention.Cdecl)]
-    extern static GIcon _Get(string contentType);
+    extern static nint Get(string contentType);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_themed_icon_get_names", CallingConvention = CallingConvention.Cdecl)]
     extern static nint GetNames(GIcon icon);
