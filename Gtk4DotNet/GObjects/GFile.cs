@@ -67,6 +67,7 @@ public class GFile : GObject
         return mount;
     }
 
+    internal GFile() {}
 
     /// <summary>
     /// Copies a GFile to destination (you have to specify the destination file name!).

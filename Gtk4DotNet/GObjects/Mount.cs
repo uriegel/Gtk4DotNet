@@ -9,11 +9,15 @@ public class Mount : GObject
 {
     public string? Name { get => GetName(this).PtrToString(true); }
     public string? Uuid { get => GetUuid(this).PtrToString(true); }
-    public GFile GetRoot()
+    public GFile? GetRoot()
     {
-        var res = GetRoot(this);
+        var handle = GetRoot(this);
+        if (handle == 0)
+            return null;
+        var res = new GFile();
         // Mount a living object:
         // res.CheckDiagnostics();
+        res.SetInternalHandle(handle);
         return res;
     }
 
@@ -53,7 +57,7 @@ public class Mount : GObject
     extern static Volume GetVolume(Mount mount);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_mount_get_root", CallingConvention = CallingConvention.Cdecl)]
-    public extern static GFile GetRoot(Mount mount);
+    public extern static nint GetRoot(Mount mount);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_mount_get_name", CallingConvention = CallingConvention.Cdecl)]
     extern static nint GetName(Mount mount);

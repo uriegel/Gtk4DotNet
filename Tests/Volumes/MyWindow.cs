@@ -7,9 +7,9 @@ class MyWindow : ApplicationWindow
 {
     public MyWindow(WindowBuilder builder) : base(builder)
     {
-        //using var probeFile = GFile.New("/media/uwe/Daten/Bilder/Fotos/1965/Bild001.jpg");
-        //using var probeFile = GFile.New("/media/uwe/Ubuntu 25.10 amd64");
-        using var probeFile = new GFile("/media/uwe/Videos/videos");
+        //using var probeFile = new GFile("/run/media/uwe/Daten/Bilder/Fotos/1965/Bild001.jpg");
+        //using var probeFile = new GFile("/media/uwe/Ubuntu 25.10 amd64");
+        using var probeFile = new GFile("/run/media/uwe/stick");
         using var mount = probeFile.FindEnclosingMount();
         using var vol = mount?.GetVolume();
 
@@ -20,23 +20,24 @@ class MyWindow : ApplicationWindow
             try
             {
                 using var driv = vol?.GetDrive();
+                if (driv == null)
+                    return;
                 // using var mounts = driv?.GetVolumes().SelectFilterNull(n => n.GetMount()).AsDisposable();
                 // if (mounts != null)
                 //     foreach (var mount in mounts)
                 //         await mount.UnmountAsync(OnShowProcesses);
                 // static void OnShowProcesses(string? msg, string[] _, Process[] processes)
                 //     => WriteLine($"{msg} {string.Join(" - ", processes.Select(n => n.ProcessName))}");
-                if (driv != null)
-                    await driv.StopOrEjectAsync(async (msg, _, processes) =>
-                    {
-                        var dialog = new AdwAlertDialog("Cannot unmount", $"{msg}\n{string.Join("\n", processes.Select(n => n.ProcessName))}");
-                        dialog.SetResponses([
-                                new("retry", "Retry", Default: true, Appearance: AdwResponseAppearance.Suggested),
-                                new("cancel", "_Cancel", Cancel: true)
-                            ]);
-                        var res = await dialog.PresentAsync(this);
-                        return res == "retry";
-                    }, (t, m, tl, bl) => WriteLine($"{t} - {m} - {tl} - {bl}"));
+                await driv.StopOrEjectAsync(async (msg, _, processes) =>
+                {
+                    var dialog = new AdwAlertDialog("Cannot unmount", $"{msg}\n{string.Join("\n", processes.Select(n => n.ProcessName))}");
+                    dialog.SetResponses([
+                            new("retry", "Retry", Default: true, Appearance: AdwResponseAppearance.Suggested),
+                            new("cancel", "_Cancel", Cancel: true)
+                        ]);
+                    var res = await dialog.PresentAsync(this);
+                    return res == "retry";
+                }, (t, m, tl, bl) => WriteLine($"{t} - {m} - {tl} - {bl}"));
             }
             catch (Exception e)
             {
