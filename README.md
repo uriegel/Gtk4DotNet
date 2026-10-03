@@ -1,7 +1,7 @@
 # Gtk4DotNet
 C# .NET 10 bindings for GTK4. You can create programs using the GTK4 UI system as a .NET 10 app.
 
-Highlights:
+### Highlights:
 
 * Very lightweight approach, functional and object oriented.
 * Support of template.ui resources as .NET resources so that the UI can be designed with [Cambalache](https://github.com/ag-python/cambalache).
@@ -62,7 +62,7 @@ For example on Linux Mint 22 you only have to install
 ``` 
 sudo apt install libwebkitgtk-6.0-dev
 ```
-if you want to use webkit webview whereas for KDE neon 6.0 you have to install 
+if you want to use webkit webview for KDE neon 6.0 you have to install 
 
 ``` 
 sudo apt install libadwaita-1-dev
@@ -131,19 +131,20 @@ And now your first Gtk window is being shown!
 
 ## Hello World
 
-For a Hello World app it is used to display the Text "Hello World". We set thewindow title to this string, and set the default size of the window, and our Hello World app is finished:
+For a Hello World app it is used to display the Text "Hello World". We set the window title to this string, and set the default size of the window, and our Hello World app is finished:
 
 ```cs
 using Gtk4DotNet;
 
-Application
-    .New("de.uriegel.gtk4dotnet")
-    .OnActivate(app => app
-        .NewWindow()
-        .Title("Hello World👍")
-        .DefaultSize(600, 200)
-        .Show()
-    ).Run();
+var app = new Application("de.uriegel.gtk4dotnet");
+app.OnActivate += () =>
+{
+    using var window = app.NewWindow();
+    window.Title = "Hello World👍";
+    window.SetDefaultSize(600, 200);
+    window.Show();
+};
+app.Run();
 ```
 Many Methods returns their own instance, so that you can chain function calls in a builder way. 
 
@@ -162,11 +163,9 @@ So every widget implements IDisposable like the GObject base class, but memory m
 To check if all objects are being freed after the app has exited, there is a control mechanism. You can  enable it with the help of the method ```Application.WithDiagnostics()```. It should be the first method called on the application object: 
 
 ```cs
-Application
-    .New("de.uriegel.gtk4dotnet")
-    .WithDiagnostics(true)
-    .OnActivate(app => app
-    ...
+var app = new Application("de.uriegel.gtk4dotnet");
+app.WithDiagnostics(true);
+...
 ```
 
 If WithDiagnostics is called with parameter true, every object that is being freed will be logged in the console. Otherwise only the dangling objects are being displayed after the app has exited.
@@ -175,36 +174,29 @@ In the next test program 'PackButtons', three ```Button```s are being included i
 
 ```cs
 using Gtk4DotNet;
-using CsTools.Extensions;
 
 using static System.Console;
 
-Application
-    .New("de.uriegel.gtk4dotnet")
-    .WithDiagnostics(true)
-    .OnActivate(app => app
-        .NewWindow()
-        .Title("Pack👍")
-        .Pipe(win => win.Child(
-            Grid
-                .New()
-                .Attach(
-                    Button
-                        .NewWithLabel("Button 1")
-                        .SideEffect(b => b.OnClicked += () => WriteLine("Button1 clicked")), 0, 0, 1, 1)
-                .Attach(
-                    Button
-                        .NewWithLabel("Button 2")
-                        .SideEffect(b => b.OnClicked += () => WriteLine("Button2 clicked")), 1, 0, 1, 1)
-                .Attach(
-                    Button
-                        .NewWithLabel("Quit")
-                        .SideEffect(b => b.OnClicked += () => win.CloseWindow()), 0, 1, 2, 1)))
-        .Show()
-  ).Run();
-  ```
-Gtk4DotNet has the nuget package CsTools included, which has some functional extensions like ```Pipe()``` or ```SideEffect()``` to be used in the functional flow of the builder. pattern.
-
+var app = new Application("de.uriegel.gtk4dotnet");
+app.WithDiagnostics(true);
+app.OnActivate += () =>
+{
+    var window = app.NewWindow();
+    window.Title = "Pack👍";
+    using var button1 = new Button("Button 1");
+    button1.OnClicked += () => WriteLine("Button1 clicked");
+    using var button2 = new Button("Button 2");
+    button2.OnClicked += () => WriteLine("Button2 clicked");
+    using var button3 = new Button("Quit");
+    button3.OnClicked += () => window.CloseWindow();
+    window.SetChild(new Grid()
+        .Attach(button1, 0, 0, 1, 1)
+        .Attach(button2, 1, 0, 1, 1)
+        .Attach(button3, 0, 1, 2, 1));
+    window.Show();
+};
+app.Run();
+```
 # Using an UI template from .NET resource - Window subclassing
 
 ## Using an UI template
@@ -215,7 +207,7 @@ With the functional builder approach you can nicely build small programs. But wh
 * Reacting on UI in connection with state is also problem
 * It is not so easy to create sub modules of the UI.
 
-Therefore the GTK approch with a template.UI (always containig ```<object>``` as the root  element, not ```<template>```!) is a good way to biuld our UI. This can be done with [Cambalache](https://github.com/ag-python/cambalache).
+Therefore the GTK approch with a template.UI (always containig ```<object>``` as the root  element, not ```<template>```!) is a good way to build our UI. This can be done with [Cambalache](https://github.com/ag-python/cambalache).
 
 The templates are shipped with the program the C# way, using.NET resources.
 
@@ -287,26 +279,26 @@ As said before, this file will be included as .NET resource, so in the ```Builde
   </ItemGroup>
 ```
 
-Our main prograsm now looks very small:
+Our main program now looks very small:
 
 ```cs
-Application
-    .NewAdwaita("de.uriegel.gtk4dotnet")
-    .WithDiagnostics(true)
-    .OnActivate(app => app
-        .WindowFromBuilder("window", "window", p => new MyWindow(p))
-        .Show()
-    ).Run();
+using Gtk4DotNet;
 
+var app = new AdwApplication("de.uriegel.gtk4dotnet");
+app.WithDiagnostics(true);
+app.OnActivate += () =>
+    app.WindowFromBuilder("window", "window", p => new MyWindow(p))
+        .Show();
+app.Run();
 ```
 ## Window subclassing
 
-In this sample we build an Adwaita app instead of a Gtk4 app (```Application.NewAdwaita()```). Now our app blends well with modern Gnome.
+In this sample we build an Adwaita app instead of a Gtk4 app (```new Application()```). Now our app blends well with modern Gnome.
 
-But the interresting change is this line of code:
+But the interesting change is this line of code:
 
 ```cs
-    .WindowFromBuilder("window", "window", p => new MyWindow(p))
+app.WindowFromBuilder("window", "window", p => new MyWindow(p))
 ```
 
 The main window is build from the template resource. The first parameter is the logical name of the resource, the second the name of the window, and the third a constructor function.
@@ -327,9 +319,9 @@ class MyWindow : ApplicationWindow
 ```
 The constructor of the custom class must have a ```WindowBuilder``` paramter included and with this calls the base constructor. The ```WindowBuilder``` is delivered by the constructor callback of```Application.WindowFromBuilder()```. This alone is sufficient to instanciate the custom subclassed Window.
 
-But how can we access the included widgets? That is very simple. Every widget that should be accessedgets a corresponding field in the MyWindow class. It then has to be annotated with the C# Attribute ```[Widget]```. As long as the name of this field is the same as the corresponding object name in the template.ui, that is enough, and the field is automatically initialized from the builder. If the name differs, the widget's name in the template.ui has to be specified in the WidgetAttribute lige this: ```[Widget(Name='name of the widget in the template')].
+But how can we access the included widgets? That is very simple. Every widget that should be accessed gets a corresponding field in the MyWindow class. It then has to be annotated with the C# Attribute ```[Widget]```. As long as the name of this field is the same as the corresponding object name in the template.ui, that is enough, and the field is automatically initialized from the builder. If the name differs, the widget's name in the template.ui has to be specified in the WidgetAttribute like this: ```[Widget(Name='name of the widget in the template')].
 
-The field are all initialized to ```null!```. That is to satisfy the C# compiler that all fields are not nullable (because thes are not unless a design error has occured, name mismatching).
+The field are all initialized to ```null!```. That is to satisfy the C# compiler that all fields are not nullable (because these are not null unless a design error has occured: name mismatching).
 
 
 Now our Window looks like this:
@@ -369,7 +361,7 @@ Now we have the same program as before, only better structured.
 
 # Using stylesheets
 
-The next sample ```WithStyle``` shows the using of a style sheet. Of course itwill be provided the C# way, with the help of a .NET Resource.
+The next sample ```WithStyle``` shows the using of a style sheet. Of course it will be provided the C# way, with the help of a .NET Resource.
 
 So here is our stylesheet style.css:
 
@@ -401,34 +393,36 @@ The style.css have to be included as .NET resource. It can be activated via
 ```cs
 StyleContext.AddProviderForDisplay(
             Display.GetDefault(),
-            CssProvider.New().FromResource("style"),
+            CssProvider.FromResourceFromResource("style"),
             StyleProviderPriority.Application)
 ```
 
 The program now looks like:
 ```cs
-Application
-    .New("de.uriegel.gtk4dotnet")
-    .WithDiagnostics(true)
-    .OnActivate(app => app
-        .NewWindow()
-        .Title("With Style👍")
-        .DefaultSize(200, 200)
-        .SideEffect(_ => StyleContext.AddProviderForDisplay(
-            Display.GetDefault(),
-            CssProvider.New().FromResource("style"),
-            StyleProviderPriority.Application))
-        .Child(Box
-            .New(Orientation.Vertical, 10)
-            .Margin(10)
-            .Append(Button.NewWithLabel("Button 1"))
-            .Append(Button.NewWithLabel("Button 2").CssClass("button-1"))
-            .Append(Button.NewWithLabel("Hover me!").SetName("button-2"))
-            .Append(MenuButton.New())
-            .Append(Button.NewWithLabel("Suggested").CssClass("destructive-action"))
-            .Append(Button.NewWithLabel("Destructive").CssClass("suggested-action")))
-        .Show()
-    ).Run();
+using Gtk4DotNet;
+
+var app = new Application("de.uriegel.gtk4dotnet");
+app.WithDiagnostics(true);
+app.OnActivate += () =>
+{
+    using var window = app.NewWindow();
+    window.Title = "With Style👍";
+    window.SetDefaultSize(200, 200);
+    StyleContext.AddProviderForDisplay(
+        Display.GetDefault(),
+        CssProvider.FromResource("style"),
+        StyleProviderPriority.Application);
+    window.SetChild(new Box(Orientation.Vertical, 10)
+        .Margin(10)
+        .Append(new Button("Button 1"))
+        .Append(new Button("Button 2").CssClass("button-1"))
+        .Append(new Button("Hover me!").SetName("button-2"))
+        .Append(new MenuButton())
+        .Append(new Button("Suggested").CssClass("destructive-action"))
+        .Append(new Button("Destructive").CssClass("suggested-action")));
+    window.Show();
+};
+app.Run();
 ```
 
 The last two buttons were provided with CSS rules provided by GTK:
@@ -440,11 +434,10 @@ The last two buttons were provided with CSS rules provided by GTK:
 
 Gtk actions are a means to abstract UI from code logic. They can be added to the application and then act application-wide for all top level window, or they can be inserted to a window, or to special ActionGroups.
 
-To Add actions to the application or to a Window, all you have to do is to call ```Actions()``` and add the actions. In our example ```Actions``` the following ```SimpleAction``` is added:
+To add actions to the application or to a Window, all you have to do is to call ```Actions()``` and add the actions. In our example ```Actions``` the following ```SimpleAction``` is added:
 
 ```cs
-    .OnActivate(app => app
-        .Actions(new SimpleAction("test", () => Console.WriteLine("Test action from app"), "<Ctrl>T"))
+app.AddActions(new SimpleAction("test", () => Console.WriteLine("Test action from app"), "<Ctrl>T"));
 ```
 
 The action has the name "test", on activation it will be calling the specified lambda, and it can be activated via keyboard with the shortcut ```Ctrl-T```
@@ -467,10 +460,10 @@ Actions can only be added to ```ApplicationWindow```
 
 The action name correspond with the action name given in the template.ui, for example:
 ```xml
-    <object class="GtkToggleButton" id="preview_button">
-        <property name="action-name">win.preview</property>
-        <property name="icon-name">x-office-presentation</property>
-    </object>
+<object class="GtkToggleButton" id="preview_button">
+    <property name="action-name">win.preview</property>
+    <property name="icon-name">x-office-presentation</property>
+</object>
 ```
 
 The group name for actions added to an ApplicationWindow is ```win.``
@@ -533,25 +526,25 @@ The Label property of the Label ```label1``` is bound to the DataContext propert
 This can also be done from an asynchronous Lambda after a while:
 
 ```cs
-        button1.OnClicked += async () =>
-        {
-            dataContext.Name = "Name was changed to John Doe";
-            await Task.Delay(2000);
-            dataContext.Name = "Name was changed back to URiegel";
-        };
+button1.OnClicked += async () =>
+{
+    dataContext.Name = "Name was changed to John Doe";
+    await Task.Delay(2000);
+    dataContext.Name = "Name was changed back to URiegel";
+};
 ```
 
 And it can even be done from a thread different to the GTK UI thread:
 ```cs
-        button1.OnClicked += () =>
-        {
-            dataContext.Name = "Name was changed to John Doe";
-            new Thread(() =>
-            {
-                Thread.Sleep(4000);
-                dataContext.Name = "Name was changed from a background thread";
-            }).Start();
-        };
+button1.OnClicked += () =>
+{
+    dataContext.Name = "Name was changed to John Doe";
+    new Thread(() =>
+    {
+        Thread.Sleep(4000);
+        dataContext.Name = "Name was changed from a background thread";
+    }).Start();
+};
 ```
 The widget ```editable``` is bound to property Name in a two-way-binding meaning that it reacts to name changing from code but also the DataContext property reacts to changes in the editable.
 
@@ -577,7 +570,7 @@ class MyWindow : ApplicationWindow
     {
         StyleContext.AddProviderForDisplay(
             Display.GetDefault(),
-            CssProvider.New().FromResource("style"),
+            CssProvider.FromResource("style"),
             StyleProviderPriority.Application);
 
         box.DataContext = dataContext;
@@ -673,48 +666,47 @@ If you want to create a new window from the ApplicationWindow, you have to do th
 using CsTools.Extensions;
 using Gtk4DotNet;
 
-Application
-    .New("de.uriegel.gtk4dotnet")
-    .WithDiagnostics(true)
-    .OnActivate(app => app
-        .NewWindow()
-        .Title("Multiple Window👍")
-        .Child(Button
-            .NewWithLabel("Create Window")
-            .SideEffect(b => b.OnClicked += () =>
-            {
-                var win = new MyWindow();
-                win.Show();
-            }))
-        .Show()
-    ).Run();
+var app = new Application("de.uriegel.gtk4dotnet");
+app.WithDiagnostics(true);
+app.OnActivate += () =>
+{
+    using var window = app.NewWindow();
+    window.Title = "Multiple Window👍";
+    window.SetChild(new Button("Create Window")
+        .SideEffect(b => b.OnClicked += () =>
+        {
+            using var win = new MyWindow(app);
+            win.Show();
+        }));
+    window.Show();
+};
+app.Run();
 ```
 
-with the MyWindow inherited from Window:
+Gtk4DotNet has the nuget package CsTools included, which has some functional extensions like ```Pipe()``` or ```SideEffect()``` to be used in the functional flow of the builder. pattern.
+
+MyWindow is inherited from Window:
 
 ```cs
+using Gtk4DotNet;
+
 class MyWindow : Window
+{
+    public MyWindow(Application app) 
+    {
+        Title = "My custom Window";
+        app.AddWindow(this);
+    }   
+}
 ```
 
-If you run the program the following error is displayed in the console when you click the button:
-``` 
-
-(MultipleWindows.dll:66180): Gtk-CRITICAL **: 10:42:41.033: gtk_widget_show: assertion 'GTK_IS_WIDGET (widget)' failed
- ``` 
-
-MyWindow is inherited from Window, but Gtk doesn't know about creating a new Window. In the constructor of MyWindow you have to call ```Construct()```:
+It is neccessary to add the second window to the Application:
 
 ```cs
-    public MyWindow()
-    {
-        Construct();
-        Title = "My custom Window";
-    }   
+app.AddWindow(this);
 ```
 
-Now the newly created windows are displayed. ```Construct()``` must be the first function call in the constuctor, otherwise the call to ```Title()``` fails.
-
-If you close all instances of MyWindow and then the amin application window, no error occured. But when you close the Application window first, there are warnings in the console displayed, when ```WithDiagnostics()``` is set:
+If you don't do this and close all instances of MyWindow and then the application window, no error occured. But when you close the Application window first, there are warnings in the console displayed, when ```WithDiagnostics()``` is set:
 
 ```
 3 Dangling GObjects: DelegateInfo { Delegate = Gtk4DotNet.Internals.TwoPointerDelegate, Name = SetDiagnostics, TypeName = MyWindow }
@@ -722,24 +714,8 @@ If you close all instances of MyWindow and then the amin application window, no 
 
 Three instances of MyWindow were not freed.
 
-If you want to expand the lifetime of the app to the lifetime of all windows (so that all windows are freed eventually), you have to add the newly created windows to the Application:
+If you want to expand the lifetime of the app to the lifetime of all windows (so that all windows are freed eventually), you have to add the newly created windows to the Application
 
-```cs
-    public MyWindow(Application app)
-    {
-        Construct();
-        Title = "My custom Window";
-        app.AddWindow(this);
-    }   
-```
-and creating the window with the app as parameter:
-```cs
-    .SideEffect(b => b.OnClicked += () =>
-    {
-        var win = new MyWindow(app);
-        win.Show();
-    }))
-```
 Now the instances of all windows are being freed, and the app exits when <b>all</b> windows are closed.
 
 # Subclassing a widget from a builder template
@@ -792,6 +768,8 @@ like you used to. One problem is, that the field is not being used in MyWindow, 
 This is the implementation of ProgressDisplay:
 
 ```cs
+using Gtk4DotNet;
+
 class ProgressDisplay : Revealer
 {
     public ProgressDisplay(Builder builder, string name) : base(builder, name)
@@ -809,24 +787,53 @@ class ProgressDisplay : Revealer
 
     void Draw(DrawingArea area, Cairo cairo, int w, int h)
     {
-        ...
+        var color = GetStyleContext().GetColor().ToSrgb();
+        cairo
+            .AntiAlias(CairoAntialias.Best)
+            .LineCap(LineCap.Round)
+            .LineWidth(3.0)
+            .SourceRgba(color.Red, color.Green, color.Blue, 0.2)
+            .Arc(w / 2.0, h / 2.0, (w < h ? w : h) / 2.0 - 2.0, -Math.PI / 2.0, -Math.PI / 2.0 + Math.PI * 2)
+            .Stroke()
+            .AntiAlias(CairoAntialias.Best)
+            .LineCap(LineCap.Round)
+            .LineWidth(3.0)
+            .SourceRgba(color.Red, color.Green, color.Blue, color.Alpha)
+            .Arc(w / 2.0, h / 2.0, (w < h ? w : h) / 2.0 - 2.0, -Math.PI / 2.0, -Math.PI / 2.0 + progress * Math.PI * 2)
+            .Stroke();
     }
 
     async void MakeProgress()
     {
-        ...
+        activeId++;
+        if (!IsRevealed)
+        {
+            var id = activeId;
+            for (int i = 0; i < 1000 && id == activeId && !closing; i++)
+            {
+                progress = i / 1000f;
+                await Task.Delay(10);
+                if (closing || id != activeId)
+                    return;
+                drawingArea.QueueDraw();
+                progressBar.Fraction = progress;                
+            }
+            await Task.Delay(5000);
+            IsRevealed = false;
+        }
     }
 
     [Widget(Name = "progress_bar")]
-    ProgressBar progressBar = null!;
+    readonly ProgressBar progressBar = null!;
 
     [Widget(Name = "progress_area")]
-    DrawingArea drawingArea = null!;
+    readonly DrawingArea drawingArea = null!;
 
     [Widget]
-    Widget starter = null!;
+    readonly Widget starter = null!;
 
     float progress = 0.0f;
+    
     bool closing;
     int activeId;
 }

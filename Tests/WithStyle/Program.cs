@@ -1,5 +1,4 @@
-﻿using CsTools.Extensions;
-using Gtk4DotNet;
+﻿using Gtk4DotNet;
 
 var app = new Application("de.uriegel.gtk4dotnet");
 app.WithDiagnostics(true);
