@@ -148,7 +148,7 @@ app.Run();
 ```
 Many Methods returns their own instance, so that you can chain function calls in a builder way. 
 
-![Hello World](https://raw.githubusercontent.com/uriegel/Gtk4DotNet/refs/heads/Beta/Readme/helloworld.png) 
+![Hello World](https://raw.githubusercontent.com/uriegel/Gtk4DotNet/refs/heads/Main/Readme/helloworld.png) 
 
 If you download the project from https://github.com/uriegel/Gtk4DotNet/ you can start the Test program 'HelloWorld' from Visual Studio Code.
 
@@ -428,7 +428,7 @@ app.Run();
 The last two buttons were provided with CSS rules provided by GTK:
 "Suggested" and "Destructive". The app looks like this when started:
 
-![WithStyle](https://raw.githubusercontent.com/uriegel/Gtk4DotNet/refs/heads/Beta/Readme/withstyle.png) 
+![WithStyle](https://raw.githubusercontent.com/uriegel/Gtk4DotNet/refs/heads/Main/Readme/withstyle.png) 
 
 # Using Gtk actions
 
