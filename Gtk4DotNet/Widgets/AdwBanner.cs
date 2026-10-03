@@ -41,11 +41,10 @@ public class AdwBanner : Widget
     /// </summary>
     /// <param name="title"></param>
     /// <returns></returns>
-    public static AdwBanner New(string title)
+    public AdwBanner(string title)
     {
-        var banner = _New(title);
-        banner.CheckDiagnostics();
-        return banner;
+        SetInternalHandle(New(title));
+        CheckDiagnostics();
     }
 
     /// <summary>
@@ -76,10 +75,8 @@ public class AdwBanner : Widget
     public AdwBanner(Builder builder, string name, Action<nint> replaceParent)
         : base(builder, name, replaceParent) { }
 
-    public AdwBanner() : base() { }
-
     [DllImport(Libs.LibAdw, EntryPoint = "adw_banner_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static AdwBanner _New(string title);
+    extern static nint New(string title);
 
     [DllImport(Libs.LibAdw, EntryPoint = "adw_banner_get_title", CallingConvention = CallingConvention.Cdecl)]
     extern static nint GetTitle(AdwBanner banner);

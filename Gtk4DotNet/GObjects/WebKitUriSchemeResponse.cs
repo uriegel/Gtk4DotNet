@@ -4,8 +4,11 @@ namespace Gtk4DotNet;
 
 public class WebKitUriSchemeResponse : GObject
 {
-    [DllImport(Libs.LibWebKit, EntryPoint = "webkit_uri_scheme_response_new", CallingConvention = CallingConvention.Cdecl)]
-    public extern static WebKitUriSchemeResponse New(InputStream stream, long length);
+    public WebKitUriSchemeResponse(InputStream stream, long length)
+    {
+        SetInternalHandle(New(stream, length));
+        CheckDiagnostics();
+    }
 
     public void HttpHeaders(SoupMessageHeaders headers)
     {
@@ -15,6 +18,9 @@ public class WebKitUriSchemeResponse : GObject
 
     public void Status(int status, string statusPhrase)
         => SetStatus(this, status, statusPhrase);
+
+    [DllImport(Libs.LibWebKit, EntryPoint = "webkit_uri_scheme_response_new", CallingConvention = CallingConvention.Cdecl)]
+    extern static nint New(InputStream stream, long length);
 
     [DllImport(Libs.LibWebKit, EntryPoint = "webkit_uri_scheme_response_set_content_type", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetContentType(WebKitUriSchemeResponse response, string contentType);

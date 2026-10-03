@@ -21,7 +21,7 @@ class GtkActions(bool freeActions)
             }
             else if (action is BoolAction boolAction)
             {
-                var state = Variant.New(boolAction.InitialState);
+                var state = new Variant(boolAction.InitialState);
                 using var gAction = NewStatefulAction(action.Name, null, state);
                 gAction.CheckDiagnostics();
                 AddAction(actionMap, gAction);
@@ -35,7 +35,7 @@ class GtkActions(bool freeActions)
             }
             else if (action is StringAction stringAction)
             {
-                var state = Variant.New(stringAction.InitialState);
+                var state = new Variant(stringAction.InitialState);
                 using var gAction = NewStatefulAction(action.Name, "s", state);
                 gAction.CheckDiagnostics();
                 AddAction(actionMap, gAction);

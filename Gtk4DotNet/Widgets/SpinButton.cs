@@ -15,12 +15,10 @@ public class SpinButton : Widget
     /// <param name="max">Maximum allowable value</param>
     /// <param name="step">Increment added or subtracted by spinning the widget</param>
     /// <returns>The newly created SpinButton</returns>
-    public static SpinButton New(double min, double max, double step)
+    public SpinButton(double min, double max, double step)
     {
-        var res = _New(min, max, step);
-        res.CheckDiagnostics();
-        res.AutoDestroyed = true;
-        return res;
+        SetInternalHandle(New(min, max, step));
+        CheckDiagnostics();
     }
 
     public double Value
@@ -55,7 +53,7 @@ public class SpinButton : Widget
 
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_spin_button_new_with_range", CallingConvention = CallingConvention.Cdecl)]
-    extern static SpinButton _New(double min, double max, double step);
+    extern static nint New(double min, double max, double step);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_spin_button_set_value", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetValue(SpinButton spinButton, double value);

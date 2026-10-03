@@ -373,7 +373,7 @@ public class Widget : GObject
     /// <param name="shortcuts"></param>
     public void AddShortcuts(params Shortcut[] shortcuts)
     {
-        var shortcutController = ShortcutController.New();
+        var shortcutController = new ShortcutController();
         foreach (var shortcut in shortcuts)
             shortcutController.AddShortcut(shortcut);
         AddController(shortcutController);

@@ -5,11 +5,10 @@ namespace Gtk4DotNet;
 
 public class FocusEventController : EventController
 {
-    public static FocusEventController New()
+    public FocusEventController()
     {
-        var controller = _New();
-        controller.CheckDiagnostics();
-        return controller;
+        SetInternalHandle(New());
+        CheckDiagnostics();
     }
 
     public event Action OnEnter
@@ -54,5 +53,5 @@ public class FocusEventController : EventController
     }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_event_controller_focus_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static FocusEventController _New();
+    extern static nint New();
 }

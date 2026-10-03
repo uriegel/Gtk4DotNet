@@ -4,11 +4,10 @@ namespace Gtk4DotNet;
 
 public class MultiSorter : Sorter
 {
-    public static MultiSorter New()
+    public MultiSorter()
     {
-        var res = _New();
-        res.CheckDiagnostics();
-        return res;
+        SetInternalHandle(New());
+        CheckDiagnostics();
     }
 
     public MultiSorter Append(Sorter sorter)
@@ -19,7 +18,7 @@ public class MultiSorter : Sorter
     }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_multi_sorter_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static MultiSorter _New();
+    extern static nint New();
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_multi_sorter_append", CallingConvention = CallingConvention.Cdecl)]
     extern static void Append(MultiSorter multiSorter, Sorter sorter);

@@ -148,8 +148,8 @@ public class WebView : Widget
             {
                 var bytes = new byte[res.Length];
                 var read = res.Read(bytes, 0, bytes.Length);
-                using var gbytes = GBytes.New(bytes);
-                using var gstream = MemoryInputStream.New(gbytes);
+                using var gbytes = new GBytes(bytes);
+                using var gstream = new MemoryInputStream(gbytes);
                 request.Finish(gstream, bytes.Length, uri?.GetFileExtension()?.ToMimeType() ?? "text/html");
             }
             else
@@ -166,10 +166,10 @@ public class WebView : Widget
 
     static void SendResponse(WebkitUriSchemeRequest request, int code, string status, string text)
     {
-        using var bytes = GBytes.New(Encoding.UTF8.GetBytes(text));
-        using var stream = MemoryInputStream.New(bytes);
-        using var response = WebKitUriSchemeResponse.New(stream, text.Length);
-        using var respondHeaders = SoupMessageHeaders.New(SoupMessageHeaderType.Response);
+        using var bytes = new GBytes(Encoding.UTF8.GetBytes(text));
+        using var stream = new MemoryInputStream(bytes);
+        using var response = new WebKitUriSchemeResponse(stream, text.Length);
+        using var respondHeaders = new SoupMessageHeaders(SoupMessageHeaderType.Response);
         respondHeaders.Set([new("Access-Control-Allow-Origin", "*")]);
         response.HttpHeaders(respondHeaders);
         response.Status(code, status);

@@ -6,13 +6,14 @@ namespace Gtk4DotNet;
 
 public class TextTag : GObject
 {
-    public static TextTag New(string? name)
+    public TextTag(string? name)
     {
-        var res = _New(name);
-        res.CheckDiagnostics();
-        return res;
+        SetInternalHandle(New(name));
+        CheckDiagnostics();
     }
 
+    internal TextTag() { }
+
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_text_tag_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static TextTag _New(string? name);
+    extern static nint New(string? name);
 }

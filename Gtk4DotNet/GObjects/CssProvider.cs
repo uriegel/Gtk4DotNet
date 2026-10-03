@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 
 namespace Gtk4DotNet;
 
@@ -24,9 +25,10 @@ public class CssProvider : GObject
                 var writeStream = new UnmanagedMemoryStream(memBytePtr, styleResource.Length, styleResource.Length, FileAccess.Write);
                 styleResource.CopyTo(writeStream);
             }
-            using var gbytes = GBytes.New(memIntPtr, styleResource.Length);
+            using var gbytes = new GBytes(memIntPtr, styleResource.Length);
             Marshal.FreeHGlobal(memIntPtr);
-            var res = New();
+            var res = new CssProvider();
+            res.SetInternalHandle(New());
             LoadFromBytes(res, gbytes);
             return res;
         }
@@ -36,13 +38,14 @@ public class CssProvider : GObject
 
     public static CssProvider FromData(string data)
     {
-        var res = New();
+        var res = new CssProvider();
+        res.SetInternalHandle(New());
         LoadFromData(res, data, 0, 0);
         return res;
     }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_css_provider_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static CssProvider New();
+    extern static nint New();
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_css_provider_load_from_resource", CallingConvention = CallingConvention.Cdecl)]
     extern static void _LoadFromResource(CssProvider handle, string path);

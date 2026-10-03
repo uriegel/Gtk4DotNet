@@ -35,7 +35,7 @@ public class Mount : GObject
         var id = AsyncReady.GetId();
         var asyncReady = new ThreePointerDelegate(AsyncReadyCallback);
         AsyncReady.Callbacks[id] = asyncReady;
-        using var mo = MountOperation.New();
+        using var mo = new MountOperation();
         mo.OnAskQuestion(() => Console.WriteLine("Question from mount operation not implemented"));
         if (showProcesses != null)
             mo.OnShowProcesses(showProcesses);

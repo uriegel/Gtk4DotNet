@@ -23,13 +23,12 @@ public class GSettings : GObject
 
     #region Construction
 
-    public static GSettings New(string schemaId, bool dontCheckDiagnostics = false)
+    public GSettings(string schemaId, bool dontCheckDiagnostics = false)
     {
-        var settings = _New(schemaId);
-        settings.SchemaId = schemaId;
+        SetInternalHandle(New(schemaId));
+        SchemaId = schemaId;
         if (!dontCheckDiagnostics)
-            settings.CheckDiagnostics();
-        return settings;
+            CheckDiagnostics();
     }
 
     public static GSettings NewFromResource(string applicationId, bool dontCheckDiagnostics = false)
@@ -49,6 +48,8 @@ public class GSettings : GObject
             settings.CheckDiagnostics();
         return settings;
     }
+
+    internal GSettings() {}
 
     #endregion
 
@@ -136,7 +137,7 @@ public class GSettings : GObject
     extern static void Bind(GSettings settings, string key, GObject obj, string property, BindFlags flags);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_settings_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static GSettings _New(string schemaId);
+    extern static nint New(string schemaId);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_settings_schema_has_key", CallingConvention = CallingConvention.Cdecl)]
     extern static bool SchemaHasKey(nint schema, string key);

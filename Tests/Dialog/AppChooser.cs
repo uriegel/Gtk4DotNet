@@ -7,7 +7,7 @@ class AppChooser : AdwDialog
         description.Text = "Choose an Application to open &lt;b&gt;this file&lt;/b&gt;";
         SetDefaultWidget(openBtn);
 
-        using var actiongroup = SimpleActionGroup.New("appchooser");
+        using var actiongroup = new SimpleActionGroup("appchooser");
         actiongroup.AddActions(
             new SimpleAction("openfile", () => Console.WriteLine("Open File")),
             new SimpleAction("cancel", CloseDialog)
@@ -15,8 +15,8 @@ class AppChooser : AdwDialog
         InsertActionGroup("appchooser", actiongroup);
 
         AddShortcuts(
-            Shortcut.New("appchooser.openfile", "<Ctrl>O"),
-            Shortcut.New("appchooser.cancel", "<Cancel>")
+            new Shortcut("appchooser.openfile", "<Ctrl>O"),
+            new Shortcut("appchooser.cancel", "<Cancel>")
         );
     }
 

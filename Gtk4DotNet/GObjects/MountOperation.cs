@@ -7,11 +7,10 @@ namespace Gtk4DotNet;
 
 public class MountOperation : GObject
 {
-    public static MountOperation New()
+    public MountOperation()
     {
-        var op = _New();
-        op.CheckDiagnostics();
-        return op;
+        SetInternalHandle(New());
+        CheckDiagnostics();
     }
 
     public void OnAskQuestion(Action onChanged)
@@ -61,7 +60,7 @@ public class MountOperation : GObject
     }
 
     [DllImport(Libs.LibGio, EntryPoint = "g_mount_operation_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static MountOperation _New();
+    extern static nint New();
 }
 
 delegate void ShowUnmountProgressDelgate(nint _, nint msg, ulong timeLeft, ulong bytesLeft, nint __);

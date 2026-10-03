@@ -3,13 +3,12 @@ using Gtk4DotNet;
 
 public class NamedAction : ShortcutAction
 {
-    public static NamedAction New(string name)
+    public NamedAction(string name)
     {
-        var action = _New(name);
-        action.CheckDiagnostics();
-        return action;
+        SetInternalHandle(New(name));
+        CheckDiagnostics();
     }
     
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_named_action_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static NamedAction _New(string name);
+    extern static nint New(string name);
 }

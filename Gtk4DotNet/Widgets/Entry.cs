@@ -8,11 +8,10 @@ namespace Gtk4DotNet;
 /// </summary>
 public class Entry : Widget
 {
-    public static Entry New()
+    public Entry()
     {
-        var res = _New();
-        res.CheckDiagnostics();
-        return res;
+        SetInternalHandle(New());
+        CheckDiagnostics();
     }
 
     public Editable AsEditable() => new(this);
@@ -32,13 +31,11 @@ public class Entry : Widget
         }
     }
 
-    public Entry() : base() { }
-
     public Entry(Builder builder, string? name = null) : base(builder, name) { }
 
     public Entry(Builder builder, string name, Action<nint> replaceParent)
         : base(builder, name, replaceParent) { }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_entry_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static Entry _New();
+    extern static nint New();
 }

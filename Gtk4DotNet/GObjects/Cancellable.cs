@@ -4,27 +4,15 @@ namespace Gtk4DotNet;
 
 class Cancellable : GObject
 {
-    public static Cancellable New(CancellationToken? cancellationToken = null)
+    public Cancellable(CancellationToken? cancellationToken = null)
     {
+        SetInternalHandle(New());
+        CheckDiagnostics();
         if (cancellationToken.HasValue && cancellationToken.Value.CanBeCanceled)
-        {
-            var cancellable = new Cancellable(cancellationToken.Value);
-            cancellable.SetInternalHandle(New());
-            cancellable.CheckDiagnostics();
-            return cancellable;
-        }
-        else
-            return None();
+            cancellationTokenRegistration = cancellationToken.Value.Register(Cancel);
     }
 
-    public static Cancellable None() => new();
-
-    public Cancellable() : base() { }
-
     public void Cancel() => Cancel(this);
-
-    Cancellable(CancellationToken cancellationToken) : base()
-        => cancellationTokenRegistration = cancellationToken.Register(Cancel);
 
     [DllImport(Libs.LibGio, EntryPoint = "g_cancellable_new", CallingConvention = CallingConvention.Cdecl)]
     extern static nint New();

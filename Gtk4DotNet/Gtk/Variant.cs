@@ -10,18 +10,16 @@ public class Variant : BaseHandle
     public static bool GetBool(nint variant) => GetRawBool(variant) != 0;
     public static string GetString(nint variant) => GetRawString(variant, 0).PtrToString(false) ?? "";
 
-    public static Variant New(string value, bool autoDestroyed = true)
+    public Variant(string value, bool autoDestroyed = true)
     {
-        var res = _New(value ?? "");
-        res.AutoDestroyed = autoDestroyed;
-        return res;
+        SetInternalHandle(New(value ?? ""));
+        AutoDestroyed = autoDestroyed;
     }
 
-    public static Variant New(bool value, bool autoDestroyed = true)
+    public Variant(bool value, bool autoDestroyed = true)
     {
-        var res = NewBool(value ? -1 : 0);
-        res.AutoDestroyed = autoDestroyed;
-        return res;
+        SetInternalHandle(NewBool(value ? -1 : 0));
+        AutoDestroyed = autoDestroyed;
     }
 
     public string GetString() => GetString(this, 0).PtrToString(false) ?? "";
@@ -36,10 +34,10 @@ public class Variant : BaseHandle
     }
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_variant_new_string", CallingConvention = CallingConvention.Cdecl)]
-    extern static Variant _New(string value);
+    extern static nint New(string value);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_variant_new_boolean", CallingConvention = CallingConvention.Cdecl)]
-    extern static Variant NewBool(int value);
+    extern static nint NewBool(int value);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_variant_get_string", CallingConvention = CallingConvention.Cdecl)]
     extern static nint GetString(Variant value, nint size);

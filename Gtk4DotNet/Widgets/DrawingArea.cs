@@ -6,16 +6,9 @@ namespace Gtk4DotNet;
 
 public class DrawingArea : Widget
 {
-    public static DrawingArea New()
+    public DrawingArea()
     {
-        var res = _New();
-        res.CheckDiagnostics();
-        return res;
-    }
-
-    public DrawingArea() : base()
-    {
-        SetInternalHandle(NewHandle());
+        SetInternalHandle(New());
         CheckDiagnostics();
     }
 
@@ -43,10 +36,7 @@ public class DrawingArea : Widget
     extern static void SetDrawFunction(DrawingArea drawingArea, IntPtr drawFunction, IntPtr zero, OnePointerDelegate onDestroy);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_drawing_area_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static DrawingArea _New();
-
-    [DllImport(Libs.LibGtk, EntryPoint = "gtk_drawing_area_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static nint NewHandle();
+    extern static nint New();
 }
 
 

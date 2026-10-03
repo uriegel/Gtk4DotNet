@@ -8,11 +8,10 @@ public class Image : Widget
     /// Creates an empty image
     /// </summary>
     /// <returns></returns>
-    public static Image New()
+    public Image()
     {
-        var img = _New();
-        img.CheckDiagnostics();
-        return img;
+        SetInternalHandle(New());
+        CheckDiagnostics();
     }
 
     /// <summary>
@@ -20,11 +19,10 @@ public class Image : Widget
     /// </summary>
     /// <param name="fileName">The path of the image file</param>
     /// <returns></returns>
-    public static Image NewFromFile(string fileName)
+    public Image(string fileName)
     {
-        var img = _NewFromFile(fileName);
-        img.CheckDiagnostics();
-        return img;
+        SetInternalHandle(NewFromFile(fileName));
+        CheckDiagnostics();
     }
     
     /// <summary>
@@ -33,11 +31,10 @@ public class Image : Widget
     /// <param name="iconName">Icon name of the image</param>
     /// <param name="size">Desired size of the image</param>
     /// <returns></returns>
-    public static Image NewFromIconName(string iconName, IconSize size)
+    public Image(string iconName, IconSize size)
     {
-        var img = _NewFromIconName(iconName, size);
-        img.CheckDiagnostics();
-        return img;
+        SetInternalHandle(NewFromIconName(iconName, size));
+        CheckDiagnostics();
     }
 
     /// <summary>
@@ -45,11 +42,10 @@ public class Image : Widget
     /// </summary>
     /// <param name="icon"></param>
     /// <returns></returns>
-    public static Image NewFromIcon(GIcon icon)
+    public Image(GIcon icon)
     {
-        var img = _NewFromGIcon(icon);
-        img.CheckDiagnostics();
-        return img;
+        SetInternalHandle(NewFromGIcon(icon));
+        CheckDiagnostics();
     }
 
     /// <summary>
@@ -60,25 +56,22 @@ public class Image : Widget
 
     public void SetFromIconName(string icon) => SetFromIconName(this, icon);
 
-
-    public Image() : base() { }
-
     public Image(Builder builder, string? name = null) : base(builder, name) { }
 
     public Image(Builder builder, string name, Action<nint> replaceParent)
         : base(builder, name, replaceParent) { }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_image_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static Image _New();
+    extern static nint New();
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_image_new_from_file", CallingConvention = CallingConvention.Cdecl)]
-    extern static Image _NewFromFile(string fileName);
+    extern static nint NewFromFile(string fileName);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_image_new_from_gicon", CallingConvention = CallingConvention.Cdecl)]
-    extern static Image _NewFromGIcon(GIcon icon);
+    extern static nint NewFromGIcon(GIcon icon);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_image_new_from_icon_name", CallingConvention = CallingConvention.Cdecl)]
-    extern static Image _NewFromIconName(string iconName, IconSize size);
+    extern static nint NewFromIconName(string iconName, IconSize size);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_image_set_from_gicon", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetIcon(Image image, GIcon icon);

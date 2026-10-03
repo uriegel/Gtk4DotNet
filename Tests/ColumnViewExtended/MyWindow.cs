@@ -41,7 +41,7 @@ class MyWindow : ApplicationWindow
                 return false;
         };
         paned.AddController(keyController);
-        var leftEvents = FocusEventController.New();
+        var leftEvents = new FocusEventController();
         leftEvents.OnEnter += () =>
         {
             activeView = columnviewLeft;
@@ -49,7 +49,7 @@ class MyWindow : ApplicationWindow
         };
         leftEvents.OnLeave += () => activeView = null;
 
-        var rightEvents = FocusEventController.New();
+        var rightEvents = new FocusEventController();
         rightEvents.OnEnter += () =>
         {
             activeView = columnviewRight;
@@ -170,8 +170,7 @@ class MyWindow : ApplicationWindow
                 return reverseSortOrder ? -order : order;
             });
             var sorter = CustomSorter.Create<Item>((item1, item2) => (item1?.Number ?? 0) - (item2?.Number ?? 0));
-            using var multiSorter = MultiSorter
-                .New()
+            using var multiSorter = new MultiSorter()
                 .Append(sorterIsEven)
                 .Append(sorter);
 

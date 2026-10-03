@@ -73,7 +73,7 @@ public class Drive : GObject
     {
         var tcs = new TaskCompletionSource();
         var id = AsyncReady.GetId();
-        var mo = MountOperation.New();
+        var mo = new MountOperation();
         mo.OnAskQuestion(() => Console.WriteLine("Question from mount operation not implemented"));
         if (showProcesses != null)
             mo.OnShowProcesses(showProcesses);
@@ -100,7 +100,7 @@ public class Drive : GObject
     {
         var tcs = new TaskCompletionSource();
         var id = AsyncReady.GetId();
-        var mo = MountOperation.New();
+        var mo = new MountOperation();
         mo.OnAskQuestion(() => Console.WriteLine("Question from mount operation not implemented"));
         if (showProcesses != null)
             mo.OnShowProcesses(showProcesses);

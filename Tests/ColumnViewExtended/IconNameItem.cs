@@ -1,6 +1,6 @@
 using Gtk4DotNet;
 
-class IconNameItem : Box
+class IconNameItem(Builder builder) : Box(builder, "listitem")
 {
     public new string Name
     {
@@ -10,8 +10,6 @@ class IconNameItem : Box
 
     public void SetFromIconName(string name)
         => image.SetFromIconName(name);
-
-    public IconNameItem(Builder builder) : base(builder, "listitem") { }
 
     [Widget]
     readonly Image image = null!;

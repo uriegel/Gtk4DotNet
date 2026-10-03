@@ -5,14 +5,11 @@ namespace Gtk4DotNet;
 
 public class Revealer : Widget
 {
-    public static Revealer New()
+    public Revealer()
     {
-        var res = _New();
-        res.CheckDiagnostics();
-        return res;
+        SetInternalHandle(New());
+        CheckDiagnostics();
     }
-
-    public Revealer() : base() { }
 
     public Revealer(Builder builder, string? name = null) : base(builder, name) { }
 
@@ -47,6 +44,6 @@ public class Revealer : Widget
     extern static void SetChild(Revealer revealer, Widget widget);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_revealer_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static Revealer _New();
+    extern static nint New();
 }
 

@@ -110,7 +110,7 @@ public class GFile : GObject
         var id = AsyncReady.GetId();
         var asyncReady = new ThreePointerDelegate(AsyncReadyCallback);
         AsyncReady.Callbacks[id] = asyncReady;
-        using var cancellable = Cancellable.New(cancellation);
+        using var cancellable = new Cancellable(cancellation);
         using var destinationFile = new GFile(destination);
         var rcb = cb != null ? new TwoLongAndPtrCallback((c, t, _) => cb(c, t)) : null;
         if (rcb != null)

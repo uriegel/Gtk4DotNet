@@ -47,7 +47,7 @@ class MyWindow : ApplicationWindow
 
         using var root = mount?.GetRoot();
 
-        settings = GSettings.New("org.gnome.desktop.interface");
+        settings = new GSettings("org.gnome.desktop.interface");
         settings["gtk-theme"].OnChanged += OnThemeChanged;
 
         monitor = VolumeMonitor.Get();

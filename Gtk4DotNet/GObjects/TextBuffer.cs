@@ -14,7 +14,8 @@ public class TextBuffer : GObject
 
     public TextTag CreateTag(string? name, string? firstProperty)
     {
-        var res = CreateTag(this, name, firstProperty);
+        var res = new TextTag(); 
+        res.SetInternalHandle(CreateTag(this, name, firstProperty));
         res.AutoDestroyed = true;
 
         // Do not call this because TextBuffer leaks when a range was set
@@ -57,7 +58,7 @@ public class TextBuffer : GObject
     extern static void SetText(TextBuffer buffer, string text, int length);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_text_buffer_create_tag", CallingConvention = CallingConvention.Cdecl)]
-    extern static TextTag CreateTag(TextBuffer buffer, string? name, string? firstProperty);
+    extern static nint CreateTag(TextBuffer buffer, string? name, string? firstProperty);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_text_buffer_apply_tag", CallingConvention = CallingConvention.Cdecl)]
     extern static void ApplyTag(TextBuffer buffer, TextTag tag, ref TextIter startIter, ref TextIter endIter);

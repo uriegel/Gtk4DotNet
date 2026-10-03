@@ -4,11 +4,10 @@ namespace Gtk4DotNet;
 
 public class ProgressBar : Widget
 {
-    public static ProgressBar New()
+    public ProgressBar()
     {
-        var res = _New();
-        res.CheckDiagnostics();
-        return res;
+        SetInternalHandle(New());
+        CheckDiagnostics();
     }
 
     public bool ShowText
@@ -31,15 +30,13 @@ public class ProgressBar : Widget
 
     public void Pulse() => Pulse(this);
 
-    public ProgressBar() : base() { }
-
     public ProgressBar(Builder builder, string? name = null) : base(builder, name) { }
 
     public ProgressBar(Builder builder, string name, Action<nint> replaceParent)
         : base(builder, name, replaceParent) { }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_progress_bar_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static ProgressBar _New();
+    extern static nint New();
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_progress_bar_set_show_text", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetShowText(ProgressBar progressBar, bool show);

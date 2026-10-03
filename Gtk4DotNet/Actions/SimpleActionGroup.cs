@@ -17,12 +17,11 @@ public class SimpleActionGroup : GObject
     /// </summary>
     /// <param name="groupName">Name of the action group</param>
     /// <returns></returns>
-    public static SimpleActionGroup New(string groupName)
+    public SimpleActionGroup(string groupName)
     {
-        var group = _New();
-        group.GroupName = groupName;
-        group.CheckDiagnostics();
-        return group;
+        SetInternalHandle(New());
+        GroupName = groupName;
+        CheckDiagnostics();
     }
 
     /// <summary>
@@ -32,7 +31,7 @@ public class SimpleActionGroup : GObject
     public void AddActions(params GtkAction[] actions) => this.actions.AddActions(this, null, GroupName, actions);
 
     [DllImport(Libs.LibGtk, EntryPoint = "g_simple_action_group_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static SimpleActionGroup _New();
+    extern static nint New();
 
     readonly GtkActions actions = new(false);
 }

@@ -6,11 +6,10 @@ public class EditableLabel : Widget
 {
     public bool IsEditing { get => GetEditing(this); }
 
-    public static EditableLabel New(string text)
+    public EditableLabel(string text)
     {
-        var res = _New(text);
-        res.CheckDiagnostics();
-        return res;
+        SetInternalHandle(New(text));
+        CheckDiagnostics();
     }
 
     /// <summary>
@@ -28,8 +27,6 @@ public class EditableLabel : Widget
     
     public Editable AsEditable() => new(this);  
 
-    public EditableLabel() : base() { }
-
     public EditableLabel(Builder builder, string? name = null) : base(builder, name) { }
 
     public EditableLabel(Builder builder, string name, Action<nint> replaceParent)
@@ -44,7 +41,7 @@ public class EditableLabel : Widget
     }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_editable_label_new", CallingConvention = CallingConvention.Cdecl)]
-    extern static EditableLabel _New(string label);
+    extern static nint New(string label);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_editable_label_get_editing", CallingConvention = CallingConvention.Cdecl)]
     extern static bool GetEditing(EditableLabel editableLabel);

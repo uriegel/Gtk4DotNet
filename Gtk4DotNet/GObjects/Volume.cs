@@ -40,7 +40,7 @@ public class Volume : GObject
     {
         var tcs = new TaskCompletionSource();
         var id = AsyncReady.GetId();
-        var mo = MountOperation.New();
+        var mo = new MountOperation();
         var asyncReady = new ThreePointerDelegate(AsyncReadyCallback);
         AsyncReady.Callbacks[id] = asyncReady;
         Eject(this, force ? UnmountFlags.Force : UnmountFlags.None, mo, 0, asyncReady, 0);
