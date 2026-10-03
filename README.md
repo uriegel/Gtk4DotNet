@@ -98,7 +98,7 @@ Application
 
 New demands the ApplicationID, a string that represents your app domain in reverse order.
 
-This is the simplest Gtk Application. When you run the app, it stops immediatly with the following maeesage in command line:
+This is the simplest Gtk Application. When you run the app, it stops immediatly with the following message in command line:
 
 ```
 
