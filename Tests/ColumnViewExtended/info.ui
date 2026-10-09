@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Created with Cambalache 1.0.3 -->
+<interface>
+  <!-- interface-name info.ui -->
+  <requires lib="gtk" version="4.20"/>
+  <object class="GtkWindow" id="window">
+    <property name="default-height">600</property>
+    <property name="default-width">800</property>
+    <property name="title">Gtk Info</property>
+    <child>
+      <object class="GtkScrolledWindow">
+        <child>
+          <object class="GtkLabel" id="label">
+            <property name="use-markup">True</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

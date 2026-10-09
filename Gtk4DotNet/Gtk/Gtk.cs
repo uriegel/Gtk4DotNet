@@ -146,6 +146,45 @@ public static class Gtk
         Console.WriteLine($"=========================================================================================");
     }
 
+    public static IEnumerable<string> GtkInfo()
+    {
+        GC.Collect();
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        GC.Collect();
+        yield return "=========================================================================================";
+        yield return $"Gtk Version: {GetVersion()}";
+        yield return $"Total memory: {System.Diagnostics.Process.GetCurrentProcess().WorkingSet64:N0}, managed: {GC.GetTotalMemory(true):N0}";
+        var registeredWidgets = Widget.GetRegisteredWidgetCount();
+        var asyncReadies = AsyncReady.GetDelegateCount();
+        var delegates = GtkDelegates.Instance.GetInfos();
+        var gObjects = GObject.GObjectsDiagnostics.GetInfos();
+        if (gObjects.Length > 0)
+        {
+            yield return "";
+            foreach (var n in gObjects)
+                yield return $"Dangling GObjects: {n}";
+        }
+        if (delegates.Length > 0)
+        {
+            yield return "";
+            foreach (var n in delegates)
+                yield return $"Connected delegates: {n}";
+        }
+        if (registeredWidgets > 0)
+        {
+            yield return "";
+            yield return $"Dangling widgets: {registeredWidgets}";
+        }
+        if (asyncReadies > 0)
+        {
+            yield return "";
+            yield return $"GFile AsyncReadies: {asyncReadies}";
+        }
+
+        yield return "=========================================================================================";
+    }
+
     public static bool Diagnostics
     {
         get;

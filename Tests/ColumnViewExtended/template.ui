@@ -30,6 +30,12 @@
                 <property name="visible" bind-source="model_button" bind-property="active" bind-flags="sync-create"/>
               </object>
             </child>
+            <child type="end">
+              <object class="GtkButton">
+                <property name="action-name">win.info</property>
+                <property name="icon-name">dialog-information</property>
+              </object>
+            </child>
           </object>
         </child>
         <child>

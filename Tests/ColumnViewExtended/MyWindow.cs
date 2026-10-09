@@ -25,6 +25,7 @@ class MyWindow : ApplicationWindow
             }, "F3"),
             new BoolAction("filter", false, FilterModel, "<Ctrl>F"),
             new SimpleAction("find", FindItem),
+            new SimpleAction("info", ShowInfo),
             new SimpleAction("quit", CloseWindow, "<Ctrl>Q")
         );
         activeView = columnviewLeft;
@@ -298,6 +299,13 @@ class MyWindow : ApplicationWindow
             Console.WriteLine(item.Name);
     }
 
+    void ShowInfo()
+    {
+        using var builder = Builder.FromDotNetResource("info");
+        using var win = new InfoWindow(GetApplication(), builder);
+        win.Show();
+    }
+
     ColumnView GetInactiveView()
         => columnviewLeft == activeView ? columnviewRight : columnviewLeft;
 
@@ -312,6 +320,7 @@ class MyWindow : ApplicationWindow
 
     [Widget]
     readonly Paned paned = null!;
+
 
     SelectionModel model = null!;
 
