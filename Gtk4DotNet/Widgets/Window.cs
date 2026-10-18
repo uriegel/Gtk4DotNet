@@ -42,6 +42,8 @@ public class Window : Widget
     public new int Width { get => Size.Width; }
     public new int Height { get => Size.Height; }
 
+    public void SetApplication(Application application) => SetApplication(this, application);
+
     public void Present() => Present(this);
 
     public void CloseWindow() => CloseWindow(this);
@@ -132,7 +134,7 @@ public class Window : Widget
     }
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_application", CallingConvention = CallingConvention.Cdecl)]
-    internal extern static void SetApplication(Window window, Application application);
+    extern static void SetApplication(Window window, Application application);
 
     [DllImport(Libs.LibGtk, EntryPoint = "gtk_window_set_title", CallingConvention = CallingConvention.Cdecl)]
     extern static void SetTitle(Window window, string title);

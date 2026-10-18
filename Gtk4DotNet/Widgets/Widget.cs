@@ -219,6 +219,7 @@ public class Widget : GObject
     public void SetBinding(string targetProperty, string property,
         BindingFlags bindingFlags = BindingFlags.Default, Func<object?, object?>? converter = null)
     {
+        var lifetime = Interlocked.Increment(ref bindingLifetime);
         var dataContext = DataContext;
         if (dataContext != null)
         {
@@ -245,7 +246,12 @@ public class Widget : GObject
             void OnChanged(object? sender, PropertyChangedEventArgs e)
             {
                 if (!inChange && e.PropertyName == property)
-                    Gtk.BeginInvoke(200, () => SetProperty(targetProperty, GetValue()));
+                    Gtk.BeginInvoke(200, () =>
+                    {
+                        if (lifetime != Volatile.Read(ref bindingLifetime))
+                            return;
+                        SetProperty(targetProperty, GetValue());
+                    });
             }
 
             object? GetValue()
@@ -274,6 +280,7 @@ public class Widget : GObject
     }
     public void UnsetBinding(string targetProperty)
     {
+        Interlocked.Increment(ref bindingLifetime);
         var delegates = BindingsDelegates;
         if (delegates != null && delegates.Remove(targetProperty, out var delegat))
             DataContext?.PropertyChanged -= delegat;
@@ -572,6 +579,8 @@ public class Widget : GObject
     internal static int GetRegisteredWidgetCount() => widgets.Count;
 
     static readonly Dictionary<nint, Widget> widgets = [];
+
+    long bindingLifetime;
 
     #endregion
 

@@ -11,7 +11,7 @@ namespace Gtk4DotNet;
 public class ApplicationWindow : Window
 {
     public ApplicationWindow(WindowBuilder builder) : base(builder.Builder, builder.Window)
-        => SetApplication(this, builder.Application);
+        => SetApplication(builder.Application);
 
     internal ApplicationWindow(nint handle) : base(handle) => CheckDiagnostics();
 

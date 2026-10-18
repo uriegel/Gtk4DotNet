@@ -321,7 +321,6 @@ class MyWindow : ApplicationWindow
     [Widget]
     readonly Paned paned = null!;
 
-
     SelectionModel model = null!;
 
     CustomFilter filterNumbers = null!;

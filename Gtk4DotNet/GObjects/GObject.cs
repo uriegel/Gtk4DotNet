@@ -426,7 +426,7 @@ public class GObject : BaseHandle
 
     bool diagnosticsSet;
 
-    static internal Dictionary<Delegate, EventData> eventDatas = [];        
+    static internal Dictionary<Delegate, EventData> eventDatas = [];
 }
 
 record EventData(long Id, Delegate Delegate, Delegate EventDelegate);
